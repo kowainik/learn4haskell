@@ -55,7 +55,8 @@ chapter4advanced = describe "Chapter4Advanced" $
     describe "andM" $ do
         it "Nothing - Nothing" $ andM Nothing Nothing `shouldBe` Nothing
         it "Nothing - Just" $ andM Nothing (Just True) `shouldBe` Nothing
-        it "Just - Nothing" $ andM (Just True) Nothing `shouldBe` Nothing
+        it "Just True - Nothing" $ andM (Just True) Nothing `shouldBe` Nothing
+        it "Just False - Nothing" $ andM (Just False) Nothing `shouldBe` Just False
         it "Just - Just : False" $ andM (Just True) (Just False) `shouldBe` Just False
         it "Just - Just : True" $ andM (Just True) (Just True) `shouldBe` Just True
 
