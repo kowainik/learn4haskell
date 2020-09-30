@@ -1010,7 +1010,7 @@ contestants, and write a function that decides the outcome of a fight!
 {-
 You did it! Now it is time to the open pull request with your changes
 and summon @vrom911 and @chshersh for the review!
-}
+-}
 
 {-
 =📜= Additional resources

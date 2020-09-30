@@ -645,10 +645,12 @@ Let us know how did you like the journey and how we can make it even
 more remarkable for you! This will take you a few minutes, but is
 precious for us and future journey starters:
 
-TODO: link to the FORM
+ * https://docs.google.com/forms/d/e/1FAIpQLScBVhLxq5CgGnAfIGUE-fCoOUqeGkDY2HXzbT7KV2jjLOsmjQ/viewform
+
 
 Also, challenge your friends with this course and spread the word about us!
-TODO: LINKS?
+We are @kowainik on Twitter. You can also use #Learn4Haskell hashtag to share
+your story.
 
 We also have a Ko-fi page, if you want to buy us a coffee after a long road.
  ☕️ https://ko-fi.com/kowainik
@@ -675,4 +677,4 @@ Specifically,
 {-
 You did it! Now it is time to the open pull request with your changes
 and summon @vrom911 and @chshersh for the review!
-}
+-}
