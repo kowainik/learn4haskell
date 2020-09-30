@@ -68,7 +68,7 @@ Haskell has several different ways to create entirely new data types. Let's talk
 about them all and master our skill of data types construction.
 -}
 
-{-
+{- |
 =🛡= Type aliases
 
 The simplest way to introduce a new type in Haskell is __type aliases__. Type
@@ -113,7 +113,7 @@ for existing types. But it is still good to know about type aliases. They have a
 few use-cases, and you can meet them in various Haskell libraries as well.
 -}
 
-{-
+{- |
 =🛡= ADT
 
 Let's not limit ourselves with just type aliases and define some real new data
@@ -159,7 +159,7 @@ BookShelf:
   Types.
 -}
 
-{-
+{- |
 =🛡= Product type
 
 Let's now see how the product data types look like in Haskell.
@@ -336,7 +336,7 @@ Although, it may be easier to define data types in the module, and load it
 afterwards.
 -}
 
-{-
+{- |
 =⚔️= Task 1
 
 Define the Book product data type. You can take inspiration from our description
@@ -344,7 +344,7 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
-{-
+{- |
 =⚔️= Task 2
 
 Prepare to defend the honour of our kingdom! A monster attacks our brave knight.
@@ -374,7 +374,7 @@ after the fight. The battle has the following possible outcomes:
 
 -}
 
-{-
+{- |
 =🛡= Sum types
 
 Another powerful ambassador of ADT is __sum type__. Unlike ordinary records
@@ -453,14 +453,14 @@ allow you to model your domain precisely, make illegal states unrepresentable
 and provide more flexibility when working with data types.
 -}
 
-{-
+{- |
 =⚔️= Task 3
 
 Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
-{-
+{- |
 =⚔️= Task 4
 
 Define types to represent a magical city in the world! A typical city has:
@@ -592,7 +592,7 @@ hitPlayer player1 player2 =
             (playerHealth player1)
     in player1 { playerHealth = newHealth }
 
-{-
+{- |
 =🛡= Polymorphic data types
 
 Similar to functions, data types in Haskell can be __polymorphic__. This means
@@ -731,7 +731,7 @@ data List a
   should go together as one type.
 -}
 
-{-
+{- |
 =⚔️= Task 6
 
 Before entering the real world of adventures and glorious victories, we should
@@ -890,7 +890,7 @@ type exists. You can see how we reuse the fact that the underlying type has this
 instance and apply this typeclass method to it.
 -}
 
-{-
+{- |
 =⚔️= Task 7
 
 Often we want to combine several values of a type and get a single value of the

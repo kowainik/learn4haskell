@@ -56,3 +56,35 @@ test-suite learn4haskell-test
   ghc-options:         -threaded
                        -rtsopts
                        -with-rtsopts=-N
+
+test-suite doctest-chapter1
+  import:              common-options
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             DoctestChapter1.hs
+  build-depends:       doctest ^>= 0.17
+  ghc-options:         -threaded
+
+test-suite doctest-chapter2
+  import:              common-options
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             DoctestChapter2.hs
+  build-depends:       doctest ^>= 0.17
+  ghc-options:         -threaded
+
+test-suite doctest-chapter3
+  import:              common-options
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             DoctestChapter3.hs
+  build-depends:       doctest ^>= 0.17
+  ghc-options:         -threaded
+
+test-suite doctest-chapter4
+  import:              common-options
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             DoctestChapter4.hs
+  build-depends:       doctest ^>= 0.17
+  ghc-options:         -threaded

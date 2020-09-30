@@ -37,6 +37,22 @@ jobs:
         cabal v2-update
         cabal v2-build --enable-tests --enable-benchmarks
 
-    - name: Test
+    - name: Chapter 1 - Doctest
+      continue-on-error: true
       run: |
-        cabal v2-test --enable-tests --test-show-details=direct
+        cabal v2-test doctest-chapter1 --enable-tests --test-show-details=direct
+
+    - name: Chapter 2 - Doctest
+      continue-on-error: true
+      run: |
+        cabal v2-test doctest-chapter2 --enable-tests --test-show-details=direct
+
+    - name: Chapter 3 - Doctest
+      continue-on-error: true
+      run: |
+        cabal v2-test doctest-chapter3 --enable-tests --test-show-details=direct
+
+    - name: Chapter 4 - Doctest
+      continue-on-error: true
+      run: |
+        cabal v2-test doctest-chapter4 --enable-tests --test-show-details=direct

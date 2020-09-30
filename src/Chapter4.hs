@@ -42,7 +42,7 @@ Perfect. Let's crush this!
 
 module Chapter4 where
 
-{-
+{- |
 =🛡= Kinds
 
 Before we attempt to defeat the mighty and scary Monad Dragon, we need
@@ -103,7 +103,7 @@ Eq :: * -> Constraint
 We hope kinds will become your kind friends by the end of this chapter :)
 -}
 
-{-
+{- |
 =⚔️= Task 1
 
 Prepare for the first task! To complete the first challenge, you need
@@ -133,7 +133,7 @@ the output in here:
 
 -}
 
-{-
+{- |
 =🛡= Functor
 
 Let's continue our journey of exploring challenging concepts by
@@ -268,7 +268,7 @@ instance Functor Maybe where
 @
 -}
 
-{-
+{- |
 =⚔️= Task 2
 
 Implement 'Functor' instance for the "Secret" data type defined
@@ -282,7 +282,7 @@ data Secret e a
     | Reward a
 
 
-{-
+{- |
 Functor works with types that have kind `* -> *` but our 'Secret' has
 kind `* -> * -> *`. What should we do? Don't worry. We can partially
 apply 'Secret' to some type variable that will be fixed inside each
@@ -294,7 +294,7 @@ instance Functor (Secret e) where
     fmap :: (a -> b) -> Secret e a -> Secret e b
     fmap = error "fmap for Box: not implemented!"
 
-{-
+{- |
 =⚔️= Task 3
 
 Implement Functor instance for the "List" type defined below. This
@@ -306,7 +306,7 @@ data List a
     = Empty
     | Cons a (List a)
 
-{-
+{- |
 =🛡= Applicative
 
 The 'Applicative' typeclass logically continues the 'Functor'
@@ -464,7 +464,7 @@ Applicatives can be found in many applications:
  ✦ Concurrent and parallel execution of tasks
 -}
 
-{-
+{- |
 =⚔️= Task 4
 
 Implement the Applicative instance for our 'Secret' data type from before.
@@ -476,7 +476,7 @@ instance Applicative (Secret e) where
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
     (<*>) = error "(<*>) Secret: Not implemented!"
 
-{-
+{- |
 =⚔️= Task 5
 
 Implement the 'Applicative' instance for our 'List' type.
@@ -489,7 +489,7 @@ Implement the 'Applicative' instance for our 'List' type.
 -}
 
 
-{-
+{- |
 =🛡= Monad
 
 Now, the Monad Dragon. We've come that far not to give up. If we
@@ -591,7 +591,7 @@ All type signatures look similar, but they represent different
 concepts in the end.
 -}
 
-{-
+{- |
 =⚔️= Task 6
 
 Implement the 'Monad' instance for our 'Secret' type.
@@ -600,7 +600,7 @@ instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
     (>>=) = error "bind Secret: Not implemented!"
 
-{-
+{- |
 =⚔️= Task 7
 
 Implement the 'Monad' instance for our lists.
@@ -609,7 +609,8 @@ Implement the 'Monad' instance for our lists.
   maybe a few) to flatten lists of lists to a single list.
 -}
 
-{-
+
+{- |
 =💣= Task 8*: Before the Final Boss
 
 So far we've been talking only about instances and use cases of
@@ -628,7 +629,7 @@ Can you implement a monad version of AND, polymorphic over any monad?
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
 andM = error "andM: Not implemented!"
 
-{-
+{- |
 =🐉= Task 9*: Final Dungeon Boss
 
 You did it! You made it to the end of Haskell practice! It probably

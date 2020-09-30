@@ -76,7 +76,7 @@ When working with lists, the most practical module will be "Data.List":
 -}
 
 
-{-
+{- |
 =🛡= Lists
 
 __List__ is a crucial data type in Haskell and functional programming
@@ -128,7 +128,7 @@ work with lists. And you will need to operate a lot with standard
 functions in the upcoming exercises. Remember, Hoogle is your friend!
 -}
 
-{-
+{- |
 =⚔️= Task 1
 
 Explore lists by checking types of various list expressions and
@@ -157,7 +157,7 @@ functions in GHCi and insert the corresponding resulting output below:
 
 -}
 
-{-
+{- |
 =⚔️= Task 2
 
 To understand the list type better, it is also beneficial to play with
@@ -214,7 +214,7 @@ ghci> [True, False] ++ "string"
 
 -}
 
-{-
+{- |
 =🛡= Immutability
 
 At this point in our training, you need to learn that all values in
@@ -235,7 +235,7 @@ original list, so you don't need to worry about accidentally spoiling
 values of variables you defined before.
 -}
 
-{-
+{- |
 =🛡= List implementation
 
 Let's talk a bit about list implementation details. Lists in Haskell
@@ -291,7 +291,7 @@ process.
 
 -}
 
-{-
+{- |
 =⚔️= Task 3
 
 Let's write our first function to process lists in Haskell! Your first
@@ -319,7 +319,7 @@ ghci> :l src/Chapter2.hs
 subList :: Int -> Int -> [a] -> [a]
 subList = error "subList: Not implemented!"
 
-{-
+{- |
 =⚔️= Task 4
 
 Implement a function that returns only the first half of a given list.
@@ -333,7 +333,7 @@ Implement a function that returns only the first half of a given list.
 firstHalf l = error "firstHalf: Not implemented!"
 
 
-{-
+{- |
 =🛡= Pattern matching
 
 One of the coolest and most powerful features of Functional
@@ -470,7 +470,7 @@ the same as writing "(x:(y:xs))".
   checker from the Haskell compiler.
 -}
 
-{-
+{- |
 =⚔️= Task 5
 
 Implement a function that checks whether the third element of a list
@@ -484,7 +484,7 @@ False
 isThird42 = error "isThird42: Not implemented!"
 
 
-{-
+{- |
 =🛡= Recursion
 
 Often, when writing in a functional style, you end up implementing the
@@ -572,7 +572,7 @@ And it works like this:
 -}
 
 
-{-
+{- |
 =⚔️= Task 6
 
 Implement a function that duplicates each element of the list
@@ -589,8 +589,7 @@ duplicate :: [a] -> [a]
 duplicate = error "duplicate: Not implemented!"
 
 
-
-{-
+{- |
 =⚔️= Task 7
 Write a function that takes elements of a list only on even positions.
 
@@ -604,7 +603,7 @@ Write a function that takes elements of a list only on even positions.
 -}
 takeEven = error "takeEven: Not implemented!"
 
-{-
+{- |
 =🛡= Higher-order functions
 
 Some functions can take other functions as arguments. Such functions
@@ -697,7 +696,7 @@ map f (x:xs) = f x : map f xs
 Now you can see that there is nothing magic in HOFs in the end!
 -}
 
-{-
+{- |
 =⚔️= Task 8
 
 Implement a function that repeats each element so many times as the
@@ -711,7 +710,7 @@ value of the element itself
 smartReplicate :: [Int] -> [Int]
 smartReplicate l = error "smartReplicate: Not implemented!"
 
-{-
+{- |
 =⚔️= Task 9
 
 Implement a function that takes a number, a list of lists and returns
@@ -725,7 +724,7 @@ the list with only those lists that contain a passed element.
 contains = error "contains: Not implemented!"
 
 
-{-
+{- |
 =🛡= Eta-reduction
 
 Another consequence of the HOFs and partial application is
@@ -755,7 +754,7 @@ nextInt = add 1
   amend its usage in the function body.
 -}
 
-{-
+{- |
 =⚔️= Task 10
 
 Let's now try to eta-reduce some of the functions and ensure that we
@@ -770,7 +769,7 @@ listElementsLessThan x l = filter (< x) l
 -- Can you eta-reduce this one???
 pairMul xs ys = zipWith (*) xs ys
 
-{-
+{- |
 =🛡= Lazy evaluation
 
 Another unique Haskell feature is __lazy evaluation__. Haskell is lazy
@@ -822,7 +821,7 @@ to do it more efficiently than rotating by a single element N times.
 -}
 rotate = error "rotate: Not implemented!"
 
-{-
+{- |
 =💣= Task 12*
 
 Now you should be ready for the final boss at the end of this chapter!
