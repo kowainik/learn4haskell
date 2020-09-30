@@ -212,8 +212,6 @@ ghci> [True, False] ++ "string"
       In the expression: [True, False] ++ "string"
       In an equation for ‘it’: it = [True, False] ++ "string"
 
-
-
 -}
 
 {-
@@ -333,7 +331,6 @@ Implement a function that returns only the first half of a given list.
 -}
 -- PUT THE FUNCTION TYPE IN HERE
 firstHalf l = error "firstHalf: Not implemented!"
-
 
 
 {-
