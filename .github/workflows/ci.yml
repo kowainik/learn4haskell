@@ -12,9 +12,9 @@ jobs:
     runs-on: ubuntu-16.04
     strategy:
       matrix:
-        cabal: ["2.4"]
+        cabal: ["3.2"]
         ghc:
-          - "8.10.1"
+          - "8.10.2"
 
     steps:
     - uses: actions/checkout@v2

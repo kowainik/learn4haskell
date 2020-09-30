@@ -291,37 +291,23 @@ INSERT THE RESULT INSTEAD OF THE TEXT
 
 >>> 10 - (-5)  -- negative constants require ()
 
-
 >>> (3 + 5) < 10
-
 
 >>> True && False
 
-
 >>> 10 < 20 || 20 < 5
-
 
 >>> 2 ^ 10  -- power
 
-
 >>> not False
-
 
 >>> div 20 3  -- integral division
 
-
 >>> mod 20 3  -- integral division remainder
-
-
->>> max 4 10
-
 
 >>> min 5 (max 1 2)
 
-
 >>> max (min 1 10) (min 5 7)
-
-
 
 
 Because Haskell is a __statically-typed__ language, you see an error each time
@@ -388,7 +374,7 @@ roundSubtract x y =
 Putting everything together, the complete function definition looks like this:
 
 @
-roundSubtract :: Double -> Double -> Int
+roundSubtract :: Double -> Int -> Int
 roundSubtract x y = ceiling x - y
 @
 
