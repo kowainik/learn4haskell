@@ -59,7 +59,6 @@ jobs:
         key: ${{ runner.os }}-${{ matrix.ghc }}-cabal
 
     - name: Chapter 1 - Doctest
-      continue-on-error: true
       run: |
         cabal v2-test doctest-chapter1 --enable-tests --test-show-details=direct
 
@@ -87,7 +86,6 @@ jobs:
         key: ${{ runner.os }}-${{ matrix.ghc }}-cabal
 
     - name: Chapter 2 - Doctest
-      continue-on-error: true
       run: |
         cabal v2-test doctest-chapter2 --enable-tests --test-show-details=direct
 
@@ -115,7 +113,6 @@ jobs:
         key: ${{ runner.os }}-${{ matrix.ghc }}-cabal
 
     - name: Chapter 3 - Doctest
-      continue-on-error: true
       run: |
         cabal v2-test doctest-chapter3 --enable-tests --test-show-details=direct
 
@@ -143,6 +140,5 @@ jobs:
         key: ${{ runner.os }}-${{ matrix.ghc }}-cabal
 
     - name: Chapter 4 - Doctest
-      continue-on-error: true
       run: |
         cabal v2-test doctest-chapter4 --enable-tests --test-show-details=direct
