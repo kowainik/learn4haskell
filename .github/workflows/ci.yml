@@ -160,3 +160,12 @@ jobs:
     - name: Chapter 4 - Doctest
       run: |
         cabal v2-test doctest-chapter4 --enable-tests --test-show-details=direct
+
+    - name: Chapter 4 - Tests
+      run: |
+        cabal run learn4haskell-test --enable-tests -- -m "Chapter4Normal"
+
+    - name: Chapter 4 - Tests - Advanced
+      continue-on-error: true
+      run: |
+        cabal run learn4haskell-test --enable-tests -- -m "Chapter4Advanced"
