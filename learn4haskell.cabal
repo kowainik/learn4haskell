@@ -58,7 +58,12 @@ test-suite learn4haskell-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Spec.hs
+  other-modules:       Test.Chapter1
+                       Test.Chapter2
+                       Test.Chapter3
+                       Test.Chapter4
   build-depends:       learn4haskell
+                     , hspec ^>= 2.7.4
   ghc-options:         -threaded
                        -rtsopts
                        -with-rtsopts=-N
