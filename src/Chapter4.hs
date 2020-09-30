@@ -131,8 +131,6 @@ the output in here:
 >>> data IntBox f = MkIntBox (f Int)
 >>> :k IntBox
 
-
-
 -}
 
 {-
