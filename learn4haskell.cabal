@@ -45,6 +45,7 @@ library
   exposed-modules:     Chapter1
                        Chapter2
                        Chapter3
+                       Chapter4
 
 test-suite learn4haskell-test
   import:              common-options
