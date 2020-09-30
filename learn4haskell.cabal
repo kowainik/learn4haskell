@@ -39,6 +39,12 @@ common common-options
 
   default-language:    Haskell2010
 
+common common-doctest
+  import:              common-options
+  hs-source-dirs:      test
+  build-depends:       doctest ^>= 0.17
+  ghc-options:         -threaded
+
 library
   import:              common-options
   hs-source-dirs:      src
@@ -56,3 +62,23 @@ test-suite learn4haskell-test
   ghc-options:         -threaded
                        -rtsopts
                        -with-rtsopts=-N
+
+test-suite doctest-chapter1
+  import:              common-doctest
+  type:                exitcode-stdio-1.0
+  main-is:             DoctestChapter1.hs
+
+test-suite doctest-chapter2
+  import:              common-doctest
+  type:                exitcode-stdio-1.0
+  main-is:             DoctestChapter2.hs
+
+test-suite doctest-chapter3
+  import:              common-doctest
+  type:                exitcode-stdio-1.0
+  main-is:             DoctestChapter3.hs
+
+test-suite doctest-chapter4
+  import:              common-doctest
+  type:                exitcode-stdio-1.0
+  main-is:             DoctestChapter4.hs

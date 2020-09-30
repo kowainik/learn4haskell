@@ -57,7 +57,7 @@ Now, if you are ready, let's start!
 
 -- Single-line comments in Haskell start with --
 
-{- This tutorial uses block comments to explain various concepts and provide
+{- | This tutorial uses block comments to explain various concepts and provide
 task description.
 -}
 
@@ -72,7 +72,8 @@ the `.hs` extension.
 -}
 module Chapter1 where
 
-{- In Haskell, we have __expressions__. Expressions can be represented by some
+{- |
+In Haskell, we have __expressions__. Expressions can be represented by some
 primitive values (numbers: 1, 100; characters: 'a', 'z'; booleans: True, False;
 etc.) or by a combination of the primitive values and other expressions using
 language syntax constructions (if-then-else, let-in, case-of, etc.) and various
@@ -181,8 +182,7 @@ ghci> :q
 
 -}
 
-
-{-
+{- |
 =⚔️= Task 1
 
 Since types play a crucial role in Haskell, we can start by exploring types of
@@ -229,7 +229,7 @@ more. You've also seen the arrow "->" which is a function. When you see "A -> B
 "A" and "B" and returns a value of type "C".
 -}
 
-{-
+{- |
 =⚔️= Task 2
 
 After having our first look at the Haskell type system, we can do something more
@@ -330,7 +330,7 @@ scripts together.
 -}
 
 
-{-
+{- |
 =🛡= Defining a function
 
 We have already learned how to use different functions and operators in Haskell.
@@ -383,7 +383,7 @@ roundSubtract x y = ceiling x - y
 Now you are ready for defining your own functions!
 -}
 
-{-
+{- |
 In our training, for some functions types are provided for you. For others, you
 need to write types manually to challenge yourself.
 
@@ -392,7 +392,7 @@ Don't forget the main rule:
 -}
 
 
-{-
+{- |
 =⚔️= Task 3
 
 Below you see the function that finds a square of the sum of two integers. Your
@@ -405,7 +405,7 @@ task is to specify the type of this function.
 squareSum x y = (x + y) * (x + y)
 
 
-{-
+{- |
 =⚔️= Task 4
 
 Implement the function that takes an integer value and returns the next 'Int'.
@@ -424,7 +424,7 @@ Implement the function that takes an integer value and returns the next 'Int'.
 next :: Int -> Int
 next x = error "next: not implemented!"
 
-{-
+{- |
 After you've implemented the function (or even during the implementation), you
 can run it in GHCi with your input. To do so, first, you need to load the module
 with the function using the ":l" (short for ":load") command.
@@ -444,7 +444,7 @@ command, and then you should reload it using the ":r" command each time you
 change it and want to check your changes.
 -}
 
-{-
+{- |
 =⚔️= Task 5
 
 Implement a function that returns the last digit of a given number.
@@ -466,7 +466,7 @@ Implement a function that returns the last digit of a given number.
 lastDigit n = error "lastDigit: Not implemented!"
 
 
-{-
+{- |
 =⚔️= Task 6
 
 Implement a function, that takes two numbers and returns the one closer to zero:
@@ -492,12 +492,11 @@ branches because it is an expression and it must always return some value.
 👩‍🔬 Due to lazy evaluation in Haskell, only the expression from the branch
   satisfying the check will be returned and, therefore, evaluated.
 -}
-
 closestToZero :: Int -> Int -> Int
 closestToZero x y = error "closestToZero: not implemented!"
 
 
-{-
+{- |
 =⚔️= Task 7
 Write a function that returns the middle number among three given numbers.
 
@@ -530,7 +529,7 @@ Casual reminder about adding top-level type signatures for all functions :)
 
 mid x y z = error "mid: not implemented!"
 
-{-
+{- |
 =⚔️= Task 8
 
 Implement a function that checks whether a given character is a vowel.
@@ -545,7 +544,7 @@ False
 isVowel c = error "isVowel: not implemented!"
 
 
-{-
+{- |
 == Local variables and functions
 
 So far, we've been playing only with simple expressions and function
@@ -609,7 +608,7 @@ specifying complex expressions.
 sumLast2 n = error "sumLast2: Not implemented!"
 
 
-{-
+{- |
 =💣= Task 10*
 
 You did it! You've passed all the challenges in your first training!

@@ -8,25 +8,24 @@ on:
 
 jobs:
   build:
-    name: ghc ${{ matrix.ghc }}
+    name: Build Learn4Haskell
     runs-on: ubuntu-16.04
     strategy:
       matrix:
         cabal: ["3.2"]
-        ghc:
-          - "8.10.2"
+        ghc: ["8.10.2"]
 
     steps:
     - uses: actions/checkout@v2
       if: github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/master'
 
-    - uses: actions/setup-haskell@v1
+    - uses: actions/setup-haskell@v1.1.2
       name: Setup Haskell
       with:
         ghc-version: ${{ matrix.ghc }}
         cabal-version: ${{ matrix.cabal }}
 
-    - uses: actions/cache@v1
+    - uses: actions/cache@v2.1.1
       name: Cache ~/.cabal/store
       with:
         path: ~/.cabal/store
@@ -34,9 +33,112 @@ jobs:
 
     - name: Build
       run: |
-        cabal v2-update
         cabal v2-build --enable-tests --enable-benchmarks
 
-    - name: Test
+  chapter1:
+    name: Chapter One
+    runs-on: ubuntu-16.04
+    strategy:
+      matrix:
+        cabal: ["3.2"]
+        ghc: ["8.10.2"]
+    steps:
+    - uses: actions/checkout@v2
+      if: github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/master'
+
+    - uses: actions/setup-haskell@v1.1.2
+      name: Setup Haskell
+      with:
+        ghc-version: ${{ matrix.ghc }}
+        cabal-version: ${{ matrix.cabal }}
+
+    - uses: actions/cache@v2.1.1
+      name: Cache ~/.cabal/store
+      with:
+        path: ~/.cabal/store
+        key: ${{ runner.os }}-${{ matrix.ghc }}-cabal
+
+    - name: Chapter 1 - Doctest
       run: |
-        cabal v2-test --enable-tests --test-show-details=direct
+        cabal v2-test doctest-chapter1 --enable-tests --test-show-details=direct
+
+  chapter2:
+    name: Chapter Two
+    runs-on: ubuntu-16.04
+    strategy:
+      matrix:
+        cabal: ["3.2"]
+        ghc: ["8.10.2"]
+    steps:
+    - uses: actions/checkout@v2
+      if: github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/master'
+
+    - uses: actions/setup-haskell@v1.1.2
+      name: Setup Haskell
+      with:
+        ghc-version: ${{ matrix.ghc }}
+        cabal-version: ${{ matrix.cabal }}
+
+    - uses: actions/cache@v2.1.1
+      name: Cache ~/.cabal/store
+      with:
+        path: ~/.cabal/store
+        key: ${{ runner.os }}-${{ matrix.ghc }}-cabal
+
+    - name: Chapter 2 - Doctest
+      run: |
+        cabal v2-test doctest-chapter2 --enable-tests --test-show-details=direct
+
+  chapter3:
+    name: Chapter Three
+    runs-on: ubuntu-16.04
+    strategy:
+      matrix:
+        cabal: ["3.2"]
+        ghc: ["8.10.2"]
+    steps:
+    - uses: actions/checkout@v2
+      if: github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/master'
+
+    - uses: actions/setup-haskell@v1.1.2
+      name: Setup Haskell
+      with:
+        ghc-version: ${{ matrix.ghc }}
+        cabal-version: ${{ matrix.cabal }}
+
+    - uses: actions/cache@v2.1.1
+      name: Cache ~/.cabal/store
+      with:
+        path: ~/.cabal/store
+        key: ${{ runner.os }}-${{ matrix.ghc }}-cabal
+
+    - name: Chapter 3 - Doctest
+      run: |
+        cabal v2-test doctest-chapter3 --enable-tests --test-show-details=direct
+
+  chapter4:
+    name: Chapter Four
+    runs-on: ubuntu-16.04
+    strategy:
+      matrix:
+        cabal: ["3.2"]
+        ghc: ["8.10.2"]
+    steps:
+    - uses: actions/checkout@v2
+      if: github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/master'
+
+    - uses: actions/setup-haskell@v1.1.2
+      name: Setup Haskell
+      with:
+        ghc-version: ${{ matrix.ghc }}
+        cabal-version: ${{ matrix.cabal }}
+
+    - uses: actions/cache@v2.1.1
+      name: Cache ~/.cabal/store
+      with:
+        path: ~/.cabal/store
+        key: ${{ runner.os }}-${{ matrix.ghc }}-cabal
+
+    - name: Chapter 4 - Doctest
+      run: |
+        cabal v2-test doctest-chapter4 --enable-tests --test-show-details=direct
