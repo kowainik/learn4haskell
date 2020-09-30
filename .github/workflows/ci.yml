@@ -98,6 +98,15 @@ jobs:
       run: |
         cabal v2-test doctest-chapter2 --enable-tests --test-show-details=direct
 
+    - name: Chapter 2 - Tests
+      run: |
+        cabal run learn4haskell-test --enable-tests -- -m "Chapter2Normal"
+
+    - name: Chapter 2 - Tests - Advanced
+      continue-on-error: true
+      run: |
+        cabal run learn4haskell-test --enable-tests -- -m "Chapter2Advanced"
+
   chapter3:
     name: Chapter Three
     runs-on: ubuntu-16.04

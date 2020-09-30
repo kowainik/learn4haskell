@@ -812,6 +812,9 @@ element of the list to the end.
 Implement a function to rotate a given finite list by N elements. Try
 to do it more efficiently than rotating by a single element N times.
 
+On invalid input (negative rotation coefficient) it should return an empty
+list.
+
 >>> rotate 1 [1,2,3,4]
 [2,3,4,1]
 >>> rotate 3 [1,2,3,4]
