@@ -21,6 +21,8 @@ And we are here to help!
 * 4 Pull Request to learn to program in Haskell.
 * 4 Pull Request to blow your mind.
 
+## Table of Contents
+
  * [What is Learn4Haskell](#what-is-learn4haskell)
     * [Course Plan](#course-plan)
  * [Goals](#goals)
@@ -134,9 +136,10 @@ This seems like a neat deal!
 Starting to learn Haskell with Learn4Haskell is very easy!
 
 1. [Fork this repository](https://docs.github.com/en/free-pro-team@latest/github/getting-started-with-github/fork-a-repo).
-2. [Install the Haskell compiler](#installing-haskell).
-3. Open the `src/Chapter1.hs` file, and start learning and solving tasks!
-4. After you finish the first chapter (or any other chapter, or even if you are
+2. Enable GitHub Actions for your fork repository.
+3. [Install the Haskell compiler](#installing-haskell).
+4. Open the `src/Chapter1.hs` file, and start learning and solving tasks!
+5. After you finish the first chapter (or any other chapter, or even if you are
    stuck in the middle), open
    [Pull Request](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request)
    __to your fork__ with the solution and mention @vrom911 and @chshersh and we
