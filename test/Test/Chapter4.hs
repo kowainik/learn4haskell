@@ -42,9 +42,9 @@ chapter4normal = describe "Chapter4Normal" $ do
         it "reward <*> trap" $
             Reward not <*> Trap 42 `shouldBe` Trap 42
         it "reward <*> reward - same type" $
-            Reward not <*> Reward True `shouldBe` Trap False
+            Reward not <*> Reward True `shouldBe` (Reward False :: Secret String Bool)
         it "reward <*> reward" $
-            Reward odd <*> Reward 42 `shouldBe` Trap False
+            Reward odd <*> Reward 42 `shouldBe` (Reward False :: Secret String Bool)
     describe "Task6: Monad for Secret" $ do
         it "Trap" $ (Trap "aaar" >>= halfSecret) `shouldBe` Trap "aaar"
         it "Reward even" $ (Reward 42 >>= halfSecret) `shouldBe` Reward 21
