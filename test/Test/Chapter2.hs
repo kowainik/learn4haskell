@@ -21,7 +21,7 @@ chapter2normal = describe "Chapter2Normal" $ do
         it "range within" $ subList 2 5 [0..7] `shouldBe` [2..5]
         it "range 0 .. len" $ subList 0 10 [0..10] `shouldBe` [0..10]
         it "range negative" $ subList (-1) 5 [0..5] `shouldBe` []
-        it "range overflow" $ subList 0 5 [0, 1] `shouldBe` []
+        it "range overflow" $ subList 0 5 [0, 1] `shouldBe` [0, 1]
         it "range x > y" $ subList 5 2 [0..5] `shouldBe` []
         it "range equal" $ subList 0 0 [0..3] `shouldBe` [0]
     describe "Task4: firstHalf" $ do
@@ -58,14 +58,14 @@ chapter2normal = describe "Chapter2Normal" $ do
         it "one with elem, one without" $ contains 0 [[5, 0, 1], [1..4]] `shouldBe` [[5, 0, 1]]
         it "one with elem, one without" $ contains 0 [[1..4], [5, 0, 1]] `shouldBe` [[5, 0, 1]]
         it "all without" $ contains 0 [[1..4], [5,4..1]] `shouldBe` ([] :: [[Int]])
-        it "all with" $ contains 5 [[1..5], [6,5..1]] `shouldBe` ([] :: [[Int]])
+        it "all with" $ contains 5 [[1..5], [6,5..1]] `shouldBe` [[1..5], [6,5..1]]
     describe "Task11: rotate" $ do
         it "empty list" $ rotate 5 emptyInts `shouldBe` emptyInts
         it "empty list with 0" $ rotate 0 emptyInts `shouldBe` emptyInts
         it "list rotate 0" $ rotate 0 [1..5] `shouldBe` [1..5]
         it "list rotate len" $ rotate 5 [1..5] `shouldBe` [1..5]
         it "list rotate n" $ rotate 3 [1..5] `shouldBe` [4,5,1,2,3]
-        it "list rotate len + n" $ rotate 8 [1..5] `shouldBe` [1..5]
+        it "list rotate len + n" $ rotate 8 [1..5] `shouldBe` [4,5,1,2,3]
         it "empty on negative" $ rotate (-5) [1..5] `shouldBe` emptyInts
 
 chapter2advanced :: Spec

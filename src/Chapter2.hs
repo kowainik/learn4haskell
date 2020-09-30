@@ -134,25 +134,35 @@ functions in the upcoming exercises. Remember, Hoogle is your friend!
 Explore lists by checking types of various list expressions and
 functions in GHCi and insert the corresponding resulting output below:
 
->>> :t [True, False]  -- list of booleans
+List of booleans:
+>>> :t [True, False]
 
->>> :t "some string"  -- string is a list of characters
+String is a list of characters:
+>>> :t "some string"
 
->>> :t []  -- empty list
+Empty list:
+>>> :t []
 
->>> :t (++)  -- append two lists
+Append two lists:
+>>> :t (++)
 
->>> :t (:)  -- prepend an element at the beginning of a list
+Prepend an element at the beginning of a list:
+>>> :t (:)
 
->>> :t reverse  -- reverse a list
+Reverse a list:
+>>> :t reverse
 
->>> :t take  -- take first N elements of a list
+Take first N elements of a list:
+>>> :t take
 
->>> :t replicate  -- create list from N same elements
+Create list from N same elements:
+>>> :t replicate
 
->>> :t lines  -- split a string by line breaks
+Split a string by line breaks:
+>>> :t lines
 
->>> :t unlines  -- join a list of strings with line breaks
+Join a list of strings with line breaks:
+>>> :t unlines
 
 
 -}
@@ -223,11 +233,11 @@ Haskell are immutable! Woohoo! But what does it mean for us?
 It means that when you apply a function to some variable, the value is
 not changed. Instead, you create a new value each time.
 
-ghci> import Data.List (sort)  -- sort is not in Prelude
-ghci> x = [3, 1, 2]  -- you can assign values to variables in GHCi
-ghci> sort x
+>>> import Data.List (sort)  -- sort is not in Prelude
+>>> x = [3, 1, 2]  -- you can assign values to variables in GHCi
+>>> sort x
 [1,2,3]
-ghci> x
+>>> x
 [3,1,2]
 
 The 'sort' function returns a new sorted list. It doesn't change the
@@ -306,7 +316,7 @@ Remember that each function returns a new list.
 []
 
 ♫ NOTE: When implementing, think about various corner cases. You
-  should return an empty list when inputs are not reasonable.
+  should return an empty list when given numbers are negative.
 
 And also don't forget to check the 'Data.List' module. It is full of
 yummy functions.
@@ -325,7 +335,7 @@ subList = error "subList: Not implemented!"
 Implement a function that returns only the first half of a given list.
 
 >>> firstHalf [3, 4, 1, 2]
-[3, 4]
+[3,4]
 >>> firstHalf "bca"
 "b"
 -}
@@ -599,7 +609,7 @@ Write a function that takes elements of a list only on even positions.
   least 2. Alternatively, you can use the "Recursive go" pattern.
 
 >>> takeEven [2, 1, 3, 5, 4]
-[2, 3, 4]
+[2,3,4]
 -}
 takeEven = error "takeEven: Not implemented!"
 
@@ -803,7 +813,7 @@ Infinity Stone!
   infinite lists.
 -}
 
-{-
+{- |
 =⚔️= Task 11
 
 Rotating a list by a single element is the process of moving the first
