@@ -43,6 +43,7 @@ library
   import:              common-options
   hs-source-dirs:      src
   exposed-modules:     Chapter1
+                       Chapter2
 
 test-suite learn4haskell-test
   import:              common-options
