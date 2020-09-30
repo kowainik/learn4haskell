@@ -1,6 +1,6 @@
 # learn4haskell
 
-![Learn4Haskell](images/HacktoberFest2020-Learn4Haskell-Banner.png)
+![Learn4Haskell](/images/HacktoberFest2020-Learn4Haskell-Banner.png)
 
 It is this time of the year when thousand pull requests are starting to float in
 the air like a leaf on the wind 🍃
