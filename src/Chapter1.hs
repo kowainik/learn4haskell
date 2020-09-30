@@ -305,6 +305,8 @@ INSERT THE RESULT INSTEAD OF THE TEXT
 
 >>> mod 20 3  -- integral division remainder
 
+>>> max 4 10
+
 >>> min 5 (max 1 2)
 
 >>> max (min 1 10) (min 5 7)
