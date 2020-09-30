@@ -903,8 +903,8 @@ We will call such a typeclass "Append". You can find its definition below.
 Implement instances of "Append" for the following types:
 
   ✧ The "Gold" newtype where append is the addition
-  ✧  "List" where append is list concatenation
-  ✧  *(Challenge): "Maybe" where append is appending of values inside "Just" constructors
+  ✧ "List" where append is list concatenation
+  ✧ *(Challenge): "Maybe" where append is appending of values inside "Just" constructors
 
 -}
 class Append a where

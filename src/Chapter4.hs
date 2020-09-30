@@ -280,6 +280,7 @@ inside, so it is quite handy.
 data Secret e a
     = Trap e
     | Reward a
+    deriving (Show, Eq)
 
 
 {- |
@@ -539,21 +540,22 @@ examples.
 Let's implement a "safe" 'half' function, that divides a number by 2,
 but only if the number is even.
 
-@
+-}
 half :: Int -> Maybe Int
 half n
     | even n = Just (div n 2)
     | otherwise = Nothing
-@
+
+{- |
 
 Now, we can experiment with this function and the 'Monad' instance of
 'Maybe' in GHCi:
 
-ghci> Just 6 >>= half
+>>> Just 6 >>= half
 Just 3
-ghci> Just 3 >>= half
+>>> Just 3 >>= half
 Nothing
-ghci> Nothing >>= half
+>>> Nothing >>= half
 Nothing
 
 That makes sense — the resulting context depends on the value in the
