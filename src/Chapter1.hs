@@ -204,21 +204,31 @@ So, the output in this example means that 'False' has type 'Bool'.
 > Try to guess first and then compare your expectations with GHCi output
 
 >>> :t True
-INSERT THE RESULT INSTEAD OF THE TEXT
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 >>> :t 'a'
-
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 >>> :t 42
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
->>> :t (True, 'x')  -- a pair of boolean and char
+A pair of boolean and char:
+>>> :t (True, 'x')
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
->>> :t not  -- boolean negation
+Boolean negation:
+>>> :t not
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
->>> :t (&&)  -- boolean 'and' operator
+Boolean 'and' operator:
+>>> :t (&&)
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
->>> :t (+)  -- addition of two numbers
+Addition of two numbers:
+>>> :t (+)
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
->>> :t max  -- maximum of two values
-
+Maximum of two values:
+>>> :t max
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 You might not understand each type at this moment, but don't worry! You've only
 started your Haskell journey. Types will become your friends soon.
