@@ -5,5 +5,5 @@ import Test.DocTest (doctest)
 
 main :: IO ()
 main = doctest
-    [ "src/Chapter1.hs"
+    [ "../src/Chapter1.hs"
     ]
