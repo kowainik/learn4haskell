@@ -474,7 +474,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int
-lastDigit n = (mod n 10)
+lastDigit n = mod (abs n) 10
 
 
 {- |
@@ -624,10 +624,10 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
-sumLast2 n = last n  + last (div n 10)
+sumLast2 n = lastDigit (abs n)  + lastDigit (div (abs n) 10)
   where
-    last :: Int -> Int
-    last n = let remainder = mod n 10 in remainder
+    lastDigit :: Int -> Int
+    lastDigit n = let remainder = mod n 10 in remainder
 
 {- |
 =💣= Task 10*
