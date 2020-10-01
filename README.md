@@ -160,7 +160,7 @@ section.
 
 ### Installing Haskell
 
-If you on Linux or macOS, then the process is easy:
+If you're on Linux or macOS, then the process is easy:
 
 1. Install [ghcup](https://www.haskell.org/ghcup/) and follow `ghcup`
    instructions for successful installation.
