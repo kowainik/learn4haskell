@@ -87,3 +87,16 @@ test-suite doctest-chapter4
   import:              common-doctest
   type:                exitcode-stdio-1.0
   main-is:             DoctestChapter4.hs
+
+test-suite learn4haskell-quickcheck
+  import:              common-doctest
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             QuickCheck.hs
+  build-depends:       learn4haskell
+                     , QuickCheck >= 2.0.0
+  other-modules:       Test.Chapter1QC
+  ghc-options:         -threaded
+                       -rtsopts
+                       -with-rtsopts=-N
+
