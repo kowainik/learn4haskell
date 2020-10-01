@@ -412,7 +412,7 @@ task is to specify the type of this function.
 49
 -}
 
-squareSum :: Int -> Int -> Int 
+squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
 
 {- |
