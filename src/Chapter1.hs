@@ -624,9 +624,11 @@ sumLast2:: Int -> Int
 sumLast2 n = first n + second n
   where
     first :: Int -> Int
-    first n = mod (abs n) 10
+    first n = body $ abs n
     second :: Int -> Int
-    second n = mod (div (abs n) 10) 10
+    second n = body $ div (abs n) 10
+    body :: Int -> Int
+    body n = mod n 10
 
 {- |
 =💣= Task 10*
@@ -647,8 +649,10 @@ aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
 firstDigit n
-  | n < 10 = n
-  | otherwise = firstDigit $ div n 10
+  | x < 10 = x
+  | otherwise = firstDigit $ div x 10
+  where
+    x = abs n
 
 
 {-
