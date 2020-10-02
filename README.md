@@ -137,6 +137,7 @@ Starting to learn Haskell with Learn4Haskell is very easy!
 
 1. [Fork this repository](https://docs.github.com/en/free-pro-team@latest/github/getting-started-with-github/fork-a-repo).
 2. Enable GitHub Actions for your fork repository.
+    * Visit: https://github.com/<YOUR_GITHUB_USERNAME>/learn4haskell/actions
 3. [Install the Haskell compiler](#installing-haskell).
 4. Open the `src/Chapter1.hs` file, and start learning and solving tasks!
 5. After you finish the first chapter (or any other chapter, or even if you are
