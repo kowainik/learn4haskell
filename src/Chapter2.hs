@@ -137,29 +137,38 @@ functions in GHCi and insert the corresponding resulting output below:
 List of booleans:
 >>> :t [True, False]
 
+
 String is a list of characters:
 >>> :t "some string"
+
 
 Empty list:
 >>> :t []
 
+
 Append two lists:
 >>> :t (++)
+
 
 Prepend an element at the beginning of a list:
 >>> :t (:)
 
+
 Reverse a list:
 >>> :t reverse
+
 
 Take first N elements of a list:
 >>> :t take
 
+
 Create list from N same elements:
 >>> :t replicate
 
+
 Split a string by line breaks:
 >>> :t lines
+
 
 Join a list of strings with line breaks:
 >>> :t unlines
