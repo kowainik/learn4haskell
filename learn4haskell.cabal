@@ -22,7 +22,7 @@ source-repository head
   location:            https://github.com/kowainik/learn4haskell.git
 
 common common-options
-  build-depends:       base ^>= 4.14.0.0
+  build-depends:       base ^>= 4.13.0.0
 
   ghc-options:         -Wall
                        -Wcompat
