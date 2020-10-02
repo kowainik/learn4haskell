@@ -417,7 +417,7 @@ task is to specify the type of this function.
 49
 -}
 
-squareSum :: Int -> Int -> Int 
+squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
 
 {- |
@@ -509,7 +509,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = if (abs x) < (abs y) then x else y 
+closestToZero x y = if (abs x) < abs y then x else y 
 
 
 {- |
@@ -652,7 +652,7 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
-firstDigit n = if (div (abs n) 10 == 0) then n else firstDigit (div (abs n) 10)
+firstDigit n = if div (abs n) 10 == 0 then n else firstDigit (div (abs n) 10)
 
 
 {-
