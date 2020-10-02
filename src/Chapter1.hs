@@ -522,7 +522,7 @@ branches because it is an expression and it must always return some value.
 -}
 closestToZero :: Int -> Int -> Int
 closestToZero x y =
-  let absn = min (abs x) (abs y) in if absn == abs x then x else y
+  if (abs x) < (abs y) then x else y
 
 
 {- |
