@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-type-defaults #-}
 
 module Test.Chapter1
-    ( chapter1 
+    ( chapter1
     ) where
 
 import Test.Hspec (Spec, describe, it, shouldBe)
@@ -79,4 +79,3 @@ chapter1advanced = describe "Chapter1Advanced" $ do
     it "first digit 0 > -10" $ firstDigit (-9) `shouldBe` 9
     it "first digit -10 > -100" $ firstDigit (-58) `shouldBe` 5
     it "first digit -100 > -1000" $ firstDigit (-158) `shouldBe` 1
-
