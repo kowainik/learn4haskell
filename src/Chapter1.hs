@@ -474,7 +474,8 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int
-lastDigit = (`mod`10)
+lastDigit = (`absMod` 10)
+      where absMod = mod . abs
 
 
 {- |
@@ -625,12 +626,10 @@ specifying complex expressions.
 -}
 
 sumLast2 :: Int -> Int
-sumLast2 n = last n + secondLast n
-      where 
-        last :: Int -> Int
-        last = (`mod`10)
+sumLast2 n = lastDigit n + secondLast n
+      where
         secondLast :: Int -> Int
-        secondLast n = (`div` 10) $ n `mod` 100 - n `mod` 10
+        secondLast n = (`div` 10) $ (abs n) `mod` 100 - lastDigit n
 
 
 {- |
