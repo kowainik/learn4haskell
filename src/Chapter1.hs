@@ -631,8 +631,8 @@ specifying complex expressions.
 sumLast2 :: Int -> Int
 sumLast2 n =
     let restAndLast    = divMod (abs n) 10
-        restAndPreLast = divMod (fst restAndLast) 10
-    in snd restAndLast + snd restAndPreLast
+        restAndPreLast = mod (fst restAndLast) 10
+    in snd restAndLast + restAndPreLast
 
 
 {- |
