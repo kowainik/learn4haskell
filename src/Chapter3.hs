@@ -1052,18 +1052,18 @@ implement the following functions:
 data Weekday = Mon | Tue | Wed | Thu | Fri | Sat | Sun deriving (Show, Eq, Enum, Bounded)
 
 isWeekend :: Weekday -> Bool
-isWeekend wd = case wd of
+isWeekend weekday = case weekday of
   Sat -> True
   Sun -> True
   _ -> False
 
 nextDay :: Weekday -> Weekday
-nextDay wd
-  | wd == maxBound = minBound
-  | otherwise = succ wd
+nextDay weekday
+  | weekday == maxBound = minBound -- roll over to start of week
+  | otherwise = succ weekday
 
 daysToParty :: Weekday -> Int
-daysToParty wd = abs (fromEnum wd - fromEnum Fri)
+daysToParty weekday = abs (fromEnum weekday - fromEnum Fri)
 {-
 =💣= Task 9*
 
