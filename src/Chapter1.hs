@@ -623,11 +623,11 @@ specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
 
-sumLast2 n = lastD + secondtoLastD
-    where
-      n'= abs n
-      lastD = n' mod 10
-      secondtoLastD = (div n' 10) mod 10
+sumLast2 n = (lastDigit n) + (secondD n)
+  where
+    secondD :: Int -> Int
+    secondD x = mod (div (abs x) 10) 10
+
 
 
 {- |
