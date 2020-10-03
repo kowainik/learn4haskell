@@ -311,7 +311,7 @@ True
 >>> True && False
 False
 >>> 10 < 20 || 20 < 5
-False
+True
 >>> 2 ^ 10  -- power
 1024
 >>> not False
@@ -479,7 +479,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int
-lastDigit n = mod (abs n) (10 * div (abs n ) 10)
+lastDigit n = mod (abs n) 10
 
 {- |
 =⚔️= Task 6
@@ -629,10 +629,7 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
-sumLast2 n = last(div n 10) + last n 
-  where
-     last :: Int -> Int
-     last n = mod (abs n) (10 * div (abs n) 10)
+sumLast2 n = lastDigit( quot n 10) + lastDigit n 
 
 {- |
 =💣= Task 10*
