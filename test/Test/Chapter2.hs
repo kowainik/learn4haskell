@@ -69,7 +69,7 @@ chapter2normal = describe "Chapter2Normal" $ do
         it "empty on negative" $ rotate (-5) [1..5] `shouldBe` emptyInts
 
 chapter2advanced :: Spec
-chapter2advanced = describe "Chapter2Advanced" $ describe "Task4: rewind" $ do
+chapter2advanced = describe "Chapter2Advanced" $ describe "Task12*: rewind" $ do
     it "empty" $ rewind emptyInts `shouldBe` emptyInts
     it "one elem" $ rewind [1] `shouldBe` [1]
     it "many elems" $ rewind [1..10] `shouldBe` [10,9..1]
