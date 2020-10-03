@@ -1,18 +1,13 @@
 {
   description = "Development environment for learn4haskell";
 
-  outputs = { self, nixpkgs }: {
+  inputs.flake-utils.url = "github:numtide/flake-utils";
 
-    defaultPackage.x86_64-linux =
-      with import nixpkgs { system = "x86_64-linux"; };
-      stdenv.mkDerivation {
+  outputs = { self, nixpkgs, flake-utils }:
+    flake-utils.lib.eachDefaultSystem (system:
+      let pkgs = import nixpkgs { inherit system; };
+      in {
         name = "learn4haskell";
-        buildInputs = [
-          haskell.compiler.ghc8102
-          cabal-install
-          haskellPackages.brittany
-          haskellPackages.hlint
-        ];
-      };
-  };
+        devShell = import ./shell.nix { inherit pkgs; };
+      });
 }
