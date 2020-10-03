@@ -162,7 +162,7 @@ reverse :: [a] -> [a]
 
 Take first N elements of a list:
 >>> :t take
-take :: [a] -> [a]
+take :: Int -> [a] -> [a]
 
 Create list from N same elements:
 >>> :t replicate
@@ -188,15 +188,15 @@ Evaluate the following expressions in GHCi and insert the answers. Try
 to guess first, what you will see.
 
 >>> [10, 2] ++ [3, 1, 5]
-[10, 2, 3, 1, 5]
+[10,2,3,1,5]
 >>> [] ++ [1, 4]  -- [] is an empty list
-[1, 4]
+[1,4]
 >>> 3 : [1, 2]
-[3, 1, 2]
+[3,1,2]
 >>> 4 : 2 : [5, 10]  -- prepend multiple elements
-[4, 2, 5, 10]
+[4,2,5,10]
 >>> [1 .. 10]  -- list ranges
-[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+[1,2,3,4,5,6,7,8,9,10]
 >>> [10 .. 1]
 []
 >>> [10, 9 .. 1]  -- backwards list with explicit step
