@@ -343,6 +343,12 @@ Define the Book product data type. You can take inspiration from our description
 of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
+data Book = Book {
+            title :: String,
+            author :: String,
+            rating :: Double,
+            tags :: [String]
+                 } deriving (Eq, Show)
 
 {- |
 =⚔️= Task 2
@@ -358,6 +364,35 @@ Both a knight and a monster have the following properties:
  ✦ Attack (the number of attack units)
  ✦ Gold (the number of coins)
 
+-}
+data Entity = Entity {
+                health :: Int,
+                attack :: Int,
+                gold   :: Gold
+              } deriving (Eq)
+
+type Knight = Entity
+type Monster = Entity
+newtype Gold = Gold {
+                unGold :: Int
+                    } deriving (Eq, Show)
+
+entityGold :: Entity -> Int
+entityGold = unGold . gold
+
+fight :: Monster -> Knight -> Gold
+fight m k = go (health m) (health k)
+    where mAtk = attack m
+          kAtk = attack k
+          go mh kh
+           | mh <= kAtk = if (kh > mAtk)
+                             then Gold $ entityGold k + entityGold m
+                             else Gold $ entityGold k
+           | kh <= mAtk = Gold (- 1)
+           | otherwise = go (mh - kAtk) (kh - mAtk)
+
+
+{-
 When a monster fights a knight, the knight hits first, and the monster hits back
 only if it survives (health is bigger than zero). A hit decreases the amount of
 health by the number represented in the "attack" field.
@@ -460,6 +495,40 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data Breakfast = 
+    Omelette [String] | 
+    HashBrown | 
+    Sausages | 
+    Eggs [String] | 
+    Bacon | 
+    IceCream | 
+    Waffles [String] | 
+    Sandwich [String] | 
+    Bagel | 
+    Biscuits | 
+    Cereal | 
+    Cake | 
+    CinnamonRolls | 
+    FrenchToast | 
+    Burger | 
+    Fries | 
+    Idli | 
+    JianBing | 
+    Kedgeree | 
+    Lox | 
+    Pizza | 
+    Muesli | 
+    Pancakes | 
+    Fruit [String] | 
+    Popcorn | 
+    Quiche | 
+    RaisinBread | 
+    Scones | 
+    Silog | 
+    ShaoBing | 
+    TeaCake | 
+    Buffet [Breakfast] deriving (Eq, Show, Ord)
+
 {- |
 =⚔️= Task 4
 
@@ -470,6 +539,7 @@ Define types to represent a magical city in the world! A typical city has:
 ⍟ Church or library but not both
 ⍟ Any number of houses. Each house has one, two, three or four __people__ inside.
 
+
 After defining the city, implement the following functions:
 
  ✦ buildCastle — build a castle in the city. If the city already has a castle,
@@ -479,6 +549,43 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
+
+data Castle = None | Castle {
+                        name :: String,
+                        wall :: Bool
+                             }  deriving (Eq, Show)
+type Wall = Bool
+data BibleHouse = Church | Library deriving (Eq, Ord, Show, Enum)
+newtype House = House {
+                    getPeople :: Int
+                      } deriving (Eq, Show)
+
+instance Bounded House where
+    minBound = House 1
+    maxBound = House 4
+
+data City = City {
+               castle :: Castle,
+               building :: BibleHouse,
+               houses :: [House]
+                 } deriving (Eq, Show)
+
+buildCastle :: String -> City -> City
+buildCastle s c = c {castle = Castle s False}
+
+buildHouse :: City -> City
+buildHouse (City c b h) = City c b (minBound : h)
+
+addWalls :: Castle -> Castle
+addWalls None = None
+addWalls (Castle s _) = Castle s True
+
+buildWalls :: City -> City
+buildWalls c@(City s b h)
+  | (sum . map getPeople) h >= 10 = City (addWalls s) b h
+  | otherwise = c
+
+
 
 {-
 =🛡= Newtypes
@@ -560,22 +667,29 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+
+newtype Health = Health Int
+newtype Armor = Armor Int
+newtype Attack = Attack Int
+newtype Dexterity = Dex Int
+newtype Strength = Str Int
+
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
-    }
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
+    } 
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+calculatePlayerDamage :: Attack -> Strength -> Health
+calculatePlayerDamage (Attack a) (Str s) = Health (- (a + s))
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDefense :: Armor -> Dexterity -> Health
+calculatePlayerDefense (Armor a) (Dex d) = Health (a * d)
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerHit :: Health -> Health -> Health -> Health
+calculatePlayerHit (Health dm) (Health df) (Health h) = Health (h + df - dm)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -753,6 +867,27 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
+newtype Treasure a = Treasure {
+                        getTreasure :: a
+                              } deriving (Eq)
+
+data Power a = Power {
+                    getPower :: a
+                     } deriving (Eq)
+
+--showPower :: Power Void -> a
+--showPower = Power . absurd . getPower
+--the only real way you can hide the power until it's time
+
+data Dragon a = Dragon {
+                  dragonName :: String,
+                  power :: Power a
+                     }
+
+data DragonLair a b = Lair {
+                    dragon :: Dragon a,
+                    treasure :: Maybe (Treasure b)
+                       }
 {-
 =🛡= Typeclasses
 
@@ -907,9 +1042,31 @@ Implement instances of "Append" for the following types:
   ✧ *(Challenge): "Maybe" where append is appending of values inside "Just" constructors
 
 -}
+
 class Append a where
     append :: a -> a -> a
 
+instance Append Gold where
+    append a b = Gold $ (unGold a) + (unGold b)
+
+data List a = Empty | Cons a (List a) deriving (Eq, Show)
+
+instance Monoid (List a) where
+    mempty = Empty
+    mappend = append
+
+instance Semigroup (List a) where
+    (<>) = append
+
+instance Append (List a) where
+    append Empty b = b
+    append a Empty = a
+    append (Cons a as) b = Cons a (append as b)
+
+instance (Append a) => Append (Maybe a) where
+    append Nothing b = b
+    append a Nothing = a
+    append (Just a) (Just b) = Just (a `append` b)
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -971,6 +1128,13 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
+data Week = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday deriving (Eq, Ord, Show, Enum)
+
+isWeekend :: Week -> Bool
+isWeekend w = w == Saturday || w == Sunday
+
+nextDay :: Week -> Week
+nextDay = toEnum . flip rem 7 . succ . fromEnum
 {-
 =💣= Task 9*
 
