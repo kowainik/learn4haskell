@@ -865,7 +865,9 @@ list.
 🕯 HINT: Use the 'cycle' function
 -}
 rotate :: Int -> [Int] -> [Int]
-rotate i l = take (length l) (drop i (cycle l))
+rotate i l
+  | i < 0 = []
+  | otherwise = take (length l) (drop i (cycle l))
 
 {- |
 =💣= Task 12*
