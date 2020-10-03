@@ -891,7 +891,9 @@ list.
 🕯 HINT: Use the 'cycle' function
 -}
 rotate :: Int -> [a] -> [a]
-rotate n xs = zipWith const (drop n $ cycle xs) xs
+rotate n xs 
+ | n < 0 || null xs = []
+ | otherwise = zipWith const (drop n $ cycle xs) xs
 -- save us from having to calculate the length of xs
 
 {- |
