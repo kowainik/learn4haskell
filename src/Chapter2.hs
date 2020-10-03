@@ -359,10 +359,14 @@ Implement a function that returns only the first half of a given list.
 >>> firstHalf "bca"
 "b"
 -}
+-- Floyd's algorithm - keep track of a slow and fast pointer,
+-- where the fast pointer traverses twice as fast as the slow one.
+-- when the fast pointer reaches the end, the slow pointer will be halfway thru the list
 firstHalf :: [a] -> [a]
-firstHalf l =
-    let halfLen = div (length l) 2
-    in take halfLen l
+firstHalf l = floyd l l
+    where floyd _ [] = []     
+          floyd _ [x] = []
+          floyd (t:ts) (h:i:hs) = t : floyd ts hs
 
 
 {- |
