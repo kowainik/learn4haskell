@@ -668,7 +668,7 @@ firstDigit n
 
    -}
 firstDigit :: Integral a => a -> a
-firstDigit = last . takeWhile (> 0) . iterate (flip div 10) 
+firstDigit = last . takeWhile (> 0) . iterate (`div` 10)
 
 
 {-
