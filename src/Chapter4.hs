@@ -42,6 +42,8 @@ Perfect. Let's crush this!
 
 module Chapter4 where
 
+import Control.Monad
+
 {- |
 =🛡= Kinds
 
@@ -114,22 +116,30 @@ As always, try to guess the output first! And don't forget to insert
 the output in here:
 
 >>> :k Char
+Char :: *
 
 >>> :k Bool
+Bool :: *
 
 >>> :k [Int]
+[Int] :: *
 
 >>> :k []
+[] :: * -> *
 
 >>> :k (->)
+(->) :: * -> * -> *
 
 >>> :k Either
+Either :: * -> * -> *
 
 >>> data Trinity a b c = MkTrinity a b c
 >>> :k Trinity
+Trinity :: * -> * -> * -> *
 
 >>> data IntBox f = MkIntBox (f Int)
 >>> :k IntBox
+IntBox :: (* -> *) -> *
 
 -}
 
@@ -267,7 +277,7 @@ instance Functor Maybe where
     fmap _ x = x
 @
 -}
-
+ -- there's no explicit pattern match for Nothing?
 {- |
 =⚔️= Task 2
 
@@ -277,11 +287,11 @@ inside or a reward with some treasure. You never know what's inside
 until opened! But the 'Functor' instance allows changing the reward
 inside, so it is quite handy.
 -}
+
 data Secret e a
     = Trap e
     | Reward a
     deriving (Show, Eq)
-
 
 {- |
 Functor works with types that have kind `* -> *` but our 'Secret' has
@@ -291,9 +301,10 @@ method. Yes, similar to how we can partially apply functions. See, how
 we can reuse already known concepts (e.g. partial application) from
 values and apply them to the type level?
 -}
+
 instance Functor (Secret e) where
-    fmap :: (a -> b) -> Secret e a -> Secret e b
-    fmap = error "fmap for Box: not implemented!"
+    fmap _ (Trap e) = Trap e
+    fmap f (Reward a) = Reward (f a)
 
 {- |
 =⚔️= Task 3
@@ -307,6 +318,9 @@ data List a
     = Empty
     | Cons a (List a)
 
+instance Functor List where
+    fmap _ Empty = Empty
+    fmap f (Cons a b) = Cons (f a) (fmap f b)
 {- |
 =🛡= Applicative
 
@@ -472,10 +486,11 @@ Implement the Applicative instance for our 'Secret' data type from before.
 -}
 instance Applicative (Secret e) where
     pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+    pure = Reward
 
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
+    (Trap e) <*> _ = Trap e
+    (Reward f) <*> x = fmap f x
 
 {- |
 =⚔️= Task 5
@@ -488,6 +503,28 @@ Implement the 'Applicative' instance for our 'List' type.
   may also need to implement a few useful helper functions for our List
   type.
 -}
+
+appendL :: List a -> List a -> List a  
+appendL Empty b = b
+appendL (Cons a as) b = Cons a (appendL as b)
+
+concatL :: List (List a) -> List a
+concatL = foldr appendL Empty
+
+instance Semigroup (List a) where
+    (<>) = appendL
+
+instance Monoid (List a) where
+    mempty = Empty
+    mappend = appendL
+
+instance Foldable List where
+    foldr f z Empty = z
+    foldr f z (Cons a b) = f a (foldr f z b)
+    
+instance Applicative List where
+    pure = flip Cons Empty
+    lf <*> lv = concatL . fmap (\f -> fmap f lv) $ lf
 
 
 {- |
@@ -600,7 +637,11 @@ Implement the 'Monad' instance for our 'Secret' type.
 -}
 instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+    (Trap e) >>= _ = Trap e
+    (Reward a) >>= f = f a
+
+    return :: a -> Secret e a
+    return = pure
 
 {- |
 =⚔️= Task 7
@@ -611,6 +652,9 @@ Implement the 'Monad' instance for our lists.
   maybe a few) to flatten lists of lists to a single list.
 -}
 
+instance Monad List where
+    return = pure
+    l >>= f = (concatL . fmap f) l
 
 {- |
 =💣= Task 8*: Before the Final Boss
@@ -629,7 +673,14 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM a b = a >>= \x -> if x then b else a
+
+--andM a b = do
+   --x <- a
+   --if x then b
+   --else return False
+    --    
+--   
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
@@ -673,7 +724,62 @@ Specifically,
  ❃ Implement the function to convert Tree to list
 -}
 
+data Tree a = None | Node a (Tree a) (Tree a) deriving (Eq, Show)
 
+instance Functor Tree where
+    fmap _ None = None
+    fmap f (Node v l r) = Node (f v) (fmap f l) (fmap f r)
+
+instance Semigroup (Tree a) where
+    (<>) a b = fromList (toList a ++ toList b)
+    -- since we aren't actually defining any real structure for this tree
+
+instance Foldable Tree where
+    foldMap _ None = mempty
+    foldMap f (Node v l r) = f v `mappend` foldMap f l `mappend` foldMap f r
+
+instance Monoid (Tree a) where
+    mempty = None
+    mappend = (<>)
+
+toList :: Tree a -> [a]
+toList None = []
+toList (Node v l r) = toList l ++ (v : toList r)
+
+
+fromList :: [a] -> Tree a
+fromList [] = None
+fromList [x] = Node x None None
+fromList (x:xs) = let (l, r) = scramble xs
+                   in Node x (fromList l) (fromList r)
+                   -- just randomly scramble the list, idc
+
+scramble :: (Foldable t) => t a -> ([a], [a])
+scramble = foldr (\z (a, b) -> (z : b, a)) ([], [])
+
+merge :: ([a], [a]) -> [a]
+merge ([], b) = b
+merge (a, []) = a
+merge ( (a:as), b ) = a : merge (b, as)
+
+shuffle :: (Foldable t) => t a -> [a]
+shuffle = merge . fmap reverse . scramble
+
+
+insertSorted :: (Ord a) => a -> Tree a -> Tree a
+insertSorted x None = Node x None None
+insertSorted x (Node v l r)
+ | x <= v = Node v (insertSorted x l) r
+ | otherwise = Node v l (insertSorted x r)
+
+
+toBST :: (Ord a, Foldable t) => t a -> Tree a
+toBST = foldr insertSorted mempty . shuffle
+    -- shuffling our list gives us a better chance of having a balanced BST if the input is sorted
+
+reverseTree :: Tree a -> Tree a
+reverseTree None = None
+reverseTree (Node v l r) = Node v (reverseTree r) (reverseTree l)
 {-
 You did it! Now it is time to the open pull request with your changes
 and summon @vrom911 and @chshersh for the review!
