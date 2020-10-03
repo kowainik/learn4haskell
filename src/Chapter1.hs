@@ -193,7 +193,7 @@ ghci> :q
 Since types play a crucial role in Haskell, we can start by exploring types of
 some basic expressions. You can inspect the type of expression by using the ":t"
 command in GHCi (short for ":type").
-
+Jamesthesnakework
 For example:
 
 >>> :t False
