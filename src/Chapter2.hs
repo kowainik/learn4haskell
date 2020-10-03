@@ -164,7 +164,7 @@ take :: Int -> [a] -> [a]
 
 Create list from N same elements:
 >>> :t replicate
-replicate :: Int -> a -> [a
+replicate :: Int -> a -> [a]
 
 Split a string by line breaks:
 >>> :t lines
@@ -335,9 +335,13 @@ from it!
 
 ghci> :l src/Chapter2.hs
 -}
-subList :: Int -> Int -> [a] -> [a]
-subList = error "subList: Not implemented!"
+import Data.List
 
+subList :: Int -> Int -> [a] -> [a]
+subList start end xs =
+  if ((start >= 0) && (start <= end) && (end < length (xs))) then
+    (tails (take (end + 1) xs) ) !! start
+  else []
 {- |
 =⚔️= Task 4
 
@@ -349,7 +353,9 @@ Implement a function that returns only the first half of a given list.
 "b"
 -}
 -- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
+firstHalf :: [a] -> [a]
+firstHalf l = let halfN n = (div n 2) - 1 in
+       subList 0 (halfN (length l)) l 
 
 
 {- |
@@ -500,7 +506,9 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
-isThird42 = error "isThird42: Not implemented!"
+isThird42 :: [Int] -> Bool
+isThird42  (_ : _ : 42 : _) = True
+isThird42  _                = False
 
 
 {- |
@@ -605,7 +613,8 @@ Implement a function that duplicates each element of the list
 
 -}
 duplicate :: [a] -> [a]
-duplicate = error "duplicate: Not implemented!"
+duplicate [] = [] 
+duplicate (x:xs) = x : x : duplicate(xs) 
 
 
 {- |
@@ -620,7 +629,12 @@ Write a function that takes elements of a list only on even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
-takeEven = error "takeEven: Not implemented!"
+takeEven :: [a] -> [a]
+takeEven l = go [] l
+  where go :: [a] -> [a] -> [a]
+        go acc []       = acc
+        go acc (x:[])   = x:acc
+        go acc (x:_:xs) = x:go acc xs
 
 {- |
 =🛡= Higher-order functions
@@ -727,7 +741,8 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = error "smartReplicate: Not implemented!"
+smartReplicate [] = []
+smartReplicate (x:xs) = replicate x x ++ smartReplicate xs  
 
 {- |
 =⚔️= Task 9
@@ -740,7 +755,8 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains = error "contains: Not implemented!"
+contains :: Int -> [[Int]] -> [[Int]]
+contains a l = filter(\x -> elem a x) l
 
 
 {- |
@@ -780,13 +796,18 @@ Let's now try to eta-reduce some of the functions and ensure that we
 mastered the skill of eta-reducing.
 -}
 divideTenBy :: Int -> Int
-divideTenBy x = div 10 x
+-- divideTenBy x = div 10 x
+divideTenBy = div 10 
 
 -- TODO: type ;)
-listElementsLessThan x l = filter (< x) l
+listElementsLessThan :: Int -> [Int] -> [Int]
+-- listElementsLessThan x l = filter (< x) l
+listElementsLessThan x = filter (< x) 
 
 -- Can you eta-reduce this one???
-pairMul xs ys = zipWith (*) xs ys
+pairMul :: [Int] -> [Int] -> [Int]
+-- pairMul xs ys = zipWith (*) xs ys
+pairMul = zipWith (*)
 
 {- |
 =🛡= Lazy evaluation
@@ -841,7 +862,11 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate = error "rotate: Not implemented!"
+rotate :: Int -> [a] -> [a]
+rotate n l 
+    | n >= 0 && n < length l = subList n (length l - 1) l ++ subList 0 (n - 1) (l) 
+    | otherwise              = [] 
+ 
 
 {- |
 =💣= Task 12*
@@ -857,8 +882,11 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind = error "rewind: Not Implemented!"
-
+rewind :: [a] -> [a]
+rewind l = go [] l
+  where go :: [a] -> [a] -> [a]
+        go acc [] = acc
+        go acc (x:xs) = go (x:acc) xs
 
 {-
 You did it! Now it is time to the open pull request with your changes
