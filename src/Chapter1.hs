@@ -466,9 +466,10 @@ Implement a function that returns the last digit of a given number.
 
 >>> lastDigit 42
 2
-lastDigit x = mod x 10
-🕯 HINT: use the `mod` function
 
+🕯 HINT: use the `mod` function
+lastDigit x = mod x 10
+   where x = abs(x)
 ♫ NOTE: You can discover possible functions to use via Hoogle:
     https://hoogle.haskell.org/
 
@@ -478,6 +479,7 @@ lastDigit x = mod x 10
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
+lastDigit :: Integral a => a -> a
 lastDigit x = mod x 10
    where x = abs(x)
 
