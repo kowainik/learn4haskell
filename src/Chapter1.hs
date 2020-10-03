@@ -621,7 +621,7 @@ specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
 
-sumLast2 n = lastD + secondToLastD
+sumLast2 n = lastD + secondtoLastD
     where
       n'= abs n
       lastD = n' mod 10
