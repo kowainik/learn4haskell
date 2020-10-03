@@ -71,6 +71,7 @@ Modules should have the same name as the corresponding file with
 the `.hs` extension.
 -}
 module Chapter1 where
+import Data.List (sort)
 
 {- |
 In Haskell, we have __expressions__. Expressions can be represented by some
@@ -221,7 +222,7 @@ A pair of boolean and char:
  
 Boolean negation:
 >>> :t not
-not :: Bool->Bool
+not :: Bool -> Bool
 Boolean 'and' operator:
 >>> :t (&&)
 
@@ -434,9 +435,9 @@ Implement the function that takes an integer value and returns the next 'Int'.
   every type ｡.☆.*｡. No need to worry much about "error" here, just replace the
   function body with the proper implementation.
 -}
-next x =x +1
+
 next :: Int -> Int
-next x = error "next: not implemented!"
+next x =  x+1
 
 {- |
 After you've implemented the function (or even during the implementation), you
@@ -507,7 +508,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = if abs x < (abs y) then x else y
+closestToZero x y = if abs x < abs y then x else y
 {- |
 =⚔️= Task 7
 Write a function that returns the middle number among three given numbers.
@@ -538,7 +539,7 @@ value after "=" where the condition is true.
 
 Casual reminder about adding top-level type signatures for all functions :)
 -}
-import Data.List (sort)
+
 mid x y z =(sort [x,y,z]) !!1
 
 {- |
@@ -643,7 +644,7 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 firstDigit :: Integral a=> a->a 
-firstDigit n = if n' <10 then  n' else firstDigit(div n' 10)
+firstDigit n = if n' <10 then  n' else firstDigit (div n' 10)
    where
       n'=abs n
 
