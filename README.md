@@ -161,6 +161,12 @@ section.
 
 ### Installing Haskell
 
+If you're on Windows, install the `haskell-dev` and `make` packages [using Chocolatey](https://chocolatey.org/install).
+```shell
+choco install haskell-dev make
+refreshenv
+```
+
 If you're on Linux or macOS, then the process is easy:
 
 1. Install [ghcup](https://www.haskell.org/ghcup/) and follow `ghcup`
