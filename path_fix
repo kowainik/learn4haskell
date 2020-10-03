@@ -1,0 +1,2 @@
+[ -f "/Users/alecmills/.ghcup/env" ] && source "/Users/alecmills/.ghcup/env" # ghcup-env
+
