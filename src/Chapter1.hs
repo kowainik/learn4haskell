@@ -479,7 +479,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int
-lastDigit n = mod (abs(n)) (10 * div (abs(n)) 10)
+lastDigit n = mod (abs n) (10 * div (abs(n)) 10)
 
 {- |
 =⚔️= Task 6
@@ -542,7 +542,7 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 mid :: Int -> Int -> Int -> Int
-mid x y z 
+mid x y z
    | (x > y && x < z) = x
    | (y > x && y < z) = y
    | otherwise = z
@@ -559,7 +559,7 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c 
+isVowel c
     | c == 'a' || c == 'A' = True
     | c == 'e' || c == 'E' = True
     | c == 'i' || c == 'I' = True
