@@ -481,7 +481,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: (Integral a) => a -> a
-lastDigit = flip rem 10
+lastDigit = abs . flip rem 10
 
 
 {- |
@@ -512,7 +512,8 @@ branches because it is an expression and it must always return some value.
 -}
 
 closestToZero :: Int -> Int -> Int
-closestToZero a b = min (abs a) (abs b)
+closestToZero a b = if (abs a < abs b) then a else b
+ 
 
 
 {- |
@@ -546,12 +547,15 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 
+qsort :: Ord a => [a] -> [a]
+qsort [] = []
+qsort [x] = [x]
+qsort (x:xs) = smol ++ (x : lorg)
+    where smol = qsort [z | z <- xs, z <= x]
+          lorg = qsort [z | z <- xs, z > x]
 
 mid :: Ord a => a -> a -> a -> a
-mid x y z
-  | x <= y && y <= z = y
-  | y <= x && x <= z = x
-  | otherwise = z
+mid x y z = (!! 1) (qsort [x,y,z])
 
 
 {- |
@@ -632,8 +636,9 @@ specifying complex expressions.
 -}
 
 sumLast2 :: (Integral a) => a -> a
-sumLast2 n = let tens = n `mod` 10
-                 hunds = (n `mod` 100) `div` 10
+sumLast2 n = let a = abs n
+                 tens = a `mod` 10
+                 hunds = (a `mod` 100) `div` 10
               in tens + hunds
 
 
