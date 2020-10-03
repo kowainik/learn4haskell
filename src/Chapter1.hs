@@ -72,6 +72,7 @@ the `.hs` extension.
 -}
 module Chapter1 where
 
+import GHC.Unicode (toLower)
 {- |
 In Haskell, we have __expressions__. Expressions can be represented by some
 primitive values (numbers: 1, 100; characters: 'a', 'z'; booleans: True, False;
@@ -209,31 +210,31 @@ So, the output in this example means that 'False' has type 'Bool'.
 > Try to guess first and then compare your expectations with GHCi output
 
 >>> :t True
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+True :: Bool
 >>> :t 'a'
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+'a' :: Char
 >>> :t 42
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+42 :: Num p => p
 
 A pair of boolean and char:
 >>> :t (True, 'x')
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(True, 'x') :: (Bool, Char) 
 
 Boolean negation:
 >>> :t not
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+not :: Bool -> Bool
 
 Boolean 'and' operator:
 >>> :t (&&)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(&&) :: Bool -> Bool -> Bool
 
 Addition of two numbers:
 >>> :t (+)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(+) :: Num a => a -> a -> a
 
 Maximum of two values:
 >>> :t max
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+max :: Ord a => a -> a -> a
 
 You might not understand each type at this moment, but don't worry! You've only
 started your Haskell journey. Types will become your friends soon.
@@ -301,31 +302,31 @@ expressions in GHCi
   functions and operators first. Remember this from the previous task? ;)
 
 >>> 1 + 2
-INSERT THE RESULT INSTEAD OF THE TEXT
+3
 >>> 10 - 15
-
+-5
 >>> 10 - (-5)  -- negative constants require ()
-
+15
 >>> (3 + 5) < 10
-
+True
 >>> True && False
-
+False
 >>> 10 < 20 || 20 < 5
-
+True
 >>> 2 ^ 10  -- power
-
+1024
 >>> not False
-
+True
 >>> div 20 3  -- integral division
-
+6
 >>> mod 20 3  -- integral division remainder
-
+2
 >>> max 4 10
-
+10
 >>> min 5 (max 1 2)
-
+2
 >>> max (min 1 10) (min 5 7)
-
+5
 
 Because Haskell is a __statically-typed__ language, you see an error each time
 you try to mix values of different types in situations where you are not
@@ -417,6 +418,7 @@ task is to specify the type of this function.
 49
 -}
 
+squareSum :: Num a => a -> a -> a
 squareSum x y = (x + y) * (x + y)
 
 
@@ -437,7 +439,7 @@ Implement the function that takes an integer value and returns the next 'Int'.
   function body with the proper implementation.
 -}
 next :: Int -> Int
-next x = error "next: not implemented!"
+next x = x + 1
 
 {- |
 After you've implemented the function (or even during the implementation), you
@@ -478,7 +480,8 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit n = error "lastDigit: Not implemented!"
+lastDigit :: Integral a => a -> a
+lastDigit n = mod (abs n) 10
 
 
 {- |
@@ -508,8 +511,9 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = error "closestToZero: not implemented!"
-
+closestToZero x y 
+  | (abs x) < (abs y) = x
+  | otherwise = y
 
 {- |
 =⚔️= Task 7
@@ -542,7 +546,15 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 
-mid x y z = error "mid: not implemented!"
+mid :: Ord a => a -> a -> a -> a
+mid x y z 
+  | mn < x && x < mx = x
+  | mn < y && y < mx = y
+  | mn < z && z < mx = z
+  | otherwise = x
+  where mn = min (min x y) z
+        mx = max (max x y) z  
+    
 
 {- |
 =⚔️= Task 8
@@ -556,8 +568,15 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel c = error "isVowel: not implemented!"
-
+isVowel :: Char -> Bool
+isVowel c 
+  | toLower c == 'a' = True
+  | toLower c == 'e' = True
+  | toLower c == 'i' = True
+  | toLower c == 'o' = True
+  | toLower c == 'u' = True
+  | toLower c == 'y' = True
+  | otherwise = False
 
 {- |
 == Local variables and functions
@@ -620,7 +639,12 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 
-sumLast2 n = error "sumLast2: Not implemented!"
+sumLast2 :: Integral a => a -> a
+sumLast2 n = 
+  let a = abs n
+      last = mod a 10
+      beforeLast = if a > 10 then div (mod a 100) 10 else 0
+  in last + beforeLast
 
 
 {- |
@@ -641,7 +665,10 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit n = error "firstDigit: Not implemented!"
+firstDigit :: Integral p => p -> p
+firstDigit n
+  | abs n > 9 = firstDigit (div (abs n) 10)
+  | otherwise = abs n
 
 
 {-
