@@ -338,6 +338,8 @@ ghci> :l src/Chapter2.hs
 subList :: Int -> Int -> [a] -> [a]
 subList from to x
   | to < from = []
+  | to < 0 = []
+  | from < 0 = []
   | otherwise =
     let size = to - from + 1
     in take size (drop from x)
