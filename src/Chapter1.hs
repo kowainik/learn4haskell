@@ -507,9 +507,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = error "closestToZero: not implemented!"
-
-
+closestToZero x y = if abs x < (abs y) then x else y
 {- |
 =⚔️= Task 7
 Write a function that returns the middle number among three given numbers.
@@ -540,8 +538,8 @@ value after "=" where the condition is true.
 
 Casual reminder about adding top-level type signatures for all functions :)
 -}
-
-mid x y z = error "mid: not implemented!"
+import Data.List (sort)
+mid x y z =(sort [x,y,z]) !!1
 
 {- |
 =⚔️= Task 8
@@ -555,7 +553,8 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel c = error "isVowel: not implemented!"
+isVowel :: Char -> Bool
+isVowel = (elem ['a','e','i','o','u'])
 
 
 {- |
@@ -618,8 +617,12 @@ Implement a function that returns the sum of the last two digits of a number.
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
-
-sumLast2 n = error "sumLast2: Not implemented!"
+sumLast2 :: Intergral a=>a ->
+sumLast2 n = lastD + secondToLastD
+    where
+      n'= abs n
+      lastD = n' mod 10
+      secondtoLastD = (div n' 10) mod 10
 
 
 {- |
@@ -639,8 +642,10 @@ Implement a function that returns the first digit of a given number.
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
-
-firstDigit n = error "firstDigit: Not implemented!"
+firstDigit :: Integral a=> a->a 
+firstDigit n = if n' <10 then  n' else firstDigit(div n' 10)
+   where
+      n'=abs n
 
 
 {-
