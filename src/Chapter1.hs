@@ -491,7 +491,7 @@ lastDigit n = mod (abs n) 10
 -- 👩‍🔬 Due to lazy evaluation in Haskell, only the expression from the branch
 --   satisfying the check will be returned and, therefore, evaluated.
 closestToZero :: Int -> Int -> Int
-closestToZero x y = if (abs x) < (abs y) then x else y
+closestToZero x y = if abs x < abs y then x else y
 
 -- |
 -- =⚔️= Task 7
