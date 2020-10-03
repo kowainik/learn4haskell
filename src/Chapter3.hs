@@ -628,13 +628,13 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
-newtype Health    = Health    Int
-newtype Armor     = Armor     Int
-newtype Attack    = Attack    Int
-newtype Dexterity = Dexterity Int
-newtype Strength  = Strength  Int
-newtype Damage    = Damage    Int
-newtype Defense   = Defense   Int
+newtype Health    = Health {unHealth :: Int} deriving (Eq, Show)
+newtype Armor     = Armor     Int deriving (Eq, Show)
+newtype Attack    = Attack    Int deriving (Eq, Show)
+newtype Dexterity = Dexterity Int deriving (Eq, Show)
+newtype Strength  = Strength  Int deriving (Eq, Show)
+newtype Damage    = Damage    Int deriving (Eq, Show)
+newtype Defense   = Defense   Int deriving (Eq, Show)
 
 data Player = Player
     { playerHealth    :: Health
@@ -1092,9 +1092,7 @@ isWeekend wd = case wd of
     _ -> False
 
 nextDay :: Weekday -> Weekday
-nextDay wd
-    | wd == maxBound = minBound
-    | otherwise = succ wd
+nextDay = toEnum . (`rem` 7) . succ . fromEnum
 
 daysToParty :: Weekday -> Int
 daysToParty wd = (fromEnum Fri - fromEnum wd) `mod` 7
@@ -1133,6 +1131,106 @@ properties using typeclasses, but they are different data types in the end.
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
+
+data Action = AttackA Damage | Potion | Spell Defense | RunAway deriving (Eq)
+
+class Entity a where
+    getHealth :: a -> Health
+    getHit    :: Damage -> a -> a
+    canHeal   :: a -> Bool
+    heal :: a -> a
+    potions :: a -> Int
+
+class (Entity a) => Fighter a where
+    actions :: a -> [Action]
+    strength :: a -> Damage
+
+data KnightF = KnightF {
+                    health :: Health,
+                    attack :: Damage,
+                    defense  :: Defense,
+                    inventory :: Int
+                       } deriving (Eq, Show)
+
+
+data MonsterF = MonsterF {
+                    healthM :: Health,
+                    attackM :: Damage
+                         } deriving (Eq, Show)
+
+mapHealth :: (Int -> Int) -> Health -> Health
+mapHealth f  = Health . f. unHealth
+
+instance Ord Health where
+    compare (Health a) (Health b) = compare a b
+
+instance Entity KnightF where
+    getHealth = health
+    getHit (Damage m) k@(KnightF (Health h) (Damage s) (Defense d) i) = k {health = (mapHealth (+ (d - m)) . getHealth) k}
+    canHeal k = inventory k > 0
+    heal k = k {health = (mapHealth (+ 30) . getHealth) k, inventory = inventory k - 1}
+    potions = inventory
+
+instance Fighter KnightF where
+    -- assume that different classes have different potion strengths? very rudimentary
+    actions k = [AttackA (attack k ), Potion, Spell (defense k)]
+    strength = attack
+
+
+instance Entity MonsterF where
+    getHealth = healthM
+    getHit (Damage d) m@(MonsterF (Health h) (Damage s)) = m {healthM = Health $ h - d}
+    canHeal = const False
+    heal = id
+    potions = const 0
+
+instance Fighter MonsterF where
+    actions m = [RunAway, AttackA (attackM m)]
+    strength = attackM
+
+
+
+battle :: (Fighter a, Fighter b) => a -> b -> Either a b
+battle f1 f2 = go (f1, f2, True)
+               where 
+                   go (a, b, l) = let turn = runTurn (a, b)
+                                   in case turn of
+                                        Left (a', b') -> go (a', b', not l)
+                                        Right res -> if res `xor` l then Right b
+                                                                    else Left a
+                                                                    -- you have no idea how hard this was to implement,
+                                                                    -- flip flopping between a and b and still achieving Either a b.
+                                                                    -- this still doesn't get the final state
+                                                                    -- it would be a lot easier with a state transformer but I wanted
+                                                                    -- to challenge myself
+
+            
+xor :: Bool -> Bool -> Bool
+xor True True = False
+xor False False = False
+xor _ _ = True
+--data Turn = Go | Stop Bool deriving (Eq, Ord, Show)
+
+runTurn :: (Fighter a, Fighter b) => (a, b) -> Either (a, b) Bool
+runTurn (f1, f2)
+  | hltF1 <= 0 = Right True
+  | hltF2 <= 0 = Right False
+  | condPotion f1 (strength f2) = Left (heal f1, f2)
+  | shouldRun f1 (strength f2) = Right False
+  | otherwise = Left (getHit (strength f2) f1, f2)
+    where  
+           hltF1 = unHealth . getHealth $ f1
+           hltF2 = unHealth . getHealth $ f2
+                
+shouldRun :: Fighter a => a -> Damage -> Bool
+shouldRun f (Damage d)
+  | (not . elem RunAway . actions) f = False
+  | otherwise = (unHealth . getHealth) f <= d
+
+condPotion :: Entity a => a -> Damage -> Bool
+condPotion e (Damage d) = canHeal e && (unHealth . getHealth) e <= d 
+-- I should really use lenses....
+
 
 
 {-

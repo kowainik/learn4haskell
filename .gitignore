@@ -53,3 +53,6 @@ TAGS
 
 # other
 .DS_Store
+
+src/Chapter1.hs
+src/Chapter2.hs
