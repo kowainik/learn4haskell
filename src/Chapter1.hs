@@ -209,31 +209,31 @@ So, the output in this example means that 'False' has type 'Bool'.
 > Try to guess first and then compare your expectations with GHCi output
 
 >>> :t True
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+True :: Bool
 >>> :t 'a'
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+'a' :: Char
 >>> :t 42
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+42 :: Num p => p
 
 A pair of boolean and char:
 >>> :t (True, 'x')
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(True, 'x') :: (Bool, Char)
 
 Boolean negation:
 >>> :t not
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+not :: Bool -> Bool
 
 Boolean 'and' operator:
 >>> :t (&&)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(&&) :: Bool -> Bool -> Bool
 
 Addition of two numbers:
 >>> :t (+)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(+) :: Num a => a -> a -> a
 
 Maximum of two values:
 >>> :t max
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+max :: Ord a => a -> a -> a
 
 You might not understand each type at this moment, but don't worry! You've only
 started your Haskell journey. Types will become your friends soon.
@@ -301,31 +301,31 @@ expressions in GHCi
   functions and operators first. Remember this from the previous task? ;)
 
 >>> 1 + 2
-INSERT THE RESULT INSTEAD OF THE TEXT
+3
 >>> 10 - 15
-
+-5
 >>> 10 - (-5)  -- negative constants require ()
-
+15
 >>> (3 + 5) < 10
-
+True
 >>> True && False
-
+False
 >>> 10 < 20 || 20 < 5
-
+True
 >>> 2 ^ 10  -- power
-
+1024
 >>> not False
-
+True
 >>> div 20 3  -- integral division
-
+6
 >>> mod 20 3  -- integral division remainder
-
+2
 >>> max 4 10
-
+10
 >>> min 5 (max 1 2)
-
+2
 >>> max (min 1 10) (min 5 7)
-
+5
 
 Because Haskell is a __statically-typed__ language, you see an error each time
 you try to mix values of different types in situations where you are not
@@ -417,8 +417,8 @@ task is to specify the type of this function.
 49
 -}
 
+squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
-
 
 {- |
 =⚔️= Task 4
@@ -436,8 +436,9 @@ Implement the function that takes an integer value and returns the next 'Int'.
   every type ｡.☆.*｡. No need to worry much about "error" here, just replace the
   function body with the proper implementation.
 -}
+
 next :: Int -> Int
-next x = error "next: not implemented!"
+next x = x + 1
 
 {- |
 After you've implemented the function (or even during the implementation), you
@@ -477,8 +478,9 @@ Implement a function that returns the last digit of a given number.
   results. Or you can try to guess the function name, search for it and check
   whether it works for you!
 -}
--- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit n = error "lastDigit: Not implemented!"
+
+lastDigit :: Integer -> Integer
+lastDigit n = mod n 10
 
 
 {- |
@@ -507,8 +509,9 @@ branches because it is an expression and it must always return some value.
 👩‍🔬 Due to lazy evaluation in Haskell, only the expression from the branch
   satisfying the check will be returned and, therefore, evaluated.
 -}
+
 closestToZero :: Int -> Int -> Int
-closestToZero x y = error "closestToZero: not implemented!"
+closestToZero x y = if abs x < abs y then x else y
 
 
 {- |
@@ -542,7 +545,12 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 
-mid x y z = error "mid: not implemented!"
+mid :: Int -> Int -> Int -> Int
+mid x y z
+    | x < y && x > z || x < z && x > y = x
+    | y < x && y > z || y < z && y > x = y
+    | z < y && z > x || z < x && z > y = z
+    | otherwise = error "mid: no middle found!"
 
 {- |
 =⚔️= Task 8
@@ -556,8 +564,15 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel c = error "isVowel: not implemented!"
 
+isVowel :: Char -> Bool
+isVowel c
+    | c == 'a' = True
+    | c == 'e' = True
+    | c == 'i' = True
+    | c == 'o' = True
+    | c == 'u' = True
+    | otherwise = False
 
 {- |
 == Local variables and functions
@@ -620,7 +635,11 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 
-sumLast2 n = error "sumLast2: Not implemented!"
+sumLast2 :: Int -> Int
+sumLast2 n = x + y
+  where
+    x = mod (mod n 100) 10
+    y = div (mod n 100) 10
 
 
 {- |
@@ -641,7 +660,11 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit n = error "firstDigit: Not implemented!"
+firstDigit :: Int -> Int
+firstDigit n = helper n
+  where
+    helper :: Int -> Int
+    helper n = if div n 10 == 0 then n else helper (div n 10)
 
 
 {-
