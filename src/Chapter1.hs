@@ -478,7 +478,8 @@ lastDigit x = mod x 10
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit n = error "lastDigit: Not implemented!"
+lastDigit x = mod x 10
+   where x = abs(x)
 
 
 {- |
@@ -618,7 +619,8 @@ Implement a function that returns the sum of the last two digits of a number.
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
-sumLast2 :: Intergral a=>a ->
+sumLast2 :: Int -> Int
+
 sumLast2 n = lastD + secondToLastD
     where
       n'= abs n
