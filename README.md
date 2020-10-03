@@ -167,6 +167,8 @@ choco install haskell-dev make
 refreshenv
 ```
 
+Then, use [do workaround](https://www.stackage.org/blog/2020/08/ghc-8-10-2-windows-workaround) to alleviate a GHC 8.10.2 issue on Windows which prevents the test suite from building correctly.
+
 If you're on Linux or macOS, then the process is easy:
 
 1. Install [ghcup](https://www.haskell.org/ghcup/) and follow `ghcup`
