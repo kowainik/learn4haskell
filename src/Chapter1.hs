@@ -219,7 +219,7 @@ True :: Bool
 
 
 A pair of boolean and char:
->>> :t (True, 'x')
+>>> :t (True,'x')
 (True,'x') :: (Bool,Char) 
 
 Boolean negation:
