@@ -471,7 +471,7 @@ lastDigit x = mod x 10
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-
+lastDigit :: Int -> Int
 lastDigit x = mod (abs x) 10
 
 
