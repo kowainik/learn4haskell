@@ -212,20 +212,17 @@ So, the output in this example means that 'False' has type 'Bool'.
 >>> :t True
 True :: Bool
 >>> :t 'a'
-'a'  :: Char
+'a' :: Char
 >>> :t 42
 42 :: Num p => p
-
 A pair of boolean and char:
 >>> :t (True, 'x')
-(True,'x') :: (Bool,Char)
- 
+(True,'x') :: (Bool,Char) 
 Boolean negation:
 >>> :t not
 not :: Bool -> Bool
 Boolean 'and' operator:
 >>> :t (&&)
-
 (&&) :: Bool -> Bool -> Bool
 Addition of two numbers:
 >>> :t (+)
@@ -275,21 +272,16 @@ ghci> add 1 2
 3
 ghci> 1 + 2
 3
-
 ♫ NOTE: in reality, the type of the + operator is the following:
-
 >>> :t (+)
 (+) :: Num a => a -> a -> a
-
 > It may look scary to you, but we will cover all this 'Num' and "=>" later. For
   now, you can think of this as a polymorphic function — in this case, the
   operator, that can work with any numeric types, including 'Int's, 'Double's,
   etc. Or you can even pass the "+d" option to the ":t" command to see a simpler
   type. In this case, polymorphic types will default to some standard types:
-
 ghci> :t +d (+)
 (+) :: Integer -> Integer -> Integer
-
 Get ready for the next task, brave programmer! Evaluate the following
 expressions in GHCi
 
@@ -415,7 +407,7 @@ task is to specify the type of this function.
 >>> squareSum 3 4
 49
 -}
-
+squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
 
 
