@@ -541,7 +541,7 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 mid :: (Num a, Ord a) => a -> a -> a -> a
-mid x y z = (x + y + z) - (min (min x y) z) - (max (max x y) z)
+mid x y z = (x + y + z) - min (min x y) z - (max (max x y) z)
 
 {- |
 =⚔️= Task 8
