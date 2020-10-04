@@ -633,8 +633,8 @@ specifying complex expressions.
 -}
 
 sumLast2 n = 
-    let tens = div (mod n 100) 10 
-        units = mod (mod n 100) 10
+    let tens = div (mod (abs n) 100) 10 
+        units = lastDigit (abs n)
     in tens + units
 
 {- |
