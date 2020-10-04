@@ -187,7 +187,7 @@ ghci> :q
 
 -}
 
-{- |
+{-
 =⚔️= Task 1
 
 Since types play a crucial role in Haskell, we can start by exploring types of
@@ -209,31 +209,30 @@ So, the output in this example means that 'False' has type 'Bool'.
 > Try to guess first and then compare your expectations with GHCi output
 
 >>> :t True
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+True :: Bool
 >>> :t 'a'
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+'a' :: Char
 >>> :t 42
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+42 :: Num p => p
 
 A pair of boolean and char:
->>> :t (True, 'x')
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(True, 'x') :: (Bool, Char)
 
 Boolean negation:
 >>> :t not
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+not :: Bool -> Bool
 
 Boolean 'and' operator:
 >>> :t (&&)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(&&) :: Bool -> Bool -> Bool
 
 Addition of two numbers:
 >>> :t (+)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(+) :: Num a => a -> a -> a
 
 Maximum of two values:
 >>> :t max
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+max :: Ord a => a -> a -> a
 
 You might not understand each type at this moment, but don't worry! You've only
 started your Haskell journey. Types will become your friends soon.
@@ -244,7 +243,7 @@ more. You've also seen the arrow "->" which is a function. When you see "A -> B
 "A" and "B" and returns a value of type "C".
 -}
 
-{- |
+{-
 =⚔️= Task 2
 
 After having our first look at the Haskell type system, we can do something more
@@ -301,7 +300,7 @@ expressions in GHCi
   functions and operators first. Remember this from the previous task? ;)
 
 >>> 1 + 2
-INSERT THE RESULT INSTEAD OF THE TEXT
+3
 >>> 10 - 15
 
 >>> 10 - (-5)  -- negative constants require ()
@@ -345,7 +344,7 @@ scripts together.
 -}
 
 
-{- |
+{-
 =🛡= Defining a function
 
 We have already learned how to use different functions and operators in Haskell.
@@ -398,7 +397,7 @@ roundSubtract x y = ceiling x - y
 Now you are ready for defining your own functions!
 -}
 
-{- |
+{-
 In our training, for some functions types are provided for you. For others, you
 need to write types manually to challenge yourself.
 
@@ -407,7 +406,7 @@ Don't forget the main rule:
 -}
 
 
-{- |
+{-
 =⚔️= Task 3
 
 Below you see the function that finds a square of the sum of two integers. Your
@@ -416,11 +415,11 @@ task is to specify the type of this function.
 >>> squareSum 3 4
 49
 -}
-
+squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
 
 
-{- |
+{-
 =⚔️= Task 4
 
 Implement the function that takes an integer value and returns the next 'Int'.
@@ -437,9 +436,9 @@ Implement the function that takes an integer value and returns the next 'Int'.
   function body with the proper implementation.
 -}
 next :: Int -> Int
-next x = error "next: not implemented!"
+next x = x + 1
 
-{- |
+{-
 After you've implemented the function (or even during the implementation), you
 can run it in GHCi with your input. To do so, first, you need to load the module
 with the function using the ":l" (short for ":load") command.
@@ -459,7 +458,7 @@ command, and then you should reload it using the ":r" command each time you
 change it and want to check your changes.
 -}
 
-{- |
+{-
 =⚔️= Task 5
 
 Implement a function that returns the last digit of a given number.
@@ -477,11 +476,11 @@ Implement a function that returns the last digit of a given number.
   results. Or you can try to guess the function name, search for it and check
   whether it works for you!
 -}
--- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit n = error "lastDigit: Not implemented!"
+lastDigit :: Int -> Int
+lastDigit n = (abs n) `mod` 10
 
 
-{- |
+{-
 =⚔️= Task 6
 
 Implement a function, that takes two numbers and returns the one closer to zero:
@@ -508,10 +507,10 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = error "closestToZero: not implemented!"
+closestToZero x y = if abs (x) < abs(y) then x else y
 
 
-{- |
+{-
 =⚔️= Task 7
 Write a function that returns the middle number among three given numbers.
 
@@ -542,9 +541,13 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 
-mid x y z = error "mid: not implemented!"
+mid :: Int -> Int -> Int -> Int
+mid x y z
+  | z >= max x y    = max x y
+  | z >= min x y    = z
+  | otherwise       = min x y
 
-{- |
+{-
 =⚔️= Task 8
 
 Implement a function that checks whether a given character is a vowel.
@@ -556,10 +559,11 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel c = error "isVowel: not implemented!"
+isVowel :: Char -> Bool
+isVowel c = c `elem` ['a', 'e', 'i', 'o', 'u']
 
 
-{- |
+{-
 == Local variables and functions
 
 So far, we've been playing only with simple expressions and function
@@ -620,10 +624,15 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 
-sumLast2 n = error "sumLast2: Not implemented!"
+sumLast2 :: Int -> Int
+sumLast2 n =
+    let
+      (q, r) = quotRem (abs n) 10
+      r'     = q `mod` 10
+    in r + r'
 
 
-{- |
+{-
 =💣= Task 10*
 
 You did it! You've passed all the challenges in your first training!
@@ -640,8 +649,11 @@ Implement a function that returns the first digit of a given number.
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
-
-firstDigit n = error "firstDigit: Not implemented!"
+firstDigit :: Int -> Int
+firstDigit n =
+  let
+    (q, r) = quotRem (abs n) 10
+  in if q == 0 then r else firstDigit q
 
 
 {-
