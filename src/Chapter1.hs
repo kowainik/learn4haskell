@@ -547,8 +547,8 @@ Casual reminder about adding top-level type signatures for all functions :)
 mid :: (Ord a) => a -> a -> a -> a
 mid x y z
   | z >= maxXY   = maxXY
-  | z >= minXY    = z
-  | otherwise       = minXY
+  | z >= minXY   = z
+  | otherwise    = minXY
   where
     maxXY = max x y
     minXY = min x y
