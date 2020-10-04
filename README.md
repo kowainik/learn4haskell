@@ -76,7 +76,7 @@ you. These are the highlights of each part.
   syntax, functions, types, expressions.
 * __Chapter Two__ – FP concepts in the language, immutability, pattern matching,
   recursion, polymorphism, laziness, Higher-ordered functions, partial
-  applications, eta-reduction.
+  applications, beta-reduction.
 * __Chapter Three__ – Focus on Types. Type aliases, ADTs, Product types and
   Records, Sum types and Enumerations, Newtypes, Typeclasses.
 * __Chapter Four__ – Kinds. Also three monsters of the FP: Functor, Applicative,
