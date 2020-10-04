@@ -39,7 +39,9 @@ Perfect. Let's crush this!
 
 {-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE InstanceSigs    #-}
-
+{-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 module Chapter4 where
 
 import Control.Monad
@@ -742,6 +744,23 @@ instance Monoid (Tree a) where
     mempty = None
     mappend = (<>)
 
+class (Functor f) => BST f where
+    toBST :: (BST f, Ord a) => f a -> f a
+    member :: (BST f, Ord a) => a -> f a -> Bool
+    insert :: (BST f, Ord a) => a -> f a -> f a
+
+instance BST Tree where
+    toBST = makeBST
+
+    member _ None = False
+    member n (Node v l r)
+     | n == v = True
+     | n < v = member n l
+     | otherwise = member n r
+
+    insert = insertSorted
+
+
 toList :: Tree a -> [a]
 toList None = []
 toList (Node v l r) = toList l ++ (v : toList r)
@@ -765,7 +784,6 @@ merge ( (a:as), b ) = a : merge (b, as)
 shuffle :: (Foldable t) => t a -> [a]
 shuffle = merge . fmap reverse . scramble
 
-
 insertSorted :: (Ord a) => a -> Tree a -> Tree a
 insertSorted x None = Node x None None
 insertSorted x (Node v l r)
@@ -773,13 +791,14 @@ insertSorted x (Node v l r)
  | otherwise = Node v l (insertSorted x r)
 
 
-toBST :: (Ord a, Foldable t) => t a -> Tree a
-toBST = foldr insertSorted mempty . shuffle
+makeBST :: (Ord a, Foldable t) => t a -> Tree a
+makeBST = foldr insertSorted mempty . shuffle
     -- shuffling our list gives us a better chance of having a balanced BST if the input is sorted
 
 reverseTree :: Tree a -> Tree a
 reverseTree None = None
 reverseTree (Node v l r) = Node v (reverseTree r) (reverseTree l)
+
 {-
 You did it! Now it is time to the open pull request with your changes
 and summon @vrom911 and @chshersh for the review!
