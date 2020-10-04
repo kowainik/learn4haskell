@@ -186,8 +186,12 @@ Evaluate the following expressions in GHCi and insert the answers. Try
 to guess first, what you will see.
 
 >>> [10, 2] ++ [3, 1, 5]
+[10,2,3,1,5]
+
 
 >>> [] ++ [1, 4]  -- [] is an empty list
+[1,4]
+
 
 >>> 3 : [1, 2]
 
@@ -206,10 +210,16 @@ to guess first, what you will see.
 >>> take 5 "Hello, World!"
 
 >>> drop 5 "Hello, World!"
+", World!"
+
 
 >>> zip "abc" [1, 2, 3]  -- convert two lists to a single list of pairs
+[('a',1),('b',2),('c',3)]
+
 
 >>> words "Hello   Haskell     World!"  -- split the string into the list of words
+["Hello","Haskell","World!"]
+
 
 
 
@@ -336,7 +346,10 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList = error "subList: Not implemented!"
+subList start end lst =
+    if end < start || end < 0 || start < 0
+    then []
+    else take (end - start + 1) $ drop start lst
 
 {- |
 =⚔️= Task 4
@@ -349,7 +362,8 @@ Implement a function that returns only the first half of a given list.
 "b"
 -}
 -- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
+firstHalf :: [a] -> [a]
+firstHalf lst = subList 0 (length lst `div` 2 - 1) lst
 
 
 {- |
@@ -500,8 +514,9 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
-isThird42 = error "isThird42: Not implemented!"
-
+isThird42 :: [Int] -> Bool
+isThird42 (_ : _ : 42  : _) = True
+isThird42 _ = False
 
 {- |
 =🛡= Recursion
@@ -600,13 +615,14 @@ Implement a function that duplicates each element of the list
 
 >>> duplicate [3, 1, 2]
 [3,3,1,1,2,2]
+
 >>> duplicate "abac"
 "aabbaacc"
 
 -}
 duplicate :: [a] -> [a]
-duplicate = error "duplicate: Not implemented!"
-
+duplicate [] = []
+duplicate (x:xs) = x : x : duplicate xs
 
 {- |
 =⚔️= Task 7
@@ -620,7 +636,13 @@ Write a function that takes elements of a list only on even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
-takeEven = error "takeEven: Not implemented!"
+takeEven :: [a] -> [a]
+takeEven lst = go 0 [] lst
+    where
+        go :: Int -> [a] -> [a] -> [a] -- can be simpler?
+        go _ acc [] = reverse acc
+        go cnt acc (x:xs) = go (cnt + 1) acc' xs
+            where acc' | cnt `mod` 2 == 0 = x : acc | otherwise = acc
 
 {- |
 =🛡= Higher-order functions
@@ -727,7 +749,14 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = error "smartReplicate: Not implemented!"
+smartReplicate l = concat $ map (\x -> replicate x x) l
+
+smartReplicate' :: [Int] -> [Int]
+smartReplicate' l = go [] l
+    where
+        go :: [Int] -> [Int] -> [Int]
+        go acc [] = acc
+        go acc (x:xs) = go (acc ++ (replicate x x)) xs
 
 {- |
 =⚔️= Task 9
@@ -740,8 +769,8 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains = error "contains: Not implemented!"
-
+contains :: Int -> [[Int]] -> [[Int]]
+contains n l = filter (elem n) l
 
 {- |
 =🛡= Eta-reduction
@@ -782,11 +811,12 @@ mastered the skill of eta-reducing.
 divideTenBy :: Int -> Int
 divideTenBy x = div 10 x
 
--- TODO: type ;)
+listElementsLessThan :: Ord a => a -> [a] -> [a]
 listElementsLessThan x l = filter (< x) l
 
 -- Can you eta-reduce this one???
-pairMul xs ys = zipWith (*) xs ys
+pairMul :: Num a => [a] -> [a] -> [a]
+pairMul = zipWith (*)
 
 {- |
 =🛡= Lazy evaluation
@@ -841,7 +871,8 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate = error "rotate: Not implemented!"
+rotate :: Int -> [a] -> [a]
+rotate n l = if n < 0 then [] else take (length l) $ drop n (cycle l)
 
 {- |
 =💣= Task 12*
@@ -857,7 +888,12 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind = error "rewind: Not Implemented!"
+rewind :: [a] -> [a]
+rewind l = go [] l
+    where
+        go :: [a] -> [a] -> [a]
+        go acc [] = acc
+        go acc (x:xs) = go (x : acc) xs
 
 
 {-
