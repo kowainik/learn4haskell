@@ -213,8 +213,11 @@ So, the output in this example means that 'False' has type 'Bool'.
 True :: Bool
 >>> :t 'a'
 'a' :: Char
+
 >>> :t 42
 42 :: Num p => p
+
+
 A pair of boolean and char:
 >>> :t (True, 'x')
 (True,'x') :: (Bool,Char) 
@@ -282,6 +285,7 @@ ghci> 1 + 2
   type. In this case, polymorphic types will default to some standard types:
 ghci> :t +d (+)
 (+) :: Integer -> Integer -> Integer
+
 Get ready for the next task, brave programmer! Evaluate the following
 expressions in GHCi
 
