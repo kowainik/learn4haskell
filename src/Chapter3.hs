@@ -511,6 +511,44 @@ After defining the city, implement the following functions:
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
 
+data City = City
+  { cityCastle  :: Maybe Castle
+  , cityWall    :: Maybe Wall
+  , cityShrine  :: Shrine
+  , cityHouses  :: [House]
+  } deriving (Show)
+
+data Castle = Castle { castleName :: String } deriving (Show)
+
+data Wall = Wall { wallHeight :: Int } deriving (Show)
+
+data Shrine = Church | Library deriving (Show)
+
+data House = House { houseRoom :: Int } deriving (Show)
+mkHouse :: Int -> Maybe House
+mkHouse rooms 
+  | rooms > 4 = Nothing
+  | otherwise = Just (House rooms)
+
+initCity :: Shrine -> City
+initCity shrine = City Nothing Nothing shrine []
+
+buildCastle :: City -> String -> City
+buildCastle city name = city { cityCastle = Just (Castle name)}
+
+buildHouse :: City -> Int -> City
+buildHouse city rooms = case (mkHouse rooms) of
+  Just house -> city { cityHouses = (house : cityHouses city) }
+  Nothing    -> city
+
+buildWalls :: City -> City
+buildWalls city = case cityCastle city of
+    Nothing -> city
+    Just _  ->
+        if sum (map houseRoom (cityHouses city)) >= 10
+        then city { cityWall = Just (Wall 42) }
+        else city
+
 {-
 =🛡= Newtypes
 
