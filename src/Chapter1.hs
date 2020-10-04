@@ -88,7 +88,7 @@ expressions unless really necessary. You can see the evaluation results either
 by running a Haskell program or by playing with some functions in the
 interactive interpreter (explained later).
 
-Haskell is a __statically-typed__ language, which means that each expression has
+Haskell is a __strongly-typed__ language, which means that each expression has
 a type. Each value and function is associated with some type. You can't change
 the value type. You can only pass a value to some function that will do its
 work, and maybe produce a value of a different type.
@@ -99,6 +99,11 @@ through the variables – begin with the lowercase letter. The concept of
 polymorphism is more sophisticated than working with concrete types, thus we
 won't dive too much into it in this chapter and will work with the concrete
 types for now.
+
+Furthermore, Haskell is a __statically-typed__ language, which means that each
+expression has the type known at compile-time, rather than run-time. It allows
+the compiler to catch some kinds of bugs in your program early; before you
+even run it.
 
 Additionally to static typing, Haskell has __type inference__. This means that
 you _don't need_ to specify the type of each expression as it is going to be

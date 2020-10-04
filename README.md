@@ -136,11 +136,12 @@ This seems like a neat deal!
 Starting to learn Haskell with Learn4Haskell is very easy!
 
 1. [Fork this repository](https://docs.github.com/en/free-pro-team@latest/github/getting-started-with-github/fork-a-repo).
-2. Enable GitHub Actions for your fork repository.
+2. :warning: Add the `hacktoberfest` topic to your fork. Otherwise, [your PRs won't count](https://hacktoberfest.digitalocean.com/hacktoberfest-update).
+3. Enable GitHub Actions for your fork repository.
     * Visit: https://github.com/<YOUR_GITHUB_USERNAME>/learn4haskell/actions
-3. [Install the Haskell compiler](#installing-haskell).
-4. Open the `src/Chapter1.hs` file, and start learning and solving tasks!
-5. After you finish the first chapter (or any other chapter, or even if you are
+4. [Install the Haskell compiler](#installing-haskell).
+5. Open the `src/Chapter1.hs` file, and start learning and solving tasks!
+6. After you finish the first chapter (or any other chapter, or even if you are
    stuck in the middle), open
    [Pull Request](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request)
    __to your fork__ with the solution and mention @vrom911 and @chshersh and we
@@ -160,6 +161,14 @@ install all necessary to be able to run this course locally in the following
 section.
 
 ### Installing Haskell
+
+If you're on Windows, install the `haskell-dev` and `make` packages [using Chocolatey](https://chocolatey.org/install).
+```shell
+choco install haskell-dev make
+refreshenv
+```
+
+Then, do [the workaround](https://www.stackage.org/blog/2020/08/ghc-8-10-2-windows-workaround) to alleviate a GHC 8.10.2 issue on Windows which prevents the test suite from building correctly.
 
 If you're on Linux or macOS, then the process is easy:
 
