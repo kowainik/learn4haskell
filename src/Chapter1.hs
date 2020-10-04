@@ -477,7 +477,7 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 lastDigit :: Integral a => a -> a
-lastDigit n = (abs n) `mod` 10
+lastDigit n = abs n `mod` 10
 
 
 {- |
