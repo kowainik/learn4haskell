@@ -665,6 +665,7 @@ firstDigit n = findFirst n
       findFirst x = 
           if div (abs (x)) 10 == 0 then abs (x) else findFirst (div (abs (x)) 10)
 
+
 {-
 You did it! Now it is time to the open pull request with your changes
 and summon @vrom911 and @chshersh for the review!
