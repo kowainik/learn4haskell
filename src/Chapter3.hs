@@ -394,7 +394,7 @@ fight :: Knight -> Monster -> Int
 fight k m
   | unitHealth m <= unitAttack k = unitGold m + unitGold k
   | unitHealth k <= unitAttack m = (-1)
-  | otherwise unitGold k
+  | otherwise = unitGold k
 
 {- |
 =🛡= Sum types
