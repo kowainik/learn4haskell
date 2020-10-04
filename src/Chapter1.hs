@@ -227,7 +227,7 @@ Boolean 'and' operator:
 Addition of two numbers:
 >>> :t (+)
 (+) :: Num a=> a -> a -> a
-Maximum of two values:
+Maximums of two values:
 >>> :t max
 max  :: Ord a => a -> a -> a
 
