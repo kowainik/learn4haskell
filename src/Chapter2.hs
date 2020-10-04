@@ -37,7 +37,7 @@ want some feedback on your solutions.
 
 Now, if you are ready, bring it on!
 -}
-Jamesthesnake work
+
 module Chapter2 where
 
 {-
