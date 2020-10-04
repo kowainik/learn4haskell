@@ -480,7 +480,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Integral a => a -> a
-lastDigit n = (abs n) `mod` 10
+lastDigit n = abs n `mod` 10
 
 
 {- |
@@ -511,10 +511,7 @@ branches because it is an expression and it must always return some value.
 -}
 closestToZero :: Int -> Int -> Int
 closestToZero x y =
-  let
-    closest = min (abs x) (abs y)
-  in if closest == abs x then x else y
-  
+  if abs x < abs y then x else y
 
 {- |
 =⚔️= Task 7
@@ -549,9 +546,12 @@ Casual reminder about adding top-level type signatures for all functions :)
 
 mid :: (Ord a) => a -> a -> a -> a
 mid x y z
-  | z >= max x y    = max x y
-  | z >= min x y    = z
-  | otherwise       = min x y
+  | z >= maxXY   = maxXY
+  | z >= minXY    = z
+  | otherwise       = minXY
+  where
+    maxXY = max x y
+    minXY = min x y
 
 {- |
 =⚔️= Task 8
@@ -566,9 +566,7 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c 
-  | c `elem` ['a', 'e', 'i', 'o', 'u']    = True
-  | otherwise                             = False
+isVowel c = c `elem` ['a', 'e', 'i', 'o', 'u']
 
 
 {- |
