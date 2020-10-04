@@ -375,7 +375,7 @@ Implement a function that returns only the first half of a given list.
 -}
 -- PUT THE FUNCTION TYPE IN HERE
 firstHalf :: [a] -> [a]
-firstHalf l = 
+firstHalf l =
   let m = div (length l) 2
   in take m l
 
@@ -762,7 +762,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = concat (map (\x -> replicate x x) l)
+smartReplicate l = concatMap (\ x -> replicate x x) l
 
 {- |
 =⚔️= Task 9
@@ -776,7 +776,7 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: Int -> [[Int]] -> [[Int]]
-contains x l = filter (\inner -> elem x inner) l
+contains x l = filter (elem x) l
 
 
 {- |
