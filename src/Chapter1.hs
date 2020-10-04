@@ -221,17 +221,22 @@ True :: Bool
 A pair of boolean and char:
 >>> :t (True, 'x')
 (True,'x') :: (Bool,Char) 
+
 Boolean negation:
 >>> :t not
 not :: Bool -> Bool
+
 Boolean 'and' operator:
 >>> :t (&&)
 (&&) :: Bool -> Bool -> Bool
+
 Addition of two numbers:
 >>> :t (+)
 (+) :: Num a=> a -> a -> a
+
 Maximums of two values:
 >>> :t max
+
 max  :: Ord a => a -> a -> a
 
 You might not understand each type at this moment, but don't worry! You've only
