@@ -343,11 +343,13 @@ Define the Book product data type. You can take inspiration from our description
 of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
+
 data Book = Book
     { bookTitle  :: String
     , bookAuthor :: String
     , bookPages  :: Int
     }
+
 
 {- |
 =⚔️= Task 2
@@ -484,9 +486,7 @@ and provide more flexibility when working with data types.
 Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
-
 data Meal = Breakfast | Brunch | Lunch | Dinner
-
 {- |
 =⚔️= Task 4
 
@@ -506,7 +506,6 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
-
 data City = City
    { cityCastle :: Castle
    , cityMain   :: MainBuilding
@@ -831,7 +830,6 @@ parametrise data types in places where values can be of any general type.
 🕯 HINT: 'Maybe' that some standard types we mentioned above are useful for
   maybe-treasure ;)
 -}
-
 data DragonLair treasure power = DragonLair
     { dragonLairChest :: Maybe (TreasureChest treasure)
     , dragonLairDragonPower :: power
@@ -1015,6 +1013,7 @@ instance Append a => Append (Maybe a) where
     append mx Nothing = mx
     append (Just x) (Just y) = Just (append x y)
 
+
 {-
 =🛡= Standard Typeclasses and Deriving
 
@@ -1074,7 +1073,6 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
-
 data Weekday
    = Mon
    | Tue
