@@ -465,19 +465,19 @@ comes up with the most number of names wins the challenge. Use your creativity!
 
 Define types to represent a magical city in the world! A typical city has:
 
-⍟ Optional castle with a name
+⍟ Optional castle with a __name__ (as 'String')
 ⍟ Wall, but only if the city has a castle
 ⍟ Church or library but not both
-⍟ Any number of houses. Each house has one, two, three or four people inside.
+⍟ Any number of houses. Each house has one, two, three or four __people__ inside.
 
 After defining the city, implement the following functions:
 
  ✦ buildCastle — build a castle in the city. If the city already has a castle,
-   the old castle is destroyed, and the new castle with the new name is built
- ✦ buildHouse — add new living house
+   the old castle is destroyed, and the new castle with the __new name__ is built
+ ✦ buildHouse — add a new living house
  ✦ buildWalls — build walls in the city. But since building walls is a
    complicated task, walls can be built only if the city has a castle
-   and at least 10 living people inside
+   and at least 10 living __people__ inside in all houses of the city totally.
 -}
 
 {-
