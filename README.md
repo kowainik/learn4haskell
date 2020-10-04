@@ -162,10 +162,18 @@ section.
 
 ### Installing Haskell
 
+If you're on Windows, install the `haskell-dev` and `make` packages [using Chocolatey](https://chocolatey.org/install).
+```shell
+choco install haskell-dev make
+refreshenv
+```
+
+Then, do [the workaround](https://www.stackage.org/blog/2020/08/ghc-8-10-2-windows-workaround) to alleviate a GHC 8.10.2 issue on Windows which prevents the test suite from building correctly.
+
 If you're on Linux or macOS, then the process is easy:
 
 1. Install [ghcup](https://www.haskell.org/ghcup/) and follow `ghcup`
-   instructions for successful installation.
+   instructions for successful installation (remember to restart your terminal afterwards to avoid an `unknown ghcup command` error on the next step).
 2. Install the latest version of the Haskell compiler — GHC — and the
    [Cabal](https://www.haskell.org/cabal/) build tool. After you install
    `ghcup`, it is easy to install the rest with a few commands from your
