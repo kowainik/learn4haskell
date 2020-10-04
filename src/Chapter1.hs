@@ -280,14 +280,18 @@ ghci> add 1 2
 3
 ghci> 1 + 2
 3
+
 ♫ NOTE: in reality, the type of the + operator is the following:
+
 >>> :t (+)
 (+) :: Num a => a -> a -> a
+
 > It may look scary to you, but we will cover all this 'Num' and "=>" later. For
   now, you can think of this as a polymorphic function — in this case, the
   operator, that can work with any numeric types, including 'Int's, 'Double's,
   etc. Or you can even pass the "+d" option to the ":t" command to see a simpler
   type. In this case, polymorphic types will default to some standard types:
+
 ghci> :t +d (+)
 (+) :: Integer -> Integer -> Integer
 
