@@ -344,6 +344,15 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = MkBook
+    { bookName       :: String
+    , bookAuthor     :: String
+    , bookISBN       :: String
+    , bookLanguage   :: String
+    , bookRate       :: Int
+    , bookTranslator :: String
+    } deriving (Show)
+
 {- |
 =⚔️= Task 2
 
@@ -373,6 +382,26 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+
+data Knight = Knight
+    { knightHealth :: Int
+    , knightAttack :: Int
+    , knightGold   :: Int
+    } deriving (Show)
+
+data Monster = Monster
+    { monsterHealth :: Int
+    , monsterAttack :: Int
+    , monsterGold   :: Int
+    } deriving (Show)
+
+fight :: Knight -> Monster -> Int
+fight knight monster
+    | monsterHealth monster <= knightAttack knight =
+        knightGold knight + monsterGold monster
+    | knightHealth knight <= monsterAttack monster =
+        -1
+    | otherwise = knightGold knight
 
 {- |
 =🛡= Sum types
@@ -460,6 +489,15 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data Breakfast
+  = Milk
+  | Eags
+  | Omelette
+  | Bread
+  | Oatmeal
+  | Sandwich
+  | Coffee
+
 {- |
 =⚔️= Task 4
 
@@ -479,6 +517,20 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living people inside
 -}
+
+data City
+  = Castle
+  | Wall
+  | Church
+  | House
+
+-- buildCastle :: String -> Castle
+-- buildCastle = Castle
+
+-- buildHouse :: House
+-- buildHouse = House
+
+-- 🤯
 
 {-
 =🛡= Newtypes
