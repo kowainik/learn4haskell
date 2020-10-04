@@ -471,9 +471,9 @@ lastDigit x = mod x 10
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit :: Integral a => a -> a
-lastDigit x = mod x 10
-   where x = abs(x)
+
+lastDigit x = mod (abs x) 10
+
 
 
 {- |
