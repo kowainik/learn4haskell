@@ -381,6 +381,21 @@ after the fight. The battle has the following possible outcomes:
 
 -}
 
+data Unit = MkUnit
+    { unitHealth :: Int
+    , unitAttack :: Int
+    , unitGold   :: Int
+    } deriving (Show)
+
+type Knight = Unit
+type Monster = Unit
+
+fight :: Knight -> Monster -> Int
+fight k m
+  | unitHealth m <= unitAttack k = unitGold m + unitGold k
+  | unitHealth k <= unitAttack m = (-1)
+  | otherwise unitGold k
+
 {- |
 =🛡= Sum types
 
