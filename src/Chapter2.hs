@@ -652,8 +652,6 @@ Write a function that takes elements of a list only on even positions.
 [2,3,4]
 -}
 takeEven :: [Int] -> [Int]
--- best solution:
--- takeEven = filter even
 takeEven [] = []
 takeEven (x:xs) = x : takeEven (drop 1 xs)
 
@@ -776,9 +774,7 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: Int -> [[Int]] -> [[Int]]
-contains _ []       = []
-contains c (x : xs) = if c `elem` x then x : rest else rest
-  where rest = contains c xs
+contains c = filter $ elem c
 
 
 {- |
@@ -898,12 +894,7 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind []  = []
-rewind src = go [] src
-  where
-    go acc [] = acc
-    go acc xs = foldl (flip (:)) acc xs
-
+rewind = foldl (flip (:)) []
 
 {-
 You did it! Now it is time to the open pull request with your changes
