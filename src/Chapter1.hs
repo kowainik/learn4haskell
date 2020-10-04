@@ -548,7 +548,7 @@ Casual reminder about adding top-level type signatures for all functions :)
 mid x y z 
     | x < y = if y < z then y else z
     | z < x = if y < z then z else y
-    | otherwise = z 
+    | otherwise = x
 
 {- |
 =⚔️= Task 8
@@ -655,7 +655,7 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit n = error "firstDigit: Not implemented!"
+-- firstDigit n = error "firstDigit: Not implemented!"
 
 
 {-
