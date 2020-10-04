@@ -314,7 +314,7 @@ True
 >>> div 20 3  -- integral division
 6
 >>> mod 20 3  -- integral division remainder
-4
+2
 >>> max 4 10
 10
 >>> min 5 (max 1 2)
