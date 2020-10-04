@@ -481,6 +481,15 @@ and provide more flexibility when working with data types.
 Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
+data BreakfastType = American | Dutch | English | French
+data Meal
+  = Breakfast BreakfastType
+  | Lunch
+  | Elevenses 
+  | Lunch
+  | Tea
+  | Supper
+  | Dinner
 
 {- |
 =⚔️= Task 4
