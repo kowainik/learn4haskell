@@ -996,9 +996,24 @@ Implement instances of "Append" for the following types:
   ✧ *(Challenge): "Maybe" where append is appending of values inside "Just" constructors
 
 -}
+newtype Gold = MkGold Int
+
 class Append a where
     append :: a -> a -> a
 
+instance Append Gold where
+    append :: Gold -> Gold -> Gold
+    append (MkGold g1) (MkGold g2) = MkGold (g1 + g2)
+
+instance Append [a] where
+    append :: [a] -> [a] -> [a]
+    append l1 l2 = l1 ++ l2
+
+instance (Append a) => Append (Maybe a) where
+    append :: Maybe a -> Maybe a -> Maybe a
+    append Nothing y = y
+    append x Nothing = x
+    append (Just x) (Just y) = Just (append x y)
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -1059,6 +1074,31 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
+data Weekday
+  = Monday
+  | Tuesday
+  | Wednesday
+  | Thursday
+  | Friday
+  | Saturday
+  | Sunday deriving (Show, Eq, Ord, Bounded, Enum)
+
+isWeekend :: Weekday -> Bool
+isWeekend weekday = case weekday of
+  Saturday -> True
+  Sunday   -> True
+  _        -> False
+
+nextDay :: Weekday -> Weekday
+nextDay weekday =
+    if weekday == maxBound
+    then minBound
+    else succ weekday
+
+daysToParty :: Weekday -> Int
+daysToParty weekday
+    | weekday <= Friday = fromEnum Friday - fromEnum weekday
+    | otherwise = fromEnum Sunday - (fromEnum weekday - fromEnum Friday) + 1
 
 {-
 =💣= Task 9*
