@@ -633,7 +633,7 @@ specifying complex expressions.
 -}
 
 sumLast2 :: Int -> Int
-sumLast2 n 
+sumLast2 n
   | n < 0 = sumLast2 (abs n)
   | n <= 10 = mod n 10
   | otherwise =
