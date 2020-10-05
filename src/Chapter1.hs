@@ -210,13 +210,10 @@ So, the output in this example means that 'False' has type 'Bool'.
 
 >>> :t True
 True :: Bool
-
 >>> :t 'a'
 'a' :: Char
-
 >>> :t 42
 42 :: Num p => p
-
 A pair of boolean and char:
 >>> :t (True, 'x')
 (True, 'x') :: (Bool, Char)
@@ -574,6 +571,7 @@ isVowel c
   | c == 'y' = True
   | otherwise = False
 
+
 {- |
 == Local variables and functions
 
@@ -665,6 +663,7 @@ firstDigit n = firstDigitRecur (divMod n 10)
     firstDigitRecur :: (Int, Int) -> Int
     firstDigitRecur (0, rest) = rest
     firstDigitRecur (rest, _) = firstDigitRecur (divMod rest 10)
+
 
 {-
 You did it! Now it is time to the open pull request with your changes
