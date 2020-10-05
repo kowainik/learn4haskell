@@ -344,10 +344,10 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
  -}
 data Book = Book
-    { Title :: String
-    , Author :: String
-    , Pages :: Int
-    , Date :: String
+    { bTitle :: String
+    , bAuthor :: String
+    , bPages :: Int
+    , bDate :: String
     }
 {- |
 =⚔️= Task 2
