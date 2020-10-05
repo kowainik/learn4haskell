@@ -209,31 +209,31 @@ So, the output in this example means that 'False' has type 'Bool'.
 > Try to guess first and then compare your expectations with GHCi output
 
 >>> :t True
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+True :: Bool
 >>> :t 'a'
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+'a' :: Char
 >>> :t 42
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+42 :: Num p => p
 
 A pair of boolean and char:
 >>> :t (True, 'x')
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(True, 'x') :: (Bool, Char)
 
 Boolean negation:
 >>> :t not
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+not :: Bool -> Bool
 
 Boolean 'and' operator:
 >>> :t (&&)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(&&) :: Bool -> Bool -> Bool
 
 Addition of two numbers:
 >>> :t (+)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(+) :: Num a => a -> a -> a
 
 Maximum of two values:
 >>> :t max
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+max :: Ord a => a -> a -> a
 
 You might not understand each type at this moment, but don't worry! You've only
 started your Haskell journey. Types will become your friends soon.
@@ -301,31 +301,31 @@ expressions in GHCi
   functions and operators first. Remember this from the previous task? ;)
 
 >>> 1 + 2
-INSERT THE RESULT INSTEAD OF THE TEXT
+3
 >>> 10 - 15
-
+-5
 >>> 10 - (-5)  -- negative constants require ()
-
+15
 >>> (3 + 5) < 10
-
+True
 >>> True && False
-
+False
 >>> 10 < 20 || 20 < 5
-
+True
 >>> 2 ^ 10  -- power
-
+1024
 >>> not False
-
+True
 >>> div 20 3  -- integral division
-
+6
 >>> mod 20 3  -- integral division remainder
-
+2
 >>> max 4 10
-
+10
 >>> min 5 (max 1 2)
-
+2
 >>> max (min 1 10) (min 5 7)
-
+5
 
 Because Haskell is a __statically-typed__ language, you see an error each time
 you try to mix values of different types in situations where you are not
