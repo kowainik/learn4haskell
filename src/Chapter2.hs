@@ -39,6 +39,7 @@ Now, if you are ready, bring it on!
 -}
 
 module Chapter2 where
+import Data.List
 
 {-
 =🛡= Imports
@@ -335,7 +336,6 @@ from it!
 
 ghci> :l src/Chapter2.hs
 -}
-import Data.List
 
 subList :: Int -> Int -> [a] -> [a]
 subList start end xs =
