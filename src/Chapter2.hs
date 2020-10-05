@@ -637,7 +637,7 @@ Write a function that takes elements of a list only on even positions.
 [2,3,4]
 -}
 takeEven :: [a] -> [a]
-takeEven lst = go 0 [] lst
+takeEven = go 0 []
     where
         go :: Int -> [a] -> [a] -> [a] -- can be simpler?
         go _ acc [] = reverse acc
