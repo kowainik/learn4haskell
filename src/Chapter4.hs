@@ -133,6 +133,7 @@ Trinity :: *->*->*->*
 IntBox :: (*->*)->*
 -}
 
+let go =3
 {- |
 =🛡= Functor
 
