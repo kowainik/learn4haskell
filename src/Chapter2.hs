@@ -738,7 +738,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = error "smartReplicate: Not implemented!"
+smartReplicate l = concat (map (\x -> replicate x x) l)
 
 {- |
 =⚔️= Task 9
@@ -751,7 +751,8 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains = error "contains: Not implemented!"
+contains :: Int -> [[Int]] -> [[Int]]
+contains num l = filter (\x -> elem num x) l
 
 
 {- |
@@ -794,9 +795,11 @@ divideTenBy :: Int -> Int
 divideTenBy x = div 10 x
 
 -- TODO: type ;)
+listElementsLessThan :: Int -> [Int] -> [Int]
 listElementsLessThan x l = filter (< x) l
 
 -- Can you eta-reduce this one???
+pairMul :: [Int] -> [Int] -> [Int]
 pairMul xs ys = zipWith (*) xs ys
 
 {- |
@@ -852,7 +855,11 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate = error "rotate: Not implemented!"
+rotate :: Int -> [Int] -> [Int]
+rotate num l = if num < 0 then [] else subList (getStartIndex num (length l)) (getEndIndex num (length l)) (cycle l)
+                where
+                  getStartIndex num lsize = mod num lsize
+                  getEndIndex num lsize = (getStartIndex num lsize) + lsize - 1
 
 {- |
 =💣= Task 12*
@@ -868,7 +875,9 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind = error "rewind: Not Implemented!"
+rewind :: [Int] -> [Int]
+rewind [] = []
+rewind (x:xs) = rewind(xs) ++ [x]
 
 
 {-
