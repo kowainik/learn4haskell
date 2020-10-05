@@ -505,7 +505,9 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
- City = City
+
+
+City = City
    { cCastle :: Castle
    , cMain   :: MainBuilding
    , cHouses :: [House]
@@ -975,6 +977,23 @@ Implement instances of "Append" for the following types:
 -}
 class Append a where
     append :: a -> a -> a
+
+newtype Goldy = Goldy Int
+
+instance Append Goldy where
+    append :: Goldy -> Goldy -> Goldy
+    append (Goldy x) (Goldy y) = Goldy (x + y)
+
+instance Append [a] where
+    append :: [a] -> [a] -> [a]
+    append = (++)
+
+instance Append a => Append (Maybe a) where
+    append :: Maybe a -> Maybe a -> Maybe a
+    append Nothing mx = mx
+    append mx Nothing = mx
+    append (Just x) (Just y) = Just (append x y)
+
 
 
 {-
