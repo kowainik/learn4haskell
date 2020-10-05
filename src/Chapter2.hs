@@ -360,6 +360,7 @@ ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
 subList l r list
+  | l > r = []
   | l < 0 || r < 0 = []
   | otherwise = drop l (take (r + 1) list)
 
@@ -654,7 +655,6 @@ Write a function that takes elements of a list only on even positions.
 takeEven :: [Int] -> [Int]
 takeEven [] = []
 takeEven [x] = [x]
-takeEven [x, _] = [x]
 takeEven (x:_:xs) = x : takeEven xs
 
 {- |
@@ -776,7 +776,7 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: Int -> [[Int]] -> [[Int]]
-contains x l = filter (elem x) l
+contains x = filter (elem x)
 
 
 {- |
@@ -881,7 +881,7 @@ list.
 -}
 rotate :: Int -> [Int] -> [Int]
 rotate _ [] = []
-rotate _ [x] = [x]
+rotate _ [x] = if x < 0 then [x] else []
 rotate times l
   | times < 0 = []
   | times == 0 = l
