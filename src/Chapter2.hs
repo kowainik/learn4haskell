@@ -889,7 +889,7 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind l = go [] l
+rewind = go []
     where
         go :: [a] -> [a] -> [a]
         go acc [] = acc
