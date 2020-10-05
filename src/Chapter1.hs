@@ -656,4 +656,3 @@ Modules: http://learnyouahaskell.com/modules
 Let vs where: https://wiki.haskell.org/Let_vs._Where
 Packages and modules in Haskell: https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/packages.html
 -}
-
