@@ -756,7 +756,7 @@ smartReplicate' = go []
     where
         go :: [Int] -> [Int] -> [Int]
         go acc [] = acc
-        go acc (x:xs) = go (acc ++ (replicate x x)) xs
+        go acc (x:xs) = go (acc ++ replicate x x) xs
 
 {- |
 =⚔️= Task 9
