@@ -659,10 +659,10 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit :: Integer -> Integer
+firstDigit :: Int -> Int
 firstDigit n = firstDigitRecur (divMod n 10)
   where
-    firstDigitRecur :: (Integer, Integer) -> Integer
+    firstDigitRecur :: (Int, Int) -> Int
     firstDigitRecur (0, rest) = rest
     firstDigitRecur (rest, _) = firstDigitRecur (divMod rest 10)
 
