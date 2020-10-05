@@ -393,7 +393,7 @@ type Monster = Unit
 fight :: Knight -> Monster -> Int
 fight k m
     | unitHealth m <= unitAttack k = unitGold m + unitGold k
-    | unitHealth k <= unitAttack m = (-1)
+    | unitHealth k <= unitAttack m = -1
     | otherwise = unitGold k
 
 {- |
@@ -485,7 +485,7 @@ data BreakfastType = American | Dutch | English | French
 data Meal
     = Breakfast BreakfastType
     | Brunch
-    | Elevenses 
+    | Elevenses
     | Lunch
     | Tea
     | Supper
@@ -522,18 +522,18 @@ data Castle = Castle
     { castleName :: String
     } deriving (Show)
 
-data Wall = Wall 
+data Wall = Wall
     { wallHeight :: Int
     } deriving (Show)
 
 data Shrine = Church | Library deriving (Show)
 
-data House = House 
+data House = House
     { houseRoom :: Int
     } deriving (Show)
 
 mkHouse :: Int -> Maybe House
-mkHouse rooms 
+mkHouse rooms
     | rooms > 4 = Nothing
     | otherwise = Just (House rooms)
 
@@ -544,8 +544,8 @@ buildCastle :: City -> String -> City
 buildCastle city name = city { cityCastle = Just (Castle name)}
 
 buildHouse :: City -> Int -> City
-buildHouse city rooms = case (mkHouse rooms) of
-    Just house -> city { cityHouses = (house : cityHouses city) }
+buildHouse city rooms = case mkHouse rooms of
+    Just house -> city { cityHouses = house : cityHouses city }
     Nothing    -> city
 
 buildWalls :: City -> City
@@ -837,7 +837,7 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
-data Dragon power = Dragon 
+data Dragon power = Dragon
     { dragonPower :: power
     }
 
