@@ -651,9 +651,15 @@ Write a function that takes elements of a list only on even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
+-- takeEven :: [Int] -> [Int]
+-- takeEven [] = []
+-- takeEven (x:xs) = x : takeEven (drop 1 xs)
+
+-- version with pattern matching
 takeEven :: [Int] -> [Int]
 takeEven [] = []
-takeEven (x:xs) = x : takeEven (drop 1 xs)
+takeEven (x:[]) = x : []
+takeEven (x:_:xs) = x : takeEven xs
 
 {- |
 =🛡= Higher-order functions
