@@ -1157,14 +1157,14 @@ Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
 
-newtype Health  = Health  Int
-newtype Defence = Defence Int
-newtype Attack  = Attack  Int
+-- newtype Health  = Health  Int
+-- newtype Defence = Defence Int
+-- newtype Attack  = Attack  Int
 
-data Knight = Knight {
-    knightHealth  :: Health
-  , knightDefence :: Defence
-  , knightAttack  :: Attack
+data Knight2 = Knight2 {
+    knight2Health  :: Health
+  , knight2Defence :: Defence
+  , knight2Attack  :: Attack
   }
 
 {-
