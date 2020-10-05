@@ -752,7 +752,7 @@ smartReplicate :: [Int] -> [Int]
 smartReplicate l = concatMap (\ x -> replicate x x) l
 
 smartReplicate' :: [Int] -> [Int]
-smartReplicate' l = go [] l
+smartReplicate' = go []
     where
         go :: [Int] -> [Int] -> [Int]
         go acc [] = acc
