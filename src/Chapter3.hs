@@ -507,7 +507,7 @@ After defining the city, implement the following functions:
 -}
 
 
-City = City
+data City = City
    { cCastle :: Castle
    , cMain   :: MainBuilding
    , cHouses :: [House]
