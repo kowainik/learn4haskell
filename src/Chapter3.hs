@@ -344,6 +344,11 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = Book {
+        price :: Double,
+        review :: Bool
+    } deriving (Show)
+
 {- |
 =⚔️= Task 2
 
@@ -373,6 +378,21 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+
+data Knight = Knight {
+    health :: Int,
+    attck :: Int,
+    gold :: Int
+} deriving Show
+
+data Monster = Monster {
+    health' :: Int,
+    attck' :: Int,
+    gold' :: Int
+} deriving Show
+
+-- fight :: Knight -> Monster -> Int
+
 
 {- |
 =🛡= Sum types
@@ -563,13 +583,16 @@ introducing extra newtypes.
 data Player = Player
     { playerHealth    :: Int
     , playerArmor     :: Int
-    , playerAttack    :: Int
+    , playerAttack    :: Attack
     , playerDexterity :: Int
-    , playerStrength  :: Int
+    , playerStrength  :: Strength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+newtype Attack = Attack Int
+newtype Strength = Strength Int
+
+calculatePlayerDamage :: Attack -> Strength -> Int
+calculatePlayerDamage (Attack attack) (Strength strength) = attack + strength
 
 calculatePlayerDefense :: Int -> Int -> Int
 calculatePlayerDefense armor dexterity = armor * dexterity
@@ -910,6 +933,20 @@ Implement instances of "Append" for the following types:
 class Append a where
     append :: a -> a -> a
 
+newtype Gold = Gold Int deriving Show
+
+instance Append Gold where
+    append :: Gold -> Gold -> Gold
+    append (Gold x) (Gold y) = Gold (x + y)
+
+instance Append [a] where
+    append :: [a] -> [a] -> [a]
+    append x y = x ++ y
+
+instance Append a => Append (Maybe a) where
+    append :: Maybe a -> Maybe a -> Maybe a
+    append (Just x) (Just y) = Just (append x y)
+    append _ _ = Nothing
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -970,6 +1007,20 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
+
+data Week = Mon | Tue | Wed | Thu | Fri | Sat | Sun
+    deriving (Show, Enum, Eq, Ord, Bounded)
+
+isWeekend :: Week -> Bool
+isWeekend day = day == Sat || day == Sun
+
+nextDay :: Week -> Week
+nextDay day
+    | day == maxBound = minBound
+    | otherwise = succ day
+
+daysToParty :: Week -> Int
+daysToParty day = abs (fromEnum day - fromEnum Fri)
 
 {-
 =💣= Task 9*
