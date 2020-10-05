@@ -379,23 +379,23 @@ after the fight. The battle has the following possible outcomes:
 
 -}
 data Knight = Knight
-    { HP :: Int
-    , Attack :: Int
-    , Money :: Int
+    { kHP :: Int
+    , kAttack :: Int
+    , kMoney :: Int
   } deriving (Show)
 data Monster = Monster
-    { HP :: Int
-    , Attack :: Int
-    , Money :: Int
+    { mHP :: Int
+    , mAttack :: Int
+    , mMoney :: Int
     } deriving (Show)
 
 fight :: Knight -> Monster -> Int
 fight knight monster
-      | monsterHP monster <= knightHP knight =
-         knightMoney knight + monsterMoney monster
-      | knightHP knight <= monsterAttack monster = -1
+      | mHP monster <= kHP knight =
+         kMoney knight + mMoney monster
+      | kHP knight <= mAttack monster = -1
 
-      | otherwise = knightMoney knight
+      | otherwise = kMoney knight
                     
 
 {- |
