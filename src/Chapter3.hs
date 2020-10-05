@@ -484,7 +484,7 @@ comes up with the most number of names wins the challenge. Use your creativity!
 data BreakfastType = American | Dutch | English | French
 data Meal
   = Breakfast BreakfastType
-  | Lunch
+  | Brunch
   | Elevenses 
   | Lunch
   | Tea
@@ -518,13 +518,19 @@ data City = City
   , cityHouses  :: [House]
   } deriving (Show)
 
-data Castle = Castle { castleName :: String } deriving (Show)
+data Castle = Castle
+    { castleName :: String
+    } deriving (Show)
 
-data Wall = Wall { wallHeight :: Int } deriving (Show)
+data Wall = Wall 
+    { wallHeight :: Int
+    } deriving (Show)
 
 data Shrine = Church | Library deriving (Show)
 
-data House = House { houseRoom :: Int } deriving (Show)
+data House = House 
+    { houseRoom :: Int
+    } deriving (Show)
 mkHouse :: Int -> Maybe House
 mkHouse rooms 
   | rooms > 4 = Nothing
@@ -830,16 +836,18 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
-data Dragon = Dragon { dragonPower :: power }
+data Dragon power = Dragon 
+    { dragonPower :: power
+    }
 
 data TreasureChest x = TreasureChest
     { treasureChestGold :: Int
     , treasureChestLoot :: x
     }
 
-data Lair = Lair
-    { lairDragon   :: Dragon
-    , lairTreasure :: Maybe TreasureChest
+data Lair dragon treasure = Lair
+    { lairDragon   :: Dragon dragon
+    , lairTreasure :: Maybe (TreasureChest treasure)
     }
 
 {-
