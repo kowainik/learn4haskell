@@ -209,39 +209,33 @@ So, the output in this example means that 'False' has type 'Bool'.
 > Try to guess first and then compare your expectations with GHCi output
 
 >>> :t True
-expected: True :: Bool
-got:      True :: Bool
+True :: Bool
+
 >>> :t 'a'
-expected: 'a' :: Char
-got:      'a' :: Char
+'a' :: Char
+
 >>> :t 42
-expected: 42 :: Integer
-got:      42 :: Num p => p (didn't expect that !)
+42 :: Num p => p
 
 A pair of boolean and char:
 >>> :t (True, 'x')
-expected: (True, 'x') :: (Bool, Char)
-got:      (True, 'x') :: (Bool, Char)
+(True, 'x') :: (Bool, Char)
 
 Boolean negation:
 >>> :t not
-expected: not :: Bool -> Bool (I already know a bit of Haskell :) )
-got:      not :: Bool -> Bool
+not :: Bool -> Bool
 
 Boolean 'and' operator:
 >>> :t (&&)
-expected: (&&) :: Bool -> Bool -> Bool
-got:      (&&) :: Bool -> Bool -> Bool
+(&&) :: Bool -> Bool -> Bool
 
 Addition of two numbers:
 >>> :t (+)
-expected: (+) :: Num a => a -> a -> a
-got:      (+) :: Num a => a -> a -> a
+(+) :: Num a => a -> a -> a
 
 Maximum of two values:
 >>> :t max
-expected: no idea
-got:      max :: Ord a => a -> a -> a (ok I get it, Ord is a typeclass for types that can be ordered ?)
+max :: Ord a => a -> a -> a
 
 You might not understand each type at this moment, but don't worry! You've only
 started your Haskell journey. Types will become your friends soon.
@@ -486,7 +480,7 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 lastDigit :: Integral a => a -> a
-lastDigit n = mod n 10
+lastDigit n = mod (abs n) 10
 
 
 {- |
@@ -516,7 +510,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = min (abs x) (abs y)
+closestToZero x y = if (abs x) > (abs y) then y else x
 
 
 {- |
@@ -643,8 +637,8 @@ specifying complex expressions.
 sumLast2 :: Integer -> Integer
 sumLast2 n = theLastDigit + digitBeforeLast
   where
-    theLastDigit = mod n 10
-    digitBeforeLast = (mod n 100 - theLastDigit) `div` 10
+    theLastDigit = mod (abs n) 10
+    digitBeforeLast = (mod (abs n) 100 - theLastDigit) `div` 10
 
 
 {- |
