@@ -392,9 +392,9 @@ type Monster = Unit
 
 fight :: Knight -> Monster -> Int
 fight k m
-  | unitHealth m <= unitAttack k = unitGold m + unitGold k
-  | unitHealth k <= unitAttack m = (-1)
-  | otherwise = unitGold k
+    | unitHealth m <= unitAttack k = unitGold m + unitGold k
+    | unitHealth k <= unitAttack m = (-1)
+    | otherwise = unitGold k
 
 {- |
 =🛡= Sum types
@@ -483,13 +483,13 @@ comes up with the most number of names wins the challenge. Use your creativity!
 -}
 data BreakfastType = American | Dutch | English | French
 data Meal
-  = Breakfast BreakfastType
-  | Brunch
-  | Elevenses 
-  | Lunch
-  | Tea
-  | Supper
-  | Dinner
+    = Breakfast BreakfastType
+    | Brunch
+    | Elevenses 
+    | Lunch
+    | Tea
+    | Supper
+    | Dinner
 
 {- |
 =⚔️= Task 4
@@ -512,11 +512,11 @@ After defining the city, implement the following functions:
 -}
 
 data City = City
-  { cityCastle  :: Maybe Castle
-  , cityWall    :: Maybe Wall
-  , cityShrine  :: Shrine
-  , cityHouses  :: [House]
-  } deriving (Show)
+    { cityCastle  :: Maybe Castle
+    , cityWall    :: Maybe Wall
+    , cityShrine  :: Shrine
+    , cityHouses  :: [House]
+    } deriving (Show)
 
 data Castle = Castle
     { castleName :: String
@@ -531,10 +531,11 @@ data Shrine = Church | Library deriving (Show)
 data House = House 
     { houseRoom :: Int
     } deriving (Show)
+
 mkHouse :: Int -> Maybe House
 mkHouse rooms 
-  | rooms > 4 = Nothing
-  | otherwise = Just (House rooms)
+    | rooms > 4 = Nothing
+    | otherwise = Just (House rooms)
 
 initCity :: Shrine -> City
 initCity shrine = City Nothing Nothing shrine []
@@ -544,8 +545,8 @@ buildCastle city name = city { cityCastle = Just (Castle name)}
 
 buildHouse :: City -> Int -> City
 buildHouse city rooms = case (mkHouse rooms) of
-  Just house -> city { cityHouses = (house : cityHouses city) }
-  Nothing    -> city
+    Just house -> city { cityHouses = (house : cityHouses city) }
+    Nothing    -> city
 
 buildWalls :: City -> City
 buildWalls city = case cityCastle city of
@@ -1083,19 +1084,19 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 data Weekday
-  = Monday
-  | Tuesday
-  | Wednesday
-  | Thursday
-  | Friday
-  | Saturday
-  | Sunday deriving (Show, Eq, Ord, Bounded, Enum)
+    = Monday
+    | Tuesday
+    | Wednesday
+    | Thursday
+    | Friday
+    | Saturday
+    | Sunday deriving (Show, Eq, Ord, Bounded, Enum)
 
 isWeekend :: Weekday -> Bool
 isWeekend weekday = case weekday of
-  Saturday -> True
-  Sunday   -> True
-  _        -> False
+    Saturday -> True
+    Sunday   -> True
+    _        -> False
 
 nextDay :: Weekday -> Weekday
 nextDay weekday =
