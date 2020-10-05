@@ -542,12 +542,10 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 mid :: Int -> Int -> Int -> Int
-mid x y z 
-  | (x > y && x < z) || (x < y && x > z) = x
-  | (y > x && y < z) || (y < x && y > z) = y
-  | x == y || x == z                     = x
-  | y == z                               = y
-  | otherwise                            = z
+mid x y z
+  | (x >= y && x <= z) || (x <= y && x >= z) = x
+  | (y >= x && y <= z) || (y <= x && y >= z) = y
+  | otherwise                                = z
 
 {- |
 =⚔️= Task 8
@@ -562,7 +560,7 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c 
+isVowel c
   | c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' = True
   | otherwise = False
 
@@ -627,10 +625,9 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
-sumLast2 n = 
+sumLast2 n =
     let lastTwoDigits = mod (abs n) 100
-        tensPlace = div lastTwoDigits 10
-        unitsPlace = mod lastTwoDigits 10
+        (tensPlace, unitsPlace) = divMod lastTwoDigits 10
     in tensPlace + unitsPlace
 
 
@@ -652,12 +649,13 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
-firstDigit n 
-  | reduceN n == 0 = n
-  | otherwise = firstDigit (reduceN n)
-    where 
+firstDigit n
+  | reduceN n == 0  = n
+  | n < 0           = firstDigit (abs n)
+  | otherwise       = firstDigit (reduceN  n)
+    where
       reduceN :: Int -> Int
-      reduceN n = div n 10
+      reduceN no = div no 10
 
 {-
 You did it! Now it is time to the open pull request with your changes
