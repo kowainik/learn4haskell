@@ -479,6 +479,7 @@ and provide more flexibility when working with data types.
 
 {- |
 =⚔️= Task 3
+data Meal = Breakfast | Snacks | Cheating | Ramen | Lunch | Dinner
 
 Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
