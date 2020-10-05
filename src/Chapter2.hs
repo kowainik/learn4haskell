@@ -902,9 +902,11 @@ and reverses it.
   cheating!
 -}
 rewind :: [Int] -> [Int]
-rewind [] = []
-rewind [x] = [x]
-rewind (x:xs) = rewind xs ++ [x]
+rewind l = go [] l
+  where
+    go :: [Int] -> [Int] -> [Int]
+    go acc [] = acc
+    go acc (x:xs) = go (x:acc) xs
 
 
 {-
