@@ -549,7 +549,7 @@ Casual reminder about adding top-level type signatures for all functions :)
   -}
 
 mid :: Int -> Int -> Int -> Int
-mid x y z 
+mid x y z
   | (x < y && x > z) || (x > y && x < z) = x
   | (y < x && y > z) || (y > x && y < z) = y
   | (z < y && z > x) || (z > y && z < x) = z
