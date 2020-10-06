@@ -661,9 +661,9 @@ aren't ready for this boss yet!
 
 firstDigit :: Int -> Int
 firstDigit n =
-  if n < 10
-     then n
-     else firstDigit (div n 10)
+  if abs n < 10
+     then abs n
+     else firstDigit (div (abs n) 10)
 
 {-
 You did it! Now it is time to the open pull request with your changes
