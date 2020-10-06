@@ -233,7 +233,7 @@ Addition of two numbers:
 
 Maximum of two values:
 >>> :t max
-max :: Ord => a -> a -> a
+max :: Ord a => a -> a -> a
 
 You might not understand each type at this moment, but don't worry! You've only
 started your Haskell journey. Types will become your friends soon.
