@@ -480,7 +480,7 @@ Implement a function that returns the last digit of a given number.
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 
 lastDigit :: Int -> Int
-lastDigit n = mod n 10
+lastDigit n = mod (abs (n)) 10
 
 
 
@@ -650,10 +650,12 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit n = 
-    if (n>=10)
-      then firstDigit (div n 10)
-      else n
+
+firstDigit :: Int -> Int
+firstDigit n =
+    if ( abs n >=10)
+      then firstDigit (div (abs n) 10)
+      else (abs n)
 
 {-
 You did it! Now it is time to the open pull request with your changes
