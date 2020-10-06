@@ -416,7 +416,6 @@ task is to specify the type of this function.
 >>> squareSum 3 4
 49
 -}
-
 squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
 
@@ -468,7 +467,7 @@ Implement a function that returns the last digit of a given number.
 >>> lastDigit 42
 2
 
-🕯 HINT: Use the `mod` function
+🕯 HINT: use the `mod` function
 
 ♫ NOTE: You can discover possible functions to use via Hoogle:
     https://hoogle.haskell.org/
@@ -479,7 +478,7 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 lastDigit :: Int -> Int
-lastDigit n = mod (abs n) 10
+lastDigit n = mod n 10
 
 
 {- |
@@ -509,7 +508,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = if abs x < abs y then x else y
+closestToZero x y = if abs x > abs y then y else x
 
 
 {- |
@@ -544,11 +543,10 @@ Casual reminder about adding top-level type signatures for all functions :)
 -}
 mid :: Int -> Int -> Int -> Int
 mid x y z
-    | x <= z && z <= y = z
-    | y <= z && z <= x = z
-    | y <= x && x <= z = x
-    | z <= x && x <= y = x
-    | otherwise        = y
+  | (y < x && x < z) || (z < x && x < y) = x
+  | (x < y && y < z) || (z < y && y < x) = y
+  | otherwise = z
+
 
 {- |
 =⚔️= Task 8
@@ -563,13 +561,14 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c
-    | c == 'a'  = True
-    | c == 'e'  = True
-    | c == 'i'  = True
-    | c == 'o'  = True
-    | c == 'u'  = True
-    | otherwise = False
+isVowel c 
+  | c == 'a' || c == 'A' = True
+  | c == 'e' || c == 'E' = True
+  | c == 'i' || c == 'I' = True
+  | c == 'o' || c == 'O' = True
+  | c == 'u' || c == 'U' = True
+  | otherwise = False
+
 
 
 {- |
@@ -633,10 +632,11 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
-sumLast2 n =
-    let lastTwo = mod (abs n) 100
-        (second, first) = divMod lastTwo 10
-    in second + first
+sumLast2 n = 
+  let last2 = mod n 100
+      tens = div last2 10
+      ones = mod last2 10
+  in (tens + ones)
 
 
 {- |
@@ -656,13 +656,9 @@ Implement a function that returns the first digit of a given number.
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
-
 firstDigit :: Int -> Int
-firstDigit n = go (divMod (abs n) 10)
-  where
-    go :: (Int, Int) -> Int
-    go (0, lastD) = lastD
-    go (rest, _) = go (divMod rest 10)
+firstDigit n = if div n 10 == 0 then n else firstDigit (div n 10)
+
 
 {-
 You did it! Now it is time to the open pull request with your changes
