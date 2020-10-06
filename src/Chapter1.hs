@@ -543,7 +543,7 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 
-{- 
+{-
   Written to take a median approach if two or more numbers are identical. If all numbers are the same, the
   first number is returned. If two numbers are the same, the number with two instances is returned
   -}
