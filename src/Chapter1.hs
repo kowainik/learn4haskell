@@ -661,9 +661,10 @@ aren't ready for this boss yet!
 
 firstDigit :: Int -> Int
 firstDigit n =
-  if abs n < 10
-     then abs n
-     else firstDigit (div (abs n) 10)
+   let num = abs n
+    in if num < 10
+          then num
+          else firstDigit (div num 10)
 
 {-
 You did it! Now it is time to the open pull request with your changes
