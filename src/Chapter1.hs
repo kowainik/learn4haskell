@@ -477,8 +477,8 @@ Implement a function that returns the last digit of a given number.
   results. Or you can try to guess the function name, search for it and check
   whether it works for you!
 -}
--- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit n = (abs n) `mod` 10
+lastDigit :: Int -> Int
+lastDigit n = abs n `mod` 10
 
 
 {- |
@@ -508,7 +508,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = if (abs x) < (abs y) 
+closestToZero x y = if abs x < abs y
                     then x
                     else y
 
@@ -633,9 +633,9 @@ specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
 sumLast2 n = let m = abs n
-                 lastDigit = m `mod` 10
-                 secondLastDigit = (m `div` 10) `mod` 10
-              in lastDigit + secondLastDigit
+                 lastD = m `mod` 10
+                 secondLastD = (m `div` 10) `mod` 10
+              in lastD + secondLastD
 
 
 {- |
