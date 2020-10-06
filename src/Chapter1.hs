@@ -508,8 +508,8 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = 
-    if (abs x) > (abs y)
+closestToZero x y =
+    if abs x > abs y
         then y
         else x
 
@@ -545,7 +545,7 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 
-mid x y z 
+mid x y z
     | x < y = if y < z then y else z
     | z < x = if y < z then z else y
     | otherwise = x
@@ -632,8 +632,8 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 
-sumLast2 n = 
-    let tens = div (mod (abs n) 100) 10 
+sumLast2 n =
+    let tens = div (mod (abs n) 100) 10
         units = lastDigit (abs n)
     in tens + units
 

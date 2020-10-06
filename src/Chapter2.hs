@@ -353,7 +353,7 @@ Implement a function that returns only the first half of a given list.
 -}
 firstHalf :: [a] -> [a]
 firstHalf l
-    | length l == 0 = []
+    | null l = []
     | otherwise = take (div (length l) 2) l
 
 
@@ -506,7 +506,7 @@ True
 False
 -}
 isThird42 :: [Int] -> Bool
-isThird42 (_:_:l:_) = 
+isThird42 (_:_:l:_) =
     l == 42
 
 
@@ -755,8 +755,8 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains n l =
-    filter (\x -> elem n x) l 
+contains n =
+    filter (elem n)
 
 
 {- |
