@@ -547,6 +547,7 @@ mid x y z
     | (x > y) && (x < z) || (x < y) && (x > z) = x
     | (y > x) && (y < z) || (y < x) && (y > z) = y
     | (z > x) && (z < y) || (z < x) && (z > y) = z
+    | otherwise = x
 
 {- |
 =⚔️= Task 8
@@ -631,7 +632,7 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
-sumLast2 n = first n + second n
+sumLast2 n = first (abs n) + second (abs n)
     where
       first :: Int -> Int
       first x = div (x `mod` 100) 10
@@ -658,8 +659,8 @@ aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
 firstDigit n 
-    | n < 10 = n
-    | otherwise = firstDigit (div n 10)
+    | abs n < 10 = abs n
+    | otherwise = firstDigit (div (abs n) 10)
 
 
 {-
