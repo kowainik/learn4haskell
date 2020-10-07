@@ -275,7 +275,7 @@ of a two-element list:
               . . . . . o o o o o
   _________    _________   ____  o
  |    y   |   |    x   |   |[]\_n][.
-_|________|_o_|________|_o_|__|____)<
+_|________|_o_|__ ______|_o_|__|____)<
   oo    oo     oo    oo     oo 00-oo\_
 
      y      :      x     :  []
@@ -863,8 +863,9 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate = error "rotate: Not implemented!"
-
+rotate n list = take lenOfList $ drop n $ cycle list
+    where lenOfList = (length list) 
+    
 {- |
 =💣= Task 12*
 
@@ -879,7 +880,9 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind = error "rewind: Not Implemented!"
+rewind :: [a] -> [a]
+rewind [] = []
+rewind (x:xs) = rewind xs ++ [x] 
 
 
 {-
