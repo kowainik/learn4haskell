@@ -637,8 +637,11 @@ Implement a function that returns the sum of the last two digits of a number.
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
-
-sumLast2 n = error "sumLast2: Not implemented!"
+sumLast2 :: Int -> Int
+sumLast2 n =
+    let tensDigit = div n 10 
+        onesDigit = mod n 10
+    in tensDigit + onesDigit
 
 
 {- |
@@ -658,8 +661,10 @@ Implement a function that returns the first digit of a given number.
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
-
-firstDigit n = error "firstDigit: Not implemented!"
+firstDigit :: Int -> Int
+firstDigit n =
+    if divN == 0 then n else firstDigit divN
+    where divN = div n 10
 
 
 {-
