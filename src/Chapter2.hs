@@ -506,8 +506,8 @@ True
 False
 -}
 isThird42 :: [Int] -> Bool
-isThird42 (_:_:l:_) =
-    l == 42
+isThird42 (_:_:42:_) = False
+isThird42 _ = False
 
 
 {- |
@@ -755,6 +755,7 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
+contains :: Int -> [[Int]] -> [[Int]]
 contains n =
     filter (elem n)
 
@@ -859,8 +860,9 @@ list.
 🕯 HINT: Use the 'cycle' function
 -}
 rotate :: Int -> [Int] -> [Int]
-rotate n l =
-    take (length l) $ drop n $ cycle l
+rotate n l
+    | n < 0 = []
+    | otherwise = take (length l) $ drop n $ cycle l
 
 {- |
 =💣= Task 12*
@@ -880,6 +882,9 @@ rewind [] = []
 rewind [x] = [x]
 rewind (x:xs) =
     rewind xs ++ [x]
+
+-- TODO: bad performances, better to re-implement with the : operator
+-- or with the go recursive pattern
 
 
 {-
