@@ -71,11 +71,12 @@ chapter1normal = describe "Chapter1Normal" $ do
 
 chapter1advanced :: Spec
 chapter1advanced = describe "Chapter1Advanced" $ do
-    it "first digit 0" $ firstDigit 0 `shouldBe` 0
-    it "first digit 0 < 10" $ firstDigit 9 `shouldBe` 9
-    it "first digit 10 < 100" $ firstDigit 58 `shouldBe` 5
-    it "first digit 100 < 1000" $ firstDigit 158 `shouldBe` 1
-    it "first digit big" $ firstDigit 467321 `shouldBe` 4
-    it "first digit 0 > -10" $ firstDigit (-9) `shouldBe` 9
-    it "first digit -10 > -100" $ firstDigit (-58) `shouldBe` 5
-    it "first digit -100 > -1000" $ firstDigit (-158) `shouldBe` 1
+    describe "Task 10*" $ do
+        it "first digit 0" $ firstDigit 0 `shouldBe` 0
+        it "first digit 0 < 10" $ firstDigit 9 `shouldBe` 9
+        it "first digit 10 < 100" $ firstDigit 58 `shouldBe` 5
+        it "first digit 100 < 1000" $ firstDigit 158 `shouldBe` 1
+        it "first digit big" $ firstDigit 467321 `shouldBe` 4
+        it "first digit 0 > -10" $ firstDigit (-9) `shouldBe` 9
+        it "first digit -10 > -100" $ firstDigit (-58) `shouldBe` 5
+        it "first digit -100 > -1000" $ firstDigit (-158) `shouldBe` 1
