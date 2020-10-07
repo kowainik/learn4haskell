@@ -478,7 +478,7 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 lastDigit :: Int -> Int
-lastDigit n = mod n 10
+lastDigit n = mod (abs n) 10
 
 
 {- |
@@ -561,7 +561,7 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c 
+isVowel c
   | c == 'a' || c == 'A' = True
   | c == 'e' || c == 'E' = True
   | c == 'i' || c == 'I' = True
@@ -632,7 +632,7 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
-sumLast2 n = 
+sumLast2 n =
   let last2 = mod n 100
       tens = div last2 10
       ones = mod last2 10
