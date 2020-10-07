@@ -808,6 +808,7 @@ listElementsLessThan :: Int -> [Int] -> [Int]
 listElementsLessThan x = filter (< x) 
 
 -- Can you eta-reduce this one???
+pairMul :: [Int] -> [Int] -> [Int]
 pairMul = zipWith (*) 
 
 {- |
@@ -863,6 +864,7 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
+rotate :: Int -> [a] -> [a]
 rotate n list = take lenOfList $ drop n $ cycle list
     where lenOfList = (length list) 
     
