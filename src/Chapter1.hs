@@ -480,7 +480,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int
-lastDigit n = mod n 10
+lastDigit n = mod (abs n) 10
 
 
 {- |
@@ -510,7 +510,10 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = error "closestToZero: not implemented!"
+closestToZero x y = 
+  if (abs x) > (abs y)
+    then y
+    else x
 
 
 {- |
@@ -544,7 +547,19 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 
-mid x y z = error "mid: not implemented!"
+mid :: Int -> Int -> Int -> Int
+mid x y z
+  | x < y && x > z = x  -- Conditions for which X is the middle number
+  | x < z && x > y = x
+
+  | y < x && y > z = y  -- Conditions for which y is the middle number
+  | y < z && y > x = y
+
+  | z < y && z > x = z  -- Conditions for which X is the middle number
+  | z < x && z > y = z
+
+  | x == y && y == z = x  -- If all equal return any of them
+  | otherwise = y         
 
 {- |
 =⚔️= Task 8
@@ -558,7 +573,15 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel c = error "isVowel: not implemented!"
+isVowel :: Char -> Bool
+isVowel c 
+  | c == 'a' || c == 'A' = True
+  | c == 'e' || c == 'E' = True
+  | c == 'i' || c == 'I' = True
+  | c == 'o' || c == 'o' = True
+  | c == 'u' || c == 'U' = True
+  | c == 'y' || c == 'Y' = True
+  | otherwise = False
 
 
 {- |
@@ -621,8 +644,11 @@ Implement a function that returns the sum of the last two digits of a number.
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
-
-sumLast2 n = error "sumLast2: Not implemented!"
+sumLast2 :: Int -> Int
+sumLast2 n = 
+  let num = mod (abs n) 100
+      (tens, units) = divMod num 10
+  in (tens + units)
 
 
 {- |
@@ -643,8 +669,12 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit n = error "firstDigit: Not implemented!"
-
+firstDigit :: Int -> Int
+firstDigit n =
+  let num = abs n
+  in (if num >= 10
+        then firstDigit (div (num - lastDigit num) 10)
+        else num)
 
 {-
 You did it! Now it is time to the open pull request with your changes
