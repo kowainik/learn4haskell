@@ -544,9 +544,12 @@ Casual reminder about adding top-level type signatures for all functions :)
 
 mid :: Int -> Int -> Int -> Int
 mid x y z
-    | y < x && x < z = x
-    | x < y && y < z = y
-    | x < z && z < y = z
+    | y <= x && x <= z = x
+    | z <= x && x <= y = x
+    | x <= y && y <= z = y
+    | z <= y && y <= x = y
+    | x <= z && z <= y = z
+    | y <= z && z <= x = z
 
 {- |
 =⚔️= Task 8
