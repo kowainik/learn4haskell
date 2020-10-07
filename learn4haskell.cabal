@@ -64,6 +64,8 @@ test-suite learn4haskell-test
                        Test.Chapter4
   build-depends:       learn4haskell
                      , hspec ^>= 2.7.4
+                     , hspec-hedgehog
+                     , hedgehog  >= 1.0.2 && < 2 
   ghc-options:         -threaded
                        -rtsopts
                        -with-rtsopts=-N
