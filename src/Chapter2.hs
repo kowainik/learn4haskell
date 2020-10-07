@@ -336,7 +336,12 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList = error "subList: Not implemented!"
+subList _ _ [] = []
+subList start end list
+        | isValid = take diff $ drop start list
+        | otherwise = []
+    where isValid = (start >= 0 && end >= 0) && start <= end
+          diff = end - start + 1 
 
 {- |
 =⚔️= Task 4
@@ -349,7 +354,11 @@ Implement a function that returns only the first half of a given list.
 "b"
 -}
 -- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
+firstHalf :: [a] -> [a]
+firstHalf [] = []
+firstHalf l =
+    take halfLength l
+    where halfLength = div (length l) 2
 
 
 {- |
@@ -500,7 +509,9 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
-isThird42 = error "isThird42: Not implemented!"
+isThird42 :: [Int] -> Bool
+isThird42 (_ : _ : 42 : _) = True
+isThird42 _ = False
 
 
 {- |
@@ -605,7 +616,8 @@ Implement a function that duplicates each element of the list
 
 -}
 duplicate :: [a] -> [a]
-duplicate = error "duplicate: Not implemented!"
+duplicate [] = []
+duplicate (x:xs) = x:x:duplicate xs
 
 
 {- |
@@ -620,7 +632,14 @@ Write a function that takes elements of a list only on even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
-takeEven = error "takeEven: Not implemented!"
+takeEven :: [a] -> [a]
+takeEven [] = []
+takeEven list = go 0 list
+    where go :: Int -> [a] -> [a]
+          go _ [] = []
+          go count (x:xs) 
+             | mod count 2 == 0 = x:go (count + 1) xs
+             | otherwise = go (count + 1) xs
 
 {- |
 =🛡= Higher-order functions
@@ -727,7 +746,8 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = error "smartReplicate: Not implemented!"
+smartReplicate [] = []
+smartReplicate l = concat $ map (\n -> replicate n n) l
 
 {- |
 =⚔️= Task 9
@@ -740,7 +760,8 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains = error "contains: Not implemented!"
+contains :: Int -> [[Int]] -> [[Int]]
+contains n list = filter (elem n) list 
 
 
 {- |
@@ -780,13 +801,14 @@ Let's now try to eta-reduce some of the functions and ensure that we
 mastered the skill of eta-reducing.
 -}
 divideTenBy :: Int -> Int
-divideTenBy x = div 10 x
+divideTenBy = div 10 
 
 -- TODO: type ;)
-listElementsLessThan x l = filter (< x) l
+listElementsLessThan :: Int -> [Int] -> [Int]
+listElementsLessThan x = filter (< x) 
 
 -- Can you eta-reduce this one???
-pairMul xs ys = zipWith (*) xs ys
+pairMul = zipWith (*) 
 
 {- |
 =🛡= Lazy evaluation
