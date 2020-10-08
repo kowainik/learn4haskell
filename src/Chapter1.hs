@@ -613,7 +613,7 @@ Implement a function that returns the sum of the last two digits of a number.
 6
 >>> sumLast2 134
 7
->>> sumLast 1
+>>> sumLast2 1
 1
 
 Try to introduce variables in this task (either with let-in or where) to avoid
