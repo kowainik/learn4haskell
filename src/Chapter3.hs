@@ -386,6 +386,7 @@ data Unit = Unit
     , attack :: Int
     , gold :: Int
     }
+    deriving (Show)
 
 type Knight = Unit 
 type Monster = Unit 
@@ -487,6 +488,18 @@ and provide more flexibility when working with data types.
 Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
+data Meal
+    = Breakfast
+    | Lunch
+    | Dinner
+    | Brunch
+    | Linner 
+    | Dinfast
+    | RegularSnack
+    | MidnightSnack
+    | HeavySnack
+    | FoodComaSnack
+    | ISwearJustABite
 
 {- |
 =⚔️= Task 4
@@ -507,7 +520,44 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
+type Houses = [HouseSize]
 
+type HouseSize = Int
+
+data Castle
+    = Castle String
+    | NoCastle
+    deriving (Show)
+
+data Knowledge
+    = Church
+    | Library
+    deriving (Show)
+
+data MagicalCity = MagicalCity
+    { cityCastle :: Castle
+    , cityWall :: Bool
+    , cityKnowledge :: Knowledge
+    , cityHouses :: Houses
+    }
+    deriving (Show)
+
+buildCastle :: Castle -> MagicalCity -> MagicalCity
+buildCastle newCastle city = city { cityCastle = newCastle } 
+
+buildHouse :: HouseSize -> MagicalCity -> MagicalCity 
+buildHouse houseSize city
+    | houseSize <= 4 = city { cityHouses = houseSize:cityHouses city }
+    | otherwise = city
+
+buildWalls :: MagicalCity -> MagicalCity
+buildWalls city =
+    case cityCastle city of
+        Castle _ ->
+            if sum (cityHouses city) >= 10 then
+                city { cityWall = True }
+            else city
+        NoCastle -> city
 {-
 =🛡= Newtypes
 
