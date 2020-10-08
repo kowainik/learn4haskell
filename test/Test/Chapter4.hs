@@ -52,7 +52,7 @@ chapter4normal = describe "Chapter4Normal" $ do
 
 chapter4advanced :: Spec
 chapter4advanced = describe "Chapter4Advanced" $
-    describe "andM" $ do
+    describe "Task 8*: Before the Final Boss" $ do
         it "Nothing - Nothing" $ andM Nothing Nothing `shouldBe` Nothing
         it "Nothing - Just" $ andM Nothing (Just True) `shouldBe` Nothing
         it "Just True - Nothing" $ andM (Just True) Nothing `shouldBe` Nothing
