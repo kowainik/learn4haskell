@@ -337,10 +337,11 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList start end xs =
-  if start < 0 || end < 0 
-    then [] 
-    else take (end - start + 1) (drop start xs)
+subList start end xs 
+  | end < start     = []
+  | start < 0       = []
+  | end < 0         = []
+  | otherwise       = take (end - start + 1) (drop start xs)
 
 {- |
 =⚔️= Task 4
@@ -800,7 +801,7 @@ listElementsLessThan x = filter (< x)
 
 -- Can you eta-reduce this one???
 pairMul :: [Int] -> [Int] -> [Int]
-pairMul xs = zipWith (*) xs 
+pairMul = zipWith (*) 
 
 {- |
 =🛡= Lazy evaluation
@@ -875,12 +876,16 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
+-- Recursion using accumulator and go function
 rewind :: [a] -> [a]
-rewind [] = []
-rewind (x:xs) = rewind xs ++ [x]
+rewind l = go l []
+  where
+    go [] acc = acc
+    go (x:xs) acc = go xs (x:acc)
 
+-- Using foldl
 rewind' :: [a] -> [a]
-rewind' = foldl (\x y -> y:x) []
+rewind' = foldl (flip (:)) []
 
 {-
 You did it! Now it is time to the open pull request with your changes
