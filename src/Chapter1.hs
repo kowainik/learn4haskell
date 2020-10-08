@@ -209,31 +209,31 @@ So, the output in this example means that 'False' has type 'Bool'.
 > Try to guess first and then compare your expectations with GHCi output
 
 >>> :t True
-True :: Bool
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 >>> :t 'a'
-'a' :: Char
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 >>> :t 42
-42 :: Num p => p
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 A pair of boolean and char:
 >>> :t (True, 'x')
-(True, 'x') :: (Bool, Char)
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 Boolean negation:
 >>> :t not
-not :: Bool -> Bool
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 Boolean 'and' operator:
 >>> :t (&&)
-(&&) :: Bool -> Bool -> Bool
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 Addition of two numbers:
 >>> :t (+)
-(+) :: Num a => a -> a -> a
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 Maximum of two values:
 >>> :t max
-max :: Ord a => a -> a -> a
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 You might not understand each type at this moment, but don't worry! You've only
 started your Haskell journey. Types will become your friends soon.
@@ -301,31 +301,31 @@ expressions in GHCi
   functions and operators first. Remember this from the previous task? ;)
 
 >>> 1 + 2
-3
+INSERT THE RESULT INSTEAD OF THE TEXT
 >>> 10 - 15
--5
+
 >>> 10 - (-5)  -- negative constants require ()
-15
+
 >>> (3 + 5) < 10
-True
+
 >>> True && False
-False
+
 >>> 10 < 20 || 20 < 5
-True
+
 >>> 2 ^ 10  -- power
-1024
+
 >>> not False
-True
+
 >>> div 20 3  -- integral division
-6
+
 >>> mod 20 3  -- integral division remainder
-2
+
 >>> max 4 10
-10
+
 >>> min 5 (max 1 2)
-2
+
 >>> max (min 1 10) (min 5 7)
-5
+
 
 Because Haskell is a __statically-typed__ language, you see an error each time
 you try to mix values of different types in situations where you are not
@@ -416,7 +416,7 @@ task is to specify the type of this function.
 >>> squareSum 3 4
 49
 -}
-squareSum :: Int -> Int -> Int
+
 squareSum x y = (x + y) * (x + y)
 
 
@@ -437,7 +437,7 @@ Implement the function that takes an integer value and returns the next 'Int'.
   function body with the proper implementation.
 -}
 next :: Int -> Int
-next x = x + 1
+next x = error "next: not implemented!"
 
 {- |
 After you've implemented the function (or even during the implementation), you
@@ -478,9 +478,8 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit :: Int -> Int
-lastDigit n = mod absN 10
-    where absN = abs n
+lastDigit n = error "lastDigit: Not implemented!"
+
 
 {- |
 =⚔️= Task 6
@@ -509,11 +508,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y
-    | absX < absY = x
-    | otherwise = y
-    where absX = abs x
-          absY = abs y
+closestToZero x y = error "closestToZero: not implemented!"
 
 
 {- |
@@ -546,13 +541,8 @@ value after "=" where the condition is true.
 
 Casual reminder about adding top-level type signatures for all functions :)
 -}
-mid :: Int -> Int -> Int -> Int
-mid x y z
-    | x < y && y < z = y
-    | z < y && y < x = y
-    | y < x && x < z = x
-    | z < x && x < y = x
-    | otherwise = z
+
+mid x y z = error "mid: not implemented!"
 
 {- |
 =⚔️= Task 8
@@ -566,14 +556,7 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel :: Char -> Bool
-isVowel c
-        | c == 'a' = True
-        | c == 'e' = True
-        | c == 'i' = True
-        | c == 'o' = True
-        | c == 'u' = True
-        | otherwise = False
+isVowel c = error "isVowel: not implemented!"
 
 
 {- |
@@ -636,11 +619,8 @@ Implement a function that returns the sum of the last two digits of a number.
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
-sumLast2 :: Int -> Int
-sumLast2 n =
-    let absN = abs n
-        (tensDigit, onesDigit) = divMod absN 10
-    in tensDigit + onesDigit
+
+sumLast2 n = error "sumLast2: Not implemented!"
 
 
 {- |
@@ -660,12 +640,8 @@ Implement a function that returns the first digit of a given number.
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
-firstDigit :: Int -> Int
-firstDigit n
-    | divN == 0 = n
-    | otherwise = firstDigit divN
-    where absN = abs n
-          divN = div absN 10
+
+firstDigit n = error "firstDigit: Not implemented!"
 
 
 {-
