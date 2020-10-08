@@ -49,4 +49,3 @@ test-chapter4-basic:
 .PHONY: test-all
 test-all:
 	cabal test all --enable-tests --test-show-details=direct
-	cabal run learn4haskell-test --enable-tests --
