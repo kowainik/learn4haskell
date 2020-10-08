@@ -510,7 +510,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = 
+closestToZero x y =
   if (abs x) > (abs y)
     then y
     else x
@@ -559,7 +559,7 @@ mid x y z
   | z < x && z > y = z
 
   | x == y && y == z = x  -- If all equal return any of them
-  | otherwise = y         
+  | otherwise = y
 
 {- |
 =⚔️= Task 8
@@ -574,7 +574,7 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c 
+isVowel c
   | c == 'a' || c == 'A' = True
   | c == 'e' || c == 'E' = True
   | c == 'i' || c == 'I' = True
@@ -645,7 +645,7 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
-sumLast2 n = 
+sumLast2 n =
   let num = mod (abs n) 100
       (tens, units) = divMod num 10
   in (tens + units)
