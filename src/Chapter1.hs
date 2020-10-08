@@ -538,7 +538,10 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 mid :: Int -> Int -> Int -> Int
-mid x y z = error "mid: not implemented!"
+mid x y z
+        | (x <= y) && (x >= z) || (x >= y) && (x <= z) = x
+        | (y <= x) && (y >= z) || (y >= x) && (y <= z) = y
+        | otherwise = z
 
 {- |
 =⚔️= Task 8
@@ -552,7 +555,14 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel c = error "isVowel: not implemented!"
+isVowel :: Char -> Bool
+isVowel c
+        | c == 'a' = True
+        | c == 'e' = True
+        | c == 'i' = True
+        | c == 'o' = True
+        | c == 'u' = True
+        | otherwise = False
 
 
 {- |
@@ -615,8 +625,11 @@ Implement a function that returns the sum of the last two digits of a number.
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
-
-sumLast2 n = error "sumLast2: Not implemented!"
+sumLast2 :: Int -> Int
+sumLast2 n =
+    let a = mod (abs n) 10
+        b = div (mod (abs n) 100) 10
+    in a + b
 
 
 {- |
@@ -636,8 +649,12 @@ Implement a function that returns the first digit of a given number.
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
-
-firstDigit n = error "firstDigit: Not implemented!"
+firstDigit :: Int -> Int
+firstDigit n
+  | (div x 10) == 0 = abs n
+  | otherwise = firstDigit (div x 10)
+  where
+    x = abs n
 
 
 {-
