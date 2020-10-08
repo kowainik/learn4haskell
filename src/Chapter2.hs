@@ -665,7 +665,7 @@ specify space-separated arguments. Instead of the "=" in the ordinary
 function body, you should write "->" and then you can use these
 arguments and all variables in scope inside the lambda-body.
 
-There are equal:
+These are equal:
 
 @
 foo a b = a + b
