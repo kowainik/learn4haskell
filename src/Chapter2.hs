@@ -651,7 +651,7 @@ the same way as any other values and expressions:
  ✲ And much more!
 
 The ability to create __lambdas__ (or anonymous functions) nicely
-complements the concept of HOF. For example, we can easily append
+complements the concept of HOF. For example, we can easily add
 number 3 to each element of the list by introducing a lambda function:
 
 >>> map (\x -> x + 3) [0..5]
