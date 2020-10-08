@@ -341,7 +341,7 @@ subList start end list
         | isValid = take diff $ drop start list
         | otherwise = []
     where isValid = (start >= 0 && end >= 0) && start <= end
-          diff = end - start + 1 
+          diff = end - start + 1
 
 {- |
 =⚔️= Task 4
@@ -634,12 +634,10 @@ Write a function that takes elements of a list only on even positions.
 -}
 takeEven :: [a] -> [a]
 takeEven [] = []
-takeEven list = go 0 list
-    where go :: Int -> [a] -> [a]
-          go _ [] = []
-          go count (x:xs) 
-             | mod count 2 == 0 = x:go (count + 1) xs
-             | otherwise = go (count + 1) xs
+takeEven [x1] = [x1]
+takeEven [x1, x2] = [x1]
+takeEven (x:xs) = x:takeEven skipNextList
+    where skipNextList = drop 1 xs
 
 {- |
 =🛡= Higher-order functions
@@ -747,7 +745,7 @@ value of the element itself
 -}
 smartReplicate :: [Int] -> [Int]
 smartReplicate [] = []
-smartReplicate l = concat $ map (\n -> replicate n n) l
+smartReplicate l = concatMap (\n -> replicate n n) l
 
 {- |
 =⚔️= Task 9
@@ -761,7 +759,7 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: Int -> [[Int]] -> [[Int]]
-contains n list = filter (elem n) list 
+contains n = filter (elem n)
 
 
 {- |
@@ -801,15 +799,15 @@ Let's now try to eta-reduce some of the functions and ensure that we
 mastered the skill of eta-reducing.
 -}
 divideTenBy :: Int -> Int
-divideTenBy = div 10 
+divideTenBy = div 10
 
 -- TODO: type ;)
 listElementsLessThan :: Int -> [Int] -> [Int]
-listElementsLessThan x = filter (< x) 
+listElementsLessThan x = filter (< x)
 
 -- Can you eta-reduce this one???
 pairMul :: [Int] -> [Int] -> [Int]
-pairMul = zipWith (*) 
+pairMul = zipWith (*)
 
 {- |
 =🛡= Lazy evaluation
@@ -866,8 +864,8 @@ list.
 -}
 rotate :: Int -> [a] -> [a]
 rotate n list = take lenOfList $ drop n $ cycle list
-    where lenOfList = (length list) 
-    
+    where lenOfList = length list
+
 {- |
 =💣= Task 12*
 
@@ -884,7 +882,9 @@ and reverses it.
 -}
 rewind :: [a] -> [a]
 rewind [] = []
-rewind (x:xs) = rewind xs ++ [x] 
+rewind (x:xs) = rewind xs ++ [x]
+    where go :: [a] -> [a] -> [a]
+          go acc (x:xs) = go (x:acc) xs
 
 
 {-
