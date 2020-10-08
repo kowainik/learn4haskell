@@ -343,6 +343,14 @@ Define the Book product data type. You can take inspiration from our description
 of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
+data Book = Book
+    { title :: String
+    , subtitle :: String
+    , description :: String
+    , minPrice :: Double
+    , suggestedPrice :: Double
+    , author :: String
+    }
 
 {- |
 =⚔️= Task 2
@@ -373,7 +381,27 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+data Unit = Unit 
+    { health :: Int
+    , attack :: Int
+    , gold :: Int
+    }
 
+type Knight = Unit 
+type Monster = Unit 
+type CurrentUnit = Unit 
+type AttackedUnit = Unit 
+
+fight :: Knight -> Monster -> Int
+fight = go True
+    where go :: Bool -> CurrentUnit -> AttackedUnit -> Int
+          go isKnightCurrent (Unit cHealth cAttack cGold) (Unit aHealth aAttack aGold)
+              | aHealth - cAttack <= 0 && isKnightCurrent = aGold
+              | aHealth - cAttack <= 0 && not isKnightCurrent = -1
+              | otherwise = go (not isKnightCurrent) aPlayer cPlayer 
+              where aPlayer = Unit (aHealth - cAttack) aAttack aGold
+                    cPlayer = Unit cHealth cAttack cGold
+    
 {- |
 =🛡= Sum types
 
