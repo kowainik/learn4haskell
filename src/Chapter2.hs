@@ -74,6 +74,7 @@ When working with lists, the most practical module will be "Data.List":
 
    * http://hackage.haskell.org/package/base-4.14.0.0/docs/Data-List.html
 -}
+import Control.Applicative
 
 
 {- |
@@ -177,30 +178,43 @@ Evaluate the following expressions in GHCi and insert the answers. Try
 to guess first, what you will see.
 
 >>> [10, 2] ++ [3, 1, 5]
+[10, 2, 3, 1, 5]
 
 >>> [] ++ [1, 4]  -- [] is an empty list
+[1, 4]
 
 >>> 3 : [1, 2]
+[3, 1, 2]
 
 >>> 4 : 2 : [5, 10]  -- prepend multiple elements
+[4, 2, 5, 10]
 
 >>> [1 .. 10]  -- list ranges
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 >>> [10 .. 1]
+[]
 
 >>> [10, 9 .. 1]  -- backwards list with explicit step
+[10,9,8,7,6,5,4,3,2,1]
 
 >>> length [4, 10, 5]  -- list length
+3
 
 >>> replicate 5 True
+[True,True,True,True,True]
 
 >>> take 5 "Hello, World!"
+"Hello"
 
 >>> drop 5 "Hello, World!"
+", World!"
 
 >>> zip "abc" [1, 2, 3]  -- convert two lists to a single list of pairs
+[('a',1),('b',2),('c',3)]
 
 >>> words "Hello   Haskell     World!"  -- split the string into the list of words
+["Hello", "Haskell", "World!"]
 
 
 
@@ -327,7 +341,7 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList = error "subList: Not implemented!"
+subList firstPoint secondPoint mainList = if firstPoint > secondPoint then [] else mainList!!firstPoint:subList (firstPoint + 1) secondPoint mainList
 
 {- |
 =⚔️= Task 4
@@ -339,8 +353,9 @@ Implement a function that returns only the first half of a given list.
 >>> firstHalf "bca"
 "b"
 -}
--- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
+firstHalf :: [a] -> [a]
+firstHalf l = take halfLength l
+          where halfLength = length l `div` 2
 
 
 {- |
@@ -491,7 +506,8 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
-isThird42 = error "isThird42: Not implemented!"
+isThird42 (_ : _ : 42 : _) = True
+isThird42 _ = False
 
 
 {- |
@@ -595,8 +611,13 @@ Implement a function that duplicates each element of the list
 "aabbaacc"
 
 -}
+-- I learned about applicatives today and got really excited to try something out
 duplicate :: [a] -> [a]
-duplicate = error "duplicate: Not implemented!"
+duplicate firstList = concat . getZipList $ (:) <$> ZipList firstList <*> ZipList (map pure firstList)
+
+-- A more terse way to do it (and more reasonable lol)
+duplicate' :: [a] -> [a]
+duplicate' = concatMap (\x -> [x, x])
 
 
 {- |
@@ -611,7 +632,10 @@ Write a function that takes elements of a list only on even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
-takeEven = error "takeEven: Not implemented!"
+takeEven :: [a] -> [a]
+takeEven [] = []
+takeEven (x:[]) = [x]
+takeEven (x:y:xs) = x:takeEven xs
 
 {- |
 =🛡= Higher-order functions
@@ -718,7 +742,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = error "smartReplicate: Not implemented!"
+smartReplicate = concatMap (\x -> take x $ repeat x)
 
 {- |
 =⚔️= Task 9
@@ -731,7 +755,8 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains = error "contains: Not implemented!"
+contains :: (Eq a) => a -> [[a]] -> [[a]]
+contains item = filter $ elem item
 
 
 {- |
@@ -771,13 +796,14 @@ Let's now try to eta-reduce some of the functions and ensure that we
 mastered the skill of eta-reducing.
 -}
 divideTenBy :: Int -> Int
-divideTenBy x = div 10 x
+divideTenBy = div 10
 
--- TODO: type ;)
-listElementsLessThan x l = filter (< x) l
+listElementsLessThan :: (Ord a) => a -> [a] -> [a]
+listElementsLessThan x = filter (< x)
 
 -- Can you eta-reduce this one???
-pairMul xs ys = zipWith (*) xs ys
+pairMul :: [Integer] -> [Integer] -> [Integer]
+pairMul = zipWith (*)
 
 {- |
 =🛡= Lazy evaluation
@@ -832,7 +858,8 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate = error "rotate: Not implemented!"
+rotate :: Int -> [a] -> [a]
+rotate rotateLength l = drop rotateLength $ take (length l + rotateLength) (cycle l)
 
 {- |
 =💣= Task 12*
@@ -848,7 +875,9 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind = error "rewind: Not Implemented!"
+rewind :: [a] -> [a]
+rewind [] = []
+rewind (x:xs) = (rewind xs) ++ [x]
 
 
 {-
