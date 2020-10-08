@@ -4,7 +4,6 @@ Happy to see you here, on the way to the wonderful Functional Programming land
 with Haskell! Fight the fierce Monad Dragon and save the globe from despicable
 runtime exceptions!
 
-
 We appreciate your curiosity and will try to provide you with all the necessary
 equipment for your training before the battle in the real FP world. Learning
 Functional Programming can be challenging. But we designed this training to be
@@ -43,7 +42,6 @@ concepts on the way. In this chapter, you are going to learn:
  ✧ How to write your function from scratch
  ✧ Some standard Haskell functions
 
-
 We are leaving a number of tasks on our path. Your goal is to solve them all and
 make the test for Chapter One green.
 
@@ -57,10 +55,6 @@ Now, if you are ready, let's start!
 
 -- Single-line comments in Haskell start with --
 
-{- | This tutorial uses block comments to explain various concepts and provide
-task description.
--}
-
 {- All code in Haskell is organised into modules. Each module corresponds to a
 single file. Modules then can be combined in a package. But you don't need to
 worry about this for now. We already created the package with module hierarchy
@@ -70,52 +64,53 @@ Each Haskell module starts with the "module <MODULE_NAME> where" line.
 Modules should have the same name as the corresponding file with
 the `.hs` extension.
 -}
+
+-- | This tutorial uses block comments to explain various concepts and provide
+-- task description.
 module Chapter1 where
 
-{- |
-In Haskell, we have __expressions__. Expressions can be represented by some
-primitive values (numbers: 1, 100; characters: 'a', 'z'; booleans: True, False;
-etc.) or by a combination of the primitive values and other expressions using
-language syntax constructions (if-then-else, let-in, case-of, etc.) and various
-functions (addition — (+), division — div, maximum — max, sorting — sort,
-sortBy, sortOn, etc.) and variables. Functions are also expressions as well as
-variables.
+-- |
+-- In Haskell, we have __expressions__. Expressions can be represented by some
+-- primitive values (numbers: 1, 100; characters: 'a', 'z'; booleans: True, False;
+-- etc.) or by a combination of the primitive values and other expressions using
+-- language syntax constructions (if-then-else, let-in, case-of, etc.) and various
+-- functions (addition — (+), division — div, maximum — max, sorting — sort,
+-- sortBy, sortOn, etc.) and variables. Functions are also expressions as well as
+-- variables.
+--
+-- If an expression is a combination of other values and expressions, it can be
+-- __evaluated__ (or reduced) to a primitive value. The evaluation process is not
+-- immediate, since Haskell is a __lazy language__ and it won't evaluate
+-- expressions unless really necessary. You can see the evaluation results either
+-- by running a Haskell program or by playing with some functions in the
+-- interactive interpreter (explained later).
+--
+-- Haskell is a __strongly-typed__ language, which means that each expression has
+-- a type. Each value and function is associated with some type. You can't change
+-- the value type. You can only pass a value to some function that will do its
+-- work, and maybe produce a value of a different type.
+--
+-- Types can be _specific_ (like `Int`, `Integer`, `Double` or `Bool`) and they
+-- always start with an uppercase letter, or _polymorphic_ (aka general) specified
+-- through the variables – begin with the lowercase letter. The concept of
+-- polymorphism is more sophisticated than working with concrete types, thus we
+-- won't dive too much into it in this chapter and will work with the concrete
+-- types for now.
+--
+-- Furthermore, Haskell is a __statically-typed__ language, which means that each
+-- expression has the type known at compile-time, rather than run-time. It allows
+-- the compiler to catch some kinds of bugs in your program early; before you
+-- even run it.
+--
+-- Additionally to static typing, Haskell has __type inference__. This means that
+-- you _don't need_ to specify the type of each expression as it is going to be
+-- found out for each expression and subexpression by the powerful compiler.
+--
+-- However, you are __strongly encouraged to write top-level function type
+-- signatures__ and provide types in different situations where you don't
+-- immediately see what types will be inferred.
 
-If an expression is a combination of other values and expressions, it can be
-__evaluated__ (or reduced) to a primitive value. The evaluation process is not
-immediate, since Haskell is a __lazy language__ and it won't evaluate
-expressions unless really necessary. You can see the evaluation results either
-by running a Haskell program or by playing with some functions in the
-interactive interpreter (explained later).
-
-Haskell is a __strongly-typed__ language, which means that each expression has
-a type. Each value and function is associated with some type. You can't change
-the value type. You can only pass a value to some function that will do its
-work, and maybe produce a value of a different type.
-
-Types can be _specific_ (like `Int`, `Integer`, `Double` or `Bool`) and they
-always start with an uppercase letter, or _polymorphic_ (aka general) specified
-through the variables – begin with the lowercase letter. The concept of
-polymorphism is more sophisticated than working with concrete types, thus we
-won't dive too much into it in this chapter and will work with the concrete
-types for now.
-
-Furthermore, Haskell is a __statically-typed__ language, which means that each
-expression has the type known at compile-time, rather than run-time. It allows
-the compiler to catch some kinds of bugs in your program early; before you
-even run it.
-
-Additionally to static typing, Haskell has __type inference__. This means that
-you _don't need_ to specify the type of each expression as it is going to be
-found out for each expression and subexpression by the powerful compiler.
-
-However, you are __strongly encouraged to write top-level function type
-signatures__ and provide types in different situations where you don't
-immediately see what types will be inferred.
--}
-
-
- {-
+{-
 Haskell is a __compiled__ language. At the illustration below, you can see the
 overall picture of the process from your code to the binary of the written
 program:
@@ -173,7 +168,6 @@ Now, you can evaluate some expressions and see their results immediately.
   You will also see lines started with "ghci>". They are also supposed to be
   evaluated in GHCi, but our testing system doesn't check their output.
   They are here just to showcase the different usages of GHCi.
-
 
 GHCi can do much more than evaluating expressions. It also contains some special
 commands starting with a colon. For example, to see the list of all available
@@ -419,23 +413,21 @@ task is to specify the type of this function.
 squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
 
-
-{- |
-=⚔️= Task 4
-
-Implement the function that takes an integer value and returns the next 'Int'.
-
->>> next 10
-11
->>> next (-4)
--3
-
-♫ NOTE: The current function body is defined using a special function called
-  "error". Don't panic, it is not broken. 'error' is like a placeholder, that
-  evaluates to an exception if you try evaluating it. And it also magically fits
-  every type ｡.☆.*｡. No need to worry much about "error" here, just replace the
-  function body with the proper implementation.
--}
+-- |
+-- =⚔️= Task 4
+--
+-- Implement the function that takes an integer value and returns the next 'Int'.
+--
+-- >>> next 10
+-- 11
+-- >>> next (-4)
+-- -3
+--
+-- ♫ NOTE: The current function body is defined using a special function called
+--   "error". Don't panic, it is not broken. 'error' is like a placeholder, that
+--   evaluates to an exception if you try evaluating it. And it also magically fits
+--   every type ｡.☆.*｡. No need to worry much about "error" here, just replace the
+--   function body with the proper implementation.
 next :: Int -> Int
 next x = x + 1
 
@@ -463,19 +455,6 @@ change it and want to check your changes.
 =⚔️= Task 5
 
 Implement a function that returns the last digit of a given number.
-
->>> lastDigit 42
-2
-
-🕯 HINT: use the `mod` function
-
-♫ NOTE: You can discover possible functions to use via Hoogle:
-    https://hoogle.haskell.org/
-
-  Hoogle lets you search Haskell functions either by name or by type. You can
-  enter the type you expect a function to have, and Hoogle will output relevant
-  results. Or you can try to guess the function name, search for it and check
-  whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int
@@ -627,7 +606,6 @@ Implement a function that returns the sum of the last two digits of a number.
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
-
 sumLast2 :: Int -> Int
 sumLast2 n = x + y
   where
@@ -659,7 +637,6 @@ firstDigit n
   | otherwise = firstDigit (div m 10)
   where
     m = abs n
-
 
 {-
 You did it! Now it is time to the open pull request with your changes
