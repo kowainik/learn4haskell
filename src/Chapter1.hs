@@ -604,7 +604,7 @@ You can define multiple functions inside __where__!
 Just remember to keep proper indentation.
 -}
 
-{-
+{- |
 =⚔️= Task 9
 
 Implement a function that returns the sum of the last two digits of a number.
