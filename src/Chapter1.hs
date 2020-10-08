@@ -651,7 +651,7 @@ aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
 firstDigit n
-  | (div x 10) == 0 = abs n
+  | div x 10 == 0 = abs n
   | otherwise = firstDigit (div x 10)
   where
     x = abs n
