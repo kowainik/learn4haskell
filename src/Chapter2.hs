@@ -356,8 +356,7 @@ Implement a function that returns only the first half of a given list.
 
 firstHalf :: [a] -> [a]
 firstHalf l =
-  let half = fst (divMod (length l ) 2)
-  in (take half l)
+  let half = fst (divMod (length l ) 2) in take half l
 
 
 {- |
@@ -634,7 +633,7 @@ Write a function that takes elements of a list only on even positions.
 -}
 
 takeEven :: [Int] -> [Int]
-takeEven (x:_:xs) = [x] ++ takeEven xs
+takeEven (x:_:xs) = x : takeEven xs
 takeEven (x:_) = [x]
 takeEven _ = []
 
@@ -887,7 +886,7 @@ and reverses it.
 rewind :: [Int] -> [Int]
 rewind l =
   if len > 0
-    then (drop prev l) ++ rewind (take prev l)
+    then drop prev l ++ rewind (take prev l)
     else []
   where len = length l
         prev = len - 1

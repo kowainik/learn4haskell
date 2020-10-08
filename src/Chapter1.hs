@@ -511,7 +511,7 @@ branches because it is an expression and it must always return some value.
 -}
 closestToZero :: Int -> Int -> Int
 closestToZero x y =
-  if (abs x) > (abs y)
+  if abs x > abs y
     then y
     else x
 
