@@ -863,9 +863,9 @@ list.
 -}
 
 rotate :: Int -> [Int] -> [Int]
-rotate n l = out 
+rotate n l = out
   where len = length l
-        out 
+        out
           | n > 0 = take len (drop n (cycle l))
           | n < 0 = []
           | otherwise = l
