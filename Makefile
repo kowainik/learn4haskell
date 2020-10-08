@@ -45,3 +45,7 @@ test-chapter4:
 test-chapter4-basic:
 	cabal test doctest-chapter4 --enable-tests --test-show-details=direct
 	cabal run learn4haskell-test --enable-tests -- -m "Chapter4Normal"
+
+.PHONY: test-all
+test-all:
+	cabal test all --enable-tests --test-show-details=direct

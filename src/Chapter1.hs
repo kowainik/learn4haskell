@@ -614,7 +614,7 @@ You can define multiple functions inside __where__!
 Just remember to keep proper indentation.
 -}
 
-{-
+{- |
 =⚔️= Task 9
 
 Implement a function that returns the sum of the last two digits of a number.
@@ -623,7 +623,7 @@ Implement a function that returns the sum of the last two digits of a number.
 6
 >>> sumLast2 134
 7
->>> sumLast 1
+>>> sumLast2 1
 1
 
 Try to introduce variables in this task (either with let-in or where) to avoid
@@ -664,7 +664,7 @@ firstDigit n =
 
 
 {-
-You did it! Now it is time to the open pull request with your changes
+You did it! Now it is time to open pull request with your changes
 and summon @vrom911 and @chshersh for the review!
 -}
 
