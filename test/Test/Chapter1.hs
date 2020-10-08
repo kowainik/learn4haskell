@@ -51,6 +51,7 @@ chapter1normal = describe "Chapter1Normal" $ do
         it "positives mix " $ mid 20 30 10 `shouldBe` 20
         it "negatives down" $ mid (-10) (-20) (-30) `shouldBe` (-20)
         it "negatives up  " $ mid (-30) (-20) (-10) `shouldBe` (-20)
+        it "negatives mix " $ mid (-20) (-30) (-10) `shouldBe` (-20)
         it "all equal" $ mid 1 1 1 `shouldBe` 1
         it "all equal, except 1" $ mid 1 1 2 `shouldBe` 1
     describe "Task8: isVowel" $ do
