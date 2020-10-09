@@ -751,7 +751,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate list = concat (map (\x -> replicate x x) list)
+smartReplicate = concatMap (\x -> replicate x x) 
 
 {- |
 =⚔️= Task 9
@@ -765,7 +765,7 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: Int -> [[Int]] -> [[Int]]
-contains elemCheck listOfList = filter(\x ->elem elemCheck x) listOfList
+contains elemCheck  = filter(elem elemCheck) 
 
 
 {- |
@@ -868,7 +868,7 @@ list.
 🕯 HINT: Use the 'cycle' function
 -}
 rotate :: Int -> [Int] -> [Int]
-rotate rotationCoeff list 
+rotate rotationCoeff list
   | rotationCoeff < 0 = []
   | otherwise = take (length list) (drop rotationCoeff (cycle list))
 
