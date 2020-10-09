@@ -1,0 +1,56 @@
+#include<iostream>
+#include<graphics.h>
+#include<math.h>
+using namespace std;
+void koch(int,int,int,int,int);
+int main()
+{
+int x1,y1,x2,y2,it;
+int gd=DETECT,gm;
+cout<<"Enter the x1 y1 x2 y2:";
+cin>>x1>>y1>>x2>>y2;
+cout<<"Enter the no of iteration:";
+cin>>it;
+initgraph(&gd,&gm,NULL);
+koch(x1,y1,x2,y2,it);
+delay(5000);
+closegraph();
+}
+void koch(int x1,int y1,int x2,int y2,int it)
+{
+int x3,y3,x4,y4,x,y;
+float angle=(60*3.142)/180;
+x3=(x1*2+x2)/3;
+ y3=(y1*2+y2)/3;
+x4=(x1+x2*2)/3;
+ y4=(y1+y2*2)/3;
+ x=x3+(x4-x3)*cos(angle)+(y4-y3)*sin(angle);
+ y=y3-(x4-x3)*sin(angle)+(y4-y3)*cos(angle);
+if(it>0)
+{
+koch(x1,y1,x3,y3,it-1);
+koch(x3,y3,x,y,it-1);
+koch(x,y,x4,y4,it-1);
+koch(x4,y4,x2,y2,it-1);
+}
+else
+{
+line(x1,y1,x3,y3);
+line(x3,y3,x,y);
+line(x,y,x4,y4);
+line(x4,y4,x2,y2);
+}
+}
+/*
+Enter the x1 y1 x2 y2:100
+300
+300
+300
+Enter the no of iteration:10
+[xcb] Unknown sequence number while processing queue
+[xcb] Most likely this is a multi-threaded client and XInitThreads has 
+not been called
+[xcb] Aborting, sorry about that.
+a.out: ../../src/xcb_io.c:259: poll_for_event: Assertion `!
+xcb_xlib_threads_sequence_lost' failed.
+*/
