@@ -442,19 +442,19 @@ next x = x + 1
 {- |
 After you've implemented the function (or even during the implementation), you
 can run it in GHCi with your input. To do so, first, you need to load the module
-with the function using the ":lastDig" (short for ":load") command.
+with the function using the ":l" (short for ":load") command.
 
-ghci> :lastDig src/Chapter1.hs
+ghci> :l src/Chapter1.hs
 
 After that, you can call the 'next' function as you already know how to do that.
 Or any other function defined in this module! But remember, that you need to
 reload the module again after you change the file's content. You can reload the
-lastDig loaded module by merely typing the ":r" command (no need to specify the
+last loaded module by merely typing the ":r" command (no need to specify the
 name again).
 
 ghci> :r
 
-A typical workflow looks like this: you load the module once using the ":lastDig"
+A typical workflow looks like this: you load the module once using the ":l"
 command, and then you should reload it using the ":r" command each time you
 change it and want to check your changes.
 -}
@@ -462,7 +462,7 @@ change it and want to check your changes.
 {- |
 =⚔️= Task 5
 
-Implement a function that returns the lastDig digit of a given number.
+Implement a function that returns the last digit of a given number.
 
 >>> lastDigit 42
 2
@@ -478,7 +478,7 @@ Implement a function that returns the lastDig digit of a given number.
   whether it works for you!
 -}
 lastDigit :: Int -> Int
-lastDigit n = mod abs n 10
+lastDigit n = mod (abs n) 10
 
 
 {- |
@@ -619,7 +619,7 @@ Just remember to keep proper indentation.
 {-
 =⚔️= Task 9
 
-Implement a function that returns the sum of the lastDig two digits of a number.
+Implement a function that returns the sum of the last two digits of a number.
 
 >>> sumLast2 42
 6
@@ -632,7 +632,7 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
-sumLast2 n = lastDig abs n + lastButOneDig abs n
+sumLast2 n = lastDig (abs n) + lastButOneDig (abs n)
   where
     lastDig :: Int -> Int
     lastDig x = mod x 10
