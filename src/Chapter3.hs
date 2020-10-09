@@ -50,8 +50,14 @@ signatures in places where you can't by default. We believe it's helpful to
 provide more top-level type signatures, especially when learning Haskell.
 -}
 {-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE StrictData #-}
+{-# LANGUAGE DuplicateRecordFields #-}
 
 module Chapter3 where
+
+import qualified Data.List.NonEmpty            as NE
+import           Data.List.NonEmpty             ( NonEmpty(..) )
 
 {-
 =🛡= Types in Haskell
@@ -344,6 +350,12 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = Book { bookTitle :: String
+                 , bookGenre :: String
+                 , bookPages :: Int
+                 , bookPrice :: Float
+                 } deriving Show
+
 {- |
 =⚔️= Task 2
 
@@ -373,6 +385,22 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+
+data Knight' = Knight' { knightHealth' :: Int
+                       , knightAttack' :: Int
+                       , knightGold' :: Int
+                       } deriving Show
+
+data Monster' = Monster' { monsterHealth' :: Int
+                         , monsterAttack' :: Int
+                         , monsterGold' :: Int
+                         } deriving Show
+
+fight' :: Monster' -> Knight' -> Int
+fight' Monster' {..} Knight' {..}
+  | knightAttack' == monsterHealth' = knightGold' + monsterGold'
+  | monsterAttack' == knightHealth' = -1
+  | otherwise                       = knightGold'
 
 {- |
 =🛡= Sum types
@@ -460,6 +488,15 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data Meal
+  = Breakfast
+  | SecondBreakfast
+  | Elevenses
+  | Lunch
+  | AfternoonTea
+  | Dinner
+  | Supper
+
 {- |
 =⚔️= Task 4
 
@@ -479,6 +516,63 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
+
+data UpToFour a
+  = One a
+  | Two a a
+  | Three a a a
+  | Four a a a a
+  deriving Show
+
+instance Foldable UpToFour where
+  foldMap f (One x           ) = f x
+  foldMap f (Two x1 x2       ) = f x2 <> foldMap f (One x1)
+  foldMap f (Three x1 x2 x3  ) = f x3 <> foldMap f (Two x1 x2)
+  foldMap f (Four x1 x2 x3 x4) = f x4 <> foldMap f (Three x1 x2 x3)
+
+data Castle
+  = NoCastle
+  | Castle String
+  | CastleWithWalls String
+  deriving Show
+
+data CultureBuilding = Church | Library
+  deriving Show
+
+newtype House = House (UpToFour Person)
+  deriving Show
+
+newtype Person = Person { personName :: String }
+  deriving Show
+
+data SmallCity  = SmallCity { cityCastle :: Maybe Castle
+                            , cityCultureBuilding :: CultureBuilding
+                            , cityHouses :: [House]
+                            } deriving Show
+
+data City = City { cityCastle :: Castle
+                 , cityCultureBuilding :: CultureBuilding
+                 , cityHouses :: [House]
+                 } deriving Show
+
+countPeople :: [House] -> Int
+countPeople = sum . map (\(House p) -> length p)
+
+buildCastle :: City -> String -> City
+buildCastle city@City {..} castleName = case cityCastle of
+  CastleWithWalls _ -> city { cityCastle = CastleWithWalls castleName }
+  _                 -> city { cityCastle = Castle castleName }
+
+buildHouse :: City -> UpToFour Person -> City
+buildHouse city@City {..} people =
+  city { cityHouses = House people : cityHouses }
+
+buildWalls :: City -> City
+buildWalls city@City {..} = case cityCastle of
+  Castle castleName -> if countPeople cityHouses < 10
+    then city
+    else city { cityCastle = CastleWithWalls castleName }
+  _ -> city
 
 {-
 =🛡= Newtypes
@@ -560,37 +654,50 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+
+newtype Health = MkHealth Int deriving Show
+
+newtype Armor = MkArmor Int deriving Show
+
+newtype Attack = MkAttack Int deriving Show
+
+newtype Dexterity = MkDexterity Int deriving Show
+
+newtype Strength = MkStrength Int deriving Show
+
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
-    }
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
+    } deriving Show
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+newtype Damage = MkDamage Int deriving Show
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+newtype Defense = MkDefense Int deriving Show
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerDamage :: Attack -> Strength -> Damage
+calculatePlayerDamage (MkAttack attack) (MkStrength strength) =
+  MkDamage $ attack + strength
+
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense (MkArmor armor) (MkDexterity dexterity) =
+  MkDefense $ armor * dexterity
+
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit (MkDamage damage) (MkDefense defense) (MkHealth health) =
+  MkHealth $ health + defense - damage
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
 hitPlayer player1 player2 =
-    let damage = calculatePlayerDamage
-            (playerAttack player2)
-            (playerStrength player2)
-        defense = calculatePlayerDefense
-            (playerArmor player1)
-            (playerDexterity player1)
-        newHealth = calculatePlayerHit
-            damage
-            defense
-            (playerHealth player1)
-    in player1 { playerHealth = newHealth }
+  let damage =
+          calculatePlayerDamage (playerAttack player2) (playerStrength player2)
+      defense =
+          calculatePlayerDefense (playerArmor player1) (playerDexterity player1)
+      newHealth = calculatePlayerHit damage defense (playerHealth player1)
+  in  player1 { playerHealth = newHealth }
 
 {- |
 =🛡= Polymorphic data types
@@ -753,6 +860,20 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
+data TreasureChest loot = TreasureChest
+  { treasureChestGold :: Int
+  , treasureChestLoot :: loot
+  } deriving Show
+
+newtype Dragon power = Dragon
+  { dragonPower :: power }
+  deriving Show
+
+data Lair power loot = Lair
+  { lairDrago :: Dragon power
+  , lairTreasure :: Maybe (TreasureChest loot)
+  }
+
 {-
 =🛡= Typeclasses
 
@@ -910,6 +1031,22 @@ Implement instances of "Append" for the following types:
 class Append a where
     append :: a -> a -> a
 
+newtype Gold = Gold {goldAmount :: Int}
+
+instance Append Gold where
+  append :: Gold -> Gold -> Gold
+  append Gold { goldAmount = ga1 } Gold { goldAmount = ga2 } =
+    Gold { goldAmount = ga1 + ga2 }
+
+instance Append [a] where
+  append :: [a] -> [a] -> [a]
+  append = (++)
+
+instance Append a => Append (Maybe a) where
+  append :: Maybe a -> Maybe a -> Maybe a
+  append (Just x) Nothing  = Just x
+  append (Just x) (Just y) = Just $ append x y
+  append Nothing  my       = my
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -971,6 +1108,31 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
+data DayOfWeek
+  = Monday
+  | Tuesday
+  | Wednseday
+  | Thursday
+  | Friday
+  | Saturday
+  | Sunday
+  deriving (Eq, Ord, Enum, Show)
+
+isWeekend :: DayOfWeek -> Bool
+isWeekend Saturday = True
+isWeekend Sunday   = True
+isWeekend _        = False
+
+nextDay :: DayOfWeek -> DayOfWeek
+nextDay Sunday = Monday
+nextDay day    = succ day
+
+daysToParty :: DayOfWeek -> Int
+daysToParty day =
+  let dayNum    = fromEnum day
+      fridayNum = fromEnum Friday
+  in  (fridayNum - dayNum) `mod` 7
+
 {-
 =💣= Task 9*
 
@@ -1006,6 +1168,124 @@ Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
 
+class Fighter a where
+  getAttack :: a -> Attack
+  getHealth :: a -> Health
+  getDefense :: a -> Defense
+  getName :: a -> String
+  updateHealth :: a -> Health -> a
+  takeAction :: Fighter b => a -> b -> String
+  hit :: Fighter b => a -> b -> b
+  hit x y = takeDamage y $ getAttack x
+  heal :: a -> a
+  heal = id
+  castSpell :: a -> a
+  castSpell = id
+  takeDamage :: a -> Attack -> a
+  takeDamage fighter (MkAttack attack) =
+    let (MkDefense defense) = getDefense fighter
+        (MkHealth health) = getHealth fighter
+    in updateHealth fighter $
+        MkHealth $ health - max 0 (attack - defense)
+
+data Knight = Knight
+  { knightName :: String
+  , knightHealth :: Health
+  , knightAttack :: Attack
+  , knightDefense :: Defense
+  , knightActions :: NonEmpty KnightAction
+  } deriving Show
+
+instance Fighter Knight where
+  getName    = knightName
+  getAttack  = knightAttack
+  getHealth  = knightHealth
+  getDefense = knightDefense
+  updateHealth knight health = knight { knightHealth = health }
+  heal knight@Knight {..} =
+    let MkHealth h = knightHealth in knight { knightHealth = MkHealth $ h + 5 }
+  castSpell knight@Knight {..} =
+    let MkDefense d = knightDefense
+    in  knight { knightDefense = MkDefense $ d + 1 }
+  takeAction attacker'@Knight {..} defender = act nextAction attacker defender
+   where
+    (nextAction, actions) = cycleNext knightActions
+    attacker              = attacker' { knightActions = actions }
+
+data Monster = Monster
+  { monsterName :: String
+  , monsterHealth :: Health
+  , monsterAttack :: Attack
+  , monsterActions :: NonEmpty MonsterAction
+  } deriving Show
+
+
+instance Fighter Monster where
+  getName   = monsterName
+  getAttack = monsterAttack
+  getHealth = monsterHealth
+  getDefense _ = MkDefense 0
+  updateHealth monster health = monster { monsterHealth = health }
+  takeAction attacker'@Monster {..} defender = act nextAction attacker defender
+   where
+    (nextAction, actions) = cycleNext monsterActions
+    attacker              = attacker' { monsterActions = actions }
+
+class Action a where
+  act :: (Fighter f1, Fighter f2) => a -> f1 -> f2 -> String
+
+data KnightAction
+  = KnightAttack
+  | KnightHeal
+  | KnightCastSpell
+  deriving Show
+
+instance Action KnightAction where
+  act action attacker defender = case action of
+    KnightHeal      -> battle defender (heal attacker)
+    KnightCastSpell -> battle defender (castSpell attacker)
+    _               -> battle (hit attacker defender) attacker
+
+data MonsterAction
+  = MonsterAttack
+  | MonsterRun
+  deriving Show
+
+instance Action MonsterAction where
+  act action attacker defender = case action of
+    MonsterRun -> "The monster ran away"
+    _          -> battle (hit attacker defender) attacker
+
+battle :: (Fighter a, Fighter b) => a -> b -> String
+battle attacker defender | attackerHealth < 0 = getName defender
+                         | defenderHealth < 0 = getName attacker
+                         | otherwise          = takeAction attacker defender
+ where
+  MkHealth attackerHealth = getHealth attacker
+  MkHealth defenderHealth = getHealth defender
+
+cycleNext :: NonEmpty a -> (a, NonEmpty a)
+cycleNext (action :| actions) = (action, NE.fromList (actions ++ [action]))
+
+arthur :: Knight
+arthur = Knight
+  "Arthur"
+  (MkHealth 100)
+  (MkAttack 10)
+  (MkDefense 5)
+  (NE.fromList [KnightAttack, KnightCastSpell, KnightHeal, KnightAttack])
+
+darkKnight :: Knight
+darkKnight = Knight
+  "Dark Knight"
+  (MkHealth 100)
+  (MkAttack 40)
+  (MkDefense 5)
+  (NE.fromList [KnightAttack, KnightCastSpell, KnightHeal, KnightAttack])
+
+dragon :: Monster
+dragon =
+  Monster "Dragon" (MkHealth 100) (MkAttack 10) (NE.fromList [MonsterAttack])
 
 {-
 You did it! Now it is time to open pull request with your changes
