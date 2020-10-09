@@ -623,7 +623,7 @@ Implement a function that duplicates each element of the list
 -}
 duplicate :: [a] -> [a]
 duplicate [] = []
-duplicate (x:xs) = x : x : (duplicate xs)
+duplicate (x:xs) = x : x : duplicate xs
 
 
 {- |
@@ -639,7 +639,7 @@ Write a function that takes elements of a list only on even positions.
 [2,3,4]
 -}
 takeEven :: [a] -> [a]
-takeEven l = go ([], 0) l
+takeEven = go ([], 0)
   where
     go :: ([a], Int) -> [a] -> [a]
     go (res, _) [] = res
@@ -750,7 +750,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = concat (map (\i -> replicate i i) l)
+smartReplicate l = concatMap (\i -> replicate i i) l
 
 {- |
 =⚔️= Task 9
@@ -764,7 +764,7 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: Int -> [[Int]] -> [[Int]]
-contains i l = filter (\x -> elem i x) l
+contains i = filter (elem i)
 
 
 {- |
@@ -868,7 +868,7 @@ list.
 🕯 HINT: Use the 'cycle' function
 -}
 rotate :: Int -> [a] -> [a]
-rotate n l = (drop n l) ++ (take n l)
+rotate n l = drop n l ++ take n l
 
 {- |
 =💣= Task 12*
