@@ -478,7 +478,7 @@ Implement a function that returns the lastDig digit of a given number.
   whether it works for you!
 -}
 lastDigit :: Int -> Int
-lastDigit n = mod n 10
+lastDigit n = mod abs n 10
 
 
 {- |
@@ -632,7 +632,7 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
-sumLast2 n = lastDig n + lastButOneDig n
+sumLast2 n = lastDig abs n + lastButOneDig abs n
   where
     lastDig :: Int -> Int
     lastDig x = mod x 10
