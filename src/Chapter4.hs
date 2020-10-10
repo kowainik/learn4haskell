@@ -114,23 +114,23 @@ As always, try to guess the output first! And don't forget to insert
 the output in here:
 
 >>> :k Char
-
+Char :: *
 >>> :k Bool
-
+Bool :: *
 >>> :k [Int]
-
+[Int] :: *
 >>> :k []
-
+[] :: * -> *
 >>> :k (->)
-
+(->) :: * -> * -> *
 >>> :k Either
-
+Either :: * -> * -> *
 >>> data Trinity a b c = MkTrinity a b c
 >>> :k Trinity
-
+Trinity :: * -> * -> * -> *
 >>> data IntBox f = MkIntBox (f Int)
 >>> :k IntBox
-
+IntBox :: (* -> *) -> *
 -}
 
 {- |
@@ -282,7 +282,6 @@ data Secret e a
     | Reward a
     deriving (Show, Eq)
 
-
 {- |
 Functor works with types that have kind `* -> *` but our 'Secret' has
 kind `* -> * -> *`. What should we do? Don't worry. We can partially
@@ -292,8 +291,9 @@ we can reuse already known concepts (e.g. partial application) from
 values and apply them to the type level?
 -}
 instance Functor (Secret e) where
-    fmap :: (a -> b) -> Secret e a -> Secret e b
-    fmap = error "fmap for Box: not implemented!"
+  fmap :: (a -> b) -> Secret e a -> Secret e b
+  fmap _ (Trap e) = Trap e
+  fmap f (Reward a) = Reward (f a)
 
 {- |
 =⚔️= Task 3
@@ -306,6 +306,11 @@ typeclasses for standard data types.
 data List a
     = Empty
     | Cons a (List a)
+
+instance Functor List where
+  fmap :: (a -> b) -> List a -> List b
+  fmap _ Empty = Empty
+  fmap f (Cons a xa) = Cons (f a) (fmap f xa)
 
 {- |
 =🛡= Applicative
@@ -472,10 +477,11 @@ Implement the Applicative instance for our 'Secret' data type from before.
 -}
 instance Applicative (Secret e) where
     pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+    pure = Reward
 
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
+    (<*>) (Trap e) _ = Trap e
+    (<*>) (Reward a) x = fmap a x
 
 {- |
 =⚔️= Task 5
@@ -489,6 +495,17 @@ Implement the 'Applicative' instance for our 'List' type.
   type.
 -}
 
+(+++) :: List a -> List a -> List a
+Empty +++ ys = ys
+(Cons x xs) +++ ys = Cons x (xs +++ ys)
+
+instance Applicative List where
+  pure :: a -> List a
+  pure a = Cons a Empty
+
+  (<*>) :: List (a -> b) -> List a -> List b
+  Empty <*> _ = Empty
+  Cons f fs <*> x = (fmap f x) +++ (fs <*> x)
 
 {- |
 =🛡= Monad
@@ -600,7 +617,8 @@ Implement the 'Monad' instance for our 'Secret' type.
 -}
 instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+    (>>=) (Trap e) _ = Trap e
+    (>>=) (Reward a) f = f a
 
 {- |
 =⚔️= Task 7
@@ -611,6 +629,10 @@ Implement the 'Monad' instance for our lists.
   maybe a few) to flatten lists of lists to a single list.
 -}
 
+instance Monad List where
+  (>>=) :: List a -> (a -> List b) -> List b
+  Empty >>= _ = Empty
+  (Cons x xs) >>= f = (f x) +++ (xs >>= f)
 
 {- |
 =💣= Task 8*: Before the Final Boss
@@ -628,8 +650,11 @@ Can you implement a monad version of AND, polymorphic over any monad?
 
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
+
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM l r = ifM l r (pure False) where
+  ifM b t f = do b <- b; if b then t else f
+
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
@@ -673,6 +698,26 @@ Specifically,
  ❃ Implement the function to convert Tree to list
 -}
 
+data BTree a = Node (BTree a) a (BTree a)
+               | Leaf a deriving (Show, Eq)
+
+instance Functor BTree where
+  fmap :: (a -> b) -> BTree a -> BTree b
+  fmap f (Leaf a) = Leaf (f a)
+  fmap f (Node l v r) = Node (fmap f l) (f v) (fmap f r)
+
+reverseTree :: BTree a -> BTree a
+reverseTree (Node l v r) = Node (reverseTree r) v (reverseTree l)
+reverseTree x = x
+
+instance Foldable BTree where
+  foldMap :: Monoid m => (a -> m) -> BTree a -> m
+  foldMap f (Leaf a) = f a
+  foldMap f (Node l v r) = foldMap f l `mappend` f v `mappend` foldMap f r
+
+convert :: BTree a -> [a]
+convert = foldMap toList
+  where toList a = [a]        
 
 {-
 You did it! Now it is time to the open pull request with your changes
