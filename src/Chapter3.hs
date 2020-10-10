@@ -398,11 +398,11 @@ data Monster = Monster
 fight :: Knight -> Monster -> Coins
 fight knight monster
       | kinghtSteps < monsterSteps = knightGold knight + monsterGold monster
-      | kinghtSteps > monsterSteps = (-1)
+      | kinghtSteps > monsterSteps = -1
       | otherwise = knightGold knight
     where
-      kinghtSteps = (monsterHealth monster) / (knightAttack knight)
-      monsterSteps = (knightHealth knight) / (monsterAttack monster)
+      kinghtSteps = monsterHealth monster / knightAttack knight
+      monsterSteps = knightHealth knight / monsterAttack monster
 
 {- |
 =🛡= Sum types
@@ -490,7 +490,7 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
-data Breakfast 
+data Breakfast
     = Tea
     | Coffee
     | Juice
@@ -523,24 +523,24 @@ After defining the city, implement the following functions:
 data Building = Church | Library deriving (Show)
 data House = One | Two | Three | Four deriving (Enum, Show)
 
-data City = City 
+data City = City
     { cityCastle :: Maybe Castle
     , cityWalls  :: Bool
     , cityBuilding  :: Building
     , cityHouses  :: [House]
     } deriving Show
 
-data Castle = Castle String deriving Show
+newtype Castle = Castle String deriving Show
 
 buildCastle :: String -> City -> City
-buildCastle castleName city = 
+buildCastle castleName city =
     city { cityCastle = Just (Castle castleName) }
 
 buildHouse :: City -> City
-buildHouse city = 
+buildHouse city =
     city { cityHouses = Two : cityHouses city }
 
-buildWalls :: City -> City 
+buildWalls :: City -> City
 buildWalls city =
   case cityCastle city of
     Just _ ->
@@ -837,9 +837,7 @@ data TreasureChest x = TreasureChest
     , treasureChestLoot :: x
     }
 
-data Dragon x = Dragon 
-    { dragonPower :: x
-    }
+newtype Dragon x = Dragon {dragonPower :: x}
 
 data DragonLair treasure dragon = DragonLair
     { dragonLairChest  :: Maybe (TreasureChest treasure)
@@ -1097,7 +1095,7 @@ nextDay day
   | otherwise = succ day
 
 daysToParty :: DayOfWeek -> Int
-daysToParty day 
+daysToParty day
     | day > Friday = fromEnum Sunday - fromEnum day + fromEnum Friday + 1
     | otherwise = fromEnum Friday - fromEnum day
 
@@ -1143,7 +1141,7 @@ My doctests:
 
 >>> :{
   fight'
-    FightKnight (FightHealth 10) (FightAttack 2) (FightDefense 0) [KnightAttack, KnightDrinkPotion 1] 
+    FightKnight (FightHealth 10) (FightAttack 2) (FightDefense 0) [KnightAttack, KnightDrinkPotion 1]
     FightMonster (FightHealth 10) (FightAttack 3) [MonsterAttack]
 :}
 Victory
@@ -1168,18 +1166,18 @@ newtype FightHealth = FightHealth Int deriving (Show, Eq)
 newtype FightAttack = FightAttack Int deriving (Show, Eq)
 newtype FightDefense = FightDefense Int deriving (Show, Eq)
 
-data FightAction 
-  = KnightAttack 
+data FightAction
+  = KnightAttack
   | KnightDrinkPotion Int
   | KnightCastSpell Int
-  | MonsterAttack 
-  | MonsterRun 
+  | MonsterAttack
+  | MonsterRun
   deriving Show
 
-data FightResult 
-  = Round FightKnight FightMonster 
-  | Wait 
-  | Victory 
+data FightResult
+  = Round FightKnight FightMonster
+  | Wait
+  | Victory
   | Defeat deriving Show
 
 data FightKnight = FightKnight
@@ -1189,7 +1187,7 @@ data FightKnight = FightKnight
     , fightKnightActions :: [FightAction]
     } deriving Show
 
-data FightMonster = FightMonster 
+data FightMonster = FightMonster
     { fightMonsterHealth  :: FightHealth
     , fightMonsterAttack :: FightAttack
     , fightMonsterActions :: [FightAction]
@@ -1217,42 +1215,42 @@ processRoundAction :: FightAction -> FightKnight -> FightMonster -> FightResult
 processRoundAction action knight monster =
   case action of
     MonsterAttack ->
-      let 
+      let
         FightHealth health = getHealth knight
         FightDefense defence = getDefence knight
         FightAttack attack = getAttack monster
-        newHealth = health - (max 0 $ defence - defence)
-      in 
-        if newHealth >= 0 
+        newHealth = health - max 0 (defence - defence)
+      in
+        if newHealth >= 0
           then Round (knight { fightKnightHealth = FightHealth newHealth }) monster
           else Defeat
 
-    MonsterRun -> 
+    MonsterRun ->
       Victory
 
-    KnightCastSpell cast -> 
-      let 
+    KnightCastSpell cast ->
+      let
         FightDefense defence = getDefence knight
         newDefense = defence + cast
         newKnight = knight { fightKnightDefence = FightDefense newDefense}
-      in 
+      in
         Round newKnight monster
 
-    KnightDrinkPotion potion -> 
-      let 
+    KnightDrinkPotion potion ->
+      let
         FightHealth health = getHealth knight
         newHealth = health + potion
         newKnight = knight { fightKnightHealth = FightHealth newHealth }
-      in 
+      in
         Round newKnight monster
 
     KnightAttack ->
-      let 
+      let
         FightHealth health = getHealth monster
         FightAttack damage = getAttack knight
         newHealth = health - damage
-      in 
-        if newHealth >= 0 
+      in
+        if newHealth >= 0
           then Round knight (monster { fightMonsterHealth = FightHealth newHealth })
           else Victory
 
@@ -1261,18 +1259,15 @@ processFightActions Victory _ = Victory
 processFightActions Defeat _ = Defeat
 processFightActions Wait _ = Wait
 processFightActions (Round knight monster) [] =
-    let 
-      newActions = (createFightActions knight monster)
-    in
-      if (length newActions) == 0 
-        then Wait
-        else processFightActions (Round knight monster) newActions
+    let newActions = createFightActions knight monster in
+      if length newActions == 0 then Wait else
+        processFightActions (Round knight monster) newActions
 
 processFightActions (Round knight monster) (action:actions) =
     processFightActions (processRoundAction action knight monster) actions
 
 createFightActions :: FightKnight -> FightMonster -> [FightAction]
-createFightActions knight monster = 
+createFightActions knight monster =
   fightKnightActions knight ++ fightMonsterActions monster
 
 fight' :: FightKnight -> FightMonster -> FightResult
