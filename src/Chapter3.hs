@@ -391,7 +391,7 @@ data Unit = Unit
 type Knight = Unit 
 type Monster = Unit 
 type CurrentUnit = Unit 
-type AttackedUnit = Unit 
+type AttackedUnit = Unit
 
 fight :: Knight -> Monster -> Int
 fight = go True
@@ -520,9 +520,8 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
-type Houses = [HouseSize]
-
 type HouseSize = Int
+type Houses = [HouseSize]
 
 data Castle
     = Castle String
@@ -638,22 +637,57 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+
+newtype Health = Health Int
+    deriving (Show)
+
+newtype Armor = Armor Int
+    deriving (Show)
+
+newtype Dexterity = Dexterity Int
+    deriving (Show)
+
+newtype Defense = Defense Int
+    deriving (Show)
+
+newtype Attack = Attack Int
+    deriving (Show)
+    
+newtype Strength = Strength Int
+    deriving (Show)
+    
+newtype Damage = Damage Int
+    deriving (Show)
+ 
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack 
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
     }
+    deriving (Show)
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+calculatePlayerDamage :: Attack -> Strength -> Damage 
+calculatePlayerDamage (Attack attack) (Strength strength)
+    | isNotNegative = Damage damage
+    | otherwise = Damage 0
+    where isNotNegative = attack >= 0 && strength >= 0
+          damage = attack + strength
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
-
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense (Armor armor) (Dexterity dexterity)
+    | isNotNegative = Defense defense
+    | otherwise = Defense 0
+    where isNotNegative = armor >= 0 && dexterity >= 0 
+          defense = armor * dexterity
+ 
+calculatePlayerHit :: Damage -> Defense -> Health -> Health 
+calculatePlayerHit (Damage damage) (Defense defense) (Health health)
+    | newHealth > health = Health health
+    | newHealth < 0 = Health 0
+    | otherwise = Health newHealth
+    where newHealth = health + defense - damage
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -831,6 +865,16 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
+data TreasureChest a = TreasureChest
+    { treasureChestGold :: Int
+    , treasureChestLoot :: a
+    }
+    
+data Lair a b = Lair 
+    { lairChest :: Maybe (TreasureChest a)
+    , lairDragon :: b
+    }
+
 {-
 =🛡= Typeclasses
 
@@ -988,6 +1032,25 @@ Implement instances of "Append" for the following types:
 class Append a where
     append :: a -> a -> a
 
+newtype Gold = Gold Int
+    deriving (Show)
+
+instance Append Gold where
+    append :: Gold -> Gold -> Gold
+    append (Gold goldA) (Gold goldB)
+        | isNotNegative = Gold (goldA + goldB) 
+        | otherwise = Gold 0
+        where isNotNegative = goldA >= 0 && goldB >= 0
+
+instance Append [a] where
+    append :: [a] -> [a] -> [a]
+    append [] [] = []
+    append a b = a ++ b
+
+instance (Append a) => Append (Maybe a) where
+    append :: Maybe a -> Maybe a -> Maybe a
+    append (Just a) (Just b) = Just (append a b)
+    append _ _ = Nothing
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -1048,6 +1111,35 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
+
+data Day 
+    = Monday
+    | Tuesday    
+    | Wednesday
+    | Thursday
+    | Friday
+    | Saturday
+    | Sunday
+    deriving (Show, Eq, Enum)
+
+isWeekend :: Day -> Bool
+isWeekend day
+    | day == Saturday || day == Sunday = True
+    | otherwise = False
+ 
+nextDay :: Day -> Day
+nextDay day
+    | day == Sunday = Monday
+    | otherwise = succ day
+
+-- If day is already on Friday, this is going to return 7 days
+-- because it has to be days till the next Friday. I'm not really
+-- sure if this is what is expected. I might have misunderstood it.
+daysToParty day
+    | diffToFriday <= 0 = 7 + diffToFriday
+    | otherwise = 4 - dayNum
+    where dayNum = fromEnum day
+          diffToFriday = 4 - dayNum
 
 {-
 =💣= Task 9*
