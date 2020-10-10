@@ -381,16 +381,16 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
-data Unit = Unit 
+data Unit = Unit
     { health :: Int
     , attack :: Int
     , gold :: Int
     }
     deriving (Show)
 
-type Knight = Unit 
-type Monster = Unit 
-type CurrentUnit = Unit 
+type Knight = Unit
+type Monster = Unit
+type CurrentUnit = Unit
 type AttackedUnit = Unit
 
 fight :: Knight -> Monster -> Int
@@ -399,10 +399,10 @@ fight = go True
           go isKnightCurrent (Unit cHealth cAttack cGold) (Unit aHealth aAttack aGold)
               | aHealth - cAttack <= 0 && isKnightCurrent = aGold
               | aHealth - cAttack <= 0 && not isKnightCurrent = -1
-              | otherwise = go (not isKnightCurrent) aPlayer cPlayer 
+              | otherwise = go (not isKnightCurrent) aPlayer cPlayer
               where aPlayer = Unit (aHealth - cAttack) aAttack aGold
                     cPlayer = Unit cHealth cAttack cGold
-    
+
 {- |
 =🛡= Sum types
 
@@ -493,7 +493,7 @@ data Meal
     | Lunch
     | Dinner
     | Brunch
-    | Linner 
+    | Linner
     | Dinfast
     | RegularSnack
     | MidnightSnack
@@ -542,9 +542,9 @@ data MagicalCity = MagicalCity
     deriving (Show)
 
 buildCastle :: Castle -> MagicalCity -> MagicalCity
-buildCastle newCastle city = city { cityCastle = newCastle } 
+buildCastle newCastle city = city { cityCastle = newCastle }
 
-buildHouse :: HouseSize -> MagicalCity -> MagicalCity 
+buildHouse :: HouseSize -> MagicalCity -> MagicalCity
 buildHouse houseSize city
     | houseSize <= 4 = city { cityHouses = houseSize:cityHouses city }
     | otherwise = city
@@ -652,23 +652,23 @@ newtype Defense = Defense Int
 
 newtype Attack = Attack Int
     deriving (Show)
-    
+
 newtype Strength = Strength Int
     deriving (Show)
-    
+
 newtype Damage = Damage Int
     deriving (Show)
- 
+
 data Player = Player
     { playerHealth    :: Health
     , playerArmor     :: Armor
-    , playerAttack    :: Attack 
+    , playerAttack    :: Attack
     , playerDexterity :: Dexterity
     , playerStrength  :: Strength
     }
     deriving (Show)
 
-calculatePlayerDamage :: Attack -> Strength -> Damage 
+calculatePlayerDamage :: Attack -> Strength -> Damage
 calculatePlayerDamage (Attack attack) (Strength strength)
     | isNotNegative = Damage damage
     | otherwise = Damage 0
@@ -679,10 +679,10 @@ calculatePlayerDefense :: Armor -> Dexterity -> Defense
 calculatePlayerDefense (Armor armor) (Dexterity dexterity)
     | isNotNegative = Defense defense
     | otherwise = Defense 0
-    where isNotNegative = armor >= 0 && dexterity >= 0 
+    where isNotNegative = armor >= 0 && dexterity >= 0
           defense = armor * dexterity
- 
-calculatePlayerHit :: Damage -> Defense -> Health -> Health 
+
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
 calculatePlayerHit (Damage damage) (Defense defense) (Health health)
     | newHealth > health = Health health
     | newHealth < 0 = Health 0
@@ -869,8 +869,8 @@ data TreasureChest a = TreasureChest
     { treasureChestGold :: Int
     , treasureChestLoot :: a
     }
-    
-data Lair a b = Lair 
+
+data Lair a b = Lair
     { lairChest :: Maybe (TreasureChest a)
     , lairDragon :: b
     }
@@ -1038,7 +1038,7 @@ newtype Gold = Gold Int
 instance Append Gold where
     append :: Gold -> Gold -> Gold
     append (Gold goldA) (Gold goldB)
-        | isNotNegative = Gold (goldA + goldB) 
+        | isNotNegative = Gold (goldA + goldB)
         | otherwise = Gold 0
         where isNotNegative = goldA >= 0 && goldB >= 0
 
@@ -1112,9 +1112,9 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
-data Day 
+data Day
     = Monday
-    | Tuesday    
+    | Tuesday
     | Wednesday
     | Thursday
     | Friday
@@ -1126,7 +1126,7 @@ isWeekend :: Day -> Bool
 isWeekend day
     | day == Saturday || day == Sunday = True
     | otherwise = False
- 
+
 nextDay :: Day -> Day
 nextDay day
     | day == Sunday = Monday
@@ -1135,6 +1135,7 @@ nextDay day
 -- If day is already on Friday, this is going to return 7 days
 -- because it has to be days till the next Friday. I'm not really
 -- sure if this is what is expected. I might have misunderstood it.
+daysToParty :: Day -> Int
 daysToParty day
     | diffToFriday <= 0 = 7 + diffToFriday
     | otherwise = 4 - dayNum
@@ -1175,7 +1176,60 @@ properties using typeclasses, but they are different data types in the end.
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
+data FighterType
+    = Monster
+    | Knight
+    deriving (Show)
 
+data FighterDefense
+    = NoFDefense
+    | FDefense Int
+    deriving (Show)
+
+newtype FighterHealth = FighterHealth Int
+    deriving (Show)
+
+newtype FighterAttack = FighterAttack Int
+    deriving (Show)
+
+data Fighter = Fighter
+    { fighterType :: FighterType
+    , fighterDefense :: FighterDefense
+    , fighterHealth :: FighterHealth
+    , fighterAttack :: FighterAttack
+    }
+    deriving (Show)
+
+class Battle a where
+    newAttack :: a -> a -> a
+    drinkPotion :: a -> a
+    run :: a -> a
+
+computePlayerHealth :: FighterHealth -> FighterDefense -> FighterAttack -> FighterHealth
+computePlayerHealth (FighterHealth p1Health) NoFDefense (FighterAttack p2Attack)
+    | isNotNegative = FighterHealth (p1Health - p2Attack)
+    | otherwise = FighterHealth p1Health
+    where isNotNegative = p1Health >= 0 && p2Attack >= 0
+computePlayerHealth (FighterHealth p1Health) (FDefense p1Defense) (FighterAttack p2Attack)
+    | p1Health >= newP1Health = FighterHealth newP1Health
+    | otherwise = FighterHealth p1Health
+    where newP1Health = p1Health + p1Defense - p2Attack
+
+instance Battle Fighter where
+    -- p1 gets damaged by p2
+    newAttack :: Fighter -> Fighter -> Fighter
+    newAttack p1 p2 =
+        case fighterType p1 of
+            Knight -> p1 { fighterHealth = FighterHealth (p1Health + p1Defense - p2Attack) }
+        where FighterHealth p1Health = fighterHealth p1
+              FDefense p1Defense = fighterDefense p1
+              FighterAttack p2Attack = fighterAttack p2
+
+    drinkPotion :: Fighter -> Fighter
+    drinkPotion p = case fighterType p of
+        Knight -> p { fighterDefense = FDefense (pDefense + 10) }
+        Monster -> p
+        where FDefense pDefense = fighterDefense p
 
 {-
 You did it! Now it is time to the open pull request with your changes
