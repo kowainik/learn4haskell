@@ -40,6 +40,7 @@ Now, if you are ready, bring it on!
 
 module Chapter2 where
 
+import Data.List
 {-
 =🛡= Imports
 
@@ -138,46 +139,37 @@ List of booleans:
 >>> :t [True, False]
 [True, False] :: [Bool]
 
-
 String is a list of characters:
 >>> :t "some string"
 "some string" :: [Char]
-
 
 Empty list:
 >>> :t []
 [] :: [a]
 
-
 Append two lists:
 >>> :t (++)
 (++) :: [a] -> [a] -> [a]
-
 
 Prepend an element at the beginning of a list:
 >>> :t (:)
 (:) :: a -> [a] -> [a]
 
-
 Reverse a list:
 >>> :t reverse
 reverse :: [a] -> [a]
-
 
 Take first N elements of a list:
 >>> :t take
 take :: Int -> [a] -> [a]
 
-
 Create list from N same elements:
 >>> :t replicate
 replicate :: Int -> a -> [a]
 
-
 Split a string by line breaks:
 >>> :t lines
 lines :: String -> [String]
-
 
 Join a list of strings with line breaks:
 >>> :t unlines
@@ -345,9 +337,12 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList from to l
-    | from < 0 || to < 0 || to < from = []
-    | otherwise = take (to - from + 1) (drop from l)
+subList _ _ [] = []
+subList a b (x:xs) | b < a = []
+                    | a < 0 = []
+                    | a > 0 = subList (a-1) (b-1) xs
+                    | b >= 0 = x : subList a (b - 1) xs
+                    | otherwise = []
 
 {- |
 =⚔️= Task 4
@@ -360,9 +355,11 @@ Implement a function that returns only the first half of a given list.
 "b"
 -}
 firstHalf :: [a] -> [a]
-firstHalf l =
-    let halfLen = div (length l) 2
-    in take halfLen l
+firstHalf [] = []
+firstHalf (x:xs)  | l > 0 = x : firstHalf xs
+                  | otherwise = []
+                  where l = div (length (x:xs) - 1) 2
+--this is pretty bad ngl
 
 
 {- |
@@ -513,9 +510,9 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
-isThird42 :: [Int] -> Bool
-isThird42 (_ : _ : 42 : _) = True
-isThird42 _ = False
+isThird42 :: [Integer] -> Bool
+isThird42 (_:_:42:_) = True
+isThird42 _ = False 
 
 
 {- |
@@ -637,9 +634,9 @@ Write a function that takes elements of a list only on even positions.
 [2,3,4]
 -}
 takeEven :: [a] -> [a]
-takeEven [] = []
+takeEven (x:_:xs) = x : takeEven xs
 takeEven [x] = [x]
-takeEven (x : _ : xs) = x : takeEven xs
+takeEven [] = []
 
 {- |
 =🛡= Higher-order functions
@@ -746,7 +743,9 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate = concatMap (\x -> replicate x x)
+smartReplicate [] = []
+smartReplicate (x:xs) = replicate x x ++ smartReplicate xs
+--negative numbers will break it :)
 
 {- |
 =⚔️= Task 9
@@ -759,8 +758,9 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains :: Int -> [[Int]] -> [[Int]]
-contains x = filter (elem x)
+contains :: Integer -> [[Integer]] -> [[Integer]]
+contains _ [] = []
+contains n (x:xs) = if elem n x == True then x : contains n xs else contains n xs
 
 
 {- |
@@ -803,11 +803,11 @@ divideTenBy :: Int -> Int
 divideTenBy = div 10
 
 -- TODO: type ;)
-listElementsLessThan :: Int -> [Int] -> [Int]
+listElementsLessThan :: Integer -> [Integer] -> [Integer]
 listElementsLessThan x = filter (< x)
 
 -- Can you eta-reduce this one???
-pairMul :: [Int] -> [Int] -> [Int]
+pairMul :: [Integer] -> [Integer] -> [Integer]
 pairMul = zipWith (*)
 
 {- |
@@ -864,12 +864,9 @@ list.
 🕯 HINT: Use the 'cycle' function
 -}
 rotate :: Int -> [a] -> [a]
-rotate n l
-    | n < 0 = []
-    | null l = []
-    | otherwise =
-        let len = length l
-        in take len (drop (mod n len) (cycle l))
+rotate _ [] = []
+rotate n xs | n < 1 = []
+            | otherwise = drop n (take (n + length xs) (cycle xs))
 
 {- |
 =💣= Task 12*
@@ -886,11 +883,8 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind = go []
-  where
-    go :: [a] -> [a] -> [a]
-    go res [] = res
-    go res (x:xs) = go (x : res) xs
+rewind [] = []
+rewind (x:xs) = (rewind xs) ++ [x]
 
 
 {-
