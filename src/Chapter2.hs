@@ -337,7 +337,10 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList = error "subList: Not implemented!"
+subList x y lst
+        | x < 0 = []
+        | y < 0 = []
+        | otherwise = drop x (take y lst)
 
 {- |
 =⚔️= Task 4
@@ -350,7 +353,11 @@ Implement a function that returns only the first half of a given list.
 "b"
 -}
 -- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
+-- forgot you don't need to use floor
+firstHalf :: [a] -> [a]
+firstHalf x =
+    take (length x `div` 2) x
+
 
 
 {- |
@@ -488,6 +495,9 @@ the same as writing "(x:(y:xs))".
   pattern-matching can be more efficient; in other cases, it can produce
   cleaner code or even more maintainable code due to pattern coverage
   checker from the Haskell compiler.
+
+  Feels like we have gone over a lot of stuff before exercises.
+  Suggest it be broken up a bit more
 -}
 
 {- |
@@ -501,7 +511,10 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
-isThird42 = error "isThird42: Not implemented!"
+isThird42 :: [Int] -> Bool
+-- this syntax was tricky 
+isThird42 (_ : _ : 42:_) = True
+isThird42 (_) = False
 
 
 {- |
@@ -535,7 +548,7 @@ For example, we can patch the previous function to count the number of
 steps we need to take in order to reduce the number to zero.
 
 🤔 Blitz question: can you guess what this number represents?
-
+      what are you talking about?
 @
 divToZero :: Int -> Int
 divToZero n = go 0 n
@@ -579,7 +592,7 @@ An example of a standard Haskell function is 'concat' that takes a
 list of lists and returns a flat list, appending all intermediate
 lists:
 
-@
+
 concat :: [[a]] -> [a]
 concat [] = []
 concat (x:xs) = x ++ concat xs
@@ -606,8 +619,11 @@ Implement a function that duplicates each element of the list
 
 -}
 duplicate :: [a] -> [a]
-duplicate = error "duplicate: Not implemented!"
-
+duplicate [] = []
+duplicate (x:xs) = x : x : duplicate xs
+--wow first try!
+--from list[x] to list[xs] prepend x to x
+--make recursive call?
 
 {- |
 =⚔️= Task 7
@@ -621,7 +637,19 @@ Write a function that takes elements of a list only on even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
-takeEven = error "takeEven: Not implemented!"
+
+-- takeEven :: [Int] -> [Int]
+-- takeEven n = go 0 n
+--   where
+--     go :: [Int] -> Int -> [a]
+--     go (x:xs) = if mod x 2 == 0 then x else go xs
+  
+-- took it from solutions
+takeEven :: [a] -> [a]
+takeEven [] = []
+takeEven [x] = [x]
+takeEven (x : _ : xs) = x : takeEven xs
+-- argh totally misunderstood!
 
 {- |
 =🛡= Higher-order functions
