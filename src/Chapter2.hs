@@ -187,22 +187,22 @@ Evaluate the following expressions in GHCi and insert the answers. Try
 to guess first, what you will see.
 
 >>> [10, 2] ++ [3, 1, 5]
-[10, 2, 3, 1, 5]
+[10,2,3,1,5]
 
 >>> [] ++ [1, 4]  -- [] is an empty list
-[1, 4]
+[1,4]
 
 >>> 3 : [1, 2]
-[3, 1, 2]
+[3,1,2]
 
 >>> 4 : 2 : [5, 10]  -- prepend multiple elements
-[4, 2, 5, 10]
+[4,2,5,10]
 
 >>> [1 .. 10]  -- list ranges
-[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+[1,2,3,4,5,6,7,8,9,10]
 
 >>> [10 .. 1]
-[] -- why?
+[]
 
 >>> [10, 9 .. 1]  -- backwards list with explicit step
 [10,9,8,7,6,5,4,3,2,1]
@@ -350,7 +350,9 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList start end list = take (end - start + 1) (drop start list)
+subList start end list
+  | start < 0 || end < 0 = []
+  | otherwise = take (end - start + 1) (drop start list)
 
 {- |
 =⚔️= Task 4
@@ -642,8 +644,8 @@ takeEven :: [a] -> [a]
 takeEven = go ([], 0)
   where
     go :: ([a], Int) -> [a] -> [a]
-    go (res, _) [] = res
-    go (res, i) (x:xs) = if even i then go (res ++ [x], i+1) xs else go (res, i+1) xs
+    go (res, _) [] = reverse res
+    go (res, i) (x:xs) = if even i then go (x:res, i+1) xs else go (res, i+1) xs
 
 {- |
 =🛡= Higher-order functions
@@ -868,7 +870,11 @@ list.
 🕯 HINT: Use the 'cycle' function
 -}
 rotate :: Int -> [a] -> [a]
-rotate n l = drop n l ++ take n l
+rotate n l 
+  | n < 0 || length l == 0 = []
+  | otherwise =
+    let newN = mod n (length l)
+    in drop newN l ++ take newN l
 
 {- |
 =💣= Task 12*
@@ -885,8 +891,11 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind [] = []
-rewind (x:xs) = rewind xs ++ [x]
+rewind l = go [] l
+  where
+    go :: [a] -> [a] -> [a]
+    go acc [] = acc
+    go acc (x:xs) = go (x:acc) xs
 
 
 {-
