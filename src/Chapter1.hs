@@ -630,7 +630,7 @@ specifying complex expressions.
 sumLast2 :: Int -> Int
 sumLast2 n =
     let (nDiv, nMod) = divMod (abs n) 10
-    in (mod nDiv 10) + nMod
+    in mod nDiv 10 + nMod
 
 
 {- |
@@ -654,7 +654,7 @@ aren't ready for this boss yet!
 firstDigit :: Int -> Int
 firstDigit n =
     let m = abs n
-    in if m < 10 then m else (firstDigit (div m 10))
+    in if m < 10 then m else firstDigit (div m 10)
 
 
 {-
