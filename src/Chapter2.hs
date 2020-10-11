@@ -739,7 +739,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate = concat . map (\n -> replicate n n)
+smartReplicate = concatMap (\n -> replicate n n)
 
 {- |
 =⚔️= Task 9
