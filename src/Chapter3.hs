@@ -1218,6 +1218,7 @@ mkMonster name attack health actions =
           , monsterActions = filter isMonsterAction actions
           }
 
+-- Typeclass for Fighters
 class (Fighter b) where
   getName :: b -> String
   getAttack :: b -> Int
@@ -1293,8 +1294,8 @@ roundKnight (k, f) =
   case action of
     Nothing                     -> (k, f)
     Just AttackFoe              -> (k', calculateDamage f (getAttack k))
-    Just (CastSpell n)          -> (k' { knightHealth = (knightHealth k') + n }, f)
-    Just (DrinkHealthPotion n)  -> (k' { knightDefense = (knightDefense k') + n}, f)
+    Just (CastSpell n)          -> (k' { knightDefense = (knightDefense k') + n }, f)
+    Just (DrinkHealthPotion n)  -> (k' { knightHealth = (knightHealth k') + n}, f)
   where
     (action, k') = nextAction k
 
@@ -1308,12 +1309,17 @@ roundMonster (m, f) =
   where 
     (action, m') = nextAction m
 
+-- Winner checks if fight is over (one fighter's health <= 0). Return  Nothing if
+-- no winner
 winner :: (Fighter a, Fighter b) => a -> b -> Maybe String
 winner f1 f2 
   | getHealth f1 <= 0 = Just (getName f2)
   | getHealth f2 <= 0 = Just (getName f1)
   | otherwise         = Nothing
 
+-- Fight
+-- First make sure at least one fighter has actions
+-- Then fight a round and check if there's a winner. If not, recurse
 fight :: (Fighter a, Fighter b) => a -> b -> String
 fight fighter1 fighter2 =
   if (noAction fighter1) && (noAction fighter2)
