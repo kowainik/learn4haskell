@@ -343,7 +343,7 @@ Define the Book product data type. You can take inspiration from our description
 of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
-
+data Book = Book { bookName :: String, bookId :: Int } deriving (Show)
 {- |
 =⚔️= Task 2
 
@@ -373,7 +373,24 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+data Knight = Knight 
+              { 
+              knightHealth :: Int, 
+              knigthAttack :: Int,
+              knightGold   :: Int
+              } deriving (Show)
+data Monster = Monster
+              {
+              monsterHealth :: Int,
+              monsterAttack :: Int,
+              monsterGold   :: Int
+              } deriving (Show)
 
+fight :: Monster -> Knight -> Int
+fight m k 
+    | (knightAttack k) >= (monsterHealth m) = (knightGold k) + (monsterGold m)
+    | (monsterAttack m) >= (knightHealth k) = (-1)
+    | otherwise = (knightGold k) 
 {- |
 =🛡= Sum types
 
@@ -459,7 +476,7 @@ and provide more flexibility when working with data types.
 Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
-
+data Meal = Breakfast | Lunch | Dinner | NightSnack
 {- |
 =⚔️= Task 4
 
@@ -560,22 +577,33 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+newtype Health = Health Int
+newtype Attack = Attack Int
+newtype Dexterity = Dexterity Int
+newtype Armor = Armor Int
+newtype Defense = Defense Int
+newtype Damage = Damage Int
+newtype Strength = Strength Int
+
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+calculatePlayerDamage :: Attack -> Strength -> Damage
+calculatePlayerDamage (Attack attack) (Strength strength) =
+   Damage (attack + strength)
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense (Armor armor) (Dexterity dexterity) = 
+  Defense (armor * dexterity)
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit (Damage damage) (Defense defense) (Health health) =
+ Health( health + defense - damage)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
