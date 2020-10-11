@@ -337,7 +337,9 @@ ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
 subList from to ls
-  | from < 0 || to < 0 = []
+  | from < 0  = []
+  | to < 0 = []
+  | from > to = []
   | otherwise = take n . drop from $ ls
   where
     n = to - from + 1
@@ -353,7 +355,7 @@ Implement a function that returns only the first half of a given list.
 "b"
 -}
 firstHalf :: [a] -> [a]
-firstHalf ls = fst . splitAt half $ ls
+firstHalf ls = take half ls
   where
     half = length ls `div` 2
 
@@ -507,10 +509,8 @@ True
 False
 -}
 isThird42 :: (Eq a, Num a) => [a] -> Bool
-isThird42 []         = False
 isThird42 (_:_:42:_) = True
 isThird42 _          = False
-
 
 {- |
 =🛡= Recursion
@@ -629,7 +629,7 @@ Write a function that takes elements of a list only on even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
-takeEven :: (Eq a, Num a) => [a] -> [a]
+takeEven :: [a] -> [a]
 takeEven []      = []
 takeEven [a]     = [a]
 takeEven (h:_:t) = h : takeEven t
@@ -752,7 +752,7 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains :: (Eq a, Num a) => a -> [[a]] -> [[a]]
+contains :: Eq a => a -> [[a]] -> [[a]]
 contains n = filter (elem n)
 
 {- |
@@ -854,12 +854,13 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate :: (Num a) => Int -> [a] -> [a]
+rotate :: Int -> [a] -> [a]
 rotate n ls
   | n < 0 = []
-  | otherwise = take listLen . drop n . cycle $ ls
+  | otherwise = take listLen . drop dropN . cycle $ ls
   where
     listLen = length ls
+    dropN = n `mod` listLen
 
 {- |
 =💣= Task 12*
@@ -876,8 +877,11 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind []    = []
-rewind (h:t) = rewind t ++ [h]
+rewind = go []
+  where
+    go :: [a] -> [a] -> [a]
+    go acc []    = acc
+    go acc (h:t) = go (h:acc) t
 
 
 {-
