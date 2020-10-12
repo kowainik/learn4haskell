@@ -302,7 +302,7 @@ expressions in GHCi
 >>> 1 + 2
 3
 >>> 10 - 15
-5
+-5
 
 >>> 10 - (-5)  -- negative constants require ()
 10
