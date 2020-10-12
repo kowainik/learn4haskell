@@ -627,7 +627,7 @@ specifying complex expressions.
 sumLast2 n = let last2 = mod (div n 10) 10
                  last1 = mod n 10
                  sum = last2 + last1
-             in (sum)
+             in sum
 
 
 {- |
