@@ -361,7 +361,7 @@ Implement a function that returns only the first half of a given list.
 firstHalf :: [a] -> [a]
 firstHalf l = halfList where
   lengthList = length l
-  half = div lengthList 2 
+  half = div lengthList 2
   halfList = take half l
 
 
@@ -621,7 +621,7 @@ Implement a function that duplicates each element of the list
 -}
 duplicate :: [a] -> [a]
 duplicate [] = []
-duplicate (x: xs) = [x,x] ++ duplicate(xs)
+duplicate (x: xs) = [x,x] ++ duplicate xs
 
 
 {- |
@@ -745,7 +745,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = concat (map ((\x -> replicate x x)) l)
+smartReplicate l = concatMap (\x -> replicate x x) l
 
 {- |
 =⚔️= Task 9
@@ -759,7 +759,7 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: Int -> [[Int]] -> [[Int]]
-contains n = filter (\x -> elem n x)
+contains n = filter (elem n)
 
 
 {- |
