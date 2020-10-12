@@ -419,7 +419,6 @@ task is to specify the type of this function.
 squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
 
-
 {- |
 =⚔️= Task 4
 
@@ -478,7 +477,7 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 lastDigit :: Int -> Int
-lastDigit n = mod n 10 
+lastDigit n = mod n 10
 
 {- |
 =⚔️= Task 6
@@ -542,7 +541,11 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 
-mid x y z = error "mid: not implemented!"
+mid :: Int -> Int -> Int -> Int
+mid x y z
+  | x > y = mid y x z
+  | y > z = mid x z y
+  | otherwise = y
 
 {- |
 =⚔️= Task 8
@@ -556,8 +559,10 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel c = error "isVowel: not implemented!"
-
+isVowel :: Char -> Bool
+isVowel c
+  | c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' = True
+  | otherwise = False
 
 {- |
 == Local variables and functions
@@ -620,8 +625,11 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 
-sumLast2 n = error "sumLast2: Not implemented!"
-
+sumLast2 :: Int -> Int
+sumLast2 n = d1 + d2
+  where
+    d1 = mod n 10
+    d2 = div (mod n 100 - d1) 10
 
 {- |
 =💣= Task 10*
@@ -640,8 +648,9 @@ Implement a function that returns the first digit of a given number.
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
-
-firstDigit n = error "firstDigit: Not implemented!"
+firstDigit :: Int -> Int
+firstDigit n | div n 10 == 0 = n
+             | otherwise = firstDigit $ div n 10
 
 
 {-
