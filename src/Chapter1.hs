@@ -542,7 +542,7 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 mid :: Int -> Int -> Int -> Int
-mid x y z 
+mid x y z
   | x > y = mid y x z  -- mid 3 1 2 = mid 1 3 2 --
   | y > z = mid x z y  -- mid 1 3 2 = mid 1 2 3 --
   | otherwise = y      -- mid 1 3 2 = 2 --
@@ -560,7 +560,7 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c 
+isVowel c
   | c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' = True
   | otherwise = False
 
@@ -649,7 +649,7 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
-firstDigit n = 
+firstDigit n =
   let m = abs n
   in if m < 10
     then m
