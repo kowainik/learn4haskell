@@ -560,7 +560,7 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c 
+isVowel c
   | c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' = True
   | otherwise = False
 
