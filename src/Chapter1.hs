@@ -417,6 +417,7 @@ task is to specify the type of this function.
 49
 -}
 
+squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
 
 
@@ -437,7 +438,7 @@ Implement the function that takes an integer value and returns the next 'Int'.
   function body with the proper implementation.
 -}
 next :: Int -> Int
-next x = error "next: not implemented!"
+next x = x + 1
 
 {- |
 After you've implemented the function (or even during the implementation), you
@@ -478,8 +479,9 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit n = error "lastDigit: Not implemented!"
 
+lastDigit :: Integral a => a -> a
+lastDigit n = mod n 10
 
 {- |
 =⚔️= Task 6
@@ -508,7 +510,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = error "closestToZero: not implemented!"
+closestToZero x y = if (abs x) < (abs y) then x else y
 
 
 {- |
@@ -542,7 +544,11 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 
-mid x y z = error "mid: not implemented!"
+mid :: Int -> Int -> Int -> Int
+mid x y z 
+  | (x >= y && x <= z) || (x <= y && x >= z) = x
+  | (y >= x && y <= z) || (y <= x && y >= z) = y
+  | (z >= y && z <= x) || (z <= y && z >= x) = z
 
 {- |
 =⚔️= Task 8
@@ -556,8 +562,15 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel c = error "isVowel: not implemented!"
 
+isVowel :: Char -> Bool
+isVowel c
+  | c == 'a' || c == 'A' = True
+  | c == 'e' || c == 'E' = True
+  | c == 'i' || c == 'I' = True
+  | c == 'o' || c == 'O' = True
+  | c == 'u' || c == 'U' = True
+  | otherwise = False
 
 {- |
 == Local variables and functions
@@ -620,8 +633,11 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 
-sumLast2 n = error "sumLast2: Not implemented!"
-
+sumLast2 :: Int -> Int
+sumLast2 n = 
+  let last = n `mod` 10
+      sndLast = (n `div` 10) `mod` 10
+  in (last + sndLast)
 
 {- |
 =💣= Task 10*
@@ -641,8 +657,10 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit n = error "firstDigit: Not implemented!"
-
+firstDigit:: Int -> Int
+firstDigit n 
+  | n `div` 10 == 0 = n
+  | otherwise = firstDigit (n `div` 10)
 
 {-
 You did it! Now it is time to open pull request with your changes
