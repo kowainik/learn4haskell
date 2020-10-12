@@ -344,6 +344,15 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = MkBook
+    { name       :: String
+    , author     :: String
+    , publisher  :: String
+    , pages      :: String
+    , general    :: String
+    , prince     :: String
+    }
+
 {- |
 =⚔️= Task 2
 
@@ -373,6 +382,42 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+
+data Knight = MkKnight
+    { knightHealth  :: Int
+    , knightAttack  :: Int
+    , knightGold    :: Int
+    }
+
+data Monster = MkMonster
+    { monsterHealth  :: Int
+    , monsterAttack  :: Int
+    , monsterGold    :: Int
+    }
+
+
+fight :: Knight -> Monster -> Int
+fight knight monster
+    | (knightAttack knight) >= (monsterHealth monster) = (knightGold knight) + (monsterGold monster)
+    -- is there any way to access records' fields in a more succint way ? like a dot notation or something ?
+    | otherwise =
+        case (knightHealth knight) < (monsterAttack monster) of
+          True -> (-1)
+          False -> (knightGold knight)
+
+perceval = MkKnight
+    { knightHealth = 50
+    , knightAttack = 30
+    , knightGold = 20
+    }
+
+dracor = MkMonster
+    { monsterHealth = 31
+    , monsterAttack = 60
+    , monsterGold = 45
+    }
+
+-- TODO
 
 {- |
 =🛡= Sum types
@@ -460,6 +505,13 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data MealType
+    = Breakfast
+    | Launch
+    | Dinner
+    | MidnightSnack
+
+
 {- |
 =⚔️= Task 4
 
@@ -480,7 +532,81 @@ After defining the city, implement the following functions:
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
 
-{-
+data Castle
+    = Castle String
+    | NoCastle
+
+data Wall
+    = Wall
+    | NoWall
+
+-- tried to give both Wall and Castle a None alternative but the compilare complained
+-- about multiple declarations of None, is there any way to bypass this ?
+
+data Center
+    = Church
+    | Library
+
+data House = MkHouse
+    { people  :: Int }
+
+data City = MkCity
+    { cityCastle  :: Castle
+    , cityWall    :: Wall
+    , cityCenter :: Center
+    , cityHouses  :: [House]
+    }
+
+
+countPeople :: [House] -> Int
+countPeople [] = 0
+countPeople [x] = (people x)
+countPeople (x:xs) =
+    (people x) + countPeople xs
+    
+
+buildCastle :: City -> Castle -> City
+buildCastle city (Castle "") = city
+buildCastle city castle =
+    city { cityCastle = castle }
+
+
+buildHouse :: City -> House -> City
+buildHouse city house =
+    city { cityHouses = house : (cityHouses city) }
+
+
+buildWalls :: City -> City
+buildWalls city =
+    case (cityCastle city) of
+        Castle _ -> 
+            if (countPeople (cityHouses city)) > 10
+                then city { cityWall = Wall}
+                else city
+
+        NoCastle -> city
+
+
+houseOne = MkHouse
+    { people = 3 }
+
+houseTwo = MkHouse
+    { people = 4 }
+
+houseThree = MkHouse
+    { people = 2 }
+
+houseFour = MkHouse
+    { people = 3 }
+
+cityOne = MkCity
+    { cityCastle = Castle "Imperia"
+    , cityWall = NoWall
+    , cityCenter = Church
+    , cityHouses = [houseOne, houseTwo, houseThree, houseFour]
+    }
+
+{-n
 =🛡= Newtypes
 
 There is one more way to create a custom structure in Haskell. Let's see what
@@ -560,22 +686,32 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+
+
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+newtype Health     = Health Int
+newtype Armor      = Armor Int
+newtype Attack     = Attack Int
+newtype Dexterity  = Dexterity Int
+newtype Strength   = Strength Int
+newtype Defense    = Defense Int
+newtype Damage     = Damage Int
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDamage :: Attack -> Strength -> Damage
+calculatePlayerDamage (Attack attack) (Strength strength) = Damage (attack + strength)
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense (Armor armor) (Dexterity dexterity) = Defense (armor * dexterity)
+
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit (Damage damage) (Defense defense) (Health health) = Health (health + defense - damage)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -753,6 +889,57 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
+
+data MagicalPower
+    = Ice
+    | Fire
+    | Light
+    | Void
+
+
+data TreasureChest x = TreasureChest
+    { treasureChestGold :: Int
+    , treasureChestLoot :: Maybe x
+    }
+
+
+data Dragon power = Dragon
+    { magicalPower :: power } 
+
+
+data DragonLair dragonPower loot treasures = DragonLair
+    { dragon          :: Dragon dragonPower
+    , treasureChest   :: Maybe (TreasureChest loot)
+    , hiddenTreasures :: Maybe treasures
+    }
+
+
+-- mkChest gold loot = TreasureChest
+--     { treasureChestGold = gold
+--     , treasureChestLoot = loot
+--     }
+
+
+-- hiddenChest = TreasureChest
+--     { treasureChestGold = 5000
+--     , treasureChestLoot = Just "Ancient Spellbook"
+--     }
+
+
+-- lairOne = DragonLair
+--     { dragon = Dragon "Earth"
+--     , treasureChest = Just hiddenChest
+--     , hiddenTreasures = Nothing
+--     }
+
+
+-- lairTwo = DragonLair
+--     { dragon = Dragon Void
+--     , treasureChest = Nothing
+--     , hiddenTreasures = Nothing
+--     }
+
+
 {-
 =🛡= Typeclasses
 
@@ -907,8 +1094,22 @@ Implement instances of "Append" for the following types:
   ✧ *(Challenge): "Maybe" where append is appending of values inside "Just" constructors
 
 -}
+
 class Append a where
     append :: a -> a -> a
+
+
+newtype Gold = Gold Int
+
+
+instance Append Gold where
+    append :: Gold -> Gold -> Gold
+    append (Gold x) (Gold y) = Gold (x + y)
+
+
+instance Append [a] where
+    append :: [a] -> [a] -> [a]
+    append listOne listTwo = listOne ++ listTwo
 
 
 {-
@@ -970,6 +1171,36 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
+
+data WeekDay 
+    = Monday 
+    | Tuesday 
+    | Wednesday 
+    | Thursday 
+    | Friday 
+    | Saturday
+    | Sunday 
+    deriving (Show, Eq, Enum, Bounded)
+
+
+isWeekend :: WeekDay -> Bool
+isWeekend day =
+    case day of
+        Sunday -> True
+        Saturday -> True
+        _ -> False
+
+
+nextDay :: WeekDay -> WeekDay
+nextDay day
+    | day == maxBound = minBound
+    | otherwise = succ day
+
+
+daysToParty :: WeekDay -> Int
+daysToParty day =
+    length (enumFromTo day Sunday) - 2
+
 
 {-
 =💣= Task 9*
