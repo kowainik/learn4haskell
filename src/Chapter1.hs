@@ -209,31 +209,31 @@ So, the output in this example means that 'False' has type 'Bool'.
 > Try to guess first and then compare your expectations with GHCi output
 
 >>> :t True
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+<Bool>
 >>> :t 'a'
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+<Char>
 >>> :t 42
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+<Num p => p>
 
 A pair of boolean and char:
 >>> :t (True, 'x')
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+<(Bool, Char)>
 
 Boolean negation:
 >>> :t not
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+<Bool -> Bool>
 
 Boolean 'and' operator:
 >>> :t (&&)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+<Bool -> Bool -> Bool>
 
 Addition of two numbers:
 >>> :t (+)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+<Num a => a -> a -> a>
 
 Maximum of two values:
 >>> :t max
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+<Ord a => a -> a -> a>
 
 You might not understand each type at this moment, but don't worry! You've only
 started your Haskell journey. Types will become your friends soon.
@@ -301,31 +301,31 @@ expressions in GHCi
   functions and operators first. Remember this from the previous task? ;)
 
 >>> 1 + 2
-INSERT THE RESULT INSTEAD OF THE TEXT
+3
 >>> 10 - 15
-
+-5
 >>> 10 - (-5)  -- negative constants require ()
-
+15
 >>> (3 + 5) < 10
-
+True
 >>> True && False
-
+False
 >>> 10 < 20 || 20 < 5
-
+True
 >>> 2 ^ 10  -- power
-
+1024
 >>> not False
-
+True
 >>> div 20 3  -- integral division
-
+6
 >>> mod 20 3  -- integral division remainder
-
+2
 >>> max 4 10
-
+10
 >>> min 5 (max 1 2)
-
+2
 >>> max (min 1 10) (min 5 7)
-
+5
 
 Because Haskell is a __statically-typed__ language, you see an error each time
 you try to mix values of different types in situations where you are not
@@ -417,8 +417,8 @@ task is to specify the type of this function.
 49
 -}
 
+squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
-
 
 {- |
 =⚔️= Task 4
@@ -437,7 +437,7 @@ Implement the function that takes an integer value and returns the next 'Int'.
   function body with the proper implementation.
 -}
 next :: Int -> Int
-next x = error "next: not implemented!"
+next x = x + 1
 
 {- |
 After you've implemented the function (or even during the implementation), you
@@ -478,7 +478,9 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit n = error "lastDigit: Not implemented!"
+
+lastDigit :: Int -> Int
+lastDigit n = n `mod` 10
 
 
 {- |
@@ -508,7 +510,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = error "closestToZero: not implemented!"
+closestToZero x y = if abs(x - 100) > abs(y - 100) then x else y
 
 
 {- |
@@ -542,7 +544,14 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 
-mid x y z = error "mid: not implemented!"
+mid :: Int -> Int -> Int -> Int
+mid x y z 
+    | x > y && x < z = x
+    | y > x && y < z = y
+    | x > z && x < y = x
+    | y > z && y < x = y
+    | z > x && z < y = z
+    | otherwise = z
 
 {- |
 =⚔️= Task 8
@@ -556,7 +565,12 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel c = error "isVowel: not implemented!"
+
+isVowel :: Char -> Bool
+isVowel c
+    | c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' = True
+    | otherwise = False
+
 
 
 {- |
@@ -569,10 +583,10 @@ could make sense to introduce some helper variables.
 You can use the let-in construction in Haskell to define variables.
 Here goes an example:
 
-@
+
 half :: Int -> Int
 half n = let halfN = div n 2 in halfN
-@
+
 
 ♫ NOTE: __let-in__ is also an expression! You can't just define variables; you
   also need to return some expression that may use defined variables.
@@ -580,25 +594,25 @@ half n = let halfN = div n 2 in halfN
 The syntax for defining multiple variables requires to care about indentation
 more, but there is nothing special in it as well:
 
-@
+
 halfAndTwice :: Int -> (Int, Int)
 halfAndTwice n =
     let halfN = div n 2
         twiceN = n * 2
     in (halfN, twiceN)
-@
+
 
 In addition to let-in (or sometimes even alternatively to let-in) you can use
 the __where__ construction to define local variables and functions.
 And, again, the example:
 
-@
+
 pythagoras :: Double -> Double -> Double
 pythagoras a b = square a + square b
   where
     square :: Double -> Double
     square x = x ^ 2
-@
+
 
 You can define multiple functions inside __where__!
 Just remember to keep proper indentation.
@@ -620,7 +634,25 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 
-sumLast2 n = error "sumLast2: Not implemented!"
+sumLast2 :: Int -> Int
+sumLast2 a = lastDigit a + secondDigit a
+  where
+    lastDigit :: Int -> Int
+    lastDigit n = abs (n) `mod` 10
+    secondDigit :: Int -> Int
+    secondDigit x = (abs(x) - abs(lastDigit x)) `div` 10 `mod` 10
+
+
+{- Michael's code:
+
+sumLast3 :: Int -> Int
+sumLast3 n =
+  let lastDigit = mod (abs n) 10
+      secondDigit = mod (div ( (abs n) - lastDigit) 10) 10
+  in (lastDigit + secondDigit)
+
+-}
+
 
 
 {- |
@@ -641,7 +673,13 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit n = error "firstDigit: Not implemented!"
+
+firstDigit :: Int -> Int
+firstDigit n
+    | n <= 10 = n
+    | otherwise = firstDigit (n `div` 10)
+
+
 
 
 {-
