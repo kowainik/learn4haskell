@@ -650,7 +650,8 @@ aren't ready for this boss yet!
 -}
 
 firstDigit :: Int -> Int
-firstDigit n = let evaluated_expr = div n 10
+firstDigit n = let m = abs n
+                   evaluated_expr = div m 10
                    in (if evaluated_expr < 10 then evaluated_expr else firstDigit evaluated_expr)
 
 {-
