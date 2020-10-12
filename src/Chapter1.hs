@@ -623,12 +623,13 @@ Implement a function that returns the sum of the last two digits of a number.
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
-
+sumLast2 :: Int -> Int
 sumLast2 n = let last2 = mod (div n 10) 10
                  last1 = mod n 10
-                 sum = last2 + last1
-             in (sum)
-
+                 result = last2 + last1
+             in (result)
+sumLast :: Int -> Int
+sumLast n = mod n 10
 
 {- |
 =💣= Task 10*
