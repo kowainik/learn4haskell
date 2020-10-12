@@ -649,7 +649,7 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
-firstDigit n = 
+firstDigit n =
   let m = abs n
   in if m < 10
     then m
