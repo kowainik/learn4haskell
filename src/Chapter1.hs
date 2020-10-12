@@ -545,10 +545,10 @@ Casual reminder about adding top-level type signatures for all functions :)
 -}
 
 mid :: Int -> Int -> Int -> Int
-mid x y z 
+mid x y z
   | (x >= y && x <= z) || (x <= y && x >= z) = x
   | (y >= x && y <= z) || (y <= x && y >= z) = y
-  | (z >= y && z <= x) || (z <= y && z >= x) = z
+  | otherwise = z
 
 {- |
 =⚔️= Task 8
@@ -634,7 +634,7 @@ specifying complex expressions.
 -}
 
 sumLast2 :: Int -> Int
-sumLast2 n = 
+sumLast2 n =
   let last = n `mod` 10
       sndLast = (n `div` 10) `mod` 10
   in (last + sndLast)
@@ -658,7 +658,7 @@ aren't ready for this boss yet!
 -}
 
 firstDigit:: Int -> Int
-firstDigit n 
+firstDigit n
   | n `div` 10 == 0 = n
   | otherwise = firstDigit (n `div` 10)
 
