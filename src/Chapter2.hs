@@ -336,7 +336,7 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList x y z 
+subList x y z
   | x >=0 && y >=0 && x<y = take (y - x + 1) . drop x $ z
   | otherwise = []
 
