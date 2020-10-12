@@ -305,7 +305,7 @@ expressions in GHCi
 -5
 
 >>> 10 - (-5)  -- negative constants require ()
-10
+15
 
 >>> (3 + 5) < 10
 True
