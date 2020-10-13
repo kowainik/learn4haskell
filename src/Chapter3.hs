@@ -1182,7 +1182,7 @@ roundFighting action fighter monster = case action of
       newHealth = getHealth monster - getAttack fighter
     in
       if newHealth >=0
-        then Round fighter (monster{monsterHealth = PlayerHealth newHealth}) 
+        then Round fighter (monster{monsterHealth = PlayerHealth newHealth})
         else Victory
   DrinkPotion potion ->
     let
