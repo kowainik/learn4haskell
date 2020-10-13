@@ -229,7 +229,7 @@ Boolean 'and' operator:
 
 Addition of two numbers:
 >>> :t (+)
-(+) :: Num => a -> a -> a
+(+) :: Num a => a -> a -> a
 
 Maximum of two values:
 >>> :t max
@@ -280,7 +280,7 @@ ghci> 1 + 2
 ♫ NOTE: in reality, the type of the + operator is the following:
 
 >>> :t (+)
-(+) :: Num => a -> a -> a
+(+) :: Num a => a -> a -> a
 
 > It may look scary to you, but we will cover all this 'Num' and "=>" later. For
   now, you can think of this as a polymorphic function — in this case, the
@@ -543,7 +543,7 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 
-mid x y z 
+mid x y z
     | x < y && x < z = min y z
     | y < x && y < z = min x z
     | z < x && z < y = min x y
@@ -625,9 +625,9 @@ specifying complex expressions.
 -}
 
 sumLast2 :: Int -> Int
-sumLast2 n = 
+sumLast2 n =
   let last = mod n 10
-      last2 = div ((mod n 100) - last) 10
+      last2 = div (mod n 100 - last) 10
   in last + last2
 
 
@@ -650,8 +650,8 @@ aren't ready for this boss yet!
 -}
 
 firstDigit n
-  | (div n 10) == 0 = n
-  | (div n 100) == 0 = div n 10 
+  | div n 10 == 0 = n
+  | div n 100 == 0 = div n 10
   | otherwise = firstDigit (div n 10)
 
 
