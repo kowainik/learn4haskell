@@ -1083,7 +1083,7 @@ nextDay d
   | otherwise = succ d
 
 daysToParty :: day -> Int
-daysToParty day 
+daysToParty day
   | day > Friday = (fromEnum day - fromEnum Friday) + fromEnum Friday
   | otherwise = fromEnum Friday - fromEnum day
 
