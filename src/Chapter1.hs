@@ -213,8 +213,7 @@ True :: Bool
 >>> :t 'a'
 'a' :: Char
 >>> :t 42
-42 :: Int
-[actual result: `42 :: Num p => p`]
+42 :: Num p => p
 
 A pair of boolean and char:
 >>> :t (True, 'x')
@@ -222,23 +221,19 @@ A pair of boolean and char:
 
 Boolean negation:
 >>> :t not
-not :: operator
-[actual result: `not :: Bool -> Bool`]
+not :: Bool -> Bool
 
 Boolean 'and' operator:
 >>> :t (&&)
-(&&) :: (Bool, Bool) -> Bool
-[actual result: `(&&) :: Bool -> Bool -> Bool`]
+(&&) :: Bool -> Bool -> Bool
 
 Addition of two numbers:
 >>> :t (+)
-(+) :: Num -> Num -> Num
-[actual result: `(+) :: Num => a -> a -> a`]
+(+) :: Num => a -> a -> a
 
 Maximum of two values:
 >>> :t max
-max :: Num => a -> a -> a
-[actual result: `max :: Ord => a -> a -> a`]
+max :: Ord => a -> a -> a
 
 You might not understand each type at this moment, but don't worry! You've only
 started your Haskell journey. Types will become your friends soon.
@@ -514,7 +509,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = if x < 0 || y < 0 then -1 * min (abs x) (abs y) else min (abs x) (abs y)
+closestToZero x y = if min (abs x) (abs y) == (abs x) then x else y
 
 
 {- |
