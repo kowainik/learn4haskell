@@ -535,7 +535,7 @@ buildHouse p city = city {cityHouses = p : cityHouses city}
 
 buildWalls :: City -> City
 buildWalls city = case cityWall city of
-  Castle castle -> 
+  Castle castle ->
     if people >= 10 then city {cityWall = castleWall castle}
     else city -> city
     where
