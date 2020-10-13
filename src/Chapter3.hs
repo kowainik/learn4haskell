@@ -1194,7 +1194,6 @@ roundFighting action fighter monster = case action of
       newFighter = fighter{fighterDefense = PlayerDefense (getDefense fighter + spell)}
     in
       Round newFighter monster
-  
 {-
 You did it! Now it is time to open pull request with your changes
 and summon @vrom911 and @chshersh for the review!
