@@ -479,7 +479,7 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit ::  Int -> Int 
+lastDigit ::  Int -> Int
 lastDigit n = abs n `mod` 10
 
 
@@ -545,7 +545,7 @@ Casual reminder about adding top-level type signatures for all functions :)
 -}
 mid :: Int -> Int -> Int -> Int
 mid x y z
-  | min x y == min y z = min x z 
+  | min x y == min y z = min x z
   | otherwise = max (min x y) (min y z)
 
 
@@ -633,7 +633,7 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
-sumLast2 n = 
+sumLast2 n =
   let ones = mod (abs n) 10
       tens = mod (div (abs n - ones) 10) 10
   in ones + tens
