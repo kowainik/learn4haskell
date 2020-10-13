@@ -545,7 +545,7 @@ Casual reminder about adding top-level type signatures for all functions :)
 -}
 mid :: Int -> Int -> Int -> Int
 mid x y z
-  | min x y == min y z = min x z 
+  | min x y == min y z = min x z
   | otherwise = max (min x y) (min y z)
 
 
