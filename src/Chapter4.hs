@@ -114,22 +114,30 @@ As always, try to guess the output first! And don't forget to insert
 the output in here:
 
 >>> :k Char
+Char :: *
 
 >>> :k Bool
+Bool :: *
 
 >>> :k [Int]
+[Int] :: *
 
 >>> :k []
+[] :: * -> *
 
 >>> :k (->)
+(->) :: * -> * -> *
 
 >>> :k Either
+Either :: * -> * -> *
 
 >>> data Trinity a b c = MkTrinity a b c
 >>> :k Trinity
+Trinity :: * -> * -> * -> *
 
 >>> data IntBox f = MkIntBox (f Int)
 >>> :k IntBox
+IntBox :: (* -> *) -> *
 
 -}
 
@@ -292,8 +300,9 @@ we can reuse already known concepts (e.g. partial application) from
 values and apply them to the type level?
 -}
 instance Functor (Secret e) where
-    fmap :: (a -> b) -> Secret e a -> Secret e b
-    fmap = error "fmap for Box: not implemented!"
+  fmap :: (a -> b) -> Secret e a -> Secret e b
+  fmap f (Reward x) = Reward $ f x
+  fmap _ (Trap   x) = Trap x
 
 {- |
 =⚔️= Task 3
@@ -306,6 +315,12 @@ typeclasses for standard data types.
 data List a
     = Empty
     | Cons a (List a)
+    deriving Show
+
+instance Functor List where
+  fmap :: (a -> b) -> List a -> List b
+  fmap f (Cons x xs) = Cons (f x) (fmap f xs)
+  fmap _ Empty       = Empty
 
 {- |
 =🛡= Applicative
@@ -471,11 +486,12 @@ Applicatives can be found in many applications:
 Implement the Applicative instance for our 'Secret' data type from before.
 -}
 instance Applicative (Secret e) where
-    pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+  pure :: a -> Secret e a
+  pure = Reward
 
-    (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
+  (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
+  Trap   f <*> _ = Trap f
+  Reward f <*> x = f <$> x
 
 {- |
 =⚔️= Task 5
@@ -488,7 +504,17 @@ Implement the 'Applicative' instance for our 'List' type.
   may also need to implement a few useful helper functions for our List
   type.
 -}
+instance Applicative List where
+  pure :: a -> List a
+  pure x = Cons x Empty
 
+  (<*>) :: List (a -> b) -> List a -> List b
+  Empty     <*> _  = Empty
+  Cons f fs <*> xs = concatList (f <$> xs) (fs <*> xs)
+
+concatList :: List a -> List a -> List a
+concatList Empty       ys = ys
+concatList (Cons x xs) ys = Cons x (concatList xs ys)
 
 {- |
 =🛡= Monad
@@ -542,9 +568,8 @@ but only if the number is even.
 
 -}
 half :: Int -> Maybe Int
-half n
-    | even n = Just (div n 2)
-    | otherwise = Nothing
+half n | even n    = Just (div n 2)
+       | otherwise = Nothing
 
 {- |
 
@@ -599,8 +624,9 @@ concepts in the end.
 Implement the 'Monad' instance for our 'Secret' type.
 -}
 instance Monad (Secret e) where
-    (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+  (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
+  Reward x >>= f = f x
+  Trap   x >>= _ = Trap x
 
 {- |
 =⚔️= Task 7
@@ -611,6 +637,10 @@ Implement the 'Monad' instance for our lists.
   maybe a few) to flatten lists of lists to a single list.
 -}
 
+instance Monad List where
+  (>>=) :: List a -> (a -> List b) -> List b
+  Empty     >>= _ = Empty
+  Cons x xs >>= f = concatList (f x) (xs >>= f)
 
 {- |
 =💣= Task 8*: Before the Final Boss
@@ -629,7 +659,7 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM mx my = mx >>= \x -> if x then my else pure False
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
@@ -673,6 +703,21 @@ Specifically,
  ❃ Implement the function to convert Tree to list
 -}
 
+data Tree a
+  = Leaf
+  | Node a (Tree a) (Tree a)
+
+instance Functor Tree where
+  fmap _ Leaf         = Leaf
+  fmap f (Node x l r) = Node (f x) (fmap f l) (fmap f r)
+
+reverseTree :: Tree a -> Tree a
+reverseTree Leaf         = Leaf
+reverseTree (Node x l r) = Node x (reverseTree r) (reverseTree l)
+
+listFromTree :: Tree a -> [a]
+listFromTree Leaf         = []
+listFromTree (Node x l r) = x : listFromTree l ++ listFromTree r
 
 {-
 You did it! Now it is time to open pull request with your changes
