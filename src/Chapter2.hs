@@ -644,11 +644,11 @@ Write a function that takes elements of a list only on even positions.
 [2,3,4]
 -}
 takeEven :: [a] -> [a]
-takeEven l = go l
+takeEven = go
   where
     go :: [a] -> [a]
     go [] = []
-    go (x:[]) = [x]
+    go [x] = [x]
     go (x:_:xs) = x : takeEven xs
 
 {- |
@@ -756,7 +756,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = concat $ map (\x -> replicate x x) l
+smartReplicate l = concatMap (\x -> replicate x x) l
 
 {- |
 =⚔️= Task 9
@@ -770,7 +770,7 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: (Foldable t, Eq a) => a -> [t a] -> [t a]
-contains num = filter (\x -> isJust $ find (==num) x)
+contains num = filter (isJust . find (== num))
 
 {- |
 =🛡= Eta-reduction
@@ -873,7 +873,7 @@ list.
 🕯 HINT: Use the 'cycle' function
 -}
 rotate :: Int -> [a] -> [a]
-rotate offset list = subList offset ((length list) + (offset - 1)) $ cycle list
+rotate offset list = subList offset (length list + (offset - 1)) $ cycle list
 
 {- |
 =💣= Task 12*
@@ -890,7 +890,7 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind list = map ((!!) list) [length list - 1, length list - 2..0]
+rewind list = map (list !!) [length list - 1, length list - 2..0]
 
 
 {-
