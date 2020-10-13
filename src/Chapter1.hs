@@ -416,7 +416,6 @@ task is to specify the type of this function.
 >>> squareSum 3 4
 49
 -}
-
 squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
 
@@ -468,7 +467,7 @@ Implement a function that returns the last digit of a given number.
 >>> lastDigit 42
 2
 
-🕯 HINT: Use the `mod` function
+🕯 HINT: use the `mod` function
 
 ♫ NOTE: You can discover possible functions to use via Hoogle:
     https://hoogle.haskell.org/
@@ -478,6 +477,7 @@ Implement a function that returns the last digit of a given number.
   results. Or you can try to guess the function name, search for it and check
   whether it works for you!
 -}
+-- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int
 lastDigit n = mod (abs n) 10
 
@@ -544,11 +544,13 @@ Casual reminder about adding top-level type signatures for all functions :)
 -}
 mid :: Int -> Int -> Int -> Int
 mid x y z
-    | x <= z && z <= y = z
-    | y <= z && z <= x = z
-    | y <= x && x <= z = x
-    | z <= x && x <= y = x
-    | otherwise        = y
+  | x == y && y == z = x
+  | x == y = x
+  | y == z = y
+  | z == x = z
+  | x > y && x < z || x > z && x < y = x
+  | y > x && y < z || y > z && y < x = y
+  | z > x && z < y || z > y && z < x = z
 
 {- |
 =⚔️= Task 8
@@ -564,12 +566,8 @@ False
 -}
 isVowel :: Char -> Bool
 isVowel c
-    | c == 'a'  = True
-    | c == 'e'  = True
-    | c == 'i'  = True
-    | c == 'o'  = True
-    | c == 'u'  = True
-    | otherwise = False
+  | c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' = True
+  | otherwise = False
 
 
 {- |
@@ -617,7 +615,7 @@ You can define multiple functions inside __where__!
 Just remember to keep proper indentation.
 -}
 
-{-
+{- |
 =⚔️= Task 9
 
 Implement a function that returns the sum of the last two digits of a number.
@@ -626,7 +624,7 @@ Implement a function that returns the sum of the last two digits of a number.
 6
 >>> sumLast2 134
 7
->>> sumLast 1
+>>> sumLast2 1
 1
 
 Try to introduce variables in this task (either with let-in or where) to avoid
@@ -634,9 +632,9 @@ specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
 sumLast2 n =
-    let lastTwo = mod (abs n) 100
-        (second, first) = divMod lastTwo 10
-    in second + first
+  let lastDigit = mod (abs n) 10
+      preLastDigit = mod (div (abs n) 10) 10
+  in lastDigit + preLastDigit
 
 
 {- |
@@ -656,16 +654,14 @@ Implement a function that returns the first digit of a given number.
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
-
 firstDigit :: Int -> Int
-firstDigit n = go (divMod (abs n) 10)
-  where
-    go :: (Int, Int) -> Int
-    go (0, lastD) = lastD
-    go (rest, _) = go (divMod rest 10)
+firstDigit n = if div n 10 == 0
+  then n
+  else firstDigit (div n 10)
+
 
 {-
-You did it! Now it is time to the open pull request with your changes
+You did it! Now it is time to open pull request with your changes
 and summon @vrom911 and @chshersh for the review!
 -}
 
