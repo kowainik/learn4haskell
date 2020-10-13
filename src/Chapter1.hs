@@ -280,7 +280,7 @@ ghci> 1 + 2
 ♫ NOTE: in reality, the type of the + operator is the following:
 
 >>> :t (+)
-(+) :: Num a => a -> a -> a
+(+) :: Num => a -> a -> a
 
 > It may look scary to you, but we will cover all this 'Num' and "=>" later. For
   now, you can think of this as a polymorphic function — in this case, the
