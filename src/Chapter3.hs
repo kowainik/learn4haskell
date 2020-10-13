@@ -395,7 +395,7 @@ data Monster = Monster
   } deriving(Show)
 
 fight :: Knight ->  Monster -> Int
-fight k m 
+fight k m
   | mHealth m <= kAttack k = kGold k + mGold magic
   | kHealth k <= mAttack m = (-1)
   | otherwise = kGold k
