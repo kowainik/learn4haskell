@@ -338,7 +338,7 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList n m  = take (m - n + 1) . drop n
+subList n m l = if n < 0 || m < n then [] else take (m - n + 1) (drop n l)
 
 {- |
 =⚔️= Task 4
