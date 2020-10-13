@@ -633,7 +633,7 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
-sumLast2 n = 
+sumLast2 n =
   let ones = mod (abs n) 10
       tens = mod (div (abs n - ones) 10) 10
   in ones + tens
