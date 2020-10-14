@@ -1202,6 +1202,9 @@ class (Fighter b) where
   calculateDamage :: b -> Int -> b
   nextRound :: (Fighter a) => b -> a  -> (b, a)
   ranAway :: b -> Bool
+  
+  notAlive :: b -> Bool
+  notAlive f = getHealth f <= 0
 
 instance Fighter Knight where
   calculateDamage :: Knight -> Int -> Knight
@@ -1245,6 +1248,7 @@ instance Fighter Monster where
     where
       action = head (monsterActions m)
 
+
 -- Knight implementation of nextRound
 roundKnight :: Fighter b => Knight -> b -> (Knight, b)
 roundKnight k f =
@@ -1268,18 +1272,16 @@ roundMonster m f =
     (action:actions) = monsterActions m
     m' = m { monsterActions = actions ++ [action] }
 
--- Winner checks if fight is over: either one fighter's health <= 0) or the first fighter 
--- (whose round it was) had a RunAway action. If not winner, return Nothing (fight will continue)
+-- Winner checks if fight is over: either f2 (who may have been attacked by f1 this round) is dead
+-- and f1 wins, or f1's action was to run away and f2 wins.
 winner :: (Fighter a, Fighter b) => a -> b -> Maybe String
 winner f1 f2 
-  | getHealth f1 <= 0     = Just (getName f2)
-  | getHealth f2 <= 0     = Just (getName f1)
-  | ranAway f1 == True    = Just (getName f2)
-  | otherwise             = Nothing
+  | notAlive f2         = Just (getName f1)
+  | ranAway f1          = Just (getName f2)
+  | otherwise           = Nothing
 
 -- Fight
--- First make sure at least one fighter has actions
--- Then fight a round and check if there's a winner. If not, recurse
+-- Fight a round and check if there's a winner. If not, recurse
 fight :: (Fighter a, Fighter b) => a -> b -> String
 fight f1 f2 =
   let
