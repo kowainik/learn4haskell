@@ -628,8 +628,8 @@ specifying complex expressions.
 sumLast2 :: Int -> Int
 sumLast2 n = d1 + d2
   where
-    d1 = mod n 10
-    d2 = div (mod n 100 - d1) 10
+    d1 = mod (abs n) 10
+    d2 = div (mod (abs n) 100) 10
 
 {- |
 =💣= Task 10*
