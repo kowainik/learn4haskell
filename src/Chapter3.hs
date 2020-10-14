@@ -1,3 +1,7 @@
+{-# LANGUAGE GADTs #-}
+-- NOTE: I don't fully know what all of these do... I just know that I wanted to put constraints in places that GHC
+-- didn't like unless I added these extensions. Is there a performance cost? Some other hidden cost?
+
 {- 👋 Welcome to Chapter Three of our journey, Courageous Knight!
 
 Glad to see you back for more challenges. You fight great for the glory of the
@@ -344,6 +348,12 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = Book {
+  bookAuthor :: String,
+  bookPages :: Int,
+  bookEdition :: Int
+}
+
 {- |
 =⚔️= Task 2
 
@@ -373,6 +383,22 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+data Entity = Entity {
+  entHealth :: Int,
+  entAttack :: Int,
+  entGold :: Int
+}
+newtype Knight = Knight Entity
+newtype Monster = Monster Entity
+
+fight :: Knight -> Monster -> Int
+fight (Knight kE) (Monster mE)
+  | mHp <= 0 = entGold kE + entGold mE
+  | kHp <= 0 = -1
+  | otherwise = entGold kE
+    where
+      mHp = entHealth mE - entAttack kE
+      kHp = entHealth kE - entAttack mE
 
 {- |
 =🛡= Sum types
@@ -459,6 +485,7 @@ and provide more flexibility when working with data types.
 Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
+data Meal = Breakfast | Lunch | Dinner | Brunch | Snack | Drink | ProteinShake
 
 {- |
 =⚔️= Task 4
@@ -479,6 +506,52 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
+
+data Wall = Wall
+data Church = Church
+data Library = Library
+data Castle = Castle {
+  castleName :: String,
+  castleWall :: Maybe Wall
+}
+data Person = Person
+-- I struggled to find a representation for House that enforced the invariant of 1 <= #people in house <= 5.
+-- The only way I could find to do it was the below, but this is a really awkward representation. Is there a better way sans dependent types?
+data House = House Person (Maybe Person) (Maybe Person) (Maybe Person) (Maybe Person)
+type Houses = [House]
+
+data City = City {
+  citySpecialBuilding :: Either Church Library,
+  cityCastle :: Maybe Castle,
+  cityHouses :: Houses
+}
+
+buildCastle :: Castle -> City -> City
+buildCastle castle city = city { cityCastle = Just castle }
+
+addWallsToCastle :: Castle -> Castle
+addWallsToCastle castle = castle { castleWall = Just Wall }
+
+buildHouse :: House -> City -> City
+buildHouse house city = let houses = cityHouses city
+                        in city { cityHouses = house : houses}
+
+isPerson :: Maybe Person -> Int
+isPerson (Just _) = 1
+isPerson Nothing = 0
+
+countPeople :: House -> Int
+countPeople (House _ p2 p3 p4 p5) = foldr ((+) . isPerson) 1 [p2, p3, p4, p5]
+
+buildWalls :: City -> City
+buildWalls c = case c of
+  City _ (Just cstl) houses -> if peopleCount >= 10
+                           then c { cityCastle = Just (Castle cName (Just Wall)) }
+                           else c
+    where
+      peopleCount = foldr ((+) . countPeople) 0 houses
+      cName = castleName cstl
+  City _ Nothing _ -> c
 
 {-
 =🛡= Newtypes
@@ -560,22 +633,31 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+newtype Health = Hp Int
+newtype Armor = Arm Int
+newtype Attack = Atk Int
+newtype Dexterity = Dex Int
+newtype Strength = Str Int
+newtype Damage = Dmg Int
+newtype Defense = Dfns Int
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+calculatePlayerDamage :: Attack -> Strength -> Damage
+calculatePlayerDamage (Atk atk) (Str str) = Dmg (atk + str)
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense (Arm armor) (Dex dex) = Dfns (armor * dex)
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit (Dmg dmg) (Dfns dfns) (Hp hp) = 
+  let result = hp + dfns - dmg
+  in if result <= hp then (Hp result) else (Hp hp)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -753,6 +835,17 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
+data TreasureChest x = TreasureChest
+    { treasureChestGold :: Int
+    , treasureChestLoot :: x
+    }
+
+newtype Dragon a = Dragon a
+data Lair x a = Lair
+    { lairDragon :: Dragon a
+    , lairTreasure :: Maybe (TreasureChest x)
+    }
+
 {-
 =🛡= Typeclasses
 
@@ -760,7 +853,7 @@ __Typeclass__ is a regularly used way to express common characteristics of the
 different data types. In some sense, a typeclass describes the interface of some
 value without telling you the implementation details.
 
-__Instance__ is a representation of the typeclass ↔︎️ data type relationships. In
+__Instance__ is a representation of the typeclass ↔︎ data type relationships. In
 order to show that the data type obeys the typeclasses rules and to use the
 methods of the typeclass on the data values, you need to provide the work
 instructions under this particular typeclass. And that is the instance of the
@@ -835,7 +928,7 @@ instance ArchEnemy Double where
 
 And then you can write polymorphic functions and not worry about which specific
 type is underhood until it has the instance of the desired typeclass. For that
-we are using __constrains__ in Haskell. It is the identification of affiliation
+we are using __constraints__ in Haskell. It is the identification of affiliation
 to the typeclass. The constraints should go after the "::" sign in the function
 type declaration. You can specify one or many constraints. If more than one they
 should be in parenthesis and comma-separated. The end of constraints is
@@ -907,8 +1000,22 @@ Implement instances of "Append" for the following types:
   ✧ *(Challenge): "Maybe" where append is appending of values inside "Just" constructors
 
 -}
+newtype Gold = Gold Int
+  deriving (Show, Eq, Ord)
+
 class Append a where
     append :: a -> a -> a
+
+instance Append Gold where
+  append (Gold a) (Gold b) = Gold (a + b)
+
+instance Append [a] where
+  append lhs rhs = lhs ++ rhs
+
+instance Append a => Append (Maybe a) where
+  append _ Nothing = Nothing
+  append Nothing _ = Nothing
+  append (Just a) (Just b) = Just (append a b)
 
 
 {-
@@ -971,6 +1078,21 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
+data Day = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday
+  deriving (Eq, Ord, Enum, Show)
+
+isWeekend :: Day -> Bool
+isWeekend day = day `elem` [Saturday, Sunday]
+
+nextDay :: Day -> Day
+nextDay Sunday = Monday
+nextDay day = succ day
+
+daysToParty :: Day -> Int
+daysToParty day = daysToParty' day 0
+  where daysToParty' Friday acc = acc
+        daysToParty' day' acc = daysToParty' (nextDay day') (acc + 1)
+
 {-
 =💣= Task 9*
 
@@ -1006,6 +1128,99 @@ Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
 
+class Fighter a where
+  attack :: a -> Int
+  health  :: a -> Int
+  takeTurn :: a -> Fightable -> Fight
+  receiveDamage :: a -> Int -> a
+
+data Fightable =
+    FightHuman Human
+  | FightBeast Beast
+    deriving Show
+
+data Fight = Fight Fightable Fightable
+  deriving Show
+
+instance Fighter Fightable where
+  attack :: Fightable -> Int
+  attack (FightHuman human) = humanAtk human
+  attack (FightBeast beast) = beastAtk beast
+
+  health :: Fightable -> Int
+  health (FightHuman human) = humanHp human
+  health (FightBeast beast) = beastHp beast
+
+  receiveDamage :: Fightable -> Int -> Fightable
+  receiveDamage (FightHuman human) dmg = FightHuman (receiveDamage human dmg)
+  receiveDamage (FightBeast beast) dmg = FightBeast (receiveDamage beast dmg)
+
+  takeTurn :: Fightable -> Fightable -> Fight
+  takeTurn (FightHuman human) enemy = takeTurn human enemy
+  takeTurn (FightBeast beast) enemy = takeTurn beast enemy
+
+data Human = Human {
+  humanAtk :: Int,
+  humanHp :: Int,
+  humanDef :: Int,
+  humanActs :: [HumanAction]
+} deriving Show
+
+data HumanAction =
+    HumanAttack
+  | HumanDefend
+  | HumanHeal
+    deriving Show
+
+-- helper for cycling a fighters list of actions
+cycleOnce :: [a] -> [a]
+cycleOnce xs = take (length xs) . drop 1 . cycle $ xs
+
+instance Fighter Human where
+  attack = humanAtk
+  health = humanHp
+  receiveDamage self@(Human _ hp def _) dmg = self { humanHp = min (hp + def - dmg) hp}
+  takeTurn self enemy = case self of
+    Human atk hp def (act : _) -> case act of
+      HumanAttack -> Fight (receiveDamage enemy atk) (FightHuman self { humanActs = cycledActs self})
+      HumanDefend -> Fight enemy (FightHuman self { humanDef = def + 2, humanActs = cycledActs self })
+      HumanHeal -> Fight enemy (FightHuman self { humanHp = hp + 1, humanActs = cycledActs self})
+    _ -> Fight enemy (FightHuman self) -- dont need to cycle when acts is empty
+    where
+      cycledActs :: Human -> [HumanAction]
+      cycledActs = cycleOnce . humanActs
+
+data Beast = Beast {
+  beastAtk :: Int,
+  beastHp :: Int,
+  beastActs :: [BeastAction]
+} deriving Show
+
+instance Fighter Beast where
+  attack = beastAtk
+  health = beastHp
+  receiveDamage self@(Beast _ hp _) dmg = self { beastHp = hp - dmg}
+  takeTurn self enemy = case self of
+    Beast atk _ (act : _) -> case act of
+      BeastAttack -> Fight (receiveDamage enemy atk) (FightBeast self { beastActs = cycledActs self})
+      BeastFlee -> Fight enemy (FightBeast self { beastHp = 0, beastActs = cycledActs self })
+    _ -> Fight enemy (FightBeast self) -- dont need to cycle when acts is empty
+    where
+      cycledActs :: Beast -> [BeastAction]
+      cycledActs = cycleOnce . beastActs
+
+data BeastAction =
+    BeastAttack
+  | BeastFlee
+    deriving Show
+
+type Result = String
+
+resolveFight :: Fight -> Either Fight Fightable
+resolveFight (Fight pOne pTwo)
+  | health pOne <= 0 = Right pTwo
+  | health pTwo <= 0 = Right pOne
+  | otherwise = resolveFight $ takeTurn pOne pTwo
 
 {-
 You did it! Now it is time to the open pull request with your changes
