@@ -542,7 +542,7 @@ value after "=" where the condition is true.
 
 Casual reminder about adding top-level type signatures for all functions :)
 -}
-
+mid :: Int -> Int -> Int -> Int
 mid x y z
     | x < y && x < z = min y z
     | y < x && y < z = min x z
@@ -560,6 +560,7 @@ True
 >>> isVowel 'x'
 False
 -}
+isVowel :: Char -> Bool
 isVowel c = c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'
 
 
@@ -648,7 +649,7 @@ Implement a function that returns the first digit of a given number.
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
-
+firstDigit :: Int -> Int
 firstDigit n
   | div n 10 == 0 = n
   | div n 100 == 0 = div n 10
