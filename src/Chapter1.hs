@@ -657,7 +657,13 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit n = error "firstDigit: Not implemented!"
+firstDigit :: Integer -> Integer
+firstDigit n
+      | isLastDigit = n
+      | otherwise   = firstDigit currentN
+  where
+        currentN = div n 10
+        isLastDigit = currentN == 0
 
 
 {-
