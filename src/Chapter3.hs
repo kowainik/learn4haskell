@@ -409,7 +409,7 @@ fight' k m = result (attack m1 k) m1
     result k' m'
       | fighterHealth k' > 0 && fighterHealth m' < 0  = fighterGold k' + fighterGold m'
       | fighterHealth k' < 0 && fighterHealth m' > 0  = -1
-      | otherwise                                   = fighterGold k'
+      | otherwise                                     = fighterGold k'
 
 -- Attack is half a round of the fight: fighter 1 attacks fighter 2, and the return value
 -- is fighter 2 with its health reduced by fighter 1's attack.
@@ -535,10 +535,9 @@ data NumPeople = One | Two | Three | Four
               deriving (Show, Enum)
 
 data Castle = Castle String
+            | WallCastle String
+            | None
             deriving (Show)
-
-data Wall = Wall Castle
-        deriving (Show)
 
 data Institution = Church | Library
                 deriving (Show)
@@ -546,39 +545,39 @@ data Institution = Church | Library
 data House = House NumPeople
           deriving (Show)
 
-data City =   CityWithCastle Castle Institution [House]
-            | WalledCity Wall Institution [House]
-            | City Institution [House]
-            deriving (Show)
-
-getHouses :: City -> [House]
-getHouses (CityWithCastle _ _ houses) = houses
-getHouses (WalledCity _ _ houses) = houses
-getHouses (City _ houses) = houses
+data City = City
+  { cityCastle :: Castle
+  , cityInstitution :: Institution
+  , cityHouses :: [House]
+  }
+  deriving (Show) 
 
 peopleInHouse :: House -> Int
 peopleInHouse (House n) = (fromEnum n) + 1
 
 peopleInCity :: City -> Int
 peopleInCity city =
-  sum $ map peopleInHouse (getHouses city)
+  sum $ map peopleInHouse (cityHouses city)
 
 buildCastle :: String -> City -> City
-buildCastle name (CityWithCastle (Castle _) i h) = CityWithCastle (Castle name) i h
-buildCastle name (WalledCity (Wall (Castle _)) i h) = WalledCity (Wall (Castle name)) i h
-buildCastle name (City i h) = CityWithCastle (Castle name) i h
+buildCastle name city =
+  case cityCastle city of
+    None          -> city { cityCastle = Castle name }
+    Castle _      -> city { cityCastle = Castle name }
+    WallCastle _  -> city { cityCastle = WallCastle name }
 
 buildHouse :: NumPeople -> City -> City
-buildHouse n (CityWithCastle c i houses) = CityWithCastle c i ((House n):houses)
-buildHouse n (WalledCity w i houses) =  WalledCity w i ((House n):houses)
-buildHouse n (City i houses) = City i ((House n):houses)
+buildHouse num city = city { cityHouses = (House num):(cityHouses city) }
 
 buildWalls :: City -> City
-buildWalls city@(CityWithCastle (Castle c) i h) =
-  if peopleInCity city > 10
-    then (WalledCity (Wall (Castle c))i h)
-    else city
-buildWalls city = city
+buildWalls city =
+  case cityCastle city of
+    None            -> city
+    WallCastle _    -> city
+    Castle name     -> if peopleInCity city > 10
+                         then city { cityCastle = WallCastle name }
+                         else city
+
 
 {-
 =🛡= Newtypes
@@ -877,7 +876,11 @@ data Dragon a = Dragon
     { dragonPower :: a
     }
 
-data Lair p t = Lair (Dragon p) (Maybe (TreasureChest t)) (Maybe (Treasure t))
+data Lair p t = Lair 
+    { lairDragon :: Dragon p
+    , lairTreasureChest :: Maybe (TreasureChest t)
+    , lairTreasure :: Maybe (Treasure t)
+    }
 
 {-
 =🛡= Typeclasses
@@ -1052,7 +1055,9 @@ instance Append [a] where
 instance (Append a) => Append (Maybe a) where
   append :: Maybe a -> Maybe a -> Maybe a
   append (Just x) (Just y) = Just (append x y)
-  append _ _               = Nothing
+  append (Just x) Nothing  = Just x
+  append Nothing (Just y)  = Just y
+  append Nothing Nothing   = Nothing
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -1125,10 +1130,9 @@ nextDay day = if day == maxBound
               then minBound
               else succ day
 
+-- Friday is party day. Use mod to wrap around days that come after party day.
 daysToParty :: Weekday -> Int
-daysToParty day = if day > Friday
-                  then (fromEnum day - fromEnum Friday) + fromEnum Friday
-                  else fromEnum Friday - fromEnum day
+daysToParty day = (fromEnum day - fromEnum Friday) `mod` 7
 
 {-
 =💣= Task 9*
@@ -1168,55 +1172,27 @@ contestants, and write a function that decides the outcome of a fight!
 -- Data Types
 
 -- Actions - all possible actions
-data Action = AttackFoe | CastSpell Int | DrinkHealthPotion Int | RunAway
-                deriving (Show)
 
--- Test that an action is a knight action, to be used in smart constructor
-isKnightAction :: Action -> Bool
-isKnightAction AttackFoe             = True
-isKnightAction (CastSpell _)         = True
-isKnightAction (DrinkHealthPotion _) = True
-isKnightAction _                     = False
+data KnightAction = KnightAttack | CastSpell Int | DrinkHealthPotion Int
+                deriving (Show, Eq)
+data MonsterAction = MonsterAttack | RunAway
+                deriving (Show, Eq)
 
--- Test that an action is a monster action, to be used in smart constructor
-isMonsterAction :: Action -> Bool
-isMonsterAction AttackFoe = True
-isMonsterAction RunAway   = True
-isMonsterAction _         = False
 
 -- Knight
 data Knight = Knight { knightName :: String
                      , knightAttack :: Int
                      , knightHealth :: Int
                      , knightDefense ::Int
-                     , knightActions :: [Action]          
+                     , knightActions :: [KnightAction]          
                      } deriving (Show)
-
--- smart constructor for Knight that enforces the correct subset of actions
-mkKnight :: String -> Int -> Int -> Int -> [Action] -> Knight
-mkKnight name attack health defense actions =
-  Knight { knightName = name
-         , knightAttack = attack
-         , knightHealth = health
-         , knightDefense = defense
-         , knightActions = filter isKnightAction actions
-         }
 
 -- Monster
 data Monster = Monster { monsterName :: String
                        , monsterAttack :: Int
                        , monsterHealth :: Int
-                       , monsterActions :: [Action]
+                       , monsterActions :: [MonsterAction]
                        } deriving (Show)
-
--- smart constructor for Monster that enforces the correct subset of actions
-mkMonster :: String -> Int -> Int -> [Action] ->  Monster
-mkMonster name attack health actions = 
-  Monster { monsterName = name
-          , monsterAttack = attack
-          , monsterHealth = health
-          , monsterActions = filter isMonsterAction actions
-          }
 
 -- Typeclass for Fighters
 class (Fighter b) where
@@ -1224,16 +1200,8 @@ class (Fighter b) where
   getAttack :: b -> Int
   getHealth :: b -> Int
   calculateDamage :: b -> Int -> b
-  nextAction :: b -> (Maybe Action, b)
   nextRound :: (Fighter a) => b -> a  -> (b, a)
-  
-  noAction :: b -> Bool
-  noAction f =
-    case maybeAction of
-      Nothing -> True
-      _       -> False
-    where
-      (maybeAction, _) = nextAction f
+  ranAway :: b -> Bool
 
 instance Fighter Knight where
   calculateDamage :: Knight -> Int -> Knight
@@ -1250,14 +1218,10 @@ instance Fighter Knight where
   getHealth knight = knightHealth knight
 
   nextRound :: (Fighter a) => Knight -> a -> (Knight, a)
-  nextRound k f = roundKnight (k, f)
+  nextRound k f = roundKnight k f
 
-  nextAction :: Knight -> (Maybe Action, Knight)
-  nextAction knight = 
-    let
-      actions = knightActions knight
-      (maybeAction, actions') = nextAction' actions
-    in (maybeAction, knight { knightActions = actions' })
+  ranAway :: Knight -> Bool
+  ranAway k = False
 
 instance Fighter Monster where
   calculateDamage :: Monster -> Int -> Monster
@@ -1274,66 +1238,56 @@ instance Fighter Monster where
   getHealth monster = monsterHealth monster
 
   nextRound :: (Fighter b) => Monster -> b -> (Monster, b)
-  nextRound m f = roundMonster (m, f) 
+  nextRound m f = roundMonster m f
 
-  nextAction :: Monster -> (Maybe Action, Monster)
-  nextAction monster = 
-    let
-      actions = monsterActions monster
-      (maybeAction, actions') = nextAction' actions
-    in (maybeAction, monster { monsterActions = actions' })
-
--- Typeclass helper functions
-nextAction' :: [Action] -> (Maybe Action, [Action])
-nextAction' [] = (Nothing, [])
-nextAction' (a:as) = (Just a, as ++ [a])
+  ranAway :: Monster -> Bool
+  ranAway m = action  == RunAway
+    where
+      action = head (monsterActions m)
 
 -- Knight implementation of nextRound
-roundKnight :: Fighter b => (Knight, b) -> (Knight, b)
-roundKnight (k, f) =
+roundKnight :: Fighter b => Knight -> b -> (Knight, b)
+roundKnight k f =
   case action of
-    Nothing                     -> (k, f)
-    Just AttackFoe              -> (k', calculateDamage f (getAttack k))
-    Just (CastSpell n)          -> (k' { knightDefense = (knightDefense k') + n }, f)
-    Just (DrinkHealthPotion n)  -> (k' { knightHealth = (knightHealth k') + n}, f)
+    KnightAttack          -> (k', calculateDamage f (getAttack k))
+    CastSpell n           -> (k' { knightDefense = (knightDefense k') + n }, f)
+    DrinkHealthPotion n   -> (k' { knightHealth = (knightHealth k') + n}, f)
   where
-    (action, k') = nextAction k
+    (action:actions) = knightActions k
+    k' = k { knightActions = actions ++ [action] }
 
 -- Monster implementation of nextRound
-roundMonster :: Fighter b => (Monster, b) -> (Monster, b)
-roundMonster (m, f) =
+-- If the action is RunAway, return the original monster, so that action can be used
+-- in checking who won the round.
+roundMonster :: Fighter b => Monster -> b -> (Monster, b)
+roundMonster m f =
   case action of
-    Nothing         -> (m, f)
-    Just AttackFoe  -> (m', calculateDamage f (getAttack m))
-    Just RunAway    -> (m, f)
+    MonsterAttack  -> (m', calculateDamage f (getAttack m))
+    RunAway        -> (m, f)
   where 
-    (action, m') = nextAction m
+    (action:actions) = monsterActions m
+    m' = m { monsterActions = actions ++ [action] }
 
--- Winner checks if fight is over (one fighter's health <= 0). Return  Nothing if
--- no winner
+-- Winner checks if fight is over: either one fighter's health <= 0) or the first fighter 
+-- (whose round it was) had a RunAway action. If not winner, return Nothing (fight will continue)
 winner :: (Fighter a, Fighter b) => a -> b -> Maybe String
 winner f1 f2 
-  | getHealth f1 <= 0 = Just (getName f2)
-  | getHealth f2 <= 0 = Just (getName f1)
-  | otherwise         = Nothing
+  | getHealth f1 <= 0     = Just (getName f2)
+  | getHealth f2 <= 0     = Just (getName f1)
+  | ranAway f1 == True    = Just (getName f2)
+  | otherwise             = Nothing
 
 -- Fight
 -- First make sure at least one fighter has actions
 -- Then fight a round and check if there's a winner. If not, recurse
 fight :: (Fighter a, Fighter b) => a -> b -> String
-fight fighter1 fighter2 =
-  if (noAction fighter1) && (noAction fighter2)
-    then "No fight"
-    else fight' fighter1 fighter2
-  where
-    fight' :: (Fighter a, Fighter b) => a -> b -> String
-    fight' f1 f2 =
-      let
-        (f1', f2') = nextRound f1 f2
-      in
-        case winner f1' f2' of
-          (Just name) -> "The winner is " ++ name
-          Nothing     -> fight' f2' f1'
+fight f1 f2 =
+  let
+    (f1', f2') = nextRound f1 f2
+  in
+    case winner f1' f2' of
+      (Just name) -> "The winner is " ++ name
+      Nothing     -> fight f2' f1'
 
 {-
 You did it! Now it is time to open pull request with your changes
