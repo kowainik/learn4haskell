@@ -630,7 +630,13 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 
-sumLast2 n = error "sumLast2: Not implemented!"
+sumLast2 :: Integer -> Integer
+sumLast2 n =
+    let
+        lastButOne = lastDigit (div n 10)
+        last       = lastDigit n
+    in
+        lastButOne + last
 
 
 {- |
