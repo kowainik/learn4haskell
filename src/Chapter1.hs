@@ -542,8 +542,11 @@ value after "=" where the condition is true.
 
 Casual reminder about adding top-level type signatures for all functions :)
 -}
-
-mid x y z = error "mid: not implemented!"
+mid :: Integer -> Integer -> Integer -> Integer
+mid x y z
+    | x < y     = if y < z then y else z
+    | z < y     = if y < x then y else x
+    | otherwise = min x z
 
 {- |
 =⚔️= Task 8
