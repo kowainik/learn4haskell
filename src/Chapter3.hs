@@ -1176,60 +1176,87 @@ properties using typeclasses, but they are different data types in the end.
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
-data FighterType
-    = Monster
-    | Knight
+newtype NewHealth = NewHealth Int
     deriving (Show)
 
-data FighterDefense
-    = NoFDefense
-    | FDefense Int
+newtype NewAttack = NewAttack Int
     deriving (Show)
 
-newtype FighterHealth = FighterHealth Int
+data NewDefense
+    = NewDefense Int
+    | NoDefense
     deriving (Show)
 
-newtype FighterAttack = FighterAttack Int
-    deriving (Show)
+data NewType
+    = NewMonster
+    | NewKnight
+    deriving (Eq, Show)
 
-data Fighter = Fighter
-    { fighterType :: FighterType
-    , fighterDefense :: FighterDefense
-    , fighterHealth :: FighterHealth
-    , fighterAttack :: FighterAttack
+data NewUnit = NewUnit
+    { newUnitType :: NewType
+    , newUnitHealth :: NewHealth
+    , newUnitAttack :: NewAttack
+    , newUnitDefense :: NewDefense
+    , newUnitInBattle :: Bool
     }
     deriving (Show)
 
-class Battle a where
-    newAttack :: a -> a -> a
+class KnightUnit a where
+    castSpell :: a -> a
     drinkPotion :: a -> a
-    run :: a -> a
 
-computePlayerHealth :: FighterHealth -> FighterDefense -> FighterAttack -> FighterHealth
-computePlayerHealth (FighterHealth p1Health) NoFDefense (FighterAttack p2Attack)
-    | isNotNegative = FighterHealth (p1Health - p2Attack)
-    | otherwise = FighterHealth p1Health
-    where isNotNegative = p1Health >= 0 && p2Attack >= 0
-computePlayerHealth (FighterHealth p1Health) (FDefense p1Defense) (FighterAttack p2Attack)
-    | p1Health >= newP1Health = FighterHealth newP1Health
-    | otherwise = FighterHealth p1Health
-    where newP1Health = p1Health + p1Defense - p2Attack
+class MonsterUnit a where
+    runAway :: a -> a
 
-instance Battle Fighter where
-    -- p1 gets damaged by p2
-    newAttack :: Fighter -> Fighter -> Fighter
-    newAttack p1 p2 =
-        case fighterType p1 of
-            Knight -> p1 { fighterHealth = FighterHealth (p1Health + p1Defense - p2Attack) }
-        where FighterHealth p1Health = fighterHealth p1
-              FDefense p1Defense = fighterDefense p1
-              FighterAttack p2Attack = fighterAttack p2
+class (KnightUnit a, MonsterUnit a) => BattleUnit a where
+    newAttack :: a -> a -> a
 
-    drinkPotion :: Fighter -> Fighter
-    drinkPotion p = case fighterType p of
-        Knight -> p { fighterDefense = FDefense (pDefense + 10) }
-        Monster -> p
-        where FDefense pDefense = fighterDefense p
+instance KnightUnit NewUnit where
+    castSpell :: NewUnit -> NewUnit
+    castSpell unit
+        | isKnightUnit = unit {newUnitDefense = uppedDefense}
+        | otherwise = unit
+        where isKnightUnit = newUnitType unit == NewKnight
+              NewDefense defense = newUnitDefense unit
+              uppedDefense = NewDefense (defense + 2)
+
+    drinkPotion :: NewUnit -> NewUnit
+    drinkPotion unit
+        | isKnightUnit = unit { newUnitHealth = uppedHealth }
+        | otherwise = unit
+        where isKnightUnit = newUnitType unit == NewKnight
+              NewHealth health = newUnitHealth unit
+              uppedHealth = NewHealth (health + 5)
+
+instance MonsterUnit NewUnit where
+    runAway :: NewUnit -> NewUnit
+    runAway unit
+        | isMonsterUnit && isInBattle = unit {newUnitInBattle = False}
+        | otherwise = unit
+        where isMonsterUnit = newUnitType unit == NewMonster
+              isInBattle = newUnitInBattle unit
+
+instance BattleUnit NewUnit where
+    newAttack :: NewUnit -> NewUnit -> NewUnit
+    newAttack unitA unitB =
+        case newUnitType unitA of
+            NewKnight -> unitA { newUnitHealth = computeBUHealth aHealth aDefense bAttack }
+            NewMonster -> unitA { newUnitHealth = computeBUHealth aHealth (NewDefense 0) bAttack }
+        where bAttack = newUnitAttack unitB
+              aHealth = newUnitHealth unitA
+              aDefense = newUnitDefense unitA
+
+-- unitA is attacked by unitB
+computeBUHealth :: NewHealth -> NewDefense -> NewAttack -> NewHealth
+computeBUHealth aHealth aDefense bAttack
+    | health < 0 && health == 0 = NewHealth health
+    | damagedHealth > health = NewHealth health
+    | damagedHealth < 0 = NewHealth 0
+    | otherwise = NewHealth damagedHealth
+    where NewHealth health = aHealth
+          NewDefense defense = aDefense
+          NewAttack attack = bAttack
+          damagedHealth = health + defense - attack
 
 {-
 You did it! Now it is time to the open pull request with your changes
