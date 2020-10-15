@@ -480,7 +480,7 @@ Implement a function that returns the last digit of a given number.
 -}
 
 lastDigit :: Integral a => a -> a
-lastDigit n = mod n 10
+lastDigit n = mod (abs n) 10
 
 
 {- |
@@ -544,7 +544,7 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 
-mid :: (Num a, Ord a) => a -> a -> a -> a
+mid :: Ord a => a -> a -> a -> a
 mid x y z
     | x > y && x > z = max y z
     | y > x && y > z = max x z
@@ -636,7 +636,7 @@ specifying complex expressions.
 sumLast2 :: Integral a => a -> a
 sumLast2 n = 
   let x = lastDigit n
-      y = lastDigit (div n 10)
+      y = lastDigit (div (abs n) 10)
   in x + y
 
 
