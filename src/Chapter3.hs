@@ -344,7 +344,7 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
-data Book = MkBook 
+data Book = MkBook
     { bookName :: String,
       bookAuthor :: String,
       bookPages :: Int,
@@ -384,13 +384,13 @@ after the fight. The battle has the following possible outcomes:
 
 -}
 
-data Knight = MkKnight 
+data Knight = MkKnight
     { knightHealth :: Int,
       knightAttack :: Int,
       knightGold :: Int
     } deriving (Show)
 
-data Monster = MkMonster 
+data Monster = MkMonster
     { monsterHealth :: Int,
       monsterAttack :: Int,
       monsterGold :: Int
@@ -488,7 +488,7 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
-data Meal 
+data Meal
     = Breakfast
     | Coffee
     | Tea
@@ -532,7 +532,7 @@ data Building
 
 type Person = String
 
-data House 
+data House
     = MkPeople1 Person
     | MkPeople2 Person Person
     | MkPeople3 Person Person Person
@@ -540,10 +540,10 @@ data House
 
 people :: House -> Int
 people house = case house of
-    MkPeople1 _ -> 1
-    MkPeople2 _ _ -> 2
-    MkPeople3 _ _ _ -> 3
-    MkPeople4 _ _ _ _ -> 4
+    MkPeople1{} -> 1
+    MkPeople2{} -> 2
+    MkPeople3{} -> 3
+    MkPeople4{} -> 4
 
 data MagicalCity
     = WalledCastleCity CastleWithWall Building [House]
@@ -564,8 +564,8 @@ buildHouse city newHouse = case city of
     CityWithoutCastle building houses       -> CityWithoutCastle building (newHouse:houses)
 
 buildWalls :: MagicalCity -> MagicalCity
-buildWalls (WalledCastleCity _ _ _) = error "City already has walls"
-buildWalls (CityWithoutCastle _ _)  = error "City does not have a castle"
+buildWalls WalledCastleCity{}       = error "City already has walls"
+buildWalls CityWithoutCastle{}      = error "City does not have a castle"
 buildWalls (CastleCityWithoutWall c building houses)
     | sum (map people houses) >= 10 = WalledCastleCity (MkCastleWithWall c) building houses
     | otherwise                     = error "City needs atleast 10 people"
@@ -860,7 +860,7 @@ data TreasureChest x = TreasureChest
     , treasureChestLoot :: x
     }
 
-data Dragon x = Dragon
+newtype Dragon x = Dragon
     { power :: x
     }
 
@@ -1024,7 +1024,7 @@ class Append a where
     append :: a -> a -> a
 
 newtype Gold = Gold Int deriving (Show)
-data List a = List [a] deriving (Show)
+newtype List a = List [a] deriving (Show)
 
 instance Append Gold where
     append :: Gold -> Gold -> Gold
@@ -1153,12 +1153,12 @@ contestants, and write a function that decides the outcome of a fight!
 
 
 
-data MonsterAction 
+data MonsterAction
     = MonsterAttack
     | MonsterRunAway
     deriving (Show)
 
-data KnightAction 
+data KnightAction
     = KnightAttack
     | CastDefenceSpell Int
     | DrinkHealthPotion Int
@@ -1187,13 +1187,13 @@ class Fighter a where
 
 instance Fighter FighterMonster where
     getName :: FighterMonster -> String
-    getName m = fighterMonsterName m
+    getName = fighterMonsterName
 
     getDamaged :: FighterMonster -> Int -> FighterMonster
     getDamaged m opponentAttack = m { fighterMonsterHealth = fighterMonsterHealth m - opponentAttack }
 
     performNextAction :: (Fighter b) => FighterMonster -> b -> (FighterMonster, b)
-    performNextAction m opponent = case (fighterMonsterActions m) of
+    performNextAction m opponent = case fighterMonsterActions m of
         (a:as)  -> case a of
             MonsterAttack -> (m { fighterMonsterActions = as ++ [a] }, getDamaged opponent (fighterMonsterAttack m))
             MonsterRunAway -> (m { fighterMonsterActions = as ++ [a] }, opponent)
@@ -1204,13 +1204,13 @@ instance Fighter FighterMonster where
 
 instance Fighter FighterKnight where
     getName :: FighterKnight -> String
-    getName k = fighterKnightName k
+    getName = fighterKnightName
 
     getDamaged :: FighterKnight -> Int -> FighterKnight
     getDamaged k opponentAttack = k { fighterKnightHealth = fighterKnightHealth k + fighterKnightDefence k - opponentAttack}
 
     performNextAction :: (Fighter b) => FighterKnight -> b -> (FighterKnight, b)
-    performNextAction k opponent = case (fighterKnightActions k) of
+    performNextAction k opponent = case fighterKnightActions k of
         (a:as)  -> case a of
             KnightAttack              -> (k { fighterKnightActions = as ++ [a] }, getDamaged opponent (fighterKnightAttack k))
             CastDefenceSpell spell    -> (k { fighterKnightDefence = fighterKnightDefence k + spell }, opponent)
@@ -1227,12 +1227,12 @@ fightWinner fighterA fighterB firstFighttersTurn
     | isDead fighterA                       = getName fighterB
     | isDead fighterB                       = getName fighterA
     | firstFighttersTurn                    =
-        let (newA, newB) = (performNextAction fighterA fighterB)
+        let (newA, newB) = performNextAction fighterA fighterB
         in fightWinner newA newB (not firstFighttersTurn)
     | otherwise                             =
-        let (newB, newA) = (performNextAction fighterB fighterA)
+        let (newB, newA) = performNextAction fighterB fighterA
         in fightWinner newA newB (not firstFighttersTurn)
-        
+
 
 {-
 You did it! Now it is time to the open pull request with your changes
