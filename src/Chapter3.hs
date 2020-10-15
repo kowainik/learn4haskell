@@ -860,9 +860,7 @@ data TreasureChest x = TreasureChest
     , treasureChestLoot :: x
     }
 
-newtype Dragon x = Dragon
-    { power :: x
-    }
+newtype Dragon x = Dragon{ power :: x}
 
 data DragonLair x y = DragonLair (Dragon x) (Maybe (TreasureChest y))
 
@@ -1194,10 +1192,10 @@ instance Fighter FighterMonster where
 
     performNextAction :: (Fighter b) => FighterMonster -> b -> (FighterMonster, b)
     performNextAction m opponent = case fighterMonsterActions m of
-        (a:as)  -> case a of
+        a:as  -> case a of
             MonsterAttack -> (m { fighterMonsterActions = as ++ [a] }, getDamaged opponent (fighterMonsterAttack m))
             MonsterRunAway -> (m { fighterMonsterActions = as ++ [a] }, opponent)
-        _       -> (m, opponent)
+        _     -> (m, opponent)
 
     isDead :: FighterMonster -> Bool
     isDead m = fighterMonsterHealth m <= 0
@@ -1211,10 +1209,11 @@ instance Fighter FighterKnight where
 
     performNextAction :: (Fighter b) => FighterKnight -> b -> (FighterKnight, b)
     performNextAction k opponent = case fighterKnightActions k of
-        (a:as)  -> case a of
+        a:as  -> case a of
             KnightAttack              -> (k { fighterKnightActions = as ++ [a] }, getDamaged opponent (fighterKnightAttack k))
             CastDefenceSpell spell    -> (k { fighterKnightDefence = fighterKnightDefence k + spell }, opponent)
             DrinkHealthPotion potion  -> (k { fighterKnightHealth = fighterKnightHealth k + potion }, opponent)
+        _     -> (k, opponent)
 
     isDead :: FighterKnight -> Bool
     isDead k = fighterKnightHealth k <= 0
