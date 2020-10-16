@@ -66,7 +66,7 @@ chapter1normal = describe "Chapter1Normal" $ do
         it "sumLast2 0 > -10" $ sumLast2 (-9) `shouldBe` 9
         it "sumLast2 -10 > -100" $ sumLast2 (-56) `shouldBe` 11
         it "sumLast2 -100 > -1000" $ sumLast2 (-987) `shouldBe` 15
-    describe "Task 4 & 5 : first and last digit" $ do
+    describe "Task 5 & 10 : first and last digit" $ do
         it "last digit is the first digit of the reversed number" $ hedgehog $ do
             x <- forAll $ Gen.int (Range.linear (-200) 200)
             (firstDigit x :: Int) === (lastDigit (reverseInt x) :: Int)
