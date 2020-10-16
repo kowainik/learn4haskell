@@ -522,9 +522,10 @@ After defining the city, implement the following functions:
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
 
-newtype Castle = MkCastle { name :: String }
-
-newtype CastleWithWall = MkCastleWithWall { castle :: Castle }
+data Castle = MkCastle 
+    { name :: String
+    , wall :: Bool
+    }
 
 data Building
     = Church
@@ -545,30 +546,36 @@ people house = case house of
     MkPeople3{} -> 3
     MkPeople4{} -> 4
 
-data MagicalCity
-    = WalledCastleCity CastleWithWall Building [House]
-    | CastleCityWithoutWall Castle Building [House]
-    | CityWithoutCastle Building [House]
-
+data MagicalCity = MkMagicalCity
+    { castle    :: Maybe Castle
+    , building  :: Building
+    , houses    :: [House]
+    }
 
 buildCastle :: MagicalCity -> String -> MagicalCity
-buildCastle city newName = case city of
-    WalledCastleCity oldCastleWithWall building houses  -> WalledCastleCity oldCastleWithWall { castle = (castle oldCastleWithWall) { name = newName } } building houses
-    CastleCityWithoutWall oldCastle building houses     -> CastleCityWithoutWall oldCastle { name = newName } building houses
-    CityWithoutCastle building houses                   -> CastleCityWithoutWall (MkCastle newName) building houses
+buildCastle city newName = case (castle city) of
+    Just c  -> city { castle = Just c { name = newName } }
+    _       -> city { castle = Just (MkCastle newName False) }
 
 buildHouse :: MagicalCity -> House -> MagicalCity
-buildHouse city newHouse = case city of
-    WalledCastleCity c building houses      -> WalledCastleCity c building (newHouse:houses)
-    CastleCityWithoutWall c building houses -> CastleCityWithoutWall c building (newHouse:houses)
-    CityWithoutCastle building houses       -> CityWithoutCastle building (newHouse:houses)
+buildHouse city newHouse = city { houses = newHouse : houses city }
 
-buildWalls :: MagicalCity -> MagicalCity
-buildWalls WalledCastleCity{}       = error "City already has walls"
-buildWalls CityWithoutCastle{}      = error "City does not have a castle"
-buildWalls (CastleCityWithoutWall c building houses)
-    | sum (map people houses) >= 10 = WalledCastleCity (MkCastleWithWall c) building houses
-    | otherwise                     = error "City needs atleast 10 people"
+data BuildWallsResult
+    = NewCity MagicalCity
+    | CityAlreadyHasWalls
+    | NoCastle
+    | NotEnoughPopulation
+
+buildWalls :: MagicalCity -> BuildWallsResult
+buildWalls city = case (castle city) of
+    Just c -> 
+        if (wall c) 
+        then CityAlreadyHasWalls
+        else 
+            if sum (map people (houses city)) >= 10 
+            then NewCity city { castle = Just c { wall = True } }
+            else NotEnoughPopulation
+    _           -> NoCastle
 
 {-
 =🛡= Newtypes
@@ -1028,14 +1035,16 @@ instance Append Gold where
     append :: Gold -> Gold -> Gold
     append (Gold g1) (Gold g2) = Gold (g1 + g2)
 
-instance Append (List x) where
-    append :: List x -> List x -> List x
-    append (List l1) (List l2) = List (l1 ++ l2)
+instance Append [x] where
+    append :: [x] -> [x] -> [x]
+    append = (++)
 
 instance (Append x) => Append (Maybe x) where
   append :: Maybe x -> Maybe x -> Maybe x
-  append (Just j1) (Just j2)  = Just (append j1 j2)
-  append _ _                  = Nothing
+  append (Just j1) (Just j2)    = Just (append j1 j2)
+  append (Just j1) Nothing      = Just j1
+  append Nothing (Just j2)      = Just j2
+  append _ _                    = Nothing
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -1097,12 +1106,12 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
-data DayOfWeek = Mon | Tue | Wed | Thu | Fri | Sat | Sun deriving (Show, Eq, Ord, Bounded, Enum)
+data DayOfWeek = Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday deriving (Show, Eq, Ord, Bounded, Enum)
 
 isWeekend :: DayOfWeek -> Bool
-isWeekend Sat = True
-isWeekend Sun = True
-isWeekend _   = False
+isWeekend Saturday  = True
+isWeekend Sunday    = True
+isWeekend _         = False
 
 nextDay :: DayOfWeek -> DayOfWeek
 nextDay day
@@ -1110,9 +1119,7 @@ nextDay day
     | otherwise       = succ day
 
 daysToParty :: DayOfWeek -> Int
-daysToParty day
-    | fromEnum day < fromEnum Fri = fromEnum Fri - fromEnum day
-    | otherwise                   = 7 - (fromEnum day - fromEnum Fri)
+daysToParty day = mod (fromEnum Friday - fromEnum day) 7
 
 {-
 =💣= Task 9*
@@ -1154,13 +1161,13 @@ contestants, and write a function that decides the outcome of a fight!
 data MonsterAction
     = MonsterAttack
     | MonsterRunAway
-    deriving (Show)
+    deriving (Show, Eq)
 
 data KnightAction
     = KnightAttack
     | CastDefenceSpell Int
     | DrinkHealthPotion Int
-    deriving (Show)
+    deriving (Show, Eq)
 
 data FighterKnight = FighterKnight
     { fighterKnightName    :: String
@@ -1191,11 +1198,14 @@ instance Fighter FighterMonster where
     getDamaged m opponentAttack = m { fighterMonsterHealth = fighterMonsterHealth m - opponentAttack }
 
     performNextAction :: (Fighter b) => FighterMonster -> b -> (FighterMonster, b)
-    performNextAction m opponent = case fighterMonsterActions m of
-        a:as  -> case a of
-            MonsterAttack -> (m { fighterMonsterActions = as ++ [a] }, getDamaged opponent (fighterMonsterAttack m))
-            MonsterRunAway -> (m { fighterMonsterActions = as ++ [a] }, opponent)
-        _     -> (m, opponent)
+    performNextAction m opponent = 
+        let actions         = fighterMonsterActions m
+            maybeHeadAction = if actions == [] then Nothing else Just (head actions)
+            rotatedActions  = if actions == [] then [] else take (length actions) (drop 1 (cycle actions))
+        in case maybeHeadAction of
+            Just MonsterAttack  -> (m { fighterMonsterActions = rotatedActions }, getDamaged opponent (fighterMonsterAttack m))
+            Just MonsterRunAway -> (m { fighterMonsterActions = rotatedActions }, opponent)
+            _                   -> (m, opponent)
 
     isDead :: FighterMonster -> Bool
     isDead m = fighterMonsterHealth m <= 0
@@ -1208,23 +1218,29 @@ instance Fighter FighterKnight where
     getDamaged k opponentAttack = k { fighterKnightHealth = fighterKnightHealth k + fighterKnightDefence k - opponentAttack}
 
     performNextAction :: (Fighter b) => FighterKnight -> b -> (FighterKnight, b)
-    performNextAction k opponent = case fighterKnightActions k of
-        a:as  -> case a of
-            KnightAttack              -> (k { fighterKnightActions = as ++ [a] }, getDamaged opponent (fighterKnightAttack k))
-            CastDefenceSpell spell    -> (k { fighterKnightDefence = fighterKnightDefence k + spell }, opponent)
-            DrinkHealthPotion potion  -> (k { fighterKnightHealth = fighterKnightHealth k + potion }, opponent)
-        _     -> (k, opponent)
+    performNextAction k opponent = 
+        let actions         = fighterKnightActions k
+            maybeHeadAction = if actions == [] then Nothing else Just (head actions)
+            rotatedActions  = if actions == [] then [] else take (length actions) (drop 1 (cycle actions))
+        in case maybeHeadAction of
+            Just KnightAttack               -> (k { fighterKnightActions = rotatedActions }, getDamaged opponent (fighterKnightAttack k))
+            Just (CastDefenceSpell spell)   -> (k { fighterKnightActions = rotatedActions, fighterKnightDefence = fighterKnightDefence k + spell }, opponent)
+            Just (DrinkHealthPotion potion) -> (k { fighterKnightActions = rotatedActions, fighterKnightHealth = fighterKnightHealth k + potion }, opponent)
+            _                               -> (k, opponent)
 
     isDead :: FighterKnight -> Bool
     isDead k = fighterKnightHealth k <= 0
 
-data Turn = FirstFighter | SecondFighter
+data FightResult a b
+    = FirstWins a 
+    | SecondWins b
+    | BothDead a b
 
-fightWinner :: (Fighter a, Fighter b) => a -> b -> Bool -> String
+fightWinner :: (Fighter a, Fighter b) => a -> b -> Bool -> FightResult a b
 fightWinner fighterA fighterB firstFighttersTurn
-    | isDead fighterA && isDead fighterB    = error "None of the Fighters are Alive"
-    | isDead fighterA                       = getName fighterB
-    | isDead fighterB                       = getName fighterA
+    | isDead fighterA && isDead fighterB    = BothDead fighterA fighterB
+    | isDead fighterA                       = SecondWins fighterB
+    | isDead fighterB                       = FirstWins fighterA
     | firstFighttersTurn                    =
         let (newA, newB) = performNextAction fighterA fighterB
         in fightWinner newA newB (not firstFighttersTurn)
