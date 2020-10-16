@@ -259,7 +259,7 @@ values of variables you defined before.
 
 Let's talk a bit about list implementation details. Lists in Haskell
 are implemented as __linked lists__ (or cons-lists). And because
-everything is Haskell is immutable, adding elements at the beginning
+everything in Haskell is immutable, adding elements at the beginning
 of the lists is cheap. Haskell doesn't need to allocate new memory and
 copy the whole list there; it can just create a new list from a new
 element and a pointer to an already existing list. In other words,
@@ -398,13 +398,14 @@ always matches (the same as a variable), but we don't use its value.
 
 👩‍🔬 Unlike 'switch' and 'case' in other languages, that try to go
   through each switch and perform all actions in there until it reaches
-  the breakpoint, 'case' in Haskell always returns only a single
-  expression for a single branch. You can think of this process as
-  trying to match all patterns from the first one to the last one and
-  returning the expression on the right side of "=" only for the pattern
-  that matches first. This is a helpful thing to keep in mind,
-  especially when you have overlapping patterns. Also note that, if no
-  pattern matches the value, the function fails in runtime.
+  the breakpoint, pattern matching on function parameters in Haskell
+  always returns only a single expression for a single branch. You can
+  think of this process as trying to match all patterns from the first
+  one to the last one and returning the expression on the right side
+  of "=" only for the pattern that matches first. This is a helpful
+  thing to keep in mind, especially when you have overlapping patterns.
+  Also note that, if no pattern matches the value, the function fails
+  in runtime.
 
 
 In addition to pattern matching in the function definition, you can
