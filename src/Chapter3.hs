@@ -1099,8 +1099,7 @@ instance Append Gold where
 
 instance Append [a] where
     append :: [a] -> [a] -> [a]
-    append [] [] = []
-    append a b = a ++ b
+    append = (++)
 
 instance (Append a) => Append (Maybe a) where
     append :: Maybe a -> Maybe a -> Maybe a
@@ -1175,7 +1174,7 @@ data Day
     | Friday
     | Saturday
     | Sunday
-    deriving (Show, Eq, Enum)
+    deriving (Show, Eq, Enum, Bounded)
 
 isWeekend :: Day -> Bool
 isWeekend day
@@ -1184,15 +1183,12 @@ isWeekend day
 
 nextDay :: Day -> Day
 nextDay day
-    | day == Sunday = Monday
+    | day == maxBound = minBound
     | otherwise = succ day
 
--- If day is already on Friday, this is going to return 7 days
--- because it has to be days till the next Friday. I'm not really
--- sure if this is what is expected. I might have misunderstood it.
 daysToParty :: Day -> Int
 daysToParty day
-    | diffToFriday <= 0 = 7 + diffToFriday
+    | diffToFriday < 0 = 7 + diffToFriday
     | otherwise = 4 - dayNum
     where dayNum = fromEnum day
           diffToFriday = 4 - dayNum
