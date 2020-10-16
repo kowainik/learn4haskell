@@ -550,8 +550,12 @@ newtype House = House Int
 
 type Houses = [House]
 
-data Castle
-    = Castle String
+newtype CastleName = CastleName String
+    deriving (Show)
+
+data CityConfig
+    = OnlyCastle CastleName 
+    | CastleAndWall CastleName 
     | NoCastle
     deriving (Show)
 
@@ -561,8 +565,7 @@ data Knowledge
     deriving (Show)
 
 data MagicalCity = MagicalCity
-    { cityCastle :: Castle
-    , cityWall :: Bool
+    { cityConfig :: CityConfig
     , cityKnowledge :: Knowledge
     , cityHouses :: Houses
     }
@@ -571,22 +574,44 @@ data MagicalCity = MagicalCity
 unHouse :: House -> Int
 unHouse (House houseSize) = houseSize
 
-mkHouse :: Int -> Maybe House
-mkHouse houseSize
+mkHouse :: House -> Maybe House
+mkHouse house 
     | houseSize > 4 = Nothing
     | otherwise = Just (House houseSize)
+    where houseSize = unHouse house
 
-buildCastle :: Castle -> MagicalCity -> MagicalCity
-buildCastle newCastle city = city { cityCastle = newCastle }
+buildHouse :: House -> MagicalCity -> MagicalCity
+buildHouse unsafeHouse city =
+    case maybeHouse of
+        Just house -> city { cityHouses = house:currentHouses }
+        Nothing -> city
+    where maybeHouse = mkHouse unsafeHouse
+          currentHouses = cityHouses city
+
+unCastleName :: CastleName -> String
+unCastleName (CastleName name) = name
+
+mkCastleName :: String -> Maybe CastleName
+mkCastleName name
+    | null name = Nothing
+    | otherwise = Just (CastleName name)
+
+buildCastle :: Maybe CastleName -> MagicalCity -> MagicalCity
+buildCastle (Just castleName) city = 
+    case cityConfig city of
+        CastleAndWall _ -> city { cityConfig = CastleAndWall castleName } 
+        _ -> city { cityConfig = OnlyCastle castleName }
+buildCastle _ city = city
 
 buildWalls :: MagicalCity -> MagicalCity
 buildWalls city =
-    case cityCastle city of
-        Castle _ ->
+    case cityConfig city of
+        OnlyCastle name ->
             if sum (map unHouse $ cityHouses city) >= 10 then
-                city { cityWall = True }
+                city { cityConfig = CastleAndWall name }
             else city
-        NoCastle -> city
+        _ -> city
+
 {-
 =🛡= Newtypes
 
