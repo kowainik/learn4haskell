@@ -388,14 +388,39 @@ data Unit = Unit
     }
     deriving (Show)
 
-type Knight = Unit
-type Monster = Unit
+newtype Knight = Knight { unKnight :: Unit } deriving (Show)
+newtype Monster = Monster { unMonster :: Unit } deriving (Show)
+data UnitType
+    = MonsterType
+    | KnightType
 type CurrentUnit = Unit
 type AttackedUnit = Unit
 
+mkUnit :: Int -> Int -> Int -> Maybe Unit
+mkUnit health attack gold
+    | health >= 0 && attack > 0 && gold >= 0 = Just unit
+    | otherwise = Nothing
+    where unit = Unit { health = health, attack = attack, gold = gold }
+
+mkKnight :: Int -> Int -> Int -> Maybe Knight
+mkKnight health attack gold =
+    case maybeUnit of
+        Just unit -> Just (Knight unit)
+        Nothing -> Nothing
+    where maybeUnit = mkUnit health attack gold
+
+mkMonster :: Int -> Int -> Int -> Maybe Monster
+mkMonster health attack gold =
+    case maybeUnit of
+        Just unit -> Just (Monster unit)
+        Nothing -> Nothing
+    where maybeUnit = mkUnit health attack gold
+
 fight :: Knight -> Monster -> Int
-fight = go True
-    where go :: Bool -> CurrentUnit -> AttackedUnit -> Int
+fight knight monster = go True knightUnit monsterUnit
+    where knightUnit = unKnight knight
+          monsterUnit = unMonster monster
+          go :: Bool -> CurrentUnit -> AttackedUnit -> Int
           go isKnightCurrent (Unit cHealth cAttack cGold) (Unit aHealth aAttack aGold)
               | aHealth - cAttack <= 0 && isKnightCurrent = aGold
               | aHealth - cAttack <= 0 && not isKnightCurrent = -1
@@ -520,8 +545,10 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
-type HouseSize = Int
-type Houses = [HouseSize]
+newtype House = House Int
+    deriving (Show)
+
+type Houses = [House]
 
 data Castle
     = Castle String
@@ -541,19 +568,22 @@ data MagicalCity = MagicalCity
     }
     deriving (Show)
 
+unHouse :: House -> Int
+unHouse (House houseSize) = houseSize
+
+mkHouse :: Int -> Maybe House
+mkHouse houseSize
+    | houseSize > 4 = Nothing
+    | otherwise = Just (House houseSize)
+
 buildCastle :: Castle -> MagicalCity -> MagicalCity
 buildCastle newCastle city = city { cityCastle = newCastle }
-
-buildHouse :: HouseSize -> MagicalCity -> MagicalCity
-buildHouse houseSize city
-    | houseSize <= 4 = city { cityHouses = houseSize:cityHouses city }
-    | otherwise = city
 
 buildWalls :: MagicalCity -> MagicalCity
 buildWalls city =
     case cityCastle city of
         Castle _ ->
-            if sum (cityHouses city) >= 10 then
+            if sum (map unHouse $ cityHouses city) >= 10 then
                 city { cityWall = True }
             else city
         NoCastle -> city
