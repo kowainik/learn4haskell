@@ -614,7 +614,7 @@ sumLast2 :: Int -> Int
 sumLast2 n = lastDigit n + beforeLast n
   where
     beforeLast :: Int -> Int
-    beforeLast x = lastDigit (div (x - lastDigit x) 10)
+    beforeLast x = lastDigit (div ((abs x) - lastDigit x) 10)
 
 -- |
 -- =💣= Task 10*
@@ -633,10 +633,10 @@ sumLast2 n = lastDigit n + beforeLast n
 -- You need to use recursion in this task. Feel free to return to it later, if you
 -- aren't ready for this boss yet!
 firstDigit :: Int -> Int
-firstDigit n = if n < 10 then n else firstDigit (prefix n)
+firstDigit n = if (abs n) < 10 then (abs n) else firstDigit (prefix n)
   where
     prefix :: Int -> Int
-    prefix x = div (x - lastDigit x) 10
+    prefix x = div ((abs x) - lastDigit x) 10
 
 {-
 You did it! Now it is time to open pull request with your changes
