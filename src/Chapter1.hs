@@ -479,7 +479,7 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 lastDigit :: Integral n => n -> n
-lastDigit = (flip mod 10) . abs
+lastDigit = (`mod` 10) . abs
 
 
 {- |
@@ -509,7 +509,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = if (abs x < abs y) then x else y
+closestToZero x y = if abs x < abs y then x else y
 
 
 {- |
