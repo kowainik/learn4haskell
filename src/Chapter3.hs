@@ -1227,33 +1227,28 @@ properties using typeclasses, but they are different data types in the end.
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
-newtype NewHealth = NewHealth Int
-    deriving (Show)
+newtype NewHealth = NewHealth Int deriving (Show)
 
-newtype NewAttack = NewAttack Int
-    deriving (Show)
+newtype NewAttack = NewAttack Int deriving (Show)
 
-data NewDefense
-    = NewDefense Int
-    | NoDefense
-    deriving (Show)
+newtype NewDefense = NewDefense Int deriving (Show)
 
 data NewType
     = NewMonster
-    | NewKnight
-    deriving (Eq, Show)
+    | NewKnight NewDefense
+    deriving (Show)
 
 data NewUnit = NewUnit
     { newUnitType :: NewType
     , newUnitHealth :: NewHealth
     , newUnitAttack :: NewAttack
-    , newUnitDefense :: NewDefense
     , newUnitInBattle :: Bool
     }
     deriving (Show)
 
 class KnightUnit a where
     castSpell :: a -> a
+    
     drinkPotion :: a -> a
 
 class MonsterUnit a where
@@ -1262,40 +1257,78 @@ class MonsterUnit a where
 class (KnightUnit a, MonsterUnit a) => BattleUnit a where
     newAttack :: a -> a -> a
 
+    battle :: a -> a -> a
+
 instance KnightUnit NewUnit where
     castSpell :: NewUnit -> NewUnit
-    castSpell unit
-        | isKnightUnit = unit {newUnitDefense = uppedDefense}
-        | otherwise = unit
-        where isKnightUnit = newUnitType unit == NewKnight
-              NewDefense defense = newUnitDefense unit
-              uppedDefense = NewDefense (defense + 2)
+    castSpell unit = case newUnitType unit of
+        NewKnight newDefense -> 
+            let NewDefense def = newDefense
+            in case mkNewDefense def of
+                   Just uppedDefense -> unit { newUnitType = NewKnight uppedDefense }
+                   Nothing -> unit
+        _ -> unit
+               
 
     drinkPotion :: NewUnit -> NewUnit
-    drinkPotion unit
-        | isKnightUnit = unit { newUnitHealth = uppedHealth }
-        | otherwise = unit
-        where isKnightUnit = newUnitType unit == NewKnight
-              NewHealth health = newUnitHealth unit
-              uppedHealth = NewHealth (health + 5)
+    drinkPotion knight@(NewUnit (NewKnight _) _ _ _) =
+        case maybeUppedHealth of
+            Just uppedHealth -> knight { newUnitHealth = uppedHealth }
+            Nothing -> knight
+        where NewHealth health = newUnitHealth knight 
+              maybeUppedHealth = mkNewHealth (health + 5)
+    drinkPotion _ = error "This unit is not of knight type."
 
 instance MonsterUnit NewUnit where
     runAway :: NewUnit -> NewUnit
-    runAway unit
-        | isMonsterUnit && isInBattle = unit {newUnitInBattle = False}
-        | otherwise = unit
-        where isMonsterUnit = newUnitType unit == NewMonster
-              isInBattle = newUnitInBattle unit
+    runAway unit@(NewUnit NewMonster _ _ True) = unit {newUnitInBattle = False}
+    runAway unit@(NewUnit (NewKnight _) _ _ _)
+        = error "This unit is not of monster type."
+    runAway unit@(NewUnit NewMonster _ _ False)
+        = error "This monster unit is already not in battle."
 
 instance BattleUnit NewUnit where
     newAttack :: NewUnit -> NewUnit -> NewUnit
     newAttack unitA unitB =
         case newUnitType unitA of
-            NewKnight -> unitA { newUnitHealth = computeBUHealth aHealth aDefense bAttack }
+            NewKnight aDefense -> unitA { newUnitHealth = computeBUHealth aHealth aDefense bAttack }
             NewMonster -> unitA { newUnitHealth = computeBUHealth aHealth (NewDefense 0) bAttack }
         where bAttack = newUnitAttack unitB
               aHealth = newUnitHealth unitA
-              aDefense = newUnitDefense unitA
+
+    battle :: NewUnit -> NewUnit -> NewUnit
+    battle unitA unitB = undefined
+
+mkNewHealth :: Int -> Maybe NewHealth
+mkNewHealth hp 
+    | hp > 0 = Just (NewHealth hp)
+    | otherwise = Nothing
+
+mkNewDefense :: Int -> Maybe NewDefense
+mkNewDefense def
+    | def >= 0 = Just (NewDefense def)
+    | otherwise = Nothing
+
+mkNewAttack :: Int -> Maybe NewAttack
+mkNewAttack atk
+    | atk > 0 = Just (NewAttack atk)
+    | otherwise = Nothing
+
+mkNewUnit :: NewType -> NewHealth -> NewDefense -> NewAttack -> Bool -> NewUnit
+mkNewUnit unitType (Health health) (NewDefense defense) (NewAttack attack) isInBattle
+    | isValidHealth && isValidDefense && isValidAttack
+        = let newHealth = mkNewHealth health
+              newDefense = mkNewDefense defense
+              newAttack = mkNewAttack
+          in NewUnit { newUnitType = NewKnight newDefense
+                     , newUnitHealth = newHealth
+                     , newUnitAttack = newAttack
+                     , newUnitInBattle = isInBattle 
+                     }
+    | otherwise = error "There's at least one unit attribute that's not valid."
+    where isValidHealth = health > 0
+          isValidDefense = defense >= 0
+          isValidAttack = attack > 0
 
 -- unitA is attacked by unitB
 computeBUHealth :: NewHealth -> NewDefense -> NewAttack -> NewHealth
