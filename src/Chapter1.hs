@@ -403,7 +403,7 @@ ghci> :q
 --
 -- >>> squareSum 3 4
 -- 49
-squareSum :: Int -> Int -> Int 
+squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
 
 -- |
@@ -465,7 +465,7 @@ next x = x + 1
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int
 --lastDigit n = error "lastDigit: Not implemented!"
-lastDigit n = mod n 10
+lastDigit n = mod (abs n) 10
 
 -- |
 -- =⚔️= Task 6
