@@ -650,7 +650,10 @@ takeEven [] = []
 takeEven [x] = [x]
 takeEven (x : _ : xs) = x : takeEven xs
 -- argh totally misunderstood!
-
+{-trying to translate this pattern into English - does this make sense? 
+--(0 : 1 : rest) give me index 0, skip blank, rest of list
+--(2 : 3 : rest) give me index 2 (first element from rest in previous line) skip index 3, rest of list
+-}
 {- |
 =🛡= Higher-order functions
 
@@ -659,8 +662,10 @@ are called __higher-order functions__ (HOFs). Check the types of some
 common HOF list functions:
 
 >>> :t filter
+a function which accepts a function that accepts a value and returns a boolean, a list, and returns a list
 filter :: (a -> Bool) -> [a] -> [a]
 >>> :t map
+a function which accepts a function that accepts a value and returns a value, a list, and returns a list
 map :: (a -> b) -> [a] -> [b]
 
 And few usage examples of those functions:
@@ -711,12 +716,12 @@ partially, we will get a new function that takes only one number and
 returns the result of dividing 10 by that number. You can check the
 difference by inspecting the types of corresponding expressions in
 GHCi:
-
+What does this +d notation mean?
 >>> :t +d div
 div :: Integer -> Integer -> Integer
 >>> :t +d div 10
 div 10 :: Integer -> Integer
-
+So are we defining a new function?
 
 This fact can be used to pass partial applications of some functions
 directly to other functions.
@@ -754,9 +759,10 @@ value of the element itself
 [3,3,3,1,2,2]
 
 🕯 HINT: Use combination of 'map' and 'replicate'
+replicate _number of times_ _item to replicate_
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = error "smartReplicate: Not implemented!"
+smartReplicate = concatMap (\x -> replicate x x)
 
 {- |
 =⚔️= Task 9
@@ -769,7 +775,14 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains = error "contains: Not implemented!"
+contains :: Int -> [[Int]] -> [[Int]]
+{- js 
+list.filter(l => { 
+if (l.includes(3)) {
+return l}
+})
+-}
+contains a x = filter (elem a) x
 
 
 {- |
@@ -800,6 +813,7 @@ nextInt = add 1
 ♫ NOTE: See that the initial type of the function is not changed and
   it works absolutely the same. We just can skip the last argument and
   amend its usage in the function body.
+  ??
 -}
 
 {- |
@@ -809,13 +823,18 @@ Let's now try to eta-reduce some of the functions and ensure that we
 mastered the skill of eta-reducing.
 -}
 divideTenBy :: Int -> Int
-divideTenBy x = div 10 x
+--divideTenBy x = div 10 x
+divideTenBy = div 10
 
 -- TODO: type ;)
-listElementsLessThan x l = filter (< x) l
+listElementsLessThan :: Int -> [Int] -> [Int]
+-- listElementsLessThan x l = filter (< x) l
+listElementsLessThan x = filter (< x)
 
 -- Can you eta-reduce this one???
-pairMul xs ys = zipWith (*) xs ys
+pairMul :: [Int] -> [Int] -> [Int]
+--pairMul xs ys = zipWith (*) xs ys
+pairMul = zipWith(*)
 
 {- |
 =🛡= Lazy evaluation
@@ -870,8 +889,11 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate = error "rotate: Not implemented!"
-
+rotate :: Int -> [a] -> [a]
+rotate i l 
+        | i < 0 = [] 
+        | otherwise = drop i (take (length l + i) (cycle l))
+-- drop index take index + length of cycle
 {- |
 =💣= Task 12*
 
