@@ -536,7 +536,9 @@ peopleCount P2 = 2
 peopleCount P3 = 3
 peopleCount P4 = 4
 
-data House = House { housePeople :: HousePeople } deriving (Show)
+newtype House
+  = House { housePeople :: HousePeople }
+  deriving Show
 
 data Wall = Wall deriving (Show)
 
@@ -547,7 +549,7 @@ data City = City
   , cityHouses       :: [House]
   } deriving (Show)
 
-buildCity :: Building -> [House] -> [Char] -> City
+buildCity :: Building -> [House] -> String -> City
 buildCity bulidingType houses "" = City
   { cityBuildingType = bulidingType
   , cityHouses       = houses
@@ -574,10 +576,10 @@ canBuildWall :: City -> Bool
 canBuildWall city = hasEnoughPeople city && hasCastle city
 
 hasCastle :: City -> Bool
-hasCastle = (> 0) . length . cityCastleName
+hasCastle = not . null . cityCastleName
 
 hasEnoughPeople :: City -> Bool
-hasEnoughPeople = (> 10) . sum . map peopleCount . map housePeople . cityHouses
+hasEnoughPeople = (> 10) . sum . map (peopleCount . housePeople) . cityHouses
 
 {-
 =🛡= Newtypes
@@ -679,10 +681,7 @@ calculatePlayerDamage :: Attack -> Strength -> Damage
 calculatePlayerDamage attack strength = MkDamage
   { damageValue = newDamageValue }
   where
-    newDamageValue = 
-      ( attackValue attack
-      + strengthValue strength
-      )
+    newDamageValue = attackValue attack + strengthValue strength
 
 calculatePlayerDefense :: Armor -> Dexterity -> Defense
 calculatePlayerDefense armor dexterity = MkDefense
@@ -692,11 +691,7 @@ calculatePlayerHit :: Damage -> Defense -> Health -> Health
 calculatePlayerHit damage defense health = MkHealth
   { healthValue = newHealthValue }
   where
-    newHealthValue =
-      ( healthValue health
-      + defenseValue defense
-      - damageValue damage
-      )
+    newHealthValue = healthValue health + defenseValue defense - damageValue damage
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -879,7 +874,7 @@ data TreasureChest t = TreasureChest
   , treasureChestLoot :: t
   } deriving (Show)
 
-data Dragon p = Dragon { dragonPower :: p } deriving (Show)
+newtype Dragon p = Dragon { dragonPower :: p } deriving (Show)
 
 data Lair d p = Lair
   { lairDragon        :: Dragon d
@@ -1042,12 +1037,12 @@ Implement instances of "Append" for the following types:
 -}
 class Append a where
     append :: a -> a -> a
-  
+
 newtype Gold = Gold { goldCount :: Int } deriving (Show)
 
 instance Append Gold where
   append :: Gold -> Gold -> Gold
-  append g1 g2 = Gold { goldCount = sum $ map goldCount (g1:g2:[]) }
+  append g1 g2 = Gold { goldCount = sum $ map goldCount [g1,g2] }
 
 instance Append [a] where
   append :: [a] -> [a] -> [a]
@@ -1130,7 +1125,7 @@ data WeekDay
   | Sunday deriving (Show, Eq, Enum)
 
 isWeekend :: WeekDay -> Bool
-isWeekend day = any (== True) $ map (== day) (Saturday:Sunday:[])
+isWeekend day = any ((== True) . (== day)) [Saturday,Sunday]
 
 nextDay :: WeekDay -> WeekDay
 nextDay Sunday = Monday
@@ -1207,7 +1202,7 @@ class Fighter a where
 
 instance Fighter Monster where
   takeDamage :: Monster -> Int -> Monster
-  takeDamage monster amount = monster { monsterHealth = (monsterHealth monster) - amount }
+  takeDamage monster amount = monster { monsterHealth = monsterHealth monster - amount }
 
   -- Monsters can't do this
   heal :: Monster -> Int -> Monster
@@ -1239,20 +1234,13 @@ instance Fighter Monster where
 instance Fighter Knight where
   takeDamage :: Knight -> Int -> Knight
   takeDamage knight amount = knight
-    { knightHealth =
-      ( knightHealth knight
-      - amount
-      + knightDefense knight
-      )
-    , knightDefense =
-      ( maximum $ knightDefense knight
-      - amount:0:[]
-      )
+    { knightHealth = knightHealth knight - amount + knightDefense knight
+    , knightDefense = maximum [knightDefense knight - amount, 0]
     }
 
   heal :: Knight -> Int -> Knight
   heal knight amount = knight
-    { knightHealth = (knightHealth knight) + amount
+    { knightHealth = knightHealth knight + amount
     }
 
   applySpell :: Knight -> Int -> Knight
