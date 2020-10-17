@@ -429,6 +429,7 @@ task is to specify the type of this function.
 49
 -}
 
+squareSum :: Num a => a -> a -> a
 squareSum x y = (x + y) * (x + y)
 
 
@@ -559,8 +560,8 @@ mid :: Ord a => a -> a -> a -> a
 mid x y z
   | x < y && x < z = min y z
   | y < x && y < z = min x z
-  | z < x && z < y = min x y
-  | otherwise = x
+  | otherwise = min x y
+  | otherwise = z
 
 {- |
 =⚔️= Task 8
@@ -575,11 +576,7 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c
-  | c `elem` vowels = True
-  | otherwise = False
-  where vowels = ['a', 'e', 'i', 'o', 'u']
-
+isVowel c = c `elem` ['a', 'e', 'i', 'o', 'u']
 
 {- |
 == Local variables and functions
@@ -647,8 +644,7 @@ sumLast2 n = ones + tens
   where
     absn = abs n
     moded = mod absn 100
-    ones = mod moded 10
-    tens = div moded 10
+    (ones, tens) = divMod moded 10
 
 
 {- |
