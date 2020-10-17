@@ -523,7 +523,7 @@ False
 -}
 isThird42 :: (Eq a, Num a) => [a] -> Bool
 isThird42 (_:_:42:_) = True
-isThird42 _ = False;
+isThird42 _ = False
 
 
 {- |
@@ -756,7 +756,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = concatMap (\x -> replicate x x) l
+smartReplicate = concatMap (\x -> replicate x x)
 
 {- |
 =⚔️= Task 9
@@ -770,7 +770,7 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: (Foldable t, Eq a) => a -> [t a] -> [t a]
-contains num = filter (isJust . find (== num))
+contains num = filter $ elem num
 
 {- |
 =🛡= Eta-reduction
@@ -809,7 +809,7 @@ Let's now try to eta-reduce some of the functions and ensure that we
 mastered the skill of eta-reducing.
 -}
 divideTenBy :: Int -> Int
-divideTenBy x = div 10 x
+divideTenBy = div 10
 
 -- TODO: type ;)
 listElementsLessThan :: Ord a => a -> [a] -> [a]
@@ -873,7 +873,11 @@ list.
 🕯 HINT: Use the 'cycle' function
 -}
 rotate :: Int -> [a] -> [a]
-rotate offset list = subList offset (length list + (offset - 1)) $ cycle list
+rotate offset list
+  | null list = []
+  | offset < 0 = []
+  | otherwise = subList moddedOffset (length list + moddedOffset - 1) $ cycle list
+    where moddedOffset = mod offset (length list)
 
 {- |
 =💣= Task 12*
@@ -890,8 +894,11 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind list = map (list !!) [length list - 1, length list - 2..0]
-
+rewind = go []
+  where
+    go :: [a] -> [a] -> [a]
+    go acc [] = acc
+    go acc (x:xs) = go (x:acc) xs
 
 {-
 You did it! Now it is time to open pull request with your changes
