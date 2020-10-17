@@ -403,6 +403,7 @@ ghci> :q
 --
 -- >>> squareSum 3 4
 -- 49
+squareSum :: Int -> Int -> Int 
 squareSum x y = (x + y) * (x + y)
 
 -- |
@@ -529,7 +530,7 @@ mid x y z
   | x >= z && x <= y = x
   | y >= x && y <= z = y
   | y >= z && y <= x = y
-  | otherwise = zs
+  | otherwise = z
 
 -- |
 -- =⚔️= Task 8
