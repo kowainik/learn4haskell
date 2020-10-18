@@ -337,7 +337,7 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList a b l | b - a < 0 = []
+subList a b l | b < a = []
               | a < 0 || b < 0 = []
               | otherwise = take ((b - a) + 1) $ drop a l
 
@@ -630,7 +630,8 @@ takeEven = go []
   where
     go :: [Int] -> [Int] -> [Int]
     go acc [] = acc
-    go acc (x:xs) = if even x then go (acc ++ [x]) xs else go acc xs
+    go acc [x] = x : acc
+    go acc (x : _ : xs) = go (x : acc) xs
 
 {- |
 =🛡= Higher-order functions
@@ -737,7 +738,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = concat $ map (\x -> replicate x x) l
+smartReplicate = concatMap (\ x -> replicate x x)
 
 {- |
 =⚔️= Task 9
@@ -853,6 +854,7 @@ list.
 -}
 rotate :: Int -> [a] -> [a]
 rotate n l | n < 0 = []
+           | null l = []
            | otherwise = drop r $ take n' (cycle l) 
               where
                 s = length l
