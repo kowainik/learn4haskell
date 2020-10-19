@@ -835,7 +835,7 @@ instance ArchEnemy Double where
 
 And then you can write polymorphic functions and not worry about which specific
 type is underhood until it has the instance of the desired typeclass. For that
-we are using __constrains__ in Haskell. It is the identification of affiliation
+we are using __constraints__ in Haskell. It is the identification of affiliation
 to the typeclass. The constraints should go after the "::" sign in the function
 type declaration. You can specify one or many constraints. If more than one they
 should be in parenthesis and comma-separated. The end of constraints is
