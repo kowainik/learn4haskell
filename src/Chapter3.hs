@@ -641,7 +641,10 @@ data Player = Player
     playerDexterity :: Dexterity,
     playerStrength  :: Strength
   }
-
+newtype Health = Health Int
+newtype Armor = Armor Int
+newtype Attack = Attack Int
+newtype Dexterity = Dexterity Int
 newtype Strength = Strength Int
 newtype Damage = Damage Int
 newtype Defense = Defense Int
