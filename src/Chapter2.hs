@@ -626,12 +626,9 @@ Write a function that takes elements of a list only on even positions.
 [2,3,4]
 -}
 takeEven :: [Int] -> [Int]
-takeEven = go []
-  where
-    go :: [Int] -> [Int] -> [Int]
-    go acc [] = acc
-    go acc [x] = x : acc
-    go acc (x : _ : xs) = go (x : acc) xs
+takeEven [] = [] 
+takeEven [x] = [x]
+takeEven (x : _ : xs) = x : takeEven xs
 
 {- |
 =🛡= Higher-order functions
