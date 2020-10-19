@@ -343,6 +343,12 @@ Define the Book product data type. You can take inspiration from our description
 of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
+data Book = Book
+  { title           :: String,
+    author          :: String,
+    tableOfContents :: [Int]
+  }
+  deriving (Show)
 
 {- |
 =⚔️= Task 2
@@ -373,6 +379,26 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+
+data Monster = Monster
+  { monsterHealth :: Int,
+    monsterAttack :: Int,
+    monsterGold   :: Int
+  }
+  deriving (Show)
+
+data Knight = Knight
+  { knightHealth :: Int,
+    knightAttack :: Int,
+    knightGold   :: Int
+  }
+  deriving (Show)
+
+fight :: Monster -> Knight -> Int
+fight m k
+  | knightAttack k >= monsterAttack m = knightGold k + monsterGold m
+  | monsterAttack m >= knightHealth k = -1
+  | otherwise = knightGold k
 
 {- |
 =🛡= Sum types
@@ -460,6 +486,12 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data Meals
+  = Breakfast String
+  | Lunch String
+  | Dinner String
+  | Wine String
+
 {- |
 =⚔️= Task 4
 
@@ -479,7 +511,49 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
+data House
+  = One
+  | Two
+  | Three
+  | Four
 
+houseSize :: House -> Int
+houseSize house = case house of
+  One   -> 1
+  Two   -> 2
+  Three -> 3
+  Four  -> 4
+
+data Building = Church | Library
+
+data Castle
+  = None
+  | JustCastle String
+  | CastleAndWalls String
+
+data City = City
+  { cityCastle   :: Castle,
+    cityBuilding :: Building,
+    cityHouses   :: [House]
+  }
+buildHouse :: House -> City -> City
+buildHouse newHouse city =
+  city
+    { cityHouses = newHouse : cityHouses city
+    }
+
+buildCastle :: String -> City -> City
+buildCastle newName city = case cityCastle city of
+  CastleAndWalls _ -> city {cityCastle = CastleAndWalls newName}
+  _                -> city {cityCastle = JustCastle newName}
+
+buildWalls :: City -> City
+buildWalls city = case cityCastle city of
+  JustCastle castleName ->
+    if sum (map houseSize (cityHouses city)) >= 10
+      then city {cityCastle = CastleAndWalls castleName}
+      else city
+  _ -> city
 {-
 =🛡= Newtypes
 
@@ -561,21 +635,25 @@ introducing extra newtypes.
     implementation of the "hitPlayer" function at all!
 -}
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
-    }
+  { playerHealth    :: Health,
+    playerArmor     :: Armor,
+    playerAttack    :: Attack,
+    playerDexterity :: Dexterity,
+    playerStrength  :: Strength
+  }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+newtype Strength = Strength Int
+newtype Damage = Damage Int
+newtype Defense = Defense Int
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDamage :: Attack -> Strength -> Damage
+calculatePlayerDamage (Attack attack) (Strength strength) = Damage (attack + strength)
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense (Armor armor) (Dexterity dexterity) = Defense (armor * dexterity)
+
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit (Damage damage) (Defense defense) (Health health) = Health (health + defense - damage)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -752,6 +830,14 @@ parametrise data types in places where values can be of any general type.
 🕯 HINT: 'Maybe' that some standard types we mentioned above are useful for
   maybe-treasure ;)
 -}
+data TreasureChest x = TreasureChest
+  { treasureChestGold :: Int,
+    treasureChestLoot :: x
+  }
+data DragonLair treasure power = DragonLair
+  { lairDragonPower :: power,
+    lairTreasure    :: Maybe (TreasureChest treasure)
+  }
 
 {-
 =🛡= Typeclasses
@@ -910,7 +996,20 @@ Implement instances of "Append" for the following types:
 class Append a where
     append :: a -> a -> a
 
+newtype Gold = Gold Int
+instance Append Gold where
+  append :: Gold -> Gold -> Gold
+  append (Gold g1) (Gold g2) = Gold (g1 + g2)
 
+instance Append [a] where
+  append :: [a] -> [a] -> [a]
+  append l1 l2 = l1 ++ l2
+
+instance Append a => Append (Maybe a) where
+  append :: Maybe a -> Maybe a -> Maybe a
+  append Nothing just      = just
+  append just Nothing      = just
+  append (Just x) (Just y) = Just (append x y)
 {-
 =🛡= Standard Typeclasses and Deriving
 
@@ -970,6 +1069,31 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
+
+data DayOfWeek
+  = Monday
+  | Tuesday
+  | Wednesday
+  | Thursday
+  | Friday
+  | Saturday
+  | Sunday
+  deriving (Show, Enum, Eq, Bounded)
+
+isWeekend :: DayOfWeek -> Bool
+isWeekend day = case day of
+  Saturday -> True
+  Sunday   -> True
+  _        -> False
+
+nextDay :: DayOfWeek -> DayOfWeek
+nextDay day
+  | day == maxBound = minBound
+  | otherwise = succ day
+
+
+daysToParty :: DayOfWeek -> Int
+daysToParty day = (fromEnum Friday - fromEnum day) `mod` 7
 
 {-
 =💣= Task 9*
