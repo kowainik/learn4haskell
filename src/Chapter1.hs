@@ -490,7 +490,7 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 lastDigit :: Int -> Int
-lastDigit n = n `mod` 10
+lastDigit n = (abs n) `mod` 10
 
 
 {- |
@@ -556,10 +556,11 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 mid :: Integer -> Integer -> Integer -> Integer 
-mid x y z 
-  | (x > y && x < z) || (x < y && x > z) = x
-  | (y > x && y < z) || (y < x && y > z) = y
-  | otherwise = z 
+mid x y z =
+  let maximum = max x (max y z)
+      minimum = min x (min y z)
+      medium = x + y + z - minimum - maximum
+  in medium 
 
 {- |
 =⚔️= Task 8
@@ -644,9 +645,9 @@ sumLast2 :: Int -> Int
 sumLast2 n = last n + penultimate n
   where 
     last :: Int -> Int
-    last n = n `mod` 10 
+    last n = (abs n) `mod` 10 
     penultimate :: Int -> Int
-    penultimate n = n `mod` 100 `div` 10
+    penultimate n = (abs n) `mod` 100 `div` 10
 
 
 
