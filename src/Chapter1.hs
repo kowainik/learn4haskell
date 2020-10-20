@@ -212,11 +212,13 @@ So, the output in this example means that 'False' has type 'Bool'.
 True :: Bool
 >>> :t 'a'
 'a' :: Char
+
 >>> :t 42
 42 :: Num p => p
+
 A pair of boolean and char:
 >>> :t (True, 'x')
-(True, 'z') :: (Bool, Char)
+(True, 'x') :: (Bool, Char)
 
 Boolean negation:
 >>> :t not
@@ -491,7 +493,7 @@ Implement a function that returns the last digit of a given number.
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 
 lastDigit :: Integral a => a -> a
-lastDigit n = mod n 10
+lastDigit n = mod (abs n) 10
 
 {- |
 =⚔️= Task 6
@@ -645,9 +647,9 @@ specifying complex expressions.
 
 sumLast2 :: Int -> Int
 sumLast2 n =
-  let last = n `mod` 10
-      sndLast = (n `div` 10) `mod` 10
-  in (last + sndLast)
+  let units = lastDigit n
+      tens = lastDigit ((abs n) `div` 10)
+  in (units + tens)
 
 {- |
 =💣= Task 10*
