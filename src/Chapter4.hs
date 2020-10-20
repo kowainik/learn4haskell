@@ -114,23 +114,23 @@ As always, try to guess the output first! And don't forget to insert
 the output in here:
 
 >>> :k Char
-
+Char :: *
 >>> :k Bool
-
+Bool :: *
 >>> :k [Int]
-
+[Int] :: *
 >>> :k []
-
+[] :: * -> *
 >>> :k (->)
-
+(->) :: * -> * -> *
 >>> :k Either
-
+Either :: * -> * -> *
 >>> data Trinity a b c = MkTrinity a b c
 >>> :k Trinity
-
+Trinity :: * -> * -> * -> *
 >>> data IntBox f = MkIntBox (f Int)
 >>> :k IntBox
-
+IntBox :: (* -> *) -> *
 -}
 
 {- |
@@ -282,7 +282,6 @@ data Secret e a
     | Reward a
     deriving (Show, Eq)
 
-
 {- |
 Functor works with types that have kind `* -> *` but our 'Secret' has
 kind `* -> * -> *`. What should we do? Don't worry. We can partially
@@ -293,7 +292,8 @@ values and apply them to the type level?
 -}
 instance Functor (Secret e) where
     fmap :: (a -> b) -> Secret e a -> Secret e b
-    fmap = error "fmap for Box: not implemented!"
+    fmap _ (Trap t) = Trap t
+    fmap f (Reward r) = Reward (f r)
 
 {- |
 =⚔️= Task 3
@@ -305,7 +305,12 @@ typeclasses for standard data types.
 -}
 data List a
     = Empty
-    | Cons a (List a)
+    | Cons a (List a) deriving (Show)
+
+instance Functor List where
+    fmap :: (a -> b) -> List a -> List b
+    fmap _ Empty = Empty
+    fmap f (Cons hd tl) = Cons (f hd) (fmap f tl)
 
 {- |
 =🛡= Applicative
@@ -472,10 +477,11 @@ Implement the Applicative instance for our 'Secret' data type from before.
 -}
 instance Applicative (Secret e) where
     pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+    pure = Reward
 
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
+    Trap e <*> _ = Trap e
+    Reward r <*> secret = fmap r secret
 
 {- |
 =⚔️= Task 5
@@ -488,7 +494,36 @@ Implement the 'Applicative' instance for our 'List' type.
   may also need to implement a few useful helper functions for our List
   type.
 -}
+mapList :: (a -> b) -> List a -> List b
+mapList _ Empty = Empty
+mapList fun (Cons x tl) = Cons (fun x) (mapList fun tl)
 
+reverseList :: List a -> List a
+reverseList lst = go lst Empty
+  where
+    go :: List a -> List a -> List a
+    go Empty acc = acc
+    go (Cons hd tl) acc = go tl (Cons hd acc)
+
+concatList :: List a -> List a -> List a
+concatList lst1 lst2 = go (reverseList lst1) lst2
+  where
+    go :: List a -> List a -> List a
+    go Empty acc = acc
+    go (Cons hd tl) acc = go tl (Cons hd acc)
+
+listFoldl :: (b -> a -> b) -> b -> List a -> b
+listFoldl _ acc Empty = acc
+listFoldl fun acc (Cons hd tl) = listFoldl fun (fun acc hd) tl
+
+instance Applicative List where
+    pure :: a -> List a
+    pure x = Cons x Empty
+
+    (<*>) :: List (a->b) -> List a -> List b
+    Empty <*> _ = Empty
+    _ <*> Empty = Empty
+    funs <*> lst = listFoldl concatList Empty (mapList (\f -> mapList (\x -> f x) lst) funs)
 
 {- |
 =🛡= Monad
@@ -600,7 +635,8 @@ Implement the 'Monad' instance for our 'Secret' type.
 -}
 instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+    Trap t >>= _ = Trap t
+    Reward r >>= f = f r
 
 {- |
 =⚔️= Task 7
@@ -611,6 +647,10 @@ Implement the 'Monad' instance for our lists.
   maybe a few) to flatten lists of lists to a single list.
 -}
 
+instance Monad List where
+    (>>=) :: List a -> (a -> List b) -> List b
+    Empty >>= _ = Empty
+    lst >>= fun = listFoldl concatList Empty (mapList fun lst)
 
 {- |
 =💣= Task 8*: Before the Final Boss
@@ -629,7 +669,7 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM ma mb = ma >>= (\a -> if not a then return a else mb)
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
@@ -673,6 +713,35 @@ Specifically,
  ❃ Implement the function to convert Tree to list
 -}
 
+data BinaryTree a = Nil | Node a (BinaryTree a) (BinaryTree a) deriving (Show)
+
+instance Functor BinaryTree where
+    fmap :: (a -> b) -> BinaryTree a -> BinaryTree b
+    fmap _ Nil = Nil
+    fmap fun (Node v left right) = Node (fun v) (fmap fun left) (fmap fun right)
+
+reverseTree :: BinaryTree a -> BinaryTree a
+reverseTree Nil = Nil
+reverseTree (Node v left right) = Node v (reverseTree right) (reverseTree left)
+
+data Traversal = InOrder | PreOrder | PostOrder
+
+traverseTree :: BinaryTree a -> Traversal -> [a]
+traverseTree tree InOrder = inorder tree
+traverseTree tree PreOrder = preorder tree
+traverseTree tree PostOrder = postorder tree
+
+inorder :: BinaryTree a -> [a]
+inorder Nil = []
+inorder (Node v left right) = (inorder left) ++ [v] ++ (inorder right)
+
+preorder :: BinaryTree a -> [a]
+preorder Nil = []
+preorder (Node v left right) = [v] ++ (preorder left) ++ (preorder right)
+
+postorder :: BinaryTree a -> [a]
+postorder Nil = []
+postorder (Node v left right) = (postorder left) ++ (postorder right) ++ [v]
 
 {-
 You did it! Now it is time to open pull request with your changes
