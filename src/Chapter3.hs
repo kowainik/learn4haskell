@@ -344,6 +344,14 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = Book  
+  { bookTitle     :: String
+  , bookAuthor    :: String
+  , bookISBN      :: String
+  , bookPageCount :: String
+  , bookPages     :: [String]
+  }
+
 {- |
 =⚔️= Task 2
 
@@ -373,6 +381,26 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+
+data Knight = Knight
+    { knightHealth :: Int
+    , knightAttack :: Int    
+    , knightGold   :: Int
+    }
+
+data Monster = Monster
+    { monsterHealth :: Int
+    , monsterAttack :: Int    
+    , monsterGold   :: Int
+    }
+
+fight :: Knight -> Monster -> Int
+fight perceval ghoul
+  | knightHealth perceval <= 0 = -1
+  | knightHealth perceval == monsterHealth ghoul = knightGold perceval
+  | (monsterHealth ghoul) - (knightAttack perceval) <= 0 = knightGold perceval + monsterGold ghoul
+  | (monsterHealth ghoul) - (knightAttack perceval) > 0 = fight (perceval {knightHealth = (knightHealth perceval) - (monsterHealth ghoul)}) ghoul {monsterHealth = (monsterHealth ghoul) - (knightAttack perceval)}
+fight (Knight _ _ _) (Monster _ _ _) = -1
 
 {- |
 =🛡= Sum types
@@ -460,6 +488,16 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data Meal 
+  = Breakfast
+  | Brunch
+  | Lunch
+  | AfternoonSnack
+  | HappyHourPretzels
+  | Supper
+  | MidgightSnack
+  | BurgerQuestWithFriendsAt4am
+
 {- |
 =⚔️= Task 4
 
@@ -479,6 +517,9 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
+
+
+
 
 {-
 =🛡= Newtypes
