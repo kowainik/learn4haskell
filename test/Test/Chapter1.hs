@@ -39,8 +39,8 @@ chapter1normal = describe "Chapter1Normal" $ do
         it "both positive, 1st wins" $ closestToZero 100 200 `shouldBe` 100
         it "both positive, 2nd wins" $ closestToZero 200 100 `shouldBe` 100
         it "both negative, 2nd wins" $ closestToZero (-200) (-100) `shouldBe` (-100)
-        it "both negative, 2nd wins" $ closestToZero (-100) (-200) `shouldBe` (-100)
-        it "with 0, 1nd wins" $ closestToZero 0 (-200) `shouldBe` 0
+        it "both negative, 1st wins" $ closestToZero (-100) (-200) `shouldBe` (-100)
+        it "with 0, 1st wins" $ closestToZero 0 (-200) `shouldBe` 0
         it "with 0, 2nd wins" $ closestToZero 10 0 `shouldBe` 0
         it "equals" $ closestToZero 42 42 `shouldBe` 42
         it "positive, negative, pos wins" $ closestToZero 11 (-12) `shouldBe` 11
