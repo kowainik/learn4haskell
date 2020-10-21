@@ -213,7 +213,7 @@ True :: Bool
 >>> :t 'a'
 'a' :: Char
 >>> :t 42
-42 :: Int
+42 :: Num p => p
 
 A pair of boolean and char:
 >>> :t (True, 'x')
@@ -229,11 +229,11 @@ Boolean 'and' operator:
 
 Addition of two numbers:
 >>> :t (+)
-(+) :: Int -> Int -> Int
+(+) :: Num a => a -> a -> a
 
 Maximum of two values:
 >>> :t max
-max :: Int -> Int -> Int
+max :: Ord a => a -> a -> a
 
 You might not understand each type at this moment, but don't worry! You've only
 started your Haskell journey. Types will become your friends soon.
