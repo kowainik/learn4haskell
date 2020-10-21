@@ -489,14 +489,14 @@ comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
 data Meal 
-  = Breakfast
-  | Brunch
-  | Lunch
-  | AfternoonSnack
-  | HappyHourPretzels
-  | Supper
-  | MidgightSnack
-  | BurgerQuestWithFriendsAt4am
+  = Breakfast String
+  | Brunch String
+  | Lunch String
+  | AfternoonSnack String
+  | HappyHourPretzels String
+  | Supper String
+  | MidgightSnack String
+  | BurgerQuestWithFriendsAt4am String
 
 {- |
 =⚔️= Task 4
@@ -518,7 +518,46 @@ After defining the city, implement the following functions:
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
 
+data City = City 
+  {  townCastle :: Castle
+  ,  mainBuilding :: Building
+  ,  houses :: [House]
+  }
 
+data Castle 
+  = None
+  | Castle String
+  | CastleWalls String
+
+data Building
+  = Library
+  | Church
+
+data House 
+  = One
+  | Two
+  | Three
+  | Four
+
+countHabitants :: House -> Int
+countHabitants One = 1
+countHabitants Two = 2
+countHabitants Three = 3
+countHabitants Four = 4
+
+buildCastle :: City -> String -> City
+buildCastle city name = city {townCastle = Castle name }
+
+buildHouse :: House -> City -> City
+buildHouse house city = city { houses = house : houses city}  
+
+buildWalls :: City -> City
+buildWalls city = case townCastle city of
+  Castle castleName -> 
+    if sum (map  countHabitants (houses city)) > 10
+      then city {townCastle = CastleWalls castleName }
+      else city
+  _ -> city
 
 
 {-
