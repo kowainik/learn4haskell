@@ -674,8 +674,9 @@ aren't ready for this boss yet!
 
 firstDigit :: Int -> Int
 firstDigit n
-    | n < 10 = n
-    | otherwise = firstDigit (n `div` 10)
+    | n' < 10 = n'
+    | otherwise = firstDigit (n' `div` 10)
+    where n' = abs n
 
 
 {-
