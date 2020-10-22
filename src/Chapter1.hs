@@ -558,9 +558,9 @@ Casual reminder about adding top-level type signatures for all functions :)
 
 mid :: Int -> Int -> Int -> Int
 mid x y z
-    | x < y = min y z
-    | x > y = min x z
-    | otherwise = x
+    | x < y && y < z = y
+    | x > y && x < z = x
+    | otherwise = z
 
 {- |
 =⚔️= Task 8
