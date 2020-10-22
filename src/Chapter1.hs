@@ -558,9 +558,12 @@ Casual reminder about adding top-level type signatures for all functions :)
 
 mid :: Int -> Int -> Int -> Int
 mid x y z
-    | x < y && y < z = y
-    | x > y && x < z = x
-    | otherwise = z
+    | x' <= y' && x' <= z' = if y' < z' then y else z
+    | y' <= x' && y' <= z' = if x' < z' then x else z
+    | z' <= x' && z' <= x' = if y' < x' then y else x
+    where x' = abs x
+          y' = abs y
+          z' = abs z
 
 {- |
 =⚔️= Task 8
