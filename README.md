@@ -7,8 +7,8 @@ the air like a leaf on the wind 🍃
 
 It's Hacktoberfest! And we are happy to be part of this fantastic event.
 
-Usually, people are contributing to projects within the communities they are
-boiling in.
+Usually, people contribute to projects within the communities they spend most of their time
+aleady and don't try to go out of those boundaries.
 But why not use this time to learn something challenging, something fresh,
 something that you never had time for?
 
