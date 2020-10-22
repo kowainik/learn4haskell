@@ -868,8 +868,10 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate n xs = take l $ drop n $ cycle xs
-  where l = length xs
+rotate n xs
+    | n < 0 = []
+    | otherwise = take l $ drop n $ cycle xs
+    where l = length xs
 
 {- |
 =💣= Task 12*
