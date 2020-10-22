@@ -367,7 +367,11 @@ Implement a function that returns only the first half of a given list.
 "b"
 -}
 -- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
+firstHalf l =
+    let len = length l
+        to_take = len `div` 2
+    in
+    take to_take l
 
 
 {- |
@@ -519,7 +523,8 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
-isThird42 = error "isThird42: Not implemented!"
+isThird42 (_ : _ : 42 : _) = True
+isThird42 _ = False
 
 
 {- |
@@ -624,7 +629,8 @@ Implement a function that duplicates each element of the list
 
 -}
 duplicate :: [a] -> [a]
-duplicate = error "duplicate: Not implemented!"
+duplicate [] = []
+duplicate (x : xs) = x : x : duplicate xs
 
 
 {- |
@@ -639,7 +645,9 @@ Write a function that takes elements of a list only on even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
-takeEven = error "takeEven: Not implemented!"
+takeEven (_ : y : xs) = y : takeEven xs
+takeEven (_ : _) = []
+takeEven [] = []
 
 {- |
 =🛡= Higher-order functions
@@ -746,7 +754,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = error "smartReplicate: Not implemented!"
+smartReplicate l = concat $ map (\x -> replicate x x) l
 
 {- |
 =⚔️= Task 9
@@ -759,7 +767,7 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains = error "contains: Not implemented!"
+contains e xs = filter (elem e) xs
 
 
 {- |
@@ -799,13 +807,13 @@ Let's now try to eta-reduce some of the functions and ensure that we
 mastered the skill of eta-reducing.
 -}
 divideTenBy :: Int -> Int
-divideTenBy x = div 10 x
+divideTenBy = div 10
 
 -- TODO: type ;)
-listElementsLessThan x l = filter (< x) l
+listElementsLessThan x = filter (< x)
 
 -- Can you eta-reduce this one???
-pairMul xs ys = zipWith (*) xs ys
+pairMul = zipWith (*)
 
 {- |
 =🛡= Lazy evaluation
@@ -860,7 +868,8 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate = error "rotate: Not implemented!"
+rotate n xs = take l $ drop n $ cycle xs
+  where l = length xs
 
 {- |
 =💣= Task 12*
@@ -876,7 +885,8 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind = error "rewind: Not Implemented!"
+rewind [] = []
+rewind (x : xs) = rewind xs ++ [x]
 
 
 {-
