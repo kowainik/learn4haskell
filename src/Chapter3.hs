@@ -344,6 +344,12 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data MyBook = MyBook
+  { title   :: String
+  , author  :: String
+  , year    :: Int
+  }
+
 {- |
 =⚔️= Task 2
 
@@ -373,6 +379,19 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+
+
+data Properties = P Int Int Int
+
+type Knight = Properties
+type Monster = Properties
+
+fight :: Knight -> Monster -> Int
+fight (P kh ka kg) (P mh ma mg)
+  | mh < 0 = kg + mg
+  | kh < 0 = -1
+  | kh == mh = kg
+  | otherwise = fight (P (kh - ma) ka kg) (P (mh - ka) ma mg)
 
 {- |
 =🛡= Sum types
