@@ -645,8 +645,8 @@ Write a function that takes elements of a list only on even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
-takeEven (_ : y : xs) = y : takeEven xs
-takeEven (_ : _) = []
+takeEven (x : _ : xs) = x : takeEven xs
+takeEven [x] = [x]
 takeEven [] = []
 
 {- |
