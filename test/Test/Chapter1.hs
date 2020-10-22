@@ -39,8 +39,8 @@ chapter1normal = describe "Chapter1Normal" $ do
         it "both positive, 1st wins" $ closestToZero 100 200 `shouldBe` 100
         it "both positive, 2nd wins" $ closestToZero 200 100 `shouldBe` 100
         it "both negative, 2nd wins" $ closestToZero (-200) (-100) `shouldBe` (-100)
-        it "both negative, 2nd wins" $ closestToZero (-100) (-200) `shouldBe` (-100)
-        it "with 0, 1nd wins" $ closestToZero 0 (-200) `shouldBe` 0
+        it "both negative, 1st wins" $ closestToZero (-100) (-200) `shouldBe` (-100)
+        it "with 0, 1st wins" $ closestToZero 0 (-200) `shouldBe` 0
         it "with 0, 2nd wins" $ closestToZero 10 0 `shouldBe` 0
         it "equals" $ closestToZero 42 42 `shouldBe` 42
         it "positive, negative, pos wins" $ closestToZero 11 (-12) `shouldBe` 11
@@ -48,8 +48,10 @@ chapter1normal = describe "Chapter1Normal" $ do
     describe "Task7: mid" $ do
         it "positives up  " $ mid 10 20 30 `shouldBe` 20
         it "positives down" $ mid 30 20 10 `shouldBe` 20
+        it "positives mix " $ mid 20 30 10 `shouldBe` 20
         it "negatives down" $ mid (-10) (-20) (-30) `shouldBe` (-20)
         it "negatives up  " $ mid (-30) (-20) (-10) `shouldBe` (-20)
+        it "negatives mix " $ mid (-20) (-30) (-10) `shouldBe` (-20)
         it "all equal" $ mid 1 1 1 `shouldBe` 1
         it "all equal, except 1" $ mid 1 1 2 `shouldBe` 1
     describe "Task8: isVowel" $ do
@@ -70,12 +72,13 @@ chapter1normal = describe "Chapter1Normal" $ do
             (firstDigit x :: Int) === (lastDigit (reverseInt x) :: Int)
 
 chapter1advanced :: Spec
-chapter1advanced = describe "Chapter1Advanced" $ do
-    it "first digit 0" $ firstDigit 0 `shouldBe` 0
-    it "first digit 0 < 10" $ firstDigit 9 `shouldBe` 9
-    it "first digit 10 < 100" $ firstDigit 58 `shouldBe` 5
-    it "first digit 100 < 1000" $ firstDigit 158 `shouldBe` 1
-    it "first digit big" $ firstDigit 467321 `shouldBe` 4
-    it "first digit 0 > -10" $ firstDigit (-9) `shouldBe` 9
-    it "first digit -10 > -100" $ firstDigit (-58) `shouldBe` 5
-    it "first digit -100 > -1000" $ firstDigit (-158) `shouldBe` 1
+chapter1advanced = describe "Chapter1Advanced" $
+    describe "Task 10*" $ do
+        it "first digit 0" $ firstDigit 0 `shouldBe` 0
+        it "first digit 0 < 10" $ firstDigit 9 `shouldBe` 9
+        it "first digit 10 < 100" $ firstDigit 58 `shouldBe` 5
+        it "first digit 100 < 1000" $ firstDigit 158 `shouldBe` 1
+        it "first digit big" $ firstDigit 467321 `shouldBe` 4
+        it "first digit 0 > -10" $ firstDigit (-9) `shouldBe` 9
+        it "first digit -10 > -100" $ firstDigit (-58) `shouldBe` 5
+        it "first digit -100 > -1000" $ firstDigit (-158) `shouldBe` 1
