@@ -51,7 +51,9 @@ provide more top-level type signatures, especially when learning Haskell.
 -}
 {-# LANGUAGE InstanceSigs #-}
 
+
 module Chapter3 where
+import Data.Maybe
 
 {-
 =🛡= Types in Haskell
@@ -344,6 +346,13 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = Book
+  {
+    bookName :: String,
+    bookAuthor :: String,
+    bookPages :: Int
+  } deriving (Show)
+
 {- |
 =⚔️= Task 2
 
@@ -373,6 +382,32 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+
+data Knight = Knight
+  {
+    knightHealth :: Int,
+    knightAttack :: Int,
+    knightGold :: Int
+  } deriving (Show)
+
+
+data Monster = Monster
+   {
+     monsterHealth :: Int,
+     monsterAttack :: Int,
+     monsterGold :: Int
+   } deriving (Show)
+
+fight :: Monster -> Knight -> Int
+fight m k = doFight m k True
+
+doFight :: Monster -> Knight -> Bool -> Int
+doFight (Monster monsterHealth monsterAttack monsterGold) (Knight knightHealth knightAttack knightGold) knightTurn
+      | (knightHealth > 0) && (monsterHealth <=0) = monsterGold + knightGold
+      | (knightHealth <= 0) && (monsterHealth > 0) = -1
+      | knightTurn = doFight (Monster (monsterHealth - knightAttack) monsterAttack monsterGold) (Knight knightHealth knightAttack knightGold) False
+      | otherwise = doFight (Monster monsterHealth monsterAttack monsterGold) (Knight (knightHealth - monsterAttack) knightAttack knightGold) True
+
 
 {- |
 =🛡= Sum types
@@ -459,6 +494,12 @@ and provide more flexibility when working with data types.
 Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
+data BreakFast =
+  Pancake |
+  Bagel |
+  Eggs |
+  Sundae |
+  Omelette
 
 {- |
 =⚔️= Task 4
@@ -479,6 +520,61 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
+data Castle = Castle
+    {
+      castleName :: String
+    } deriving (Show)
+
+data ChLib =
+  Church |
+  Library
+
+data House =
+  One |
+  Two |
+  Three |
+  Four
+
+
+data City =
+          CityWithCastle
+          {
+            cityCastle :: Castle,
+            cityWall :: Bool,
+            cityChurchLib :: ChLib,
+            cityHouses :: [House]
+          } |
+          CityWithOutCastle
+          {
+            cityChurchLib :: ChLib,
+            cityHouses :: [House]
+          }
+
+howManyInHouse :: House -> Int
+howManyInHouse house = case house of One -> 1
+                                     Two -> 2
+                                     Three -> 3
+                                     Four -> 4
+
+howManyInHouses :: [House] -> Int
+howManyInHouses houses = foldr (+) 0 (map (\x-> (howManyInHouse x)) houses)
+
+buildCastle :: City -> String -> City
+buildCastle (CityWithOutCastle cityChurchLib cityHouses) name =   CityWithCastle (Castle name) False cityChurchLib cityHouses
+buildCastle (CityWithCastle cityCastle cityWall cityChurchLib cityHouses) name = CityWithCastle (Castle name) cityWall cityChurchLib cityHouses
+
+buildHouse :: City -> House -> City
+buildHouse (CityWithOutCastle cityChurchLib cityHouses) house =   CityWithOutCastle cityChurchLib ( house : cityHouses)
+buildHouse (CityWithCastle cityCastle cityWall cityChurchLib cityHouses) house = CityWithCastle cityCastle cityWall cityChurchLib (house : cityHouses)
+
+buildWalls :: City -> City
+buildWalls (CityWithOutCastle cityChurchLib cityHouses) = error "Cannot be built"
+buildWalls (CityWithCastle cityCastle cityWall cityChurchLib cityHouses)
+                | (howManyInHouses cityHouses) >= 10  =  CityWithCastle cityCastle True cityChurchLib cityHouses
+                | otherwise = CityWithCastle cityCastle False cityChurchLib cityHouses
+
+
+
 
 {-
 =🛡= Newtypes
@@ -568,14 +664,29 @@ data Player = Player
     , playerStrength  :: Int
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+newtype Damage = Damage
+    {
+      damage :: Int
+    }
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+newtype Defense = Defense
+    {
+      defense :: Int
+    }
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+newtype Health = Health
+    {
+      health :: Int
+    }
+
+calculatePlayerDamage :: Int -> Int -> Damage
+calculatePlayerDamage attack strength = Damage (attack + strength)
+
+calculatePlayerDefense :: Int -> Int -> Defense
+calculatePlayerDefense armor dexterity = Defense (armor * dexterity)
+
+calculatePlayerHit :: Damage -> Defense -> Health -> Int
+calculatePlayerHit dmg defns hlth = (health hlth) + (defense defns) - (damage dmg)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -589,7 +700,7 @@ hitPlayer player1 player2 =
         newHealth = calculatePlayerHit
             damage
             defense
-            (playerHealth player1)
+            (Health (playerHealth player1))
     in player1 { playerHealth = newHealth }
 
 {- |
@@ -752,6 +863,23 @@ parametrise data types in places where values can be of any general type.
 🕯 HINT: 'Maybe' that some standard types we mentioned above are useful for
   maybe-treasure ;)
 -}
+newtype TreasureChest x = TreasureChest
+    {
+      treasureChestLoot :: x
+    }  deriving (Show)
+
+newtype Dragon x = Dragon
+  {
+    uniquePower ::  x
+  } deriving (Show)
+
+data DragonLair p tc = DragonLair
+  {
+    dragon :: Dragon p,
+    treasureChest :: Maybe (TreasureChest tc)
+  }  deriving (Show)
+
+
 
 {-
 =🛡= Typeclasses
@@ -907,8 +1035,26 @@ Implement instances of "Append" for the following types:
   ✧ *(Challenge): "Maybe" where append is appending of values inside "Just" constructors
 
 -}
+
+newtype Gold = Gold Int
+
 class Append a where
     append :: a -> a -> a
+
+instance Append Gold where
+  append :: Gold -> Gold -> Gold
+  append (Gold a) (Gold b) = Gold (a + b)
+
+instance Append [a] where
+  append :: [a] -> [a] -> [a]
+  append x y = (++) x  y
+
+instance (Append a) => Append (Maybe a) where
+  append :: Maybe a -> Maybe a -> Maybe a
+  append (Just x) Nothing = Nothing
+  append Nothing (Just x) = Nothing
+  append Nothing Nothing = Nothing
+  append (Just x) (Just y) = Just (append x y)
 
 
 {-
@@ -970,6 +1116,29 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
+
+data DayOfWeek = Monday |
+                  Tuesday |
+                  Wednesday |
+                  Thursday |
+                  Friday |
+                  Saturday |
+                  Sunday
+                  deriving (Eq,Enum,Show)
+
+isWeekend :: DayOfWeek -> Bool
+isWeekend a
+          | a == Saturday || a == Sunday = True
+          | otherwise = False
+
+nextDay :: DayOfWeek -> DayOfWeek
+nextDay Sunday = Monday
+nextDay a = succ a
+
+daysToParty :: DayOfWeek -> Int
+daysToParty Saturday = 7
+daysToParty Sunday = 6
+daysToParty a =  (1 + (fromEnum Friday))
 
 {-
 =💣= Task 9*
