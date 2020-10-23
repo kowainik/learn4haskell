@@ -357,8 +357,11 @@ from it!
 
 ghci> :l src/Chapter2.hs
 -}
-subList :: Int -> Int -> [a] -> [a]
-subList = error "subList: Not implemented!"
+
+subList :: Int -> Int -> [Int] -> [Int]
+subList pointA pointB givenList
+  | givenList == [] = []
+  | otherwise = drop pointA (take (succ pointB) givenList)
 
 {- |
 =⚔️= Task 4
@@ -371,7 +374,11 @@ Implement a function that returns only the first half of a given list.
 "b"
 -}
 -- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
+firstHalf :: [Int] -> [Int]
+firstHalf l
+  | l == [] = []
+  | otherwise = take lLength l
+  where lLength = (div $ length l) 2
 
 
 {- |
@@ -523,7 +530,11 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
-isThird42 = error "isThird42: Not implemented!"
+isThird42 :: [Int] -> Bool
+isThird42 l
+  | l == [] = False
+  | otherwise = (head $ drop 2 l) == 42
+
 
 
 {- |
@@ -627,8 +638,13 @@ Implement a function that duplicates each element of the list
 "aabbaacc"
 
 -}
-duplicate :: [a] -> [a]
-duplicate = error "duplicate: Not implemented!"
+-- duplicate :: [Int] -> [Int]
+-- duplicate l
+--   | l == [] = []
+--   | otherwise = (concatMap $ replicate 2) l
+duplicate :: [Int] -> [Int]
+duplicate [] = []
+duplicate (x:xs) =  x : x : duplicate xs
 
 
 {- |
@@ -643,7 +659,10 @@ Write a function that takes elements of a list only on even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
-takeEven = error "takeEven: Not implemented!"
+takeEven :: [Int] -> [Int]
+takeEven [] = []
+takeEven (x:xs) = if even x then x : takeEven xs else takeEven xs
+
 
 {- |
 =🛡= Higher-order functions
