@@ -661,7 +661,7 @@ Write a function that takes elements of a list only on even positions.
 -}
 takeEven :: [Int] -> [Int]
 takeEven [] = []
-takeEven (x:xs) = if even x then x : takeEven xs else takeEven xs
+takeEven xs = take 1 xs ++ takeEven (drop 2 xs)
 
 
 {- |
