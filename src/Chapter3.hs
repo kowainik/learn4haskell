@@ -807,7 +807,7 @@ And that 'getArchEnemy' method could be used with a lot of data types: Bool,
 Double,… name them all! Let’s have our first instances to show how it works:
 
 The syntax is simple and consistent with the typeclass declaration, but instead
-of the "class: keyword you need to have the "instance" keyword. Of course,
+of the "class" keyword you need to have the "instance" keyword. Of course,
 instead of the type parameter, you have to specify the concrete type, for which
 you are implementing the instance. And all the necessary methods should have its
 implementation for the particular data type.
