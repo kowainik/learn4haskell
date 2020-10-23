@@ -566,7 +566,7 @@ buildWalls city = case townCastle city of
 There is one more way to create a custom structure in Haskell. Let's see what
 that is and how it differs from others.
 
-__Newtype__ is a way to create a lightweight wrapper around an existing type.
+__Newtype__ -is a way to create a lightweight wrapper around an existing type.
 Unlike type aliases, newtypes make an entirely new type for the compiler point
 of view (as the name suggests). However, such data types don't have additional
 runtime overhead, which means that it would work as fast as the underlying type
@@ -640,22 +640,34 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+
+newtype PlayerHealth = PlayerHealth Int
+newtype PlayerArmor = PlayerArmor Int
+newtype PlayerAttack = PlayerAttack Int
+newtype PlayerDexterity = PlayerDexterity Int
+newtype PlayerStrength = PlayerStrength Int
+newtype PlayerDamage = PlayerDamage Int 
+newtype PlayerDefense = PlayerDefense Int 
+
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: PlayerHealth
+    , playerArmor     :: PlayerArmor
+    , playerAttack    :: PlayerAttack
+    , playerDexterity :: PlayerDexterity
+    , playerStrength  :: PlayerStrength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+calculatePlayerDamage :: PlayerAttack -> PlayerStrength -> PlayerDamage
+calculatePlayerDamage (PlayerAttack a) (PlayerStrength s) = 
+  PlayerDamage (a + s)
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDefense :: PlayerArmor -> PlayerDexterity -> PlayerDefense
+calculatePlayerDefense  (PlayerArmor armor) (PlayerDexterity dexterity) = 
+  PlayerDefense (armor * dexterity)
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerHit :: PlayerDamage -> PlayerDefense -> PlayerHealth -> PlayerHealth
+calculatePlayerHit  (PlayerDamage damage) (PlayerDefense defense) (PlayerHealth health) = 
+  PlayerHealth (health + defense - damage)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -832,6 +844,24 @@ parametrise data types in places where values can be of any general type.
 🕯 HINT: 'Maybe' that some standard types we mentioned above are useful for
   maybe-treasure ;)
 -}
+
+newtype GoldAmount = GoldAmount Int
+newtype SwordDamage = SwordDamage Int
+newtype SpellDamage = SpellDamage Int 
+
+data DragonType = Fire | Shock | Ice
+
+data Loot 
+  = Gold GoldAmount 
+  | Swords SwordDamage
+  | SpellBook SpellDamage
+
+data DragonLair dragonPower treasure = DragonLair
+  { dragon :: dragonPower
+  , loot :: Maybe treasure
+  }
+
+
 
 {-
 =🛡= Typeclasses
