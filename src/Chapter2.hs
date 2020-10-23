@@ -769,7 +769,8 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = error "smartReplicate: Not implemented!"
+smartReplicate [] = []
+smartReplicate (x:xs) = replicate x x ++ smartReplicate xs
 
 {- |
 =⚔️= Task 9
@@ -782,7 +783,9 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains = error "contains: Not implemented!"
+contains :: Int -> [[Int]] -> [[Int]]
+contains n l = [ x | x <- l, n `elem` x ]
+
 
 
 {- |
