@@ -554,6 +554,7 @@ mid x y z
     | y <= x && y >= z = y
     | z <= x && z >= y = z
     | z <= y && z >= x = z
+    | otherwise = z 
 
 {- |
 =⚔️= Task 8
@@ -642,10 +643,10 @@ specifying complex expressions.
 sumLast2 :: Int -> Int
 sumLast2 n =
   let
-    lastDigit = abs (mod n 10)
-    secondDigit = mod (div (abs n - lastDigit) 10) 10
+    lastDigit2 = abs (mod n 10)
+    secondDigit = mod (div (abs n - lastDigit2) 10) 10
   in
-    secondDigit + lastDigit
+    secondDigit + lastDigit2
 
 
 {- |
@@ -669,8 +670,8 @@ aren't ready for this boss yet!
 firstDigit :: Int -> Int
 firstDigit n =
   let
-    lastDigit x = mod (abs x) 10
-    dropLastDigit i = div (i - lastDigit i) 10
+    lastDigit3 x = mod (abs x) 10
+    dropLastDigit i = div (i - lastDigit3 i) 10
     recursiveLoop j
       | abs j <= 10 = j
       | otherwise = recursiveLoop (dropLastDigit (abs j))
