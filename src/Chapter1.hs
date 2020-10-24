@@ -558,12 +558,10 @@ Casual reminder about adding top-level type signatures for all functions :)
 
 mid :: Int -> Int -> Int -> Int
 mid x y z
-    | x' <= y' && x' <= z' = if y' < z' then y else z
-    | y' <= x' && y' <= z' = if x' < z' then x else z
-    | z' <= x' && z' <= x' = if y' < x' then y else x
-    where x' = abs x
-          y' = abs y
-          z' = abs z
+    | x <= y && x <= z = if y < z then y else z
+    | y <= x && y <= z = if x < z then x else z
+    | z <= x && z <= x = if y < x then y else x
+    | otherwise = z
 
 {- |
 =⚔️= Task 8
@@ -652,9 +650,9 @@ sumLast2 :: Int -> Int
 sumLast2 n =
         let n' = abs n
             lasttwo = n' `mod` 100
-            last = n' `mod` 10
-            penultimate = (lasttwo - last) `div` 10 in
-        last + penultimate
+            final = n' `mod` 10
+            penultimate = lasttwo `div` 10 in
+        final + penultimate
 
 
 {- |
