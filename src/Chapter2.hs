@@ -523,6 +523,7 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
+isThird42 :: [Int] -> Bool
 isThird42 (_ : _ : 42 : _) = True
 isThird42 _ = False
 
@@ -754,7 +755,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = concat $ map (\x -> replicate x x) l
+smartReplicate = concatMap (\x -> replicate x x)
 
 {- |
 =⚔️= Task 9
@@ -767,7 +768,7 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains e xs = filter (elem e) xs
+contains e = filter (elem e)
 
 
 {- |
