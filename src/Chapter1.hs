@@ -636,7 +636,7 @@ sumLast2 :: Int -> Int
 sumLast2 n =
   let
     lastDigit = abs (mod n 10)
-    secondDigit = mod (div (abs(n) - lastDigit) 10) 10
+    secondDigit = mod (div (abs n - lastDigit) 10) 10
   in
     secondDigit + lastDigit
 
@@ -665,7 +665,7 @@ firstDigit n =
     lastDigit x = mod (abs x) 10
     dropLastDigit i = div (i - lastDigit i) 10
     recursiveLoop j
-      | abs(j) <= 10 = j
+      | abs j <= 10 = j
       | otherwise = recursiveLoop (dropLastDigit (abs j))
   in recursiveLoop n
 
