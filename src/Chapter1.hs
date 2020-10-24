@@ -645,12 +645,9 @@ specifying complex expressions.
 sumLast2 :: Int -> Int
 sumLast2 n =
     let
-        lastNum = mod (abs n) 10
-        secondLast = mod (by10 (abs n)) 10
-          where
-            by10 :: Int -> Int
-            by10 x = div x 10
-    in (lastNum + secondLast)
+        (left, first) = divMod (abs n) 10
+        second = mod left 10
+    in first + second
 
 
 {- |
@@ -672,7 +669,6 @@ aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
 firstDigit n
-    | absN == 0 = 0
     | absN < 10 = absN
     | otherwise = firstDigit (div absN 10)
       where
