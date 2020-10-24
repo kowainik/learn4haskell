@@ -1,0 +1,8 @@
+cradle:
+  multi:
+    - path: "./"
+      config:
+        cradle:
+          stack:
+            - path: "./src/*"
+            - path: "./test/*"

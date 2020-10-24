@@ -114,23 +114,23 @@ As always, try to guess the output first! And don't forget to insert
 the output in here:
 
 >>> :k Char
-
+Char :: *
 >>> :k Bool
-
+Bool :: *
 >>> :k [Int]
-
+[Int] :: *
 >>> :k []
-
+[] :: * -> *
 >>> :k (->)
-
+(->) :: * -> * -> *
 >>> :k Either
-
+Either :: * -> * -> *
 >>> data Trinity a b c = MkTrinity a b c
 >>> :k Trinity
-
+Trinity :: * -> * -> * -> *
 >>> data IntBox f = MkIntBox (f Int)
 >>> :k IntBox
-
+IntBox :: (* -> *) -> *
 -}
 
 {- |
@@ -277,10 +277,11 @@ inside or a reward with some treasure. You never know what's inside
 until opened! But the 'Functor' instance allows changing the reward
 inside, so it is quite handy.
 -}
-data Secret e a
-    = Trap e
-    | Reward a
+data Secret err treasure
+    = Trap err
+    | Reward treasure
     deriving (Show, Eq)
+
 
 
 {- |
@@ -293,7 +294,8 @@ values and apply them to the type level?
 -}
 instance Functor (Secret e) where
     fmap :: (a -> b) -> Secret e a -> Secret e b
-    fmap = error "fmap for Box: not implemented!"
+    fmap _ (Trap err) = Trap err
+    fmap func (Reward treasure) = Reward (func treasure)
 
 {- |
 =⚔️= Task 3
@@ -306,6 +308,11 @@ typeclasses for standard data types.
 data List a
     = Empty
     | Cons a (List a)
+
+instance Functor List where 
+  fmap :: (a -> b) -> List a -> List b
+  fmap _ Empty = Empty
+  fmap func (Cons car cdr) = Cons (func car) (fmap func cdr)
 
 {- |
 =🛡= Applicative
@@ -471,11 +478,12 @@ Applicatives can be found in many applications:
 Implement the Applicative instance for our 'Secret' data type from before.
 -}
 instance Applicative (Secret e) where
-    pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+    pure :: treasure -> Secret err treasure
+    pure = Reward
 
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
+    Trap err <*> _ = Trap err
+    Reward fTreasure <*> x = fmap fTreasure x
 
 {- |
 =⚔️= Task 5
@@ -488,6 +496,20 @@ Implement the 'Applicative' instance for our 'List' type.
   may also need to implement a few useful helper functions for our List
   type.
 -}
+
+append :: List a -> List a -> List a
+append Empty list = list
+append (Cons car cdr) list = Cons car (append cdr list)
+
+instance Applicative List where 
+  pure :: a -> List a
+  pure x = Cons x Empty 
+
+  (<*>) :: List (a -> b) -> List a -> List b
+  Empty <*> _ = Empty
+  _ <*> Empty = Empty
+  -- combining two lists -- append
+  Cons fCar cdr <*> list = append (fmap fCar list) (cdr <*> list)
 
 
 {- |
@@ -600,7 +622,9 @@ Implement the 'Monad' instance for our 'Secret' type.
 -}
 instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+    Trap e >>= _ = Trap e
+    Reward a >>= f = f a -- 
+
 
 {- |
 =⚔️= Task 7
@@ -610,6 +634,15 @@ Implement the 'Monad' instance for our lists.
 🕯 HINT: You probably will need to implement a helper function (or
   maybe a few) to flatten lists of lists to a single list.
 -}
+
+instance Monad List where 
+  (>>=) :: List a -> (a -> List b) -> List b 
+  list >>= func = flatmap (fmap func list)
+
+flatmap :: List (List a) -> List a 
+flatmap Empty = Empty
+flatmap (Cons car cdr) = append car (flatmap cdr)
+
 
 
 {- |
@@ -629,7 +662,7 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM monadX monadY = monadX >>= \x -> if x then monadY else (pure False)
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
@@ -672,6 +705,22 @@ Specifically,
    subtree of a tree
  ❃ Implement the function to convert Tree to list
 -}
+data Tree a 
+  = Leaf
+  | Node a (Tree a) (Tree a)
+
+instance Functor Tree where 
+  fmap :: (a -> b) -> Tree a -> Tree b
+  fmap _ Leaf = Leaf
+  fmap f (Node parent childLeft childRight) = Node (f parent) (fmap f childLeft) (fmap f childRight)
+
+reverseTree :: Tree a -> Tree a 
+reverseTree Leaf = Leaf -- Leaf case
+reverseTree (Node parent childLeft childRight) = Node parent (reverseTree childRight) (reverseTree childLeft) -- Tree case
+
+treeToList :: Tree a -> [a]
+treeToList Leaf = []-- Leaf case
+treeToList (Node parent childLeft childRight) = parent : (treeToList childLeft) ++ (treeToList childRight) -- Tree case
 
 
 {-
