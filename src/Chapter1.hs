@@ -210,22 +210,29 @@ So, the output in this example means that 'False' has type 'Bool'.
 
 >>> :t True
 True :: Bool
+
 >>> :t 'a'
 'a' :: Char
+
 >>> :t 42
 42 :: Num p => p
+
 A pair of boolean and char:
 >>> :t (True, 'x')
 (True, 'x') :: (Bool, Char)
+
 Boolean negation:
 >>> :t not
 not :: Bool -> Bool
+
 Boolean 'and' operator:
 >>> :t (&&)
 (&&) :: Bool -> Bool -> Bool
+
 Addition of two numbers:
 >>> :t (+)
 (+) :: Num a => a -> a -> a
+
 Maximum of two values:
 >>> :t max
 max :: Ord a => a -> a -> a
