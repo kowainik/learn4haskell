@@ -344,7 +344,7 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
-data Book = Book  
+data Book = Book
   { bookTitle     :: String
   , bookAuthor    :: String
   , bookISBN      :: String
@@ -384,13 +384,13 @@ after the fight. The battle has the following possible outcomes:
 
 data Knight = Knight
     { knightHealth :: Int
-    , knightAttack :: Int    
+    , knightAttack :: Int
     , knightGold   :: Int
     }
 
 data Monster = Monster
     { monsterHealth :: Int
-    , monsterAttack :: Int    
+    , monsterAttack :: Int
     , monsterGold   :: Int
     }
 
@@ -488,7 +488,7 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
-data Meal 
+data Meal
   = Breakfast String
   | Brunch String
   | Lunch String
@@ -518,13 +518,13 @@ After defining the city, implement the following functions:
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
 
-data City = City 
+data City = City
   {  townCastle :: Castle
   ,  mainBuilding :: Building
   ,  houses :: [House]
   }
 
-data Castle 
+data Castle
   = None
   | Castle String
   | CastleWalls String
@@ -533,7 +533,7 @@ data Building
   = Library
   | Church
 
-data House 
+data House
   = One
   | Two
   | Three
@@ -549,11 +549,11 @@ buildCastle :: City -> String -> City
 buildCastle city name = city {townCastle = Castle name }
 
 buildHouse :: House -> City -> City
-buildHouse house city = city { houses = house : houses city}  
+buildHouse house city = city { houses = house : houses city}
 
 buildWalls :: City -> City
 buildWalls city = case townCastle city of
-  Castle castleName -> 
+  Castle castleName ->
     if sum (map  countHabitants (houses city)) > 10
       then city {townCastle = CastleWalls castleName }
       else city
@@ -646,8 +646,8 @@ newtype PlayerArmor = PlayerArmor Int
 newtype PlayerAttack = PlayerAttack Int
 newtype PlayerDexterity = PlayerDexterity Int
 newtype PlayerStrength = PlayerStrength Int
-newtype PlayerDamage = PlayerDamage Int 
-newtype PlayerDefense = PlayerDefense Int 
+newtype PlayerDamage = PlayerDamage Int
+newtype PlayerDefense = PlayerDefense Int
 
 data Player = Player
     { playerHealth    :: PlayerHealth
@@ -658,15 +658,15 @@ data Player = Player
     }
 
 calculatePlayerDamage :: PlayerAttack -> PlayerStrength -> PlayerDamage
-calculatePlayerDamage (PlayerAttack a) (PlayerStrength s) = 
+calculatePlayerDamage (PlayerAttack a) (PlayerStrength s) =
   PlayerDamage (a + s)
 
 calculatePlayerDefense :: PlayerArmor -> PlayerDexterity -> PlayerDefense
-calculatePlayerDefense  (PlayerArmor armor) (PlayerDexterity dexterity) = 
+calculatePlayerDefense  (PlayerArmor armor) (PlayerDexterity dexterity) =
   PlayerDefense (armor * dexterity)
 
 calculatePlayerHit :: PlayerDamage -> PlayerDefense -> PlayerHealth -> PlayerHealth
-calculatePlayerHit  (PlayerDamage damage) (PlayerDefense defense) (PlayerHealth health) = 
+calculatePlayerHit  (PlayerDamage damage) (PlayerDefense defense) (PlayerHealth health) =
   PlayerHealth (health + defense - damage)
 
 -- The second player hits first player and the new first player is returned
@@ -847,18 +847,16 @@ parametrise data types in places where values can be of any general type.
 
 newtype GoldAmount = GoldAmount Int
 newtype SwordDamage = SwordDamage Int
-newtype SpellDamage = SpellDamage Int 
+newtype SpellDamage = SpellDamage Int
 
-data DragonType = Fire | Shock | Ice
+data TreasureChest x = TreasureChest
+    { treasureChestGold :: Int
+    , treasureChestLoot :: x
+    }
 
-data Loot 
-  = Gold GoldAmount 
-  | Swords SwordDamage
-  | SpellBook SpellDamage
-
-data DragonLair dragonPower treasure = DragonLair
+data DragonLair dragonPower x = DragonLair
   { dragon :: dragonPower
-  , loot :: Maybe treasure
+  , loot :: Maybe (TreasureChest x)
   }
 
 
@@ -1020,6 +1018,15 @@ Implement instances of "Append" for the following types:
 class Append a where
     append :: a -> a -> a
 
+newtype Gold = Gold Int 
+
+instance Append Gold where
+  append :: Gold -> Gold -> Gold
+  append (Gold a) (Gold b) = Gold (a + b)
+
+instance Append [a] where
+  append :: [a] -> [a] -> [a]
+  append a b = a ++ b
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -1081,6 +1088,33 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
+data DayOfWeek 
+  = Monday
+  | Tuesday
+  | Wednesday
+  | Thursday
+  | Friday
+  | Saturday
+  | Sunday 
+  deriving(Show, Eq, Ord, Bounded, Enum)
+
+isWeekend :: DayOfWeek -> Bool
+isWeekend day = 
+  if day == Saturday || day == Sunday
+    then True
+    else False
+
+nextDay :: DayOfWeek -> DayOfWeek
+nextDay day = 
+  if day == Sunday
+    then Monday 
+    else succ day 
+
+daysToParty :: DayOfWeek -> Int
+daysToParty day
+  | day == Friday = 0
+  | day < Friday = length (enumFromTo day Friday) - 1
+  | day > Friday = (2 - length (enumFromTo Friday day)) + 6
 {-
 =💣= Task 9*
 
