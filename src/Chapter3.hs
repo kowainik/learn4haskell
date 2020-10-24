@@ -1150,6 +1150,45 @@ Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
 
+type Hlt = Int
+type Atk = Int
+type Def = Int 
+-- Used the names beast and hero because I'm pretty
+-- sure Knight and monster were used in previous tasks 
+data Hero = Hero 
+  { heroHealth :: Hlt
+  , heroDefence :: Def
+  , heroAttack :: Atk
+  }
+
+castSpell :: Hero -> Hero
+castSpell hero = hero {heroDefence = heroDefence hero + 1}
+
+drinkPotion :: Hero -> Hero
+drinkPotion hero = hero {heroHealth = heroHealth hero + 1}
+
+data Beast = Beast
+  { beastHealth :: Hlt
+  , beastAttack :: Atk
+  }
+
+flee :: Beast -> Beast
+flee beast = beast {beastHealth = 0} 
+
+class Attack target where
+  attack :: Either Hero Beast -> target -> target 
+
+instance Attack Beast where
+  attack :: (Either Hero Beast) -> Beast -> Beast
+  attack (Left hero) beast = beast {beastHealth = beastHealth beast - heroAttack hero }
+  attack (Right beast1) beast2 = beast2 {beastHealth = beastHealth beast2 - beastAttack beast1 }
+
+instance Attack Hero where 
+  attack :: (Either Hero Beast) -> Hero -> Hero
+  attack (Right beast) hero = 
+    hero { heroHealth = heroHealth hero + heroDefence hero - beastAttack beast  }
+  attack (Left hero1) hero2 = 
+    hero2 {heroHealth = heroHealth hero2 + heroDefence hero2 - heroAttack hero1 }
 
 {-
 You did it! Now it is time to the open pull request with your changes
