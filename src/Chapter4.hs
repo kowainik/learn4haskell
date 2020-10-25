@@ -479,9 +479,8 @@ instance Applicative (Secret e) where
     pure = Reward
 
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) (Reward f) (Reward a) = Reward $ f a
-    (<*>) (Trap e) _ = Trap e
-    (<*>) _ (Trap e) = Trap e
+    Reward f <*> x  = fmap f x
+    Trap e <*> _ = Trap e
 
 {- |
 =⚔️= Task 5
@@ -495,6 +494,17 @@ Implement the 'Applicative' instance for our 'List' type.
   type.
 -}
 
+instance Applicative List where
+  pure :: a -> List a
+  pure x = Cons x Empty
+
+  (<*>) :: List (a -> b) -> List a -> List b
+  Empty <*> _ = Empty
+  Cons f fs <*> zs = append (fmap f zs) (fs <*> zs)
+
+append :: List a -> List a -> List a
+append Empty ys = ys
+append (Cons x xs) ys = Cons x (append xs ys)
 
 {- |
 =🛡= Monad
@@ -606,8 +616,8 @@ Implement the 'Monad' instance for our 'Secret' type.
 -}
 instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) (Reward a) fb = fb a
-    (>>=) (Trap e) _ = Trap e
+    Reward a >>= fb = fb a
+    Trap e >>= _ = Trap e
 
 {- |
 =⚔️= Task 7
@@ -617,7 +627,10 @@ Implement the 'Monad' instance for our lists.
 🕯 HINT: You probably will need to implement a helper function (or
   maybe a few) to flatten lists of lists to a single list.
 -}
-
+instance Monad List where
+    (>>=) :: List a -> (a -> List b) -> List b
+    Empty >>= _ = Empty
+    Cons x xs >>= f = append (f x) (xs >>= f)
 
 {- |
 =💣= Task 8*: Before the Final Boss
@@ -636,7 +649,7 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM ma mb = (\a -> if a then  mb else return a) =<< ma
+andM ma mb = ma >>= \a -> if a then  mb else pure a
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
@@ -680,6 +693,21 @@ Specifically,
  ❃ Implement the function to convert Tree to list
 -}
 
+data Tree a = Leaf
+            | Node a (Tree a) (Tree a)
+
+instance Functor Tree where
+  fmap :: (a -> b) -> Tree a -> Tree b
+  fmap _ Leaf = Leaf
+  fmap f (Node x l r) = Node (f x) (fmap f l) (fmap f r)
+
+reverseTree :: Tree a -> Tree a
+reverseTree Leaf = Leaf
+reverseTree (Node x l r) = Node x r l
+
+treeToList :: Tree a -> [a]
+treeToList Leaf = []
+treeToList (Node x l r) = x : treeToList l ++ treeToList r
 
 {-
 You did it! Now it is time to open pull request with your changes
