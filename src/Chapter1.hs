@@ -490,7 +490,7 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit :: Int -> Int 
+lastDigit :: Int -> Int
 lastDigit n = abs n `mod` 10
 
 
@@ -521,7 +521,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = if abs x > abs y then y else x 
+closestToZero x y = if abs x > abs y then y else x
 
 
 {- |
@@ -574,7 +574,7 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c 
+isVowel c
   | c `elem` ['a', 'e', 'i', 'o', 'u', 'y'] = True
   | otherwise = False
 {- |
