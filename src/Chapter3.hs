@@ -525,17 +525,21 @@ inhabitantsPerHouse (MkHouse Four) = 4
 inhabitantsPerCity :: [House] -> Int
 inhabitantsPerCity xs = sum $ map inhabitantsPerHouse xs
 
+data CityDefense = Undefended | Castled Castle | Walled Castle deriving (Show)
+
 data City = MkCity
-  { cityCastle :: Maybe Castle
+  { cityDefense :: CityDefense
   , cityFacility :: Facility
   , cityHouses :: [House]
-  , cityWall :: Bool
   } deriving (Show)
 
 buildCastle :: City -> String -> City
 buildCastle city castleName =
     let castle = MkCastle castleName in
-    city { cityCastle = Just castle }
+    case cityDefense city of
+        Undefended -> city { cityDefense = Castled castle }
+        Castled _ -> city { cityDefense = Castled castle }
+        Walled _ -> city { cityDefense = Walled castle }
 
 buildHouse :: City -> House -> City
 buildHouse city house =
@@ -545,8 +549,11 @@ buildHouse city house =
 buildWalls :: City -> City
 buildWalls city =
     let inhabitants = inhabitantsPerCity (cityHouses city) in
-    if inhabitants >= 10 && isJust (cityCastle city) then
-        city { cityWall = True }
+    if inhabitants >= 10 then
+        case cityDefense city of
+            Undefended -> city
+            Castled castle -> city { cityDefense = Walled castle }
+            Walled castle -> city
     else
         city
 
@@ -1011,10 +1018,11 @@ instance Append Gold where
 
 instance Append [a] where
     append :: [a] -> [a] -> [a]
-    append a b = a ++ b
+    append = (++)
 
 instance (Append a) => Append (Maybe a) where
     append :: (Append a) => Maybe a -> Maybe a -> Maybe a
+    append Nothing Nothing = Nothing
     append Nothing (Just a) = Just a
     append (Just a) Nothing = Just a
     append (Just a) (Just b) = Just (append a b)
@@ -1079,14 +1087,14 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
-data Weekday = Mon | Tue | Wed | Thu | Fri | Sat | Sun deriving (Show, Eq, Ord, Enum)
+data Weekday = Mon | Tue | Wed | Thu | Fri | Sat | Sun deriving (Show, Eq, Ord, Enum, Bounded)
 
 isWeekend :: Weekday -> Bool
 isWeekend day = day >= Sat
 
 nextDay :: Weekday -> Weekday
 nextDay day
-    | day == Sun = Mon
+    | day == maxBound = minBound
     | otherwise = succ day
 
 daysToParty :: Weekday -> Int
@@ -1222,17 +1230,17 @@ instance Fighter M where
     (action', m { mActions = remaining })
 
 
-winner :: (Fighter a) => a -> a -> a
+winner :: (Fighter a, Fighter b) => a -> b -> Either a b
 winner a b
-    | isDead a = b
-    | isDead b = a
+    | isDead a = Right b
+    | isDead b = Left a
     | otherwise =
       let (turnA, a') = nextAction a
           (turnB, b') = nextAction b
       in
       case (turnA, turnB) of
-        (TFlee, _) -> b'
-        (_, TFlee) -> a'
+        (TFlee, _) -> Right b'
+        (_, TFlee) -> Left a'
         (TIdle, TIdle) ->
           winner a' b'
         (TIdle, TAttack dmg) ->
