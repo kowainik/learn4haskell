@@ -650,7 +650,7 @@ sumLast2 :: Int -> Int
 sumLast2 n =
     let n2 = abs n
         ones = mod n2 10
-        tens = div ((mod n2 100) - ones) 10
+        tens = div (mod n2 100 - ones) 10
     in ones + tens
 
 
