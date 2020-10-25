@@ -755,10 +755,10 @@ the list with only those lists that contain a passed element.
 -}
 contains :: Int -> [[Int]] -> [[Int]]
 contains n l = go [] l
-  where 
+  where
     go :: [[Int]] -> [[Int]] -> [[Int]]
     go acc [] = reverse acc
-    go acc (x:xs) = if (elem n x) then go (x:acc) xs else go acc xs
+    go acc (x:xs) = if n `elem` x then go (x:acc) xs else go acc xs
 
 {- |
 =🛡= Eta-reduction
@@ -880,7 +880,7 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind l = go [] l
+rewind = go []
   where
     go :: [a] -> [a] -> [a]
     go acc [] = acc
