@@ -337,7 +337,7 @@ ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
 subList start end | start < 0 || end < 0 || end < start = const []
-subList start end  = take (end - start + 1)  . drop start
+                  | otherwise = take (end - start + 1)  . drop start
 
 {- |
 =⚔️= Task 4
@@ -629,12 +629,9 @@ Write a function that takes elements of a list only on even positions.
 [2,3,4]
 -}
 takeEven :: [a] -> [a]
-takeEven = go [] True
-  where
-    go acc _ [] = acc
-    go acc False (_:ys) = go acc True ys
-    go acc True (y:ys) = go (acc ++ [y]) False ys
-
+takeEven [] = []
+takeEven [x] = [x]
+takeEven (x: _ : xs) = x : takeEven xs
 {- |
 =🛡= Higher-order functions
 
@@ -858,8 +855,9 @@ list.
 🕯 HINT: Use the 'cycle' function
 -}
 rotate :: Int -> [a] -> [a]
-rotate x _ | x < 0 = []
-rotate x xs = take (length xs) $ drop x $ cycle xs
+rotate x l | x < 0 = []
+           | null l = []
+           | otherwise = take (length xs) $ drop x $ cycle xs
 
 {- |
 =💣= Task 12*
@@ -876,9 +874,10 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind [] = []
-rewind (x:xs) = rewind xs ++ [x]
-
+rewind = go []
+  where
+    go acc [] = acc
+    go acc (x: xs) = go (x : acc) xs
 
 {-
 You did it! Now it is time to open pull request with your changes
