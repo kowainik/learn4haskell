@@ -391,8 +391,8 @@ data Knight = Knight { knightHealth :: Int
 
 fight :: Knight -> Monster -> Int
 fight k m | knightAttack k >= monsterHealth m = knightGold k + monsterGold m
-fight k m | knightHealth k <= monsterAttack m = - 1
-fight k _ = knightGold k
+          | knightHealth k <= monsterAttack m = - 1
+          | otherwise = knightGold k
 
 {- |
 =🛡= Sum types
@@ -502,22 +502,37 @@ After defining the city, implement the following functions:
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
 
-newtype Castle = Castle String
+data Castle = None
+            | Castle String
+            | CastleWithWall String
+            
 data Building = Church | Library
-newtype House = House Int
+data House = One | Two | Three | Four
+
+countHouse :: House -> Int
+countHouse One = 1
+countHouse Two = 2
+countHouse Three = 3
+countHouse Four = 4
 
 data City = City
-              { castle :: Castle
-              , wall :: Bool
-              , building :: Building
-              , houses :: [House]
+              { cityCastle :: Castle
+              , cityBuilding :: Building
+              , cityHouses :: [House]
               }
 
 buildCastle :: String -> City -> City
-buildCastle castleName city = city { castle = Castle castleName }
+buildCastle castleName city = case cityCastle city of
+  CastleWithWall _ -> city { cityCastle = CastleWithWall castleName }
+  _ -> city { cityCastle = Castle castleName }
 
-buildHouse :: Int -> City -> City
-buildHouse people city = city { houses = houses city ++ [ House people ] }
+buildHouse :: House -> City -> City
+buildHouse house city = city { cityHouses = house : cityHouses city }
+
+buildWalls :: City -> City
+buildWalls city = case cityCastle city of
+  Castle castleName | sum (map countHouse (cityHouses city)) >= 10 -> city {cityCastle = CastleWithWall castleName}
+  _ -> city
 
 {-
 =🛡= Newtypes
@@ -977,7 +992,7 @@ instance Append [a] where
   append = (++)
 
 instance Append a => Append (Maybe a) where
-  append (Just a) (Just b) = return $ append a b
+  append (Just a) (Just b) = Just (append a b)
   append _ _ = Nothing
 
 {-
@@ -1048,11 +1063,12 @@ isWeekend Sun = True
 isWeekend _ = False
 
 nextDay :: Weekday -> Weekday
-nextDay = succ
+nextDay Sun = Mon
+nextDay day = succ day
 
 daysToParty :: Weekday -> Int
 daysToParty Fri = 0
-daysToParty day = (1 +) $ daysToParty $ nextDay day
+daysToParty day = (fromEnum Fri - fromEnum day) `mod` 7
 
 {-
 =💣= Task 9*
