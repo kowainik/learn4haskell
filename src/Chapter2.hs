@@ -336,7 +336,10 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList x y l = drop x (take (y+1) l)
+subList x y l
+  | x < 0 || y <0 = []
+  | x > y = []
+  | otherwise = drop x (take (y+1) l)
 
 {- |
 =⚔️= Task 4
@@ -625,11 +628,13 @@ Write a function that takes elements of a list only on even positions.
 [2,3,4]
 -}
 takeEven :: [a] -> [a]
-takeEven n = go [] n
+takeEven n = go 0 [] n
   where
-    go :: [a] -> [a] -> [a]
-    go acc [] = reverse acc
-    go acc (x:xs) = if mod (length xs) 2 == 0 then go (x:acc) xs else go acc xs
+    go :: Int -> [a] -> [a] -> [a]
+    go _ acc [] = reverse acc
+    go i acc (x:xs)
+      |mod i 2 == 0 = go (i +1) (x:acc) xs
+      |otherwise = go (i+1) acc xs
 {- |
 =🛡= Higher-order functions
 
@@ -856,6 +861,7 @@ list.
 🕯 HINT: Use the 'cycle' function
 -}
 rotate :: Int -> [Int] -> [Int]
+rotate _ [] = []
 rotate n l = if n>=0 then subList n (length l + (n -1)) (cycle l) else []
 
 
