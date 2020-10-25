@@ -219,7 +219,7 @@ to guess first, what you will see.
 ", World!"
 
 >>> zip "abc" [1, 2, 3]  -- convert two lists to a single list of pairs
-[('a',1),('b',2),('c',3)] 
+[('a',1),('b',2),('c',3)]
 
 >>> words "Hello   Haskell     World!"  -- split the string into the list of words
 ["Hello","Haskell","World!"]
@@ -625,7 +625,7 @@ Implement a function that duplicates each element of the list
 -}
 duplicate :: [a] -> [a]
 duplicate [] = []
-duplicate (x:xs) = x : x : (duplicate xs)
+duplicate (x:xs) = x : x : duplicate xs
 
 {- |
 =⚔️= Task 7
@@ -642,7 +642,7 @@ Write a function that takes elements of a list only on even positions.
 takeEven :: [a] -> [a]
 takeEven [] = []
 takeEven [b] = [b]
-takeEven (x:_:xs) = x : takeEven (xs)
+takeEven (x:_:xs) = x : takeEven xs
 
 {- |
 =🛡= Higher-order functions
@@ -764,9 +764,9 @@ the list with only those lists that contain a passed element.
 -}
 contains :: Int -> [[Int]] -> [[Int]]
 contains z [] = []
-contains z [x] = if elem z x then [x] else []
-contains z (x:xs) 
-    | elem z x = x : contains z xs
+contains z [x] = [x | elem z x]
+contains z (x:xs)
+    | z `elem` x = x : contains z xs
     | otherwise = contains z xs
 
 {- |
