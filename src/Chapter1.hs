@@ -429,7 +429,7 @@ task is to specify the type of this function.
 49
 -}
 
-squareSum :: Num a => a -> a -> a
+squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
 
 
@@ -493,7 +493,7 @@ Implement a function that returns the last digit of a given number.
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 
 lastDigit :: Int -> Int
-lastDigit n = (`mod` 10) $ abs n
+lastDigit n = abs n `mod` 10
 
 
 {- |
@@ -523,7 +523,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = if x*x > y*y then y else x
+closestToZero x y = if abs x > abs y then y else x
 
 
 {- |
@@ -645,12 +645,9 @@ specifying complex expressions.
 -}
 
 sumLast2 :: Int -> Int
-sumLast2 n | n < 0 = sumLast2 (-n)
 sumLast2 n = last1 + last2
   where
-    last1 = n `mod` 10
-    last2 = (n `div` 10) `mod` 10
-
+    (last2, last1) = (`divMod` 10) $ abs n `mod` 100
 
 {- |
 =💣= Task 10*
@@ -672,8 +669,8 @@ aren't ready for this boss yet!
 
 firstDigit :: Int -> Int
 firstDigit n | n < 0 = firstDigit (-n)
-firstDigit n | n < 10 = n
-firstDigit n = firstDigit $ n `div` 10
+             | n < 10 = n
+             | otherwise = firstDigit $ n `div` 10
 
 {-
 You did it! Now it is time to open pull request with your changes
