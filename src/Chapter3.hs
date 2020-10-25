@@ -514,7 +514,7 @@ After defining the city, implement the following functions:
 data Castle = MkCastle String deriving (Show)
 data Facility = Church | Library deriving (Show)
 data Inhabitants = One | Two | Three | Four deriving (Show)
-data House = MkHouse Inhabitants deriving (Show)
+newtype House = MkHouse Inhabitants deriving (Show)
 
 inhabitantsPerHouse :: House -> Int
 inhabitantsPerHouse (MkHouse One) = 1
