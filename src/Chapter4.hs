@@ -505,6 +505,10 @@ Implement the 'Applicative' instance for our 'List' type.
   type.
 -}
 
+append :: List a -> List a -> List a
+append Empty ys = ys
+append (Cons y ys) zs = Cons y (append ys zs)
+
 instance Applicative List where
   pure :: a -> List a
   pure a = Cons a Empty
@@ -512,7 +516,7 @@ instance Applicative List where
   (<*>) :: List (a -> b) -> List a -> List b
   Empty <*> _ = Empty
   _ <*> Empty = Empty
-  Cons f fs <*> Cons x xs = Cons (f x) (fs <*> xs)
+  Cons f fs <*> xs = append (fmap f xs) (fs <*> xs)
 
 {- |
 =🛡= Monad
@@ -637,10 +641,6 @@ Implement the 'Monad' instance for our lists.
 🕯 HINT: You probably will need to implement a helper function (or
   maybe a few) to flatten lists of lists to a single list.
 -}
-
-append :: List a -> List a -> List a
-append Empty ys = ys
-append (Cons y ys) zs = Cons y (append ys zs)
 
 instance Monad List where
   (>>=) :: List a -> (a -> List b) -> List b
