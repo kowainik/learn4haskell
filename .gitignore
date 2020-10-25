@@ -56,3 +56,5 @@ TAGS
 
 # history
 .history/src
+.history/test
+.history/*
