@@ -213,15 +213,15 @@ True :: Bool
 >>> :t 'a'
 'a' :: Char
 >>> :t 42
-42 :: Num p => p
+42:: Number
 
 A pair of boolean and char:
 >>> :t (True, 'x')
-(True, 'x') :: (Bool, Char)
+(True, 'x'):: (Bool, Char)
 
 Boolean negation:
 >>> :t not
-not :: Bool -> Bool
+not:: Bool -> Bool
 
 Boolean 'and' operator:
 >>> :t (&&)
@@ -229,11 +229,11 @@ Boolean 'and' operator:
 
 Addition of two numbers:
 >>> :t (+)
-(+) :: Num a => a -> a -> a
+(+):: Num a => a -> a -> a
 
 Maximum of two values:
 >>> :t max
-max :: Ord a => a -> a -> a
+max:: Ord a => a -> a -> a
 
 
 You might not understand each type at this moment, but don't worry! You've only
@@ -493,7 +493,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int
-lastDigit n = abs n `mod` 10
+lastDigit n = n `mod` 10
 
 
 {- |
@@ -556,11 +556,11 @@ value after "=" where the condition is true.
 
 Casual reminder about adding top-level type signatures for all functions :)
 -}
-
 mid ::  Int -> Int -> Int -> Int
-mid x y z = 
-  (x + y + z) - (max x (max y z)) - (min x (min y z))
-  
+mid x y z 
+  | x >= y && y >= z = y
+  | x >= z && z >= y = z
+  | otherwise = x
 
 {- |
 =⚔️= Task 8
@@ -643,8 +643,8 @@ specifying complex expressions.
 sumLast2 :: Int -> Int
 sumLast2 n = 
   let 
-    onesplacedigit = abs n `mod` 10
-    tensplacedigit = abs n `mod` 100 `div` 10
+    onesplacedigit = n `mod` 10
+    tensplacedigit = n `mod` 100 `div` 10
     in (onesplacedigit+tensplacedigit)
 
 
@@ -667,10 +667,10 @@ aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
 firstDigit n 
-  | acc >= 10 = firstDigit acc
-  | acc == 0 = abs n
+  | acc > 10 = firstDigit acc
+  | acc == 0 = n
   | otherwise = acc
- where acc = ((abs n - lastDigit n) `div` 10)
+ where acc = ((n - lastDigit n) `div` 10)
 
 
  

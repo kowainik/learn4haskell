@@ -42,7 +42,7 @@ common common-options
 common common-doctest
   import:              common-options
   hs-source-dirs:      test
-  build-depends:       doctest ^>= 0.16
+  build-depends:       doctest ^>= 0.17
   ghc-options:         -threaded
 
 library

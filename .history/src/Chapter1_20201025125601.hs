@@ -213,15 +213,15 @@ True :: Bool
 >>> :t 'a'
 'a' :: Char
 >>> :t 42
-42 :: Num p => p
+42:: Number
 
 A pair of boolean and char:
 >>> :t (True, 'x')
-(True, 'x') :: (Bool, Char)
+(True, 'x'):: (Bool, Char)
 
 Boolean negation:
 >>> :t not
-not :: Bool -> Bool
+not:: Bool -> Bool
 
 Boolean 'and' operator:
 >>> :t (&&)
@@ -229,11 +229,11 @@ Boolean 'and' operator:
 
 Addition of two numbers:
 >>> :t (+)
-(+) :: Num a => a -> a -> a
+(+):: Num a => a -> a -> a
 
 Maximum of two values:
 >>> :t max
-max :: Ord a => a -> a -> a
+max:: Ord a => a -> a -> a
 
 
 You might not understand each type at this moment, but don't worry! You've only
@@ -667,10 +667,10 @@ aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
 firstDigit n 
-  | acc >= 10 = firstDigit acc
-  | acc == 0 = abs n
+  | acc > 10 = firstDigit acc
+  | acc == 0 = n
   | otherwise = acc
- where acc = ((abs n - lastDigit n) `div` 10)
+ where acc = ((abs n - lastDigit (abs n)) `div` 10)
 
 
  
