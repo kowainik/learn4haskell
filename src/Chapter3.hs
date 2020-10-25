@@ -521,7 +521,7 @@ data House = One | Two | Three | Four
 data ExtraBuilding = Church | Library
 
 buildCastle :: City -> String -> City
-buildCastle city@(City { castle = CastleWalls _ }) name =
+buildCastle city@City{castle = CastleWalls _} name =
   city { castle = CastleWalls name }
 buildCastle city name = city { castle = Castle name }
 
@@ -530,7 +530,7 @@ buildHouse city house = city { houses = house : existingHouses }
   where existingHouses = houses city
 
 buildWalls :: City -> City
-buildWalls city@(City { castle = Castle name }) | peopleCount city >= 10 =
+buildWalls city@City{castle = Castle name} | peopleCount city >= 10 =
   city { castle = CastleWalls name }
 buildWalls city = city
 
@@ -820,7 +820,7 @@ parametrise data types in places where values can be of any general type.
 🕯 HINT: 'Maybe' that some standard types we mentioned above are useful for
   maybe-treasure ;)
 -}
-data Dragon magicPower = Mkdragon magicPower
+newtype Dragon magicPower = Mkdragon magicPower
 data Lair magicPower a = MkLair {
   dragon :: Dragon magicPower
   , treasure :: Maybe a
