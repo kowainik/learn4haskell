@@ -136,7 +136,7 @@ functions in GHCi and insert the corresponding resulting output below:
 
 List of booleans:
 >>> :t [True, False]
-[True,False] :: [Bool]
+[True, False] :: [Bool]
 
 String is a list of characters:
 >>> :t "some string"
