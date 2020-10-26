@@ -306,6 +306,7 @@ typeclasses for standard data types.
 data List a
     = Empty
     | Cons a (List a)
+    deriving (Show, Eq)
 
 {- |
 =🛡= Applicative
