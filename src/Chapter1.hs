@@ -672,7 +672,7 @@ firstDigit n = go (divMod (abs n) 10)
 	where
 		go :: (Int, Int) -> Int
 		go(0, lastD) = lastD
-		go(rest, _) = go (divMod rest 10)		
+		go(rest, _) = go (divMod rest 10)
 
 
 {-
