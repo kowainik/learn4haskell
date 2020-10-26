@@ -114,22 +114,24 @@ As always, try to guess the output first! And don't forget to insert
 the output in here:
 
 >>> :k Char
-
+Char :: *
 >>> :k Bool
-
+Bool :: *
 >>> :k [Int]
-
+[Int] :: *
 >>> :k []
-
+[] :: * -> *
 >>> :k (->)
-
+(->) :: * -> * -> *
 >>> :k Either
-
+Either :: * -> * -> *
 >>> data Trinity a b c = MkTrinity a b c
 >>> :k Trinity
+Trinity :: * -> * -> * -> *
 
 >>> data IntBox f = MkIntBox (f Int)
 >>> :k IntBox
+IntBox :: (* -> *) -> *
 
 -}
 
@@ -291,9 +293,11 @@ method. Yes, similar to how we can partially apply functions. See, how
 we can reuse already known concepts (e.g. partial application) from
 values and apply them to the type level?
 -}
+
 instance Functor (Secret e) where
     fmap :: (a -> b) -> Secret e a -> Secret e b
-    fmap = error "fmap for Box: not implemented!"
+    fmap _ (Trap e) = Trap e
+    fmap f (Reward a) = Reward (f a) 
 
 {- |
 =⚔️= Task 3
@@ -306,6 +310,11 @@ typeclasses for standard data types.
 data List a
     = Empty
     | Cons a (List a)
+
+instance Functor List where
+  fmap :: (a -> b) -> List a -> List b
+  fmap _ (Empty) = Empty
+  fmap f (Cons a l) = Cons (f a) (fmap f l) 
 
 {- |
 =🛡= Applicative
@@ -472,10 +481,11 @@ Implement the Applicative instance for our 'Secret' data type from before.
 -}
 instance Applicative (Secret e) where
     pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+    pure = Reward
 
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
+    Trap e <*> _ = Trap e
+    Reward f <*> x = fmap f x
 
 {- |
 =⚔️= Task 5
@@ -600,7 +610,8 @@ Implement the 'Monad' instance for our 'Secret' type.
 -}
 instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+    (Trap e) >>= _ = Trap e
+    (Reward a) >>= f = f a
 
 {- |
 =⚔️= Task 7
@@ -611,6 +622,18 @@ Implement the 'Monad' instance for our lists.
   maybe a few) to flatten lists of lists to a single list.
 -}
 
+-- I couldn't complete this.
+-- I looked at the solutions and it wouldn't compile either.
+
+{-
+instance Monad List where
+  (>>=) :: List a -> (a -> List b) -> List b
+  list >>= f = flatHelper (fmap f l)
+
+flatHelper :: List (List a) -> List a
+flatHelper Empty = Empty
+flatHelper (Cons x xs) =  x : (flatHelper xs)
+-}
 
 {- |
 =💣= Task 8*: Before the Final Boss
@@ -629,7 +652,7 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM m1 m2 = m1 >>= \x -> if x then m2 else pure False 
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
@@ -678,3 +701,23 @@ Specifically,
 You did it! Now it is time to the open pull request with your changes
 and summon @vrom911 and @chshersh for the review!
 -}
+
+data BinaryTree x
+  = Val
+  | Node x (BinaryTree x) (BinaryTree x)
+
+instance Functor BinaryTree where
+  fmap :: ( a -> b) -> BinaryTree a -> BinaryTree b
+  fmap _ Val = Val
+  fmap func (Node x left right) = 
+    Node (func x) (fmap func left) (fmap func right)
+
+reverseBinaryTree :: BinaryTree a -> BinaryTree a
+reverseBinaryTree Val = Val
+reverseBinaryTree (Node x left right) = 
+  Node x (reverseBinaryTree right) (reverseBinaryTree left)
+
+treeToList :: BinaryTree a -> [a]
+treeToList Val = []
+treeToList (Node x left right) = 
+  x : treeToList left ++ treeToList right
