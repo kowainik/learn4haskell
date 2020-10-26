@@ -337,7 +337,7 @@ ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
 subList x y l
-  | x > y || x > length l || x < 0 || y < 0 = []
+  | x > y || x < 0 || y < 0 = []
   | otherwise = drop x (take (y + 1) l)
 
 {- |
@@ -352,7 +352,6 @@ Implement a function that returns only the first half of a given list.
 -}
 -- PUT THE FUNCTION TYPE IN HERE
 firstHalf :: [a] -> [a]
-firstHalf [] = []
 firstHalf l = take (length l `div` 2) l
 
 {- |
@@ -505,7 +504,7 @@ True
 False
 -}
 isThird42 :: [Int] -> Bool
-isThird42 (_:_:z:_) = z == 42
+isThird42 (_:_:42:_) = True
 isThird42 _ = False
 
 {- |
@@ -628,12 +627,9 @@ Write a function that takes elements of a list only on even positions.
 -}
 takeEven :: [Int] -> [Int]
 takeEven [] = []
-takeEven l = go [] l
-  where
-    go :: [Int] -> [Int] -> [Int]
-    go acc [] = acc
-    go acc (x:_:xs) = go (acc ++ [x]) xs
-    go acc (x:_) = go (acc ++ [x]) []
+takeEven (x:_:xs) = x : takeEven xs
+takeEven (x:_) = x : takeEven []
+
 {- |
 =🛡= Higher-order functions
 
@@ -739,7 +735,6 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate [] = []
 smartReplicate l = concatMap (\x -> replicate x x) l
 
 {- |
@@ -754,7 +749,6 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: Int -> [[Int]] -> [[Int]]
-contains _ [] = []
 contains nb l = filter ((nb `elem`)) l
 
 {- |
@@ -860,7 +854,11 @@ list.
 rotate :: Int -> [Int] -> [Int]
 rotate _ [] = []
 rotate 0 l = l
-rotate nb l = drop nb (take (length l + nb) (cycle l))
+rotate nb l
+  | nb < 0 = []
+  | otherwise = drop n (take (length l + n) (cycle l))
+  where
+    n = nb `mod` length l
 
 {- |
 =💣= Task 12*
@@ -877,12 +875,8 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind [] = []
-rewind l = go [] l
-  where
-    go :: [a] -> [a] -> [a]
-    go acc [] = acc
-    go acc xs = foldl (flip (:)) acc xs
+rewind l = foldl (flip (:)) [] l
+
 {-
 You did it! Now it is time to open pull request with your changes
 and summon @vrom911 and @chshersh for the review!
