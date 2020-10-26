@@ -556,10 +556,9 @@ Casual reminder about adding top-level type signatures for all functions :)
 -}
 mid :: Int -> Int -> Int -> Int
 mid x y z
-  | (x > y && x < z) || (x < y && x > z) = x
-  | (y > x && y < z) || (y < x && y > z) = y
-  | (z > x && z < y) || (z < x && z > y) = z
-  | otherwise = x
+  | (x >= y && x <= z) || (x <= y && x >= z) = x
+  | (y >= x && y <= z) || (y <= x && y >= z) = y
+  | otherwise = z
 
 {- |
 =⚔️= Task 8
@@ -574,9 +573,13 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c
-  | c `elem` ['a', 'e', 'i', 'o', 'u', 'y'] = True
-  | otherwise = False
+isVowel 'a' = True
+isVowel 'e' = True
+isVowel 'i' = True
+isVowel 'o' = True
+isVowel 'u' = True
+isVowel 'y' = True
+isVowel _ = False
 {- |
 == Local variables and functions
 
@@ -639,9 +642,11 @@ specifying complex expressions.
 -}
 
 sumLast2 :: Int -> Int
-sumLast2 n = last2 `div` 10 + last2 `mod` 10
+sumLast2 n = result (divMod last2 10)
     where
       last2 = abs n `mod` 100
+      result :: (Int, Int) -> Int
+      result (a, b) = a + b
 
 {- |
 =💣= Task 10*
