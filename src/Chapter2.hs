@@ -352,9 +352,8 @@ Implement a function that returns only the first half of a given list.
 -}
 -- PUT THE FUNCTION TYPE IN HERE
 firstHalf :: [a] -> [a]
-firstHalf l
-  | length l == 0 = []
-  | otherwise = take (length l `div` 2) l
+firstHalf [] = []
+firstHalf l = take (length l `div` 2) l
 
 {- |
 =🛡= Pattern matching
@@ -741,7 +740,7 @@ value of the element itself
 -}
 smartReplicate :: [Int] -> [Int]
 smartReplicate [] = []
-smartReplicate l = concat (map (\x -> replicate x x) l)
+smartReplicate l = concatMap (\x -> replicate x x) l
 
 {- |
 =⚔️= Task 9
@@ -756,7 +755,7 @@ the list with only those lists that contain a passed element.
 -}
 contains :: Int -> [[Int]] -> [[Int]]
 contains _ [] = []
-contains nb l = filter (\x -> nb `elem` x) l
+contains nb l = filter ((nb `elem`)) l
 
 {- |
 =🛡= Eta-reduction
@@ -883,8 +882,7 @@ rewind l = go [] l
   where
     go :: [a] -> [a] -> [a]
     go acc [] = acc
-    go acc (x:xs) = go (x:acc) xs
-
+    go acc xs = foldl (flip (:)) acc xs
 {-
 You did it! Now it is time to open pull request with your changes
 and summon @vrom911 and @chshersh for the review!
