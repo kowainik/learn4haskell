@@ -57,6 +57,18 @@ chapter4normal = describe "Chapter4Normal" $ do
             Reward not <*> Reward True `shouldBe` (Reward False :: Secret String Bool)
         it "reward <*> reward" $
             Reward odd <*> Reward 42 `shouldBe` (Reward False :: Secret String Bool)
+    describe "Task5: Applicative for List" $ do
+        let list = Cons 1 $ Cons 2 Empty
+        it "pure int" $
+            pure @List @Int 42 `shouldBe` Cons 42 Empty
+        it "pure bool" $
+            pure @List @Bool False `shouldBe` Cons False Empty
+        it "empty <*> nonempty" $
+            Empty <*> list `shouldBe` (Empty :: List Int)
+        it "nonempty <*> empty" $
+            Cons (+1) Empty <*> Empty `shouldBe` Empty
+        it "nonempty <*> nonempty" $
+            Cons (+1) (Cons (*2) Empty) <*> list `shouldBe` (Cons 2 $ Cons 3 $ Cons 2 $ Cons 4 Empty)
     describe "Task6: Monad for Secret" $ do
         it "Trap" $ (Trap "aaar" >>= halfSecret) `shouldBe` Trap "aaar"
         it "Reward even" $ (Reward 42 >>= halfSecret) `shouldBe` Reward 21
