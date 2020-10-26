@@ -1,3 +1,4 @@
+
 {- 👋 Welcome to Chapter Four / Four of our journey, Staunch Wanderer!
 
 Our adventure together has almost come to an end. It has been a

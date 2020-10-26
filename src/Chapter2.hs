@@ -1,3 +1,4 @@
+
 {- 👋 Welcome to Chapter Two, Traveller!
 
 If you haven't finished Chapter One yet, we encourage you to check it

@@ -1,3 +1,4 @@
+
 {- 👋 Welcome, Brave folks!
 
 Happy to see you here, on the way to the wonderful Functional Programming land
