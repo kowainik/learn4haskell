@@ -28,6 +28,18 @@ chapter4normal = describe "Chapter4Normal" $ do
             fmap @(Secret String) @Int even (Reward 5) `shouldBe` Reward False
         it "change reward, other type" $
             fmap @(Secret String) @Int even (Reward 4) `shouldBe` Reward True
+    describe "Task3: Functor for List" $ do
+        let list = Cons 1 $ Cons 2 Empty
+        it "f <$> empty" $
+            fmap @List @Int (+1) Empty `shouldBe` Empty
+        it "change content, same type" $
+            fmap @List @Int (+1) list `shouldBe` (Cons 2 $ Cons 3 Empty)
+        it "change content, other type" $
+            fmap @List @Int even list `shouldBe` (Cons False $ Cons True Empty)
+        it "identity law" $
+            fmap id list `shouldBe` list
+        it "composition law" $
+            fmap ((*2) .  (+1)) list `shouldBe` (fmap (*2) . fmap (+1)) list
     describe "Task4: Applicative for Secret" $ do
         let trap :: Secret String Int
             trap = Trap "it's a trap"
