@@ -344,6 +344,13 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = Book {
+  name :: String, 
+  author :: String,
+  cover :: String, 
+  pages :: Int
+}
+
 {- |
 =⚔️= Task 2
 
@@ -373,7 +380,22 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+data Monster = Monster { 
+  monsterHealth :: Int,
+  monsterAttack :: Int,
+  monsterGold :: Int
+}
 
+data Knight = Knight {
+  knightHealth :: Int,
+  knightAttack :: Int,
+  knightGold :: Int
+}
+
+fight :: Knight -> Monster -> Int
+fight k m | knightAttack k >= monsterHealth m = knightGold k + monsterGold m
+          | knightHealth k <= monsterAttack m = - 1
+          | otherwise = knightGold k
 {- |
 =🛡= Sum types
 
@@ -460,6 +482,8 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data Meal = Breakfast | Brunch | Lunch | FiveTea | Dinner
+
 {- |
 =⚔️= Task 4
 
@@ -479,6 +503,38 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
+
+data City = City {
+  castle :: Castle, 
+  buildings :: Buildings, 
+  houses :: [House]
+}
+
+data Castle = None | Castle String | CastleWithWall String
+data Buildings = Church | Library
+data House = House {people :: People}
+data People = One | Two | Three | Four
+
+buildCastle :: City -> String -> City
+buildCastle city name = case castle city of
+  CastleWithWall _ -> city {castle = CastleWithWall name}
+  _ -> city {castle = Castle name}
+
+buildHouse :: City -> House -> City
+buildHouse city house = city {houses = house : houses city}
+
+numberOfPeopleInHouse :: House -> Int
+numberOfPeopleInHouse house = case people house of
+  One -> 1
+  Two -> 2
+  Three -> 3
+  Four -> 4
+
+buildWalls :: City -> City
+buildWalls city = case castle city of
+  Castle castleName -> if sum (map numberOfPeopleInHouse (houses city)) >= 10 then city {castle = CastleWithWall castleName} else city
+  _ -> city
+
 
 {-
 =🛡= Newtypes
