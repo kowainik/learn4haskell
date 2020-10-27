@@ -575,7 +575,7 @@ isVowel c
     | ((c == 'e') || c == 'E')  = True
     | ((c == 'i') || c == 'I')  = True
     | (c == 'o') || c == 'O'  = True
-    | ((c == 'u') || c == 'U')  = True
+    | (c == 'u') || c == 'U'  = True
     | otherwise = False
 
 {- |
