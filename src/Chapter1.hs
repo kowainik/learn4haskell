@@ -648,7 +648,7 @@ sumLast2 n = (last2 n - last1 n) `div` 10 + last1 n
         last2 :: Int -> Int
         last2 n = abs n `mod` 100
         last1 :: Int -> Int
-        last1 n = (abs n) `mod` 10
+        last1 n = abs n `mod` 10
 
 
 {- |
