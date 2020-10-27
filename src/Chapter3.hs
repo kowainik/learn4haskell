@@ -520,35 +520,30 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
-data Castle = Castle
-    {
-      castleName :: String
-    } deriving (Show)
+data Castle = Castle String
+            | WallCastle String
+            | None
+            deriving (Show)
 
 data ChLib =
   Church |
   Library
+  deriving (Show)
 
 data House =
   One |
   Two |
   Three |
   Four
-
+  deriving (Show)
 
 data City =
-          CityWithCastle
+          City
           {
-            cityCastle :: Castle,
-            cityWall :: Bool,
+            castle :: Castle,
             cityChurchLib :: ChLib,
             cityHouses :: [House]
-          } |
-          CityWithOutCastle
-          {
-            cityChurchLib :: ChLib,
-            cityHouses :: [House]
-          }
+          } deriving (Show)
 
 howManyInHouse :: House -> Int
 howManyInHouse house = case house of One -> 1
@@ -560,21 +555,19 @@ howManyInHouses :: [House] -> Int
 howManyInHouses houses = foldr (+) 0 (map (\x-> (howManyInHouse x)) houses)
 
 buildCastle :: City -> String -> City
-buildCastle (CityWithOutCastle cityChurchLib cityHouses) name =   CityWithCastle (Castle name) False cityChurchLib cityHouses
-buildCastle (CityWithCastle cityCastle cityWall cityChurchLib cityHouses) name = CityWithCastle (Castle name) cityWall cityChurchLib cityHouses
+buildCastle (City (WallCastle a) cityChurchLib cityHouses) name = (City (WallCastle name) cityChurchLib cityHouses)
+buildCastle a name = a { castle = (Castle name)}
+
 
 buildHouse :: City -> House -> City
-buildHouse (CityWithOutCastle cityChurchLib cityHouses) house =   CityWithOutCastle cityChurchLib ( house : cityHouses)
-buildHouse (CityWithCastle cityCastle cityWall cityChurchLib cityHouses) house = CityWithCastle cityCastle cityWall cityChurchLib (house : cityHouses)
+buildHouse city house = city { cityHouses = house : (cityHouses city)}
 
 buildWalls :: City -> City
-buildWalls (CityWithOutCastle cityChurchLib cityHouses) = error "Cannot be built"
-buildWalls (CityWithCastle cityCastle cityWall cityChurchLib cityHouses)
-                | (howManyInHouses cityHouses) >= 10  =  CityWithCastle cityCastle True cityChurchLib cityHouses
-                | otherwise = CityWithCastle cityCastle False cityChurchLib cityHouses
-
-
-
+buildWalls (City (Castle a) cityChurchLib cityHouses)
+           | (howManyInHouses cityHouses) >= 10 = (City (WallCastle a) cityChurchLib cityHouses)
+           | otherwise = error "cannot be built"
+buildWalls (City (WallCastle a) cityChurchLib cityHouses) = error "already built"
+buildWalls (City None _ _) = error "wall needs a castle"
 
 {-
 =🛡= Newtypes
@@ -1124,7 +1117,7 @@ data DayOfWeek = Monday |
                   Friday |
                   Saturday |
                   Sunday
-                  deriving (Eq,Enum,Show)
+                  deriving (Eq,Enum,Show,Bounded)
 
 isWeekend :: DayOfWeek -> Bool
 isWeekend a
@@ -1132,13 +1125,14 @@ isWeekend a
           | otherwise = False
 
 nextDay :: DayOfWeek -> DayOfWeek
-nextDay Sunday = Monday
-nextDay a = succ a
+nextDay a
+        | a == maxBound = minBound
+        | otherwise =   succ a
 
 daysToParty :: DayOfWeek -> Int
 daysToParty Saturday = 7
 daysToParty Sunday = 6
-daysToParty a =  (1 + (fromEnum Friday))
+daysToParty a =  (fromEnum Friday) - (fromEnum a)
 
 {-
 =💣= Task 9*
@@ -1174,6 +1168,42 @@ properties using typeclasses, but they are different data types in the end.
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
+
+data KnighAction = KnightAttack |
+                   DrinkHealth |
+                   CastSpell
+
+data MonsterAction = MonsterAttack |
+                     MonsterRun
+
+
+
+data Knight = Knight
+  {
+    health :: Int,
+    attack :: Int,
+    defense :: Int
+  }
+
+data Monster = Monster
+  {
+    health :: Int,
+    attack :: Int
+  }
+
+class Fighter a where
+  attacked :: a -> Int -> a
+
+instance Fighter Knight where
+  attacked :: Knight -> Int -> Knight
+  attacked knight hlth = knight { health = (health knight) - hlth }
+
+instance Fighter Monster where
+  attacked :: Monster -> Int -> Monster
+  attacked monster hlth = monster { health = (health monster) - hlth }
+
+
+
 
 
 {-
