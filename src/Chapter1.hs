@@ -663,7 +663,7 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
-firstDigit n = if (div n 10) > 9 then (firstDigit (div n 10)) else (div n 10)
+firstDigit n = if (div n 10) > 9 then (firstDigit (div n 10)) else div n 10
 
 
 {-
