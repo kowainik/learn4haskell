@@ -479,6 +479,13 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data MealTypes
+    = Breakfast
+    | TeaAfterMeeting
+    | Tea5Clock
+    | Dinner
+    | NightSnack
+
 {- |
 =⚔️= Task 4
 
@@ -498,6 +505,42 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
+
+data City = City
+  { castle :: Castle
+  , wall :: Wall
+  , building :: Building
+  , house :: [House]
+  }
+
+data Building = Church | Library
+data Castle = Castle String | None
+
+data Wall = Wall Bool
+
+data House = One | Two | Three | Four
+
+countHouse :: House -> Int
+countHouse people = 
+  case people of
+    One   -> 1
+    Two   -> 2
+    Three -> 3
+    Four  -> 4
+
+buildCastle :: Castle -> City -> City
+buildCastle  (Castle name)  city = city { castle = Castle name }
+
+buildHouse :: House -> City -> City
+buildHouse h city = city { house  = h : house city }
+
+buildWalls :: Wall -> City -> City
+buildWalls (Wall True) city = 
+  case castle city of
+    Castle _ -> 
+      if sum (map countHouse (house city)) >= 10 then city { wall = Wall True }
+      else city
+    _ -> city
 
 {-
 =🛡= Newtypes
@@ -580,21 +623,31 @@ introducing extra newtypes.
     implementation of the "hitPlayer" function at all!
 -}
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+newtype Health  = Health Int
+newtype Armor = Armor Int
+newtype Attack = Attack Int
+newtype Dexterity = Dexterity Int
+newtype Strength = Strength Int
+newtype Damage = Damage Int
+newtype Defense = Defense Int
+newtype Hit = Hit Int
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerDamage :: Attack -> Strength -> Damage
+calculatePlayerDamage (Attack attack) (Strength strength) = Damage (attack + strength)
+
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense (Armor armor) (Dexterity dexterity) = Defense (armor * dexterity)
+
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit (Damage damage) (Defense defense) (Health health) = Health (health + defense - damage)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -772,6 +825,13 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
+data Dragon power = Dragon power
+
+data DragonLair power treasure = DragonLair 
+    { dragon :: Dragon power
+    , treasureChest :: Maybe treasure
+    }
+
 {-
 =🛡= Typeclasses
 
@@ -929,6 +989,18 @@ Implement instances of "Append" for the following types:
 class Append a where
     append :: a -> a -> a
 
+data Gold = Gold Int
+
+data List = List [String]
+
+instance Append Gold where
+  append :: Gold -> Gold -> Gold
+  append (Gold x) (Gold y) = Gold (x + y)
+
+instance Append List where
+  append :: List -> List -> List
+  append (List x) (List y) = List (x ++ y)
+
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -989,6 +1061,23 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
+
+data WeekDay = Mon | Tue | Wed | Thu | Fri | Sat | Sun deriving (Enum)
+
+isWeekend :: WeekDay -> Bool
+isWeekend Sat = True
+isWeekend Sun = True
+isWeekend _ = False
+
+nextDay :: WeekDay -> WeekDay
+nextDay Sun = Mon
+nextDay d = succ d
+
+daysToParty :: WeekDay -> Int
+daysToParty day =  iter day 0 
+  where
+    iter Fri x = x
+    iter d x = iter (nextDay d) (x + 1)
 
 {-
 =💣= Task 9*
