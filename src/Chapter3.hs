@@ -528,13 +528,13 @@ type Church = Bool
 type Library = Bool
 data Building = Library | Church
 
-data Castle = Castle 
+data Castle = Castle
     {
       __name__ :: String,
       wall :: Wall
     }
 
-data Houses = Houses 
+data Houses = Houses
     {
       __people__ :: Int
     }
