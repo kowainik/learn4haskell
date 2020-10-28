@@ -654,7 +654,7 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
-firstDigit n 
+firstDigit n
     | div n 10 == 0 = abs n
     | otherwise = firstDigit (abs (div n 10))
 
