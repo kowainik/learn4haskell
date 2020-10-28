@@ -101,6 +101,7 @@ element is number 3, and the last element is number 1. Similarly, you
 can create a list of two booleans: [False, True]. A list without
 elements is just [].
 
+
 You probably noticed that lists could be of any type of
 elements. Often you want to write a function that works with lists of
 any types (but consistent inside one list). This feature is called
@@ -136,43 +137,43 @@ functions in GHCi and insert the corresponding resulting output below:
 
 List of booleans:
 >>> :t [True, False]
-
+[True, False] :: [Bool]
 
 String is a list of characters:
 >>> :t "some string"
-
+"some string" :: [Char]
 
 Empty list:
 >>> :t []
-
+[] :: [a]
 
 Append two lists:
 >>> :t (++)
-
+(++) :: [a] -> [a] -> [a]
 
 Prepend an element at the beginning of a list:
 >>> :t (:)
-
+(:) :: a -> [a] -> [a]
 
 Reverse a list:
 >>> :t reverse
-
+reverse :: [a] -> [a]
 
 Take first N elements of a list:
 >>> :t take
-
+take :: Int -> [a] -> [a]
 
 Create list from N same elements:
 >>> :t replicate
-
+replicate :: Int -> a -> [a]
 
 Split a string by line breaks:
 >>> :t lines
-
+lines :: String -> [String]
 
 Join a list of strings with line breaks:
 >>> :t unlines
-
+unlines :: [String] -> String
 
 -}
 
@@ -186,31 +187,31 @@ Evaluate the following expressions in GHCi and insert the answers. Try
 to guess first, what you will see.
 
 >>> [10, 2] ++ [3, 1, 5]
-
+[10,2,3,1,5]
 >>> [] ++ [1, 4]  -- [] is an empty list
-
+[1,4]
 >>> 3 : [1, 2]
-
+[3,1,2]
 >>> 4 : 2 : [5, 10]  -- prepend multiple elements
-
+[4,2,5,10]
 >>> [1 .. 10]  -- list ranges
-
+[1,2,3,4,5,6,7,8,9,10]
 >>> [10 .. 1]
-
+[]
 >>> [10, 9 .. 1]  -- backwards list with explicit step
-
+[10,9,8,7,6,5,4,3,2,1]
 >>> length [4, 10, 5]  -- list length
-
+3
 >>> replicate 5 True
-
+[True,True,True,True,True]
 >>> take 5 "Hello, World!"
-
+"Hello"
 >>> drop 5 "Hello, World!"
-
+", World!"
 >>> zip "abc" [1, 2, 3]  -- convert two lists to a single list of pairs
-
+[('a',1),('b',2),('c',3)]
 >>> words "Hello   Haskell     World!"  -- split the string into the list of words
-
+["Hello","Haskell","World!"]
 
 
 👩‍🔬 Haskell has a lot of syntax sugar. In the case with lists, any
@@ -336,11 +337,10 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList = error "subList: Not implemented!"
+subList n1 n2 x = drop n1 (take (n2+1) x)
 
 {- |
-=⚔️= Task 4
-
+=⚔️= Task  4
 Implement a function that returns only the first half of a given list.
 
 >>> firstHalf [3, 4, 1, 2]
@@ -348,8 +348,8 @@ Implement a function that returns only the first half of a given list.
 >>> firstHalf "bca"
 "b"
 -}
--- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
+firstHalf :: [a] -> [a]
+firstHalf l = take ((length l) `div` 2) l
 
 
 {- |
@@ -481,11 +481,10 @@ When matching on the ":" pattern, the first element of the list goes
 to the left side of ':' and the tail of the list goes to the right
 side. You can have even nested patterns (as in the last example
 above). In other words, when writing a pattern like "(x:y:xs)", it is
-the same as writing "(x:(y:xs))".
-
-♫ NOTE: Often, pattern matching can be replaced with conditional
-  checks (if-then-else, guards) and vice versa. In some cases
-  pattern-matching can be more efficient; in other cases, it can produce
+the same as writing "(x:(y:xx".
+drop n1 (
+n1 nn2 x)3 [x] ♫ take nNOTE: Often, pattern matching can be replaced with conditional
+  checks [True,True,True,True,True](if-then-else, guard  pattern-matching can be more efficient; in other case"", World!"[('a',1),('b',2),('c',3)]sHello, it can ["Hello","Haskell","World!"]produce
   cleaner code or even more maintainable code due to pattern coverage
   checker from the Haskell compiler.
 -}
@@ -501,7 +500,9 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
-isThird42 = error "isThird42: Not implemented!"
+isThird42 :: [Int] -> Bool
+isThird42 (_:_:42:_) = True
+isThird42 _ = False
 
 
 {- |
@@ -552,7 +553,6 @@ divToZero n = go 0 n
 One of the most useful capabilities of pattern matching on lists is
 the ability to implement recursive functions with them as well!
 
-♫ NOTE: The canonical naming scheme for such patterns is `(x:xs)`
   where x is the first element of the list, and xs — rest of the list
   (which is a list as well that even could be empty).
 
@@ -606,7 +606,8 @@ Implement a function that duplicates each element of the list
 
 -}
 duplicate :: [a] -> [a]
-duplicate = error "duplicate: Not implemented!"
+duplicate [] = []
+duplicate (x:xs) = x : x : duplicate xs
 
 
 {- |
@@ -621,14 +622,16 @@ Write a function that takes elements of a list only on even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
-takeEven = error "takeEven: Not implemented!"
+takeEven :: [a] -> [a]
+takeEven [] = []
+takeEven (_:x:xs) = x : takeEven xs
 
 {- |
 =🛡= Higher-order functions
 
 Some functions can take other functions as arguments. Such functions
-are called __higher-order functions__ (HOFs). Check the types of some
-common HOF list functions:
+are called __higher-order functions__ (HOFs). Check the types
+
 
 >>> :t filter
 filter :: (a -> Bool) -> [a] -> [a]
@@ -675,6 +678,7 @@ foo a b = a + b
 @
 
 What's even cooler is the ability to __apply functions partially__
+This means that you can provide only some arguments to a function and
 This means that you can provide only some arguments to a function and
 treat the result as a function itself! You already know the 'div'
 function: it takes two numbers and returns the result of the integral
@@ -728,7 +732,8 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = error "smartReplicate: Not implemented!"
+smartReplicate [] = []
+smartReplicate (l:ls) = replicate l l ++ smartReplicate ls
 
 {- |
 =⚔️= Task 9
@@ -741,7 +746,8 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains = error "contains: Not implemented!"
+contains :: Int -> [[Int]] -> [[Int]]
+contains n l = filter (elem n) l
 
 
 {- |
@@ -769,25 +775,23 @@ nextInt :: Int -> Int
 nextInt = add 1
 @
 
-♫ NOTE: See that the initial type of the function is not changed and
-  it works absolutely the same. We just can skip the last argument and
-  amend its usage in the function body.
--}
-
-{- |
-=⚔️= Task 10
+♫ NOTE: See that the initial type of the function is not changxanddrop n1 (
+n1 nn2 x)3 [x]   take nit works absolutely the same. We just can skip the last argument and amend i
+=⚔️= Taskk10
 
 Let's now try to eta-reduce some of the functions and ensure that we
 mastered the skill of eta-reducing.
 -}
 divideTenBy :: Int -> Int
-divideTenBy x = div 10 x
+divideTenBy = div 10
 
 -- TODO: type ;)
-listElementsLessThan x l = filter (< x) l
+listElementsLessThan :: Int -> [Int] -> [Int]
+listElementsLessThan x = filter (< x)
 
 -- Can you eta-reduce this one???
-pairMul xs ys = zipWith (*) xs ys
+pairMul :: [Int] -> [Int] -> [Int]
+pairMul = zipWith (*)
 
 {- |
 =🛡= Lazy evaluation
@@ -803,11 +807,6 @@ For instance, the Haskell standard library has the 'repeat' function
 that returns an infinite list created from a given element. Of course,
 we can't print an infinite list to our terminal; it will take an
 infinite amount of time! But we can work with parts of it due to lazy
-evaluation:
-
->>> take 5 (repeat 0)
-[0,0,0,0,0]
-
 Another useful construction is an infinite list of all numbers!
 
 >>> take 4 [0 ..]
@@ -842,7 +841,8 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate = error "rotate: Not implemented!"
+rotate :: Int -> [Int] -> [Int] 
+rotate n l= drop n (take ((length l)-n) (cycle l))
 
 {- |
 =💣= Task 12*
@@ -858,7 +858,9 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind = error "rewind: Not Implemented!"
+rewind :: [Int] ->[Int] 
+rewind [] = []
+rewind (l:ls) = rewind ls ++ (l : [])
 
 
 {-
