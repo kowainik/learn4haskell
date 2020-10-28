@@ -337,7 +337,7 @@ ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
 subList left right list
-    | left >= 0 && right >= 0 =
+    | left >= 0 && right >= left =
         let
             sub = drop left list
             final = take (right - left + 1) sub
@@ -637,7 +637,7 @@ Write a function that takes elements of a list only on even positions.
 takeEven :: [a] -> [a]
 takeEven [] = []
 takeEven (x1:_:xs) = x1 : takeEven xs
-takeEven (x1:xs) = x1 : takeEven xs
+takeEven [x] = [x]
 
 {- |
 =🛡= Higher-order functions
@@ -861,7 +861,7 @@ list.
 rotate :: Int -> [a] -> [a]
 rotate n l
     | n < 0 = []
-    | otherwise = take (length l) (drop n (cycle l))
+    | otherwise = take (length l) (drop (mod n (length l)) (cycle l))
 
 {- |
 =💣= Task 12*
@@ -878,8 +878,12 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind [] = []
-rewind (x:xs) = rewind xs ++ [x]
+rewind x = go [] x
+  where
+    go :: [a] -> [a] -> [a]
+    go acc [] = acc
+    go acc (x1:xs) = go (x1:acc) xs
+
 
 
 {-
