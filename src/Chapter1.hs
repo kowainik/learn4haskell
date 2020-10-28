@@ -301,31 +301,43 @@ expressions in GHCi
   functions and operators first. Remember this from the previous task? ;)
 
 >>> 1 + 2
-INSERT THE RESULT INSTEAD OF THE TEXT
+<INSERT THE RESULT INSTEAD OF THE TEXT>
+
 >>> 10 - 15
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> 10 - (-5)  -- negative constants require ()
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> (3 + 5) < 10
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> True && False
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> 10 < 20 || 20 < 5
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> 2 ^ 10  -- power
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> not False
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> div 20 3  -- integral division
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> mod 20 3  -- integral division remainder
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> max 4 10
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> min 5 (max 1 2)
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> max (min 1 10) (min 5 7)
-
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 Because Haskell is a __statically-typed__ language, you see an error each time
 you try to mix values of different types in situations where you are not
