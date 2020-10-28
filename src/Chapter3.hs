@@ -344,8 +344,8 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
-data Book = Book 
-    { 
+data Book = Book
+    {
       name :: String,
       description :: String,
       author :: String,
@@ -384,14 +384,14 @@ after the fight. The battle has the following possible outcomes:
 
 -}
 
-data Knight = Knight 
+data Knight = Knight
     {
       khealth :: Int,
       kattack :: Int,
       kgold :: Int
     }
 
-data Monster = Monster 
+data Monster = Monster
     {
       mhealth :: Int,
       mattack :: Int,
@@ -399,7 +399,7 @@ data Monster = Monster
     }
 
 fight :: Knight -> Monster -> Int
-fight k m 
+fight k m
   | knightHit <= 0 = kgold k + mgold m
   | monsterHit <= 0 = -1
   | otherwise = fight k { khealth = monsterHit } m { mhealth = knightHit }
@@ -493,7 +493,7 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
-data Meal = 
+data Meal =
   Breakfast Bool |
   Brunch Bool |
   Elevenses Bool |
@@ -527,39 +527,42 @@ type Wall = Bool
 type Church = Bool
 type Library = Bool
 data Building = Library | Church
-  
-data Castle = Castle { 
-  __name__ :: String,
-  wall :: Wall
-}
 
-data Houses = Houses {
-  __people__ :: Int
-}
+data Castle = Castle 
+    {
+      __name__ :: String,
+      wall :: Wall
+    }
 
-data MagicalCity = MagicalCity{
-  castle :: Castle,
-  building :: Building,
-  houses :: [Houses]
-}
+data Houses = Houses 
+    {
+      __people__ :: Int
+    }
+
+data MagicalCity = MagicalCity
+    {
+      castle :: Castle,
+      building :: Building,
+      houses :: [Houses]
+    }
 
 
 buildCastle :: String -> MagicalCity -> MagicalCity
 buildCastle newname city = city { castle = newCastle }
-  where 
+  where
     ccity = castle city
     newCastle = ccity { __name__ = newname }
 
 
 buildHouse :: Int -> MagicalCity -> MagicalCity
 buildHouse np city = city { houses = newHouse:hcity }
-  where 
+  where
     hcity = houses city
     newHouse = Houses { __people__ = np }
 
 
 buildWalls :: MagicalCity -> MagicalCity
-buildWalls city 
+buildWalls city
   | length castleName > 0 && totalPeoples >= 10 = city { castle = ccity { wall = True } }
   | otherwise = city
   where
@@ -856,10 +859,10 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
-data Dragon a = Dragon 
+data Dragon a = Dragon
     {
       magic_power :: a
-    } 
+    }
 
 data Lair a = Lair
     {
@@ -1034,7 +1037,7 @@ instance Append [a] where
     append :: [a] -> [a] -> [a]
     append x y = x ++ y
 
-instance (Append a) => Append (Maybe a) where 
+instance (Append a) => Append (Maybe a) where
     append :: Maybe a -> Maybe a -> Maybe a
     append (Just x) (Just y) = Just (append x y)
     append (Just x) Nothing = Just x
@@ -1121,7 +1124,7 @@ nextDay Sunday = Monday
 nextDay w = toEnum (fromEnum w + 1)
 
 daysToParty :: Week -> Int
-daysToParty d = (fromEnum Friday - fromEnum d) `mod` 7 
+daysToParty d = (fromEnum Friday - fromEnum d) `mod` 7
 
 {-
 =💣= Task 9*
@@ -1158,13 +1161,13 @@ Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
 
-data FKActions = 
+data FKActions =
     FKAttack
   | FKHealing
   | FKDefense
   deriving (Eq,Ord,Enum,Show)
 
-data FMActions = 
+data FMActions =
     FMAttack
   | FMHealing
   | FMDefense
@@ -1178,7 +1181,6 @@ data FKnight = FKnight
       fkActions :: FKActions
     }
 
-
 data FMonster = FMonster
     {
       fmAttack :: Int,
@@ -1186,7 +1188,7 @@ data FMonster = FMonster
       fmActions :: FMActions
     }
 
-class Fighter a where 
+class Fighter a where
   attacked :: Int -> a -> a
 
 instance Fighter FKnight where
