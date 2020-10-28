@@ -636,22 +636,34 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+newtype PlayerHealth = PlayerHealth Int
+newtype PlayerArmor = PlayerArmor Int
+newtype PlayerAttack = PlayerAttack Int
+newtype PlayerDexterity = PlayerDexterity Int
+newtype PlayerStrength = PlayerStrength Int
+
+newtype PlayerDamage = PlayerDamage Int
+newtype PlayerDefense = PlayerDefense Int
+
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: PlayerHealth
+    , playerArmor     :: PlayerArmor
+    , playerAttack    :: PlayerAttack
+    , playerDexterity :: PlayerDexterity
+    , playerStrength  :: PlayerStrength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+calculatePlayerDamage :: PlayerAttack -> PlayerStrength -> PlayerDamage
+calculatePlayerDamage (PlayerAttack attack) (PlayerStrength strength) =
+    PlayerDamage(attack + strength)
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDefense :: PlayerArmor -> PlayerDexterity -> PlayerDefense
+calculatePlayerDefense (PlayerArmor armor) (PlayerDexterity dexterity) = 
+    PlayerDefense(armor * dexterity)
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerHit :: PlayerDamage -> PlayerDefense -> PlayerHealth -> PlayerHealth
+calculatePlayerHit (PlayerDamage damage) (PlayerDefense defense) (PlayerHealth health) = 
+    PlayerHealth(health + defense - damage)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -828,6 +840,19 @@ parametrise data types in places where values can be of any general type.
 🕯 HINT: 'Maybe' that some standard types we mentioned above are useful for
   maybe-treasure ;)
 -}
+data DragonLair dragonMagic treasure = DragonLair
+    { dragon :: Dragon dragonMagic
+    , treasure :: Maybe (TreasureChest treasure)
+    }
+
+data TreasureChest c = TreasureChest
+    { treasureGold :: Int
+    , treasureLoot :: c
+    }
+
+data Dragon mp = Dragon
+    { magicPower :: mp
+    }
 
 {-
 =🛡= Typeclasses
@@ -986,6 +1011,21 @@ Implement instances of "Append" for the following types:
 class Append a where
     append :: a -> a -> a
 
+newtype Gold = Gold Int
+
+instance Append Gold where
+    append :: Gold -> Gold -> Gold
+    append (Gold g1) (Gold g2) = Gold(g1 + g2)
+
+instance Append [a] where
+    append :: [a] -> [a] -> [a]
+    append = (++)
+
+instance Append a => Append (Maybe a) where
+    append :: Maybe a -> Maybe a -> Maybe a
+    append Nothing x = x
+    append x Nothing = x
+    append (Just x) (Just y) = Just(append x y)
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -1047,6 +1087,32 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
+data Days
+    = Mo
+    | Tu
+    | We
+    | Th
+    | Fr
+    | Sa
+    | Su
+    deriving (Show, Eq, Enum, Bounded)
+
+isWeekend :: Days -> Bool
+isWeekend x = case x of
+    Su -> True
+    Sa -> True
+    _ -> False
+
+nextDay :: Days -> Days
+nextDay x
+  | x == maxBound = minBound
+  | otherwise = succ x
+
+daysToParty :: Days -> Int
+daysToParty d = case d of
+    Fr -> 0
+    _  -> 1 + daysToParty (succ d)
+
 {-
 =💣= Task 9*
 
@@ -1082,6 +1148,37 @@ Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
 
+class Fighter x where
+    attackEm :: x -> y -> x
+    runAway :: x -> x
+
+data FighterStats = FighterStats
+    { attackPower :: Int
+    , health :: Int
+    }
+
+newtype FStats = FStats FighterStats
+
+data Knight2 = Knight2
+    { knightFStats :: FStats
+    , defence :: Int
+    }
+
+data Monster2 = Monster2
+    { monsterFStats :: FStats
+    }
+
+instance Fighter Knight2 where
+    attackEm :: Knight2 -> Monster2 -> Knight2
+    attackEm (Knight2 x) (Monster2 y) = (Knight2 x) --TODO
+    runAway :: Knight2 -> Knight2
+    runAway (Knight2 x) = (Knight2 x) --TODO
+
+instance Fighter Monster2 where
+    attackEm :: Monster2 -> Knight2 -> Monster2
+    attackEm (Knight2 x) (Monster2 y) = (Monster2 x) --TODO
+    runAway :: Monster2 -> Monster2
+    runAway (Monster2 x) = (Monster2 x) --TODO
 
 {-
 You did it! Now it is time to open pull request with your changes
