@@ -735,7 +735,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = concatMap (\x -> replicate x x) l
+smartReplicate = concatMap (\ x -> replicate x x)
 
 {- |
 =⚔️= Task 9
@@ -749,7 +749,7 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: Int -> [[Int]] -> [[Int]]
-contains nb l = filter ((nb `elem`)) l
+contains nb = filter (nb `elem`)
 
 {- |
 =🛡= Eta-reduction
@@ -875,7 +875,7 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind l = foldl (flip (:)) [] l
+rewind = foldl (flip (:)) []
 
 {-
 You did it! Now it is time to open pull request with your changes
