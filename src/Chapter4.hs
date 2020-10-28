@@ -636,6 +636,15 @@ Implement the 'Monad' instance for our lists.
   maybe a few) to flatten lists of lists to a single list.
 -}
 
+(+|+) :: List a -> List a -> List a
+(+|+) Empty x = x
+(+|+) (Cons x xs) y = Cons x (xs +|+ y)
+
+instance Monad (List) where
+    (>>=) :: List a -> (a -> List b) -> List b
+    (>>=) Empty _ = Empty
+    (>>=) (Cons x Empty) f = f x
+    (>>=) (Cons x xs) f = (f x) +|+ (xs >>= f)
 
 {- |
 =💣= Task 8*: Before the Final Boss
@@ -654,7 +663,7 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM a b = a >>= (\a' -> b >>= (\b' -> pure (a' && b')))
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
@@ -698,6 +707,20 @@ Specifically,
  ❃ Implement the function to convert Tree to list
 -}
 
+data Tree a = End | Branch a (Tree a) (Tree a)
+
+instance Functor (Tree) where
+    fmap :: (a -> b) -> Tree a -> Tree b
+    fmap _ End = End
+    fmap f (Branch v l r) = Branch (f v) (fmap f l) (fmap f r)
+
+reverseTree :: Tree a -> Tree a
+reverseTree End = End
+reverseTree (Branch v l r) = Branch v r l
+
+treeToList :: Tree a -> [a]
+treeToList End = []
+treeToList (Branch v l r) = (treeToList l) ++ [v] ++ (treeToList r)
 
 {-
 You did it! Now it is time to open pull request with your changes
