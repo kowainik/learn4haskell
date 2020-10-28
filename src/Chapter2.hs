@@ -847,7 +847,8 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate = error "rotate: Not implemented!"
+rotate :: Int -> [Int] -> [Int] 
+rotate movementsToLeft numbers = take (length numbers) (drop movementsToLeft (cycle numbers))
 
 {- |
 =💣= Task 12*
@@ -858,13 +859,19 @@ and reverses it.
 
 >>> rewind [1 .. 5]
 [5,4,3,2,1]
-
+1,2,3,4,5, 1,2,3,4,5
+0 1 2 3 4  5 6 7 8 9 
+5 12345 12345
+rotateOnce  = 51234
+xs: 1234
+4123
 ♫ NOTE: The Haskell standard library already provides the "reverse"
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind = error "rewind: Not Implemented!"
-
+rewind :: [Int] -> [Int]
+rewind (x:xs) = rewind xs ++ [x]
+rewind _ = []
 
 {-
 You did it! Now it is time to open pull request with your changes
