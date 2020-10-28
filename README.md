@@ -12,7 +12,7 @@ aleady and don't try to go out of those boundaries.
 But why not use this time to learn something challenging, something fresh,
 something that you never had time for?
 
-You can get the benefits of Hacktoberfest while learning something new 
+You can get the benefits of Hacktoberfest while learning something new
 fascinating concepts – Functional Programming with Haskell.
 
 And we're here to help!
