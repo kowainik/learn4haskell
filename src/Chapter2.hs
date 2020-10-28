@@ -858,7 +858,7 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind :: [Int] ->[Int] 
+rewind :: [Int] ->[Int]
 rewind [] = []
 rewind (l:ls) = rewind ls ++ (l : [])
 
