@@ -534,7 +534,7 @@ data Castle = Castle
       wall :: Wall
     }
 
-data Houses = Houses
+newtype Houses = Houses
     {
       __people__ :: Int
     }
@@ -563,12 +563,12 @@ buildHouse np city = city { houses = newHouse:hcity }
 
 buildWalls :: MagicalCity -> MagicalCity
 buildWalls city
-  | length castleName > 0 && totalPeoples >= 10 = city { castle = ccity { wall = True } }
+  | not (null castleName) && totalPeoples >= 10 = city { castle = ccity { wall = True } }
   | otherwise = city
   where
     ccity = castle city
     castleName = __name__ ccity
-    totalPeoples = sum (map ( __people__ ) (houses city))
+    totalPeoples = sum (map __people__ (houses city))
 
 {-
 =🛡= Newtypes
@@ -681,7 +681,7 @@ calculatePlayerDefense :: Int -> Int -> Defense
 calculatePlayerDefense armor dexterity = Defense (armor * dexterity)
 
 calculatePlayerHit :: Damage -> Defense -> HitHealth -> HitHealth
-calculatePlayerHit damage defense hithealth = HitHealth ((hh hithealth) + (def defense) - (dmg damage))
+calculatePlayerHit damage defense hithealth = HitHealth (hh hithealth + def defense - dmg damage)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -859,7 +859,7 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
-data Dragon a = Dragon
+newtype Dragon a = Dragon
     {
       magic_power :: a
     }
