@@ -498,7 +498,7 @@ Implement the 'Applicative' instance for our 'List' type.
 
 instance Applicative List where
     pure :: a -> List a
-    pure a = (Cons a) Empty
+    pure a = Cons a Empty
 
     (<*>) :: List (a -> b) -> List a -> List b
     Empty <*> _ = Empty
