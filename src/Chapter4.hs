@@ -137,7 +137,7 @@ Trinity :: * -> * -> * -> *
 
 >>> data IntBox f = MkIntBox (f Int)
 >>> :k IntBox
-IntBox :: * -> *
+IntBox :: (* -> *) -> *
 
 -}
 
