@@ -858,13 +858,6 @@ To defeat the boss, implement the reversing function that takes a list
 and reverses it.
 
 >>> rewind [1 .. 5]
-[5,4,3,2,1]
-1,2,3,4,5, 1,2,3,4,5
-0 1 2 3 4  5 6 7 8 9 
-5 12345 12345
-rotateOnce  = 51234
-xs: 1234
-4123
 ♫ NOTE: The Haskell standard library already provides the "reverse"
   function, but in this task, you need to implement it manually. No
   cheating!
