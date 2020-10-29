@@ -428,7 +428,7 @@ task is to specify the type of this function.
 49
 -}
 
-squareSum :: Int -> Int -> Int
+squareSum :: Num a => a -> a -> a
 squareSum x y = (x + y) * (x + y)
 
 
