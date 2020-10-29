@@ -50,6 +50,7 @@ signatures in places where you can't by default. We believe it's helpful to
 provide more top-level type signatures, especially when learning Haskell.
 -}
 {-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 module Chapter3 where
 
@@ -1148,37 +1149,50 @@ Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
 
-class Fighter x where
-    attackEm :: x -> y -> x
-    runAway :: x -> x
+data BattleResult = Victory | Defeat
 
-data FighterStats = FighterStats
-    { attackPower :: Int
-    , health :: Int
-    }
-
-newtype FStats = FStats FighterStats
+class Fighter x y where
+    attackEm :: x -> y -> y
+    runAway :: x -> y -> BattleResult
 
 data Knight2 = Knight2
-    { knightFStats :: FStats
-    , defence :: Int
+    { k2Defence :: Int
+    , k2AttackPower :: Int
+    , k2Health :: Int
     }
 
 data Monster2 = Monster2
-    { monsterFStats :: FStats
+    { m2AttackPower :: Int
+    , m2Health :: Int
     }
 
-instance Fighter Knight2 where
-    attackEm :: Knight2 -> Monster2 -> Knight2
-    attackEm (Knight2 x) (Monster2 y) = (Knight2 x) --TODO
-    runAway :: Knight2 -> Knight2
-    runAway (Knight2 x) = (Knight2 x) --TODO
+instance Fighter Knight2 Monster2 where
+    attackEm :: Knight2 -> Monster2 -> Monster2
+    attackEm (Knight2 kd ka kh) (Monster2 ma mh) = (Monster2 (ma) (mh - ka))
+    runAway :: Knight2 -> Monster2 -> BattleResult
+    runAway (Knight2 kd ka kh) (Monster2 ma mh) = Defeat
 
-instance Fighter Monster2 where
-    attackEm :: Monster2 -> Knight2 -> Monster2
-    attackEm (Knight2 x) (Monster2 y) = (Monster2 x) --TODO
-    runAway :: Monster2 -> Monster2
-    runAway (Monster2 x) = (Monster2 x) --TODO
+instance Fighter Monster2 Knight2 where
+    attackEm :: Monster2 -> Knight2 -> Knight2
+    attackEm (Monster2 ma mh) (Knight2 kd ka kh) = (Knight2 kd ka (kd + kh - ma))
+    runAway :: Monster2 -> Knight2 -> BattleResult
+    runAway (Monster2 ma mh) (Knight2 kd ka kh) = Victory
+
+-- Idk how to do this man
+
+-- roundOfFight :: BattleAction -> Monster2 -> Knight2 -> BattleResult
+-- roundOfFight action monster knight = case action of
+--     MonsterRun -> Victory
+--     MonsterAttack ->
+--         let
+--         in
+--     KnightAttack ->
+--         let
+--         in
+--     KnightPotion ->
+--         let
+--         in
+
 
 {-
 You did it! Now it is time to open pull request with your changes
