@@ -293,7 +293,7 @@ values and apply them to the type level?
 -}
 instance Functor (Secret e) where
     fmap :: (a -> b) -> Secret e a -> Secret e b
-    fmap _ (Trap e) = Trap (e)
+    fmap _ (Trap e) = Trap e
     fmap f (Reward e) = Reward (f e)
 
 {- |
@@ -634,7 +634,7 @@ Implement the 'Monad' instance for our lists.
 instance Monad List where
     (>>=) :: List a -> (a -> List b) -> List b
     Empty >>= _ = Empty
-    (Cons x xs) >>= f = apend (f x) (xs >>= f)
+    (Cons x xs) >>= f = append (f x) (xs >>= f)
 
 {- |
 =💣= Task 8*: Before the Final Boss
@@ -653,7 +653,7 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM m1 m2 = m1 >>= (check m2)
+andM m1 m2 = m1 >>= check m2
   where
     check val x
       | x = val
@@ -718,7 +718,7 @@ reverseTree (Node n nl nr) = Node n (reverseTree nr) (reverseTree nl)
 
 treeToList :: BTree a -> [a]
 treeToList Null = []
-treeToList (Node n nl nr) = n : (treeToList nl) ++ (treeToList nr)
+treeToList (Node n nl nr) = n : treeToList nl ++ treeToList nr
 
 {-
 You did it! Now it is time to open pull request with your changes
