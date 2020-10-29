@@ -204,10 +204,10 @@ arthur = MkKnight "Arthur" 100
 A constructor is just a function from fields to the type! You can verify this in GHCi:
 
 ghci> :t MkKnight
-MkNight :: String -> Int -> Knight
+MkKnight :: String -> Int -> Knight
 
 As in a regular function, you need to provide a 'String' and an 'Int' to the
-'MkNight' constructor in order to get the full-fledged 'Knight'.
+'MkKnight' constructor in order to get the full-fledged 'Knight'.
 
 Also, you can write a function that takes a Knight and returns its name.
 It is convenient to use pattern matching for that:
