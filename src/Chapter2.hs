@@ -880,7 +880,7 @@ and reverses it.
 -}
 rewind :: [Int] -> [Int]
 rewind [] = []
-rewind (x:xs) = (rewind xs) ++ [x]
+rewind (x:xs) = rewind xs ++ [x]
 
 {-
 You did it! Now it is time to open pull request with your changes
