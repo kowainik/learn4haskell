@@ -621,9 +621,11 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
-firstDigit n
-  | div n 10 == 0 = n
-  | otherwise = firstDigit (div n 10)
+firstDigit n = go (divMod (abs n) 10)
+  where
+    go :: (Int, Int) -> Int
+    go (0, lastD) = lastD
+    go (rest, _) = go (divMod rest 10)
 
 
 {-
