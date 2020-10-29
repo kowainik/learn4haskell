@@ -861,7 +861,7 @@ list.
 -}
 rotate :: Int -> [Int] -> [Int]
 rotate a x
-    | length x == 0 = []
+    | null x = []
     | otherwise = drop a (take (a + length x) (cycle x))
 
 {- |
