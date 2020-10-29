@@ -883,6 +883,6 @@ rewind [] = []
 rewind (x:xs) = (rewind xs) ++ [x]
 
 {-
-You did it! Now it is time to open pull request with your changes	
+You did it! Now it is time to open pull request with your changes
 and summon @vrom911 and @chshersh for the review!
 -}
