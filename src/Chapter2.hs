@@ -665,8 +665,10 @@ the same way as any other values and expressions:
 The ability to create __lambdas__ (or anonymous functions) nicely
 complements the concept of HOF. For example, we can easily add
 number 3 to each element of the list by introducing a lambda function:
+
 >>> map (\x -> x + 3) [0..5]
 [3,4,5,6,7,8]
+
 The syntax of the lambda functions is somewhat similar to normal ones,
 except for you don't need to think about its name, which is
 awesome. To establish the start of the lambda function, you should
@@ -674,12 +676,15 @@ write "\" which is a bit similar to the lambda symbol — λ. Then you
 specify space-separated arguments. Instead of the "=" in the ordinary
 function body, you should write "->" and then you can use these
 arguments and all variables in scope inside the lambda-body.
+
 These are equal:
+
 @
 foo a b = a + b
 --and
 \a b -> a + b
 @
+
 What's even cooler is the ability to __apply functions partially__
 This means that you can provide only some arguments to a function and
 treat the result as a function itself! You already know the 'div'
@@ -878,6 +883,6 @@ rewind [] = []
 rewind (x:xs) = (rewind xs) ++ [x]
 
 {-
-You did it! Now it is time to the open pull request with your changes
+You did it! Now it is time to open pull request with your changes	
 and summon @vrom911 and @chshersh for the review!
 -}
