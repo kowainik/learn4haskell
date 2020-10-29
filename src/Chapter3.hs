@@ -395,10 +395,10 @@ data Knight = Knight
     } deriving (Show)
 
 attack :: Monster -> Knight -> Int
-attack m k = 
-    let monLive = if (mHealth m - kAttack k) > 0 then True else False 
-        kniLive = if (kHealth k - mAttack m) > 0 then True else False
-     in case (monLive, kniLive) of 
+attack m k =
+    let monLive = if (mHealth m - kAttack k) > 0 then True else False
+        kniLive = ((kHealth k - mAttack m) > 0)
+     in case (monLive, kniLive) of
           (True, True) -> kGold k
           (False, True) -> kGold k + mGold m
           (_, False) -> -1
@@ -659,11 +659,11 @@ calculatePlayerDamage (PlayerAttack attack) (PlayerStrength strength) =
     PlayerDamage(attack + strength)
 
 calculatePlayerDefense :: PlayerArmor -> PlayerDexterity -> PlayerDefense
-calculatePlayerDefense (PlayerArmor armor) (PlayerDexterity dexterity) = 
+calculatePlayerDefense (PlayerArmor armor) (PlayerDexterity dexterity) =
     PlayerDefense(armor * dexterity)
 
 calculatePlayerHit :: PlayerDamage -> PlayerDefense -> PlayerHealth -> PlayerHealth
-calculatePlayerHit (PlayerDamage damage) (PlayerDefense defense) (PlayerHealth health) = 
+calculatePlayerHit (PlayerDamage damage) (PlayerDefense defense) (PlayerHealth health) =
     PlayerHealth(health + defense - damage)
 
 -- The second player hits first player and the new first player is returned
@@ -1168,13 +1168,13 @@ data Monster2 = Monster2
 
 instance Fighter Knight2 Monster2 where
     attackEm :: Knight2 -> Monster2 -> Monster2
-    attackEm (Knight2 kd ka kh) (Monster2 ma mh) = (Monster2 (ma) (mh - ka))
+    attackEm (Knight2 kd ka kh) (Monster2 ma mh) = Monster2 (ma) (mh - ka)
     runAway :: Knight2 -> Monster2 -> BattleResult
     runAway (Knight2 kd ka kh) (Monster2 ma mh) = Defeat
 
 instance Fighter Monster2 Knight2 where
     attackEm :: Monster2 -> Knight2 -> Knight2
-    attackEm (Monster2 ma mh) (Knight2 kd ka kh) = (Knight2 kd ka (kd + kh - ma))
+    attackEm (Monster2 ma mh) (Knight2 kd ka kh) = Knight2 kd ka (kd + kh - ma)
     runAway :: Monster2 -> Knight2 -> BattleResult
     runAway (Monster2 ma mh) (Knight2 kd ka kh) = Victory
 
