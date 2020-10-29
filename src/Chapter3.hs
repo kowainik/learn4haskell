@@ -807,7 +807,7 @@ And that 'getArchEnemy' method could be used with a lot of data types: Bool,
 Double,… name them all! Let’s have our first instances to show how it works:
 
 The syntax is simple and consistent with the typeclass declaration, but instead
-of the "class: keyword you need to have the "instance" keyword. Of course,
+of the "class" keyword you need to have the "instance" keyword. Of course,
 instead of the type parameter, you have to specify the concrete type, for which
 you are implementing the instance. And all the necessary methods should have its
 implementation for the particular data type.
@@ -835,7 +835,7 @@ instance ArchEnemy Double where
 
 And then you can write polymorphic functions and not worry about which specific
 type is underhood until it has the instance of the desired typeclass. For that
-we are using __constrains__ in Haskell. It is the identification of affiliation
+we are using __constraints__ in Haskell. It is the identification of affiliation
 to the typeclass. The constraints should go after the "::" sign in the function
 type declaration. You can specify one or many constraints. If more than one they
 should be in parenthesis and comma-separated. The end of constraints is
@@ -1008,7 +1008,7 @@ contestants, and write a function that decides the outcome of a fight!
 
 
 {-
-You did it! Now it is time to the open pull request with your changes
+You did it! Now it is time to open pull request with your changes
 and summon @vrom911 and @chshersh for the review!
 -}
 

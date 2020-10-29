@@ -259,7 +259,7 @@ values of variables you defined before.
 
 Let's talk a bit about list implementation details. Lists in Haskell
 are implemented as __linked lists__ (or cons-lists). And because
-everything is Haskell is immutable, adding elements at the beginning
+everything in Haskell is immutable, adding elements at the beginning
 of the lists is cheap. Haskell doesn't need to allocate new memory and
 copy the whole list there; it can just create a new list from a new
 element and a pointer to an already existing list. In other words,
@@ -399,13 +399,14 @@ always matches (the same as a variable), but we don't use its value.
 
 👩‍🔬 Unlike 'switch' and 'case' in other languages, that try to go
   through each switch and perform all actions in there until it reaches
-  the breakpoint, 'case' in Haskell always returns only a single
-  expression for a single branch. You can think of this process as
-  trying to match all patterns from the first one to the last one and
-  returning the expression on the right side of "=" only for the pattern
-  that matches first. This is a helpful thing to keep in mind,
-  especially when you have overlapping patterns. Also note that, if no
-  pattern matches the value, the function fails in runtime.
+  the breakpoint, pattern matching on function parameters in Haskell
+  always returns only a single expression for a single branch. You can
+  think of this process as trying to match all patterns from the first
+  one to the last one and returning the expression on the right side
+  of "=" only for the pattern that matches first. This is a helpful
+  thing to keep in mind, especially when you have overlapping patterns.
+  Also note that, if no pattern matches the value, the function fails
+  in runtime.
 
 
 In addition to pattern matching in the function definition, you can
@@ -658,7 +659,7 @@ the same way as any other values and expressions:
  ✲ And much more!
 
 The ability to create __lambdas__ (or anonymous functions) nicely
-complements the concept of HOF. For example, we can easily append
+complements the concept of HOF. For example, we can easily add
 number 3 to each element of the list by introducing a lambda function:
 
 >>> map (\x -> x + 3) [0..5]
@@ -672,7 +673,7 @@ specify space-separated arguments. Instead of the "=" in the ordinary
 function body, you should write "->" and then you can use these
 arguments and all variables in scope inside the lambda-body.
 
-There are equal:
+These are equal:
 
 @
 foo a b = a + b
@@ -879,6 +880,6 @@ rewind (x:xs) = rewind xs ++ [x]
 
 
 {-
-You did it! Now it is time to the open pull request with your changes
+You did it! Now it is time to open pull request with your changes
 and summon @vrom911 and @chshersh for the review!
 -}
