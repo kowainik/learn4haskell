@@ -754,7 +754,7 @@ the list with only those lists that contain a passed element.
 -}
 contains :: Int -> [[Int]] -> [[Int]]
 contains a x
-    | length x == 0 = []
+    | null x = []
     | elem a ((take 1 x) !! 0) = ((take 1 x) !! 0) : contains a (drop 1 x)
     | otherwise = contains a (drop 1 x)
 
