@@ -740,8 +740,8 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = concat (map (\x -> replicate x x) l)
-
+--smartReplicate l = concat (map (\x -> replicate x x) l)
+smartReplicate = concatMap (\x -> replicate x x)
 {- |
 =⚔️= Task 9
 
@@ -754,12 +754,13 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: Int -> [[Int]] -> [[Int]]
-contains n l = go [] l
+contains n = filter (n `elem`)
+{-contains n l = go [] l
   where
     go :: [[Int]] -> [[Int]] -> [[Int]]
     go acc [] = reverse acc
     go acc (x:xs) = if n `elem` x then go (x:acc) xs else go acc xs
-
+-}
 {- |
 =🛡= Eta-reduction
 
