@@ -3,7 +3,7 @@
 This code of conduct outlines our expectations for all those who participate
 in the Kowainik organization.
 
-We invite all those who participate in Kowainik to help us create safe
+We invite all those who participate in Kowainik to help us to create safe
 and positive experiences for everyone.
 
 ## Our Standards
@@ -24,7 +24,7 @@ and mental and physical ability.
 
 We won't all agree all the time, but disagreement is no excuse for disrespectful behaviour.
 We will all experience frustration from time to time, but we cannot allow that frustration
-become personal attacks. An environment where people feel uncomfortable or threatened
+to become personal attacks. An environment where people feel uncomfortable or threatened
 is not a productive or creative one.
 
 ### Choose your words carefully.
