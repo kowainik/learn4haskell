@@ -8,7 +8,7 @@ the air like a leaf on the wind 🍃
 It's Hacktoberfest! And we are happy to be part of this fantastic event.
 
 Usually, people contribute to projects within the communities they spend most of their time
-aleady and don't try to go out of those boundaries.
+already and don't try to go out of those boundaries.
 But why not use this time to learn something challenging, something fresh,
 something that you never had time for?
 
@@ -47,7 +47,7 @@ This works in the following way. When you decide to start the project, all you
 need to do is to fork the project. We have prepared 4 separate modules — chapters.
 Each part contains educational material and lots of examples that we provide in
 a simple form that doesn't require you to know anything about functional programming beforehand.
-Also, each chapter contains a number of exercises on everything that is
+Also, each chapter contains several exercises on everything that is
 explained by us. You can solve the tasks on your way and at the end open a PR to
 your fork with this chapter's solution and summon us (by shouting out our
 nicknames there). We would be happy to give you feedback on your progress,
@@ -59,11 +59,11 @@ are already familiar to you, feel free to skip onto the next one.
 If you would like to talk to us, you can even rely on PRs for the chapter you
 have questions about.
 
-Chapters are stuffed with information, but are aimed to be completed
+Chapters are stuffed with information but are aimed to be completed
 without additional resources. You may spend an evening per chapter, but we swear
 it's worth it!
 
-At the end of the course you should be able to independently create and read
+At the end of the course, you should be able to independently create and read
 basic Haskell code and understand Monads and other famous concepts of Functional
 Programming.
 
@@ -119,7 +119,7 @@ language newcomers who decide to work with this course.
 This course has many benefits upon completion. Check them out to be sure that it fits
 your expectations!
 
-The participation in this course would give you:
+Participation in this course would give you:
 
  * 4 Pull Requests required for Hacktoberfest completion
  * Basic knowledge of the most functional programming language
@@ -129,7 +129,7 @@ The participation in this course would give you:
  * Interesting challenges
  * Fun!
 
-Honestly this seems like a pretty rad deal!
+Honestly, this seems like a pretty rad deal!
 
 ## So how do I get started?
 
@@ -147,14 +147,14 @@ Starting to learn Haskell with Learn4Haskell is a piece of cake!
    __to your fork__ with the solution and mention @vrom911 and @chshersh and we
    would be on our way for the review.
  > Note, that you should open a PR for your fork of this repo, not this repo.
- > Everyone has their own solutions to the included tasks, and they don't mix together
+ > Everyone has their solutions to the included tasks, and they don't mix together
  > well in one repo 🙂
 
 > However, if you find some bugs or problems in this repo, you can of
 > open a PR to Learn4Haskell directly. We appreciate any help and feedback!
 
 Learn4Haskell has 4 chapters that you can walk through and submit 4 pull requests to
-complete the Hacktoberfest event (or just for knowledge and your own enjoyment).
+complete the Hacktoberfest event (or just for knowledge and your enjoyment).
 
 So, you can start right now with forking. Following this will describe how you can
 install all the necessary items to be able to run this course locally.
@@ -197,7 +197,7 @@ The mentioned plugin would give you everything required to immediately start cod
 The course assumes that you install Haskell tooling (GHC and Cabal), edit code
 in the corresponding chapters, run GHCi (Haskell interpreter, explained in the
 course) from the root of this project and load your chapters to check your code.
-Don't worry, each Chapter explains all the needed information!
+Don't worry, each chapter explains all the needed information!
 
 We also provide Makefile with commands to test your solutions locally with the included
 prepared test-suite. We have also configured the CI using GitHub
@@ -229,7 +229,7 @@ keen to learn Haskell as well. Moreover, Dmitrii has a few years of experience
 teaching Haskell courses in the university to CS students.
 
 We are passionate about Functional Programming and Haskell in particular. But at
-the same time we understand how difficult it can be to get into all these
+the same time, we understand how difficult it can be to get into all these
 ideas on your own. That is why we've decided to start this course to help
 newcomers. With the interactive learning process and live discussions we've included, Haskell
 will not be that scary. We will do our best so that it especially won't be the case
