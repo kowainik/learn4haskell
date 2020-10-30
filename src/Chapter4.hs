@@ -624,8 +624,8 @@ Implement the 'Monad' instance for our 'Secret' type.
 -}
 instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) (Trap e) _ = Trap e
-    (>>=) (Reward a) f = (f a)
+    Trap e >>= _ = Trap e
+    Reward a >>= f = f a
 
 {- |
 =⚔️= Task 7
