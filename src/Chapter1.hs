@@ -552,10 +552,14 @@ value after "=" where the condition is true.
 ♫ NOTE: It is essential to have the same indentation before each branch "|"!
   Remember, that Haskell is indentation- and layout-sensitive language.
 
-Casual reminder about adding top-level type signatures for all functions :)
+Casual reminder about adding top-level type signatures for all functions ;)
 -}
 
-mid x y z = error "mid: not implemented!"
+mid :: Ord a => a -> a -> a -> a
+mid x y z 
+    | (x<y && y<z) || (z<y && y<x) = y
+    | (y<x && x<z) || (z<x && x<y) = x
+    | otherwise = z
 
 {- |
 =⚔️= Task 8
@@ -569,8 +573,11 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel c = error "isVowel: not implemented!"
 
+isVowel :: Char -> Bool
+isVowel c
+    | c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U' = True
+    | otherwise = False 
 
 {- |
 == Local variables and functions
