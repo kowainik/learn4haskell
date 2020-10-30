@@ -19,7 +19,7 @@ chapter1 = describe "Chapter1" $ do
     chapter1normal
     chapter1advanced
 
-reverseInt :: Int -> Int
+reverseInt :: Integer -> Integer
 reverseInt x = (*) (signum x) . read . reverse . show . abs  $ x
 
 chapter1normal :: Spec
@@ -69,7 +69,7 @@ chapter1normal = describe "Chapter1Normal" $ do
     describe "Task 4 & 5 : first and last digit" $ do
         it "last digit is the first digit of the reversed number" $ hedgehog $ do
             x <- forAll $ Gen.int (Range.linear (-200) 200)
-            (firstDigit x :: Int) === (lastDigit (reverseInt x) :: Int)
+            (firstDigit (toInteger x) :: Integer) === (lastDigit (reverseInt (toInteger x)) :: Integer)
 
 chapter1advanced :: Spec
 chapter1advanced = describe "Chapter1Advanced" $
