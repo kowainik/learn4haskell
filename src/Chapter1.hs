@@ -211,7 +211,7 @@ So, the output in this example means that 'False' has type 'Bool'.
 >>> :t True
 True :: Bool
 >>> :t 'a'
-'a' :: Cha
+'a' :: Char
 >>> :t 42
 42 :: Num p => p
 
