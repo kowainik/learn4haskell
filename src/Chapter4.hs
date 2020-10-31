@@ -631,13 +631,13 @@ Implement the 'Monad' instance for our lists.
 🕯 HINT: You probably will need to implement a helper function (or
   maybe a few) to flatten lists of lists to a single list.
 -}
-concatList :: List (List a) -> List a
-concatList Empty = Empty
-concatList (Cons x xs) = append x (concatList xs)
+flattenList :: List (List a) -> List a
+flattenList Empty = Empty
+flattenList (Cons x xs) = append x (flattenList xs)
 
 instance Monad List where
     (>>=) :: List a -> (a -> List b) -> List b
-    l >>= f = concatList (fmap f l)
+    l >>= f = flattenList (fmap f l)
 
 {- |
 =💣= Task 8*: Before the Final Boss
