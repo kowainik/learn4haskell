@@ -26,10 +26,10 @@ Specifically, in this chapter, you are going to practice:
  ✧ Ad-hoc polymorphism
 
 As usual, the explanations are in the Haskell comments of this module. We are
-leaving a number of tasks on our path. Your goal is to solve them all.
+leaving several tasks on our path. Your goal is to solve them all.
 
 After finishing the PR, you can choose to summon us, @vrom911 and @chshersh, to
-look at your solution in order to give some advice on your code. This is
+look at your solution to give some advice on your code. This is
 optional; however, you can ask us for review only if you want some feedback on
 your solutions.
 
@@ -95,7 +95,7 @@ Now it makes much more sense of why 'String' is related to lists. You can see
 that any list function could be used on 'String's as well.
 
 👩‍🔬 Due to the implementation details of lists, such representation of String
-  is highly inefficient. It is unfortunate that the list of characters is the
+  is highly inefficient. Unfortunate, the list of characters is the
   default String type. Experienced Haskellers use more efficient string types
   'Text' and 'ByteString' from Haskell libraries: 'text' and 'bytestring'
   correspondingly. But, for the simplicity of this training, we are using
@@ -146,9 +146,9 @@ Book:
 
 -- Sum type
 BookShelf:
-    Good  book 1 : {Book}
- OR Good  book 2 : {Book}
- OR Cheap book 3 : {Book}
+    Good  book 1: {Book}
+ OR Good  book 2: {Book}
+ OR Cheap book 3: {Book}
 @
 
 👩‍🔬 We use AND in product types to represent the notion of having all fields at
@@ -207,7 +207,7 @@ ghci> :t MkKnight
 MkKnight :: String -> Int -> Knight
 
 As in a regular function, you need to provide a 'String' and an 'Int' to the
-'MkKnight' constructor in order to get the full-fledged 'Knight'.
+'MkKnight' constructor to get the full-fledged 'Knight'.
 
 Also, you can write a function that takes a Knight and returns its name.
 It is convenient to use pattern matching for that:
@@ -248,9 +248,9 @@ The pattern matching on constructors of such records can stay the same. Besides,
 you can use field names as getters.
 
 👩‍🔬 We are using a particular naming scheme of record field names in record
-  types in order to avoid name collisions. We add the data type name prefix in
+  types to avoid name collisions. We add the data type name prefix in
   front of each usual field name for that. As we saw, records create getters for
-  us, which are actually top-level functions. In Haskell, all functions defined at
+  us, which are top-level functions. In Haskell, all functions defined at
   top-level are available in the whole scope within a module. But Haskell forbids
   creating multiple functions with the same name. The Haskell ecosystem has
   numerous ways of solving this so-called "record" problem. Still, for simplicity
@@ -283,7 +283,7 @@ arthur = MkKnight
 @
 
 After we created our custom types and defined some values, we may want to change
-some fields of our values. But we can't actually change anything! Remember that
+some fields of our values. But we can't change anything! Remember that
 all values in Haskell are immutable, and you can't just change a field of some
 type. You need to create a new value! Fortunately, for records, we can use the
 __record update syntax__. Record update syntax allows creating new objects of a
@@ -387,7 +387,7 @@ by "|". Each constructor on its own could have an ADT, that describes
 this branch of the alternative.
 
 There is at least one famous sum type that you have already seen — 'Bool' — the
-simplest example of a sum type.
+simplest example of a Sum type.
 
 @
 data Bool = False | True
@@ -411,7 +411,7 @@ However, the real power of sum types unleashes when you combine them with
 fields. As we mentioned, each "|" case in the sum type could be an ADT, so,
 naturally, you can have constructors with fields, which are product types from
 the previous section. If you think about it, the enumeration also contains a
-product type, as it is absolutely legal to create a data type with one
+product type, as it is legal to create a data type with one
 constructor and without any fields: `data Emptiness = TotalVoid`.
 
 To showcase such sum type, let's represent a possible loot from successfully
@@ -477,7 +477,7 @@ After defining the city, implement the following functions:
  ✦ buildHouse — add a new living house
  ✦ buildWalls — build walls in the city. But since building walls is a
    complicated task, walls can be built only if the city has a castle
-   and at least 10 living __people__ inside in all houses of the city totally.
+   and at least 10 living __people__ inside in all houses of the city in total.
 -}
 
 {-
@@ -618,7 +618,7 @@ Note that both product and sum types can be parameterised.
 
 To give an example of a custom polymorphic type, let's implement a
 "TreasureChest" data type. Our treasure chest is flexible, and it can store some
-amount of gold. Additionally there is some space for one more arbitrary
+amount of gold. Additionally, there is some space for one more arbitrary
 treasure. But that could be any treasure, and we don't know what it is
 beforehand.
 
@@ -699,7 +699,7 @@ showEither (Right n) = "Right with number: " ++ show n
 @
 
 Now, after we covered polymorphic types, you are finally ready to learn how
-lists are actually defined in the Haskell world. Behold the might list type!
+lists are defined in the Haskell world. Behold the might list type!
 
 @
 data [] a
@@ -894,7 +894,7 @@ instance and apply this typeclass method to it.
 =⚔️= Task 7
 
 Often we want to combine several values of a type and get a single value of the
-exact same type. We can combine different things: treasures, adventures, groups
+same type. We can combine different things: treasures, adventures, groups
 of heroes, etc.. So it makes sense to implement a typeclass for such a concept
 and define helpful instances.
 
@@ -983,12 +983,12 @@ types, typeclasses and instances, describing the world, and write polymorphic
 functions using custom types and typeclasses.
 
 The task:
-When two fighters engage in a battle (knight fights the monster, duel of
+When two fighters engage in a battle (a knight fights the monster, duel of
 knights, monsters fighting for a lair, etc.), both of them can perform different
 actions. They do their activities in turns, i.e. one fighter goes first, then
 the other goes second, then the first again, and so on, until one of them wins.
 
-Both knight and monster have a sequence of actions they can do. A knight can
+Both a knight and a monster have a sequence of actions they can do. A knight can
 attack, drink a health potion, cast a spell to increase their defence. A monster
 can only attack or run away. Each fighter starts with some list of actions they
 can do, performs them in sequence one after another, and when the sequence ends,
@@ -998,7 +998,7 @@ Monsters have only health and attack, while knights also have a defence. So when
 knights are attacked, their health is decreased less, if they have more defence.
 The fight ends when the health of one fighter becomes zero or less.
 
-As you can see, both monster and knight have similar characteristics, but they
+As you can see, both a monster and a knight have similar characteristics, but they
 also have some differences. So it is possible to describe their common
 properties using typeclasses, but they are different data types in the end.
 
@@ -1008,7 +1008,7 @@ contestants, and write a function that decides the outcome of a fight!
 
 
 {-
-You did it! Now it is time to open pull request with your changes
+You did it! Now it is time to open a pull request with your changes
 and summon @vrom911 and @chshersh for the review!
 -}
 
