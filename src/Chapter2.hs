@@ -338,7 +338,7 @@ ghci> :l src/Chapter2.hs
 subList :: Int -> Int -> [a] -> [a]
 subList x y z
           | y < x = []
-          | x < 0 && y < 0 = []
+          | x < 0 || y < 0 = []
           | otherwise = take ((y - x) + 1) (drop x z) 
 
 {- |
@@ -508,7 +508,7 @@ False
 -}
 isThird42 :: [Int] -> Bool
 isThird42 (_ : _ : 42 :_) = True
-isThird42 (_ : _ : _ : _) = False
+isThird42 _ = False
 
 
 {- |
@@ -882,9 +882,11 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind :: [Int] -> [Int]
-rewind [] = []
-rewind (x:xs) = rewind xs ++ [x]
+rewind :: [a] -> [a]
+rewind = go []
+   where
+     go a [] = a
+     go a (x:xs) = go (x:a) xs
 
 
 {-
