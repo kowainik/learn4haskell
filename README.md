@@ -47,7 +47,7 @@ This works in the following way. When you decide to start the project, all you
 need to do is to fork the project. We have prepared 4 separate modules — chapters.
 Each part contains educational material and lots of examples that we provide in
 a simple form that doesn't require you to know anything about functional programming beforehand.
-Also, each chapter contains sevelar exercises on everything that is
+Also, each chapter contains several exercises on everything that is
 explained by us. You can solve the tasks on your way and at the end open a PR to
 your fork with this chapter's solution and summon us (by shouting out our
 nicknames there). We would be happy to give you feedback on your progress,
