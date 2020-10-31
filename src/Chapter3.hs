@@ -545,7 +545,8 @@ data MagicalCity = MagicalCity
     }
 
 buildCastle :: String -> Maybe MagicalCity -> MagicalCity
-buildCastle newname _ = createCity
+buildCastle newname (Just city) = city { castle = Just Castle { __name__ = newname, wall = False } }
+buildCastle newname Nothing = createCity
   where
     newCastle = Castle { __name__ = newname, wall = False }
     newHouses = [Houses { __people__ = 1 }] 
