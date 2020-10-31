@@ -27,11 +27,11 @@ In this chapter, you are going to master:
  ✧ Eta-reduction
 
 As usual, the explanations are in the Haskell comments of this
-module. We are leaving a number of tasks on our path. Your goal is to
+module. We are leaving several tasks on our path. Your goal is to
 solve them all and make the tests for Chapter Two green.
 
 After finishing the PR, you can choose to summon us, @vrom911 and @chshersh,
-to look at your solution in order to give some advice on your
+to look at your solution to give some advice on your
 code. This is optional; however, you can ask us for review only if you
 want some feedback on your solutions.
 
@@ -269,7 +269,7 @@ For these reasons, adding elements to and extracting elements from the
 beginning of a list is much cheaper and faster than working with the
 end of the list.
 
-In some sense, lists are similar to trains. Let's look at illustration
+In some sense, lists are similar to trains. Let's look at an illustration
 of a two-element list:
 
               . . . . . o o o o o
@@ -512,7 +512,7 @@ __recursive__ functions. Recursive functions are nothing more than
 calling the function itself from the body of the same function.
 
 Of course, you need some stopping conditions to exit the function
-eventually, and you need to think carefully whether your function ever
+eventually, and you need to think carefully if your function ever
 reaches the stop condition. However, having pattern-matching in our
 arsenal of skills significantly increases our chances of writing
 correct functions. Nevertheless, you should think mindfully on how
@@ -528,11 +528,11 @@ divToZero n = divToZero (div n 2)
 @
 
 But as you can see, the function is not that helpful per se. Often you
-implement a helper function with some accumulator in order to collect
+implement a helper function with some accumulator to collect
 some information during recursive calls.
 
 For example, we can patch the previous function to count the number of
-steps we need to take in order to reduce the number to zero.
+steps we need to take to reduce the number to zero.
 
 🤔 Blitz question: can you guess what this number represents?
 
@@ -553,7 +553,7 @@ One of the most useful capabilities of pattern matching on lists is
 the ability to implement recursive functions with them as well!
 
 ♫ NOTE: The canonical naming scheme for such patterns is `(x:xs)`
-  where x is the first element of the list, and xs — rest of the list
+  where x is the first element of the list and xs — rest of the list
   (which is a list as well that even could be empty).
 
 @
@@ -862,6 +862,6 @@ rewind = error "rewind: Not Implemented!"
 
 
 {-
-You did it! Now it is time to open pull request with your changes
+You did it! Now it is time to open a pull request with your changes
 and summon @vrom911 and @chshersh for the review!
 -}
