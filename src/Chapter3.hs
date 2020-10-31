@@ -616,22 +616,30 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+
+newtype Health = Health Int
+newtype Armor = Armor Int
+newtype Attack = Attack Int
+newtype Dexterity = Dexterity Int
+newtype Strength = Strength Int
+newtype Demage = Demage Int
+newtype Defence = Defence Int
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+calculatePlayerDamage :: Attack -> Strength -> Demage
+calculatePlayerDamage (Attack attack) (Strength strength) = Demage $ attack + strength
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDefense :: Armor -> Dexterity -> Defence
+calculatePlayerDefense (Armor armor) (Dexterity dexterity) = Defence $ armor * dexterity
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerHit :: Demage -> Defence -> Health -> Health
+calculatePlayerHit (Demage damage) (Defence defense) (Health health) = Health $ health + defense - damage
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -809,6 +817,17 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
+newtype Dragon p = Dragon {
+  magicalPower :: p
+}
+
+newtype TreasureChest a = Maybe a
+
+data Lair a b = Lair {
+  dragon :: Dragon a,
+  treasureChest :: TreasureChest b
+}
+
 {-
 =🛡= Typeclasses
 
@@ -966,6 +985,22 @@ Implement instances of "Append" for the following types:
 class Append a where
     append :: a -> a -> a
 
+newtype Gold = Gold Int
+
+instance Append Gold where
+  append :: Gold -> Gold -> Gold
+  append (Gold a)(Gold b) = Gold $ a + b
+
+instance Append [a] where
+  append :: [a] -> [a] -> [a]
+  append = (++)
+
+instance Append a => Append (Maybe a) where
+  append (Just a) (Just b) = Just (append a b)
+  append Nothing (Just b) = Just b
+  append (Just a) Nothing = Just a
+  append Nothing Nothing = Nothing
+
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -1026,7 +1061,25 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
+data Weekday = MON | TUE | WED | THU | FRI | SAT | SUN deriving (Enum, Show, Eq)
+instance Bounded Weekday where
+  minBound = MON
+  maxBound = SUN
 
+isWeekend :: Weekday -> Bool
+isWeekend a | (a == SAT) || (a == SUN) = True
+            | otherwise = False
+
+nextDay :: Weekday -> Weekday
+nextDay a | a == maxBound = minBound
+          | otherwise = succ a
+
+daysToParty :: Weekday -> Int
+daysToParty a = go a 0
+  where
+    go :: Weekday -> Int -> Int
+    go a b | a == FRI = b
+           | otherwise = go (nextDay a) (b + 1)   
 {-
 =💣= Task 9*
 
