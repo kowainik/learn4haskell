@@ -494,13 +494,13 @@ comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
 data Meal =
-  Breakfast Bool |
-  Brunch Bool |
-  Elevenses Bool |
-  Lunch Bool |
-  Tea Bool |
-  Supper Bool |
-  Dinner Bool
+  Breakfast |
+  Brunch    |
+  Elevenses |
+  Lunch     |
+  Tea       |
+  Supper    |
+  Dinner
 
 {- |
 =⚔️= Task 4
@@ -524,8 +524,6 @@ After defining the city, implement the following functions:
 
 type Wall = Bool
 
-type Church = Bool
-type Library = Bool
 data Building = Library | Church
 
 data Castle = Castle
@@ -541,34 +539,53 @@ newtype Houses = Houses
 
 data MagicalCity = MagicalCity
     {
-      castle :: Castle,
+      castle :: Maybe Castle,
       building :: Building,
       houses :: [Houses]
     }
 
-
-buildCastle :: String -> MagicalCity -> MagicalCity
-buildCastle newname city = city { castle = newCastle }
+buildCastle :: String -> Maybe MagicalCity -> MagicalCity
+buildCastle newname _ = createCity
   where
-    ccity = castle city
-    newCastle = ccity { __name__ = newname }
-
+    newCastle = Castle { __name__ = newname, wall = False }
+    newHouses = [Houses { __people__ = 1 }] 
+    createCity = MagicalCity { 
+      castle = Just newCastle, 
+      building = Library, 
+      houses = newHouses
+    }
 
 buildHouse :: Int -> MagicalCity -> MagicalCity
 buildHouse np city = city { houses = newHouse:hcity }
   where
     hcity = houses city
-    newHouse = Houses { __people__ = np }
+    newHouse = Houses { __people__ = mkPeople np }
+    mkPeople :: Int -> Int
+    mkPeople nb
+      | nb >= 0 && nb <= 4 = nb
+      | otherwise = 0
 
+
+getCastle :: MagicalCity -> Maybe Castle
+getCastle (MagicalCity castle _ _) = case (castle) of
+  Just c -> Just c
+  Nothing -> Nothing 
+
+hasCastle :: MagicalCity -> Bool
+hasCastle (MagicalCity castle _ _) = case (castle) of
+  Just _ -> True
+  Nothing -> False
 
 buildWalls :: MagicalCity -> MagicalCity
 buildWalls city
-  | not (null castleName) && totalPeoples >= 10 = city { castle = ccity { wall = True } }
+  | hasCastle city && totalPeoples >= 10 = city { castle = createCastle }
   | otherwise = city
   where
-    ccity = castle city
-    castleName = __name__ ccity
     totalPeoples = sum (map __people__ (houses city))
+    createCastle = Just Castle { __name__ = getName (getCastle city), wall = True }
+    getName :: Maybe Castle -> String
+    getName (Just c) = __name__ c
+    getName Nothing = "unnamed"
 
 {-
 =🛡= Newtypes
@@ -867,7 +884,7 @@ newtype Dragon a = Dragon
 data Lair a = Lair
     {
       dragon :: Dragon a,
-      treasure_chest :: Maybe Bool
+      treasure_chest :: Maybe Int
     }
 
 {-
@@ -1031,18 +1048,17 @@ class Append a where
 
 instance Append Gold where
     append :: Gold -> Gold -> Gold
-    append (Gold a) (Gold b) = Gold(a + b)
+    append (Gold a) (Gold b) = Gold (a + b)
 
 instance Append [a] where
     append :: [a] -> [a] -> [a]
-    append x y = x ++ y
+    append = (++)
 
 instance (Append a) => Append (Maybe a) where
     append :: Maybe a -> Maybe a -> Maybe a
+    append x Nothing = x
+    append Nothing y = y
     append (Just x) (Just y) = Just (append x y)
-    append (Just x) Nothing = Just x
-    append Nothing (Just y) = Just y
-    append Nothing Nothing = Nothing
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -1112,7 +1128,7 @@ data Week =
   | Friday
   | Saturday
   | Sunday
-  deriving (Eq,Ord,Enum,Show)
+  deriving (Eq,Ord,Enum,Show, Bounded)
 
 isWeekend :: Week -> Bool
 isWeekend Saturday = True
@@ -1120,8 +1136,9 @@ isWeekend Sunday = True
 isWeekend _ = False
 
 nextDay :: Week -> Week
-nextDay Sunday = Monday
-nextDay w = toEnum (fromEnum w + 1)
+nextDay w = toEnum (nd `mod` 7)
+  where
+    nd = fromEnum w + 1
 
 daysToParty :: Week -> Int
 daysToParty d = (fromEnum Friday - fromEnum d) `mod` 7
@@ -1169,8 +1186,7 @@ data FKActions =
 
 data FMActions =
     FMAttack
-  | FMHealing
-  | FMDefense
+  | FMRun
   deriving (Eq,Ord,Enum,Show)
 
 data FKnight = FKnight
@@ -1178,15 +1194,17 @@ data FKnight = FKnight
       fkAttack :: Int,
       fkHealth :: Int,
       fkDefense :: Int,
-      fkActions :: FKActions
+      fkActions :: [FKActions]
     }
 
 data FMonster = FMonster
     {
       fmAttack :: Int,
       fmHealth :: Int,
-      fmActions :: FMActions
+      fmActions :: [FMActions]
     }
+
+data Winner = FK | FM | None
 
 class Fighter a where
   attacked :: Int -> a -> a
@@ -1198,6 +1216,43 @@ instance Fighter FKnight where
 instance Fighter FMonster where
   attacked :: Int -> FMonster -> FMonster
   attacked kDmg m = m { fmHealth = fmHealth m - kDmg }
+
+battle :: FKnight -> FMonster -> Winner
+battle k m = goBattle True (k, m)
+
+goBattle :: Bool -> (FKnight, FMonster) -> Winner
+goBattle acc (k, m)
+  | isKTurn k == True = goBattle False $ kTurn (fkActions k) k m
+  | isMTurn m == True = goBattle True $ mTurn (fmActions m) m k
+  | otherwise = checkWinner k m
+  where
+    lenAKF = length (fkActions k)
+    lenAKM = length (fmActions m)
+    isKTurn kf = acc == True && (lenAKF > 0 || lenAKM == 0) && (fkHealth kf) >= 0
+    isMTurn mf = acc == False && (lenAKM > 0 || lenAKF == 0) && (fmHealth mf) >= 0
+
+
+heal :: Int -> Int
+heal h 
+  | h + 10 > 100 = 100
+  | otherwise = h + 10
+
+kTurn :: [FKActions] -> FKnight -> FMonster -> (FKnight, FMonster)
+kTurn (FKAttack:_) k m = (k { fkActions = (drop 1 (fkActions k))}, m { fmHealth = fmHealth m - fkAttack k})
+kTurn (FKHealing:_) k m = (k { fkActions = (drop 1 (fkActions k)), fkHealth = heal (fkHealth k) }, m)
+kTurn (FKDefense:_) k m = (k { fkActions = (drop 1 (fkActions k)), fkDefense = fkDefense k + 10 }, m)
+kTurn [] k m = (k, m)
+
+mTurn :: [FMActions] -> FMonster -> FKnight -> (FKnight, FMonster)
+mTurn (FMAttack:_) m k = (k { fkHealth = fkHealth k - fmAttack m }, m { fmActions = (drop 1 (fmActions m))})
+mTurn (FMRun:_) m k = (k, m { fmActions = (drop 1 (fmActions m)), fmHealth = 0 })
+mTurn [] m k = (k, m)
+
+checkWinner :: FKnight -> FMonster -> Winner
+checkWinner k m
+  | fkHealth k <= 0 = FM
+  | fmHealth m <= 0 = FK
+  | otherwise = None
 
 {-
 You did it! Now it is time to open pull request with your changes
