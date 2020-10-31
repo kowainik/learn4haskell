@@ -700,6 +700,22 @@ Specifically,
  ❃ Implement the function to convert Tree to list
 -}
 
+data Tree a
+    = Leaf
+    | Node a (Tree a) (Tree a)
+
+instance Functor Tree where
+    fmap :: (a -> b) -> Tree a -> Tree b
+    fmap _ Leaf = Leaf
+    fmap f (Node a t1 t2) = Node (f a) (fmap f t1) (fmap f t2)
+
+reverseTree :: Tree a -> Tree a
+reverseTree Leaf = Leaf
+reverseTree (Node a t1 t2) = Node a (reverseTree t2) (reverseTree t1)
+
+treeToList :: Tree a -> List a
+treeToList Leaf = Empty
+treeToList (Node a t1 t2) = Cons a (append (treeToList t1) (treeToList t2))
 
 {-
 You did it! Now it is time to open pull request with your changes
