@@ -338,7 +338,11 @@ ghci> :l src/Chapter2.hs
 subList :: Int -> Int -> [a] -> [a]
 subList x y z
           | y < x = []
+<<<<<<< HEAD
           | x < 0 || y < 0 = []
+=======
+          | x < 0 && y < 0 = []
+>>>>>>> origin
           | otherwise = take ((y - x) + 1) (drop x z) 
 
 {- |
@@ -508,7 +512,11 @@ False
 -}
 isThird42 :: [Int] -> Bool
 isThird42 (_ : _ : 42 :_) = True
+<<<<<<< HEAD
 isThird42 _ = False
+=======
+isThird42 (_ : _ : _ : _) = False
+>>>>>>> origin
 
 
 {- |
