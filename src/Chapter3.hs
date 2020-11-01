@@ -545,17 +545,19 @@ buildHouse city house =
     city {cityHouses = cityHouses city ++ [house]}
 
 convert :: House -> Int
-convert One = 1
-convert Two = 2
-convert Three = 3
-convert _ = 4
+convert house = case house of
+    One -> 1
+    Two -> 2
+    Three -> 3
+    Four -> 4
 
 countPeople :: [House] -> Int
-countPeople = foldr ((+) . convert) 0
+countPeople = sum . map convert
 
 buildWalls :: City -> City
-buildWalls city@City {cityCastle = Castle name} =
-    city {cityCastle = WalledCastle name}
+buildWalls city@City {cityCastle = Castle name}
+    | countPeople (cityHouses city) >= 10 = city {cityCastle = WalledCastle name}
+    | otherwise = city
 buildWalls city =
     city
 {-
@@ -1026,7 +1028,7 @@ instance Append Gold where
 
 instance Append [x] where
     append :: [x] -> [x] -> [x]
-    append a b = a ++ b
+    append = (++)
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -1095,7 +1097,7 @@ data WeekDay
     | Friday
     | Saturday
     | Sunday
-    deriving (Enum, Show)
+    deriving (Enum, Show, Bounded, Eq)
 
 isWeekend :: WeekDay -> Bool
 isWeekend Sunday = True
@@ -1103,12 +1105,16 @@ isWeekend Saturday = True
 isWeekend _ = False
 
 nextDay :: WeekDay -> WeekDay
-nextDay Sunday = Monday
-nextDay day = succ day
+nextDay day
+    | day == maxBound = minBound
+    | otherwise = succ day
 
 daysToParty :: WeekDay -> Int
-daysToParty Friday = 0
-daysToParty x = 1 + daysToParty (nextDay x)
+daysToParty x
+    | num < 0 = num + 7
+    | otherwise = num
+      where
+        num = fromEnum Friday - fromEnum x
 
 {-
 =💣= Task 9*
