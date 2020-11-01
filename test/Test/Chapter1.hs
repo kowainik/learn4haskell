@@ -5,13 +5,12 @@ module Test.Chapter1
     ) where
 
 import Test.Hspec (Spec, describe, it, shouldBe)
-
-import qualified Hedgehog.Range as Range (linear)
-import qualified Hedgehog.Gen as Gen (int)
-
 import Test.Hspec.Hedgehog (hedgehog, (===), forAll)
 
 import Chapter1
+
+import qualified Hedgehog.Range as Range (linear)
+import qualified Hedgehog.Gen as Gen (int)
 
 
 chapter1 :: Spec
@@ -54,6 +53,8 @@ chapter1normal = describe "Chapter1Normal" $ do
         it "negatives mix " $ mid (-20) (-30) (-10) `shouldBe` (-20)
         it "all equal" $ mid 1 1 1 `shouldBe` 1
         it "all equal, except 1" $ mid 1 1 2 `shouldBe` 1
+        it "all equal, except 1" $ mid 2 1 2 `shouldBe` 2
+        it "all equal, except 1" $ mid 1 2 2 `shouldBe` 2
     describe "Task8: isVowel" $ do
         it "true for vowels" $ all isVowel "aeiou" `shouldBe` True
         it "false for non-vowels" $ isVowel 'c' `shouldBe` False
@@ -66,13 +67,9 @@ chapter1normal = describe "Chapter1Normal" $ do
         it "sumLast2 0 > -10" $ sumLast2 (-9) `shouldBe` 9
         it "sumLast2 -10 > -100" $ sumLast2 (-56) `shouldBe` 11
         it "sumLast2 -100 > -1000" $ sumLast2 (-987) `shouldBe` 15
-    describe "Task 4 & 5 : first and last digit" $ do
-        it "last digit is the first digit of the reversed number" $ hedgehog $ do
-            x <- forAll $ Gen.int (Range.linear (-200) 200)
-            (firstDigit x :: Int) === (lastDigit (reverseInt x) :: Int)
 
 chapter1advanced :: Spec
-chapter1advanced = describe "Chapter1Advanced" $
+chapter1advanced = describe "Chapter1Advanced" $ do
     describe "Task 10*" $ do
         it "first digit 0" $ firstDigit 0 `shouldBe` 0
         it "first digit 0 < 10" $ firstDigit 9 `shouldBe` 9
@@ -82,3 +79,9 @@ chapter1advanced = describe "Chapter1Advanced" $
         it "first digit 0 > -10" $ firstDigit (-9) `shouldBe` 9
         it "first digit -10 > -100" $ firstDigit (-58) `shouldBe` 5
         it "first digit -100 > -1000" $ firstDigit (-158) `shouldBe` 1
+    describe "Task 4 & 5 : first and last digit" $ do
+        it "last digit is the first digit of the reversed number" $ hedgehog $ do
+            xGen <- forAll $ Gen.int (Range.linear (-200) 200)
+            digit <- forAll $ Gen.int (Range.linear 1 9)
+            let x = if xGen `rem` 10 == 0 then xGen + digit else xGen
+            (firstDigit x :: Int) === (lastDigit (reverseInt x) :: Int)
