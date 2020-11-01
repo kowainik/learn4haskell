@@ -5,8 +5,12 @@ module Test.Chapter2
     ) where
 
 import Test.Hspec (Spec, describe, it, shouldBe)
+import Test.Hspec.Hedgehog (hedgehog, (===), forAll)
 
 import Chapter2
+
+import qualified Hedgehog.Range as Range
+import qualified Hedgehog.Gen as Gen
 
 
 chapter2 :: Spec
@@ -41,6 +45,10 @@ chapter2normal = describe "Chapter2Normal" $ do
         it "one elem" $ duplicate [0] `shouldBe` [0, 0]
         it "two elems" $ duplicate [-1, 0] `shouldBe` [-1, -1, 0, 0]
         it "many elems" $ duplicate [0..5] `shouldBe` [0,0,1,1,2,2,3,3,4,4,5,5]
+    describe "Task6: duplicate property" $ do
+        it "length (duplicate xs) = 2 * length xs" $ hedgehog $ do
+            xs <- forAll $ Gen.list (Range.linear 0 10) Gen.bool
+            length (duplicate xs) === 2 * length xs
     describe "Task7: takeEven" $ do
         it "empty" $ takeEven emptyInts `shouldBe` emptyInts
         it "one elem" $ takeEven [1] `shouldBe` [1]
@@ -69,12 +77,19 @@ chapter2normal = describe "Chapter2Normal" $ do
         it "empty on negative" $ rotate (-5) [1..5] `shouldBe` emptyInts
 
 chapter2advanced :: Spec
-chapter2advanced = describe "Chapter2Advanced" $
+chapter2advanced = describe "Chapter2Advanced" $ do
     describe "Task12*: rewind" $ do
         it "empty" $ rewind emptyInts `shouldBe` emptyInts
         it "one elem" $ rewind [1] `shouldBe` [1]
         it "many elems" $ rewind [1..10] `shouldBe` [10,9..1]
         it "many elems random" $ rewind [5,1,9,56,32,7,11] `shouldBe` [11,7,32,56,9,1,5]
+    describe "Task12*: rewind Properties" $ do
+        it "rewind == reverse" $ hedgehog $ do
+            xs <- forAll $ Gen.list (Range.linear 0 10) Gen.bool
+            rewind xs === reverse xs
+        it "length rewind == length" $ hedgehog $ do
+            xs <- forAll $ Gen.list (Range.linear 0 10) Gen.bool
+            length (rewind xs :: [Bool]) === length xs
 
 emptyInts :: [Int]
 emptyInts = []
