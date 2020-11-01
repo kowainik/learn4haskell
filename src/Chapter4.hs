@@ -633,7 +633,6 @@ flatten (Cons x list) = concatenate x (flatten list)
 
 instance Monad List where
     (>>=) :: List a -> (a -> List b) -> List b
-    Empty >>= _ = Empty
     list >>= f = flatten (fmap f list)
 
 
