@@ -659,7 +659,7 @@ You can also support creators of this course and your proud mentors on GitHub:
   ✧ https://github.com/sponsors/vrom911
   ✧ https://github.com/sponsors/chshersh
 
-Now, for the desert, it is time to test your skills on the final boss!
+Now, for the dessert, it is time to test your skills on the final boss!
 Your task now will be to implement a Binary Tree data structure and
 some functions on it.
 
