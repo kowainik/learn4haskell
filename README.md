@@ -2,6 +2,14 @@
 
 ![Learn4Haskell](/images/HacktoberFest2020-Learn4Haskell-Banner.png)
 
+🚨 __Important notice: This course continues BAU even after Hacktoberfest__ 🚨
+
+You can find the results of Hacktoberfest 2020 in the following blog post:
+
+ * [Brave New Hacktoberfest](https://kowainik.github.io/posts/hacktoberfest2020)
+
+<hr>
+
 It's the time of the year when thousand pull requests are starting to float in
 the air like a leaf on the wind 🍃
 
@@ -131,7 +139,7 @@ Participation in this course would give you:
 
 Honestly, this seems like a pretty rad deal!
 
-## So how do I get started?
+## How to get started
 
 Starting to learn Haskell with Learn4Haskell is a piece of cake!
 
