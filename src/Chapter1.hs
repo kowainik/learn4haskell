@@ -523,7 +523,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = if abs (x) < abs (y) then x else y 
+closestToZero x y = if abs x < abs y then x else y 
 
 
 {- |
@@ -563,8 +563,7 @@ mid x y z
     | (z <= y) && (y <= x) = y
     | (y <= x) && (x <= z) = x
     | (z <= x) && (x <= y) = x
-    | (x <= z) && (z <= y) = z
-    | (y <= z) && (z <= x) = z
+    | otherwise = z
 
 {- |
 =⚔️= Task 8
@@ -651,12 +650,12 @@ specifying complex expressions.
 
 sumLast2 :: Int -> Int
 sumLast2 n = 
-  let last = lastDigit n
-      sec2last = secondToLastDigit n
+  let lastit = lastDigit n
+      sec2lastit = secondToLastDigit n
         where
           secondToLastDigit :: Int -> Int
           secondToLastDigit n = lastDigit (div (abs n) 10)
-  in last + sec2last
+  in lastit + sec2lastit
 
 
 {- |
@@ -678,12 +677,12 @@ aren't ready for this boss yet!
 -}
 
 isDigit :: Int -> Bool
-isDigit n = n >= 0 && n <= 9
+isDigit n = abs n >= 0 && abs n <= 9
 
 firstDigit :: Int -> Int
 firstDigit n
-    | isDigit n = n
-    | otherwise = firstDigit (div n 10)
+    | isDigit n = abs n
+    | otherwise = firstDigit (div (abs n) 10)
 
 {-
 You did it! Now it is time to open pull request with your changes
