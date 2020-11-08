@@ -491,7 +491,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int
-lastDigit n = if abs n > 10 then lastDigit (abs n `mod` 10) else n
+lastDigit n = mod (abs n) 10
 
 
 {- |
@@ -669,9 +669,11 @@ aren't ready for this boss yet!
 -}
 
 firstDigit :: Int -> Int
-firstDigit n
-  | (abs n) < 10 = abs n
-  | otherwise = firstDigit ((abs n) `div` 10)
+firstDigit n = f (signum n) n
+  where
+    f sign digit
+      | (abs digit) < 10 = digit * sign
+      | otherwise = f sign ((abs digit) `div` 10)
 
 
 {-
