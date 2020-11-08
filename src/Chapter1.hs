@@ -669,11 +669,9 @@ aren't ready for this boss yet!
 -}
 
 firstDigit :: Int -> Int
-firstDigit n = f (signum n) n
-  where
-    f sign digit
-      | (abs digit) < 10 = abs digit
-      | otherwise = f sign ((abs digit) `div` 10)
+firstDigit n
+      | (abs n) < 10 = abs n
+      | otherwise = firstDigit ((abs n) `div` 10)
 
 
 {-
