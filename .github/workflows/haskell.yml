@@ -4,7 +4,7 @@ name: Chapters
 on:
   pull_request:
   push:
-    branches: [master, chapter1, chapter2, chapter3, chapter4]
+    branches: [chapter1, chapter2, chapter3, chapter4]
 
 jobs:
   build:
