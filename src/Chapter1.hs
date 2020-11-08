@@ -521,7 +521,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = if abs(x) < abs(y) then x else y
+closestToZero x y = if abs x < abs y then x else y
 
 
 {- |
@@ -556,7 +556,7 @@ Casual reminder about adding top-level type signatures for all functions :)
 -}
 
 mid :: Int -> Int -> Int -> Int
-mid x y z 
+mid x y z
   | x > y && x < z = x
   | x < y && x > z = x
   | y > x && y < z = y
@@ -577,7 +577,7 @@ False
 -}
 
 isVowel :: Char -> Bool
-isVowel c 
+isVowel c
   | c `elem` ['a','e', 'i', 'o', 'u', 'y'] = True
   | otherwise = False
 
@@ -644,7 +644,7 @@ specifying complex expressions.
 -}
 
 sumLast2 :: Int -> Int
-sumLast2 n 
+sumLast2 n
   | n < 10 = n
   | otherwise = lastDigit n + beforeLastDigit n
       where beforeLastDigit x = (x `mod` 100) `div` 10
@@ -669,7 +669,7 @@ aren't ready for this boss yet!
 -}
 
 firstDigit :: Int -> Int
-firstDigit n 
+firstDigit n
   | n < 10 = n
   | otherwise = firstDigit (n `div` 10)
 
