@@ -103,8 +103,8 @@ elements is just [].
 
 You probably noticed that lists could be of any type of
 elements. Often you want to write a function that works with lists of
-any types (but consistent inside one list). This feature is called
-__parametric polymorphism__. It will be explained in more details
+any type (but consistent inside one list). This feature is called
+__parametric polymorphism__. It will be explained in more detail
 later, but when working with lists, you often will see type signatures
 like:
 
@@ -119,7 +119,7 @@ list with elements of the same type as the first list. Such words "a"
 and "b" are called __type variables__.
 
 For comparison, specific types in Haskell start with an uppercase
-letter (Int, Bool, Char, etc.), when type variables begin with a
+letter (Int, Bool, Char, etc.), where type variables begin with a
 lowercase letter (a, b, el, etc.). This is the way to distinguish
 between these types.
 
@@ -162,7 +162,7 @@ Take first N elements of a list:
 >>> :t take
 
 
-Create list from N same elements:
+Create a list from N same elements:
 >>> :t replicate
 
 
@@ -180,7 +180,7 @@ Join a list of strings with line breaks:
 =⚔️= Task 2
 
 To understand the list type better, it is also beneficial to play with
-the list expressions in REPL.
+list expressions in REPL.
 
 Evaluate the following expressions in GHCi and insert the answers. Try
 to guess first, what you will see.
@@ -269,7 +269,7 @@ For these reasons, adding elements to and extracting elements from the
 beginning of a list is much cheaper and faster than working with the
 end of the list.
 
-In some sense, lists are similar to trains. Let's look at illustration
+In some sense, lists are similar to trains. Let's look at an illustration
 of a two-element list:
 
               . . . . . o o o o o
@@ -325,7 +325,7 @@ Remember that each function returns a new list.
 []
 
 ♫ NOTE: When implementing, think about various corner cases. You
-  should return an empty list when given numbers are negative.
+  should return an empty list when given numbers that are negative.
 
 And also don't forget to check the 'Data.List' module. It is full of
 yummy functions.
@@ -405,7 +405,7 @@ always matches (the same as a variable), but we don't use its value.
   of "=" only for the pattern that matches first. This is a helpful
   thing to keep in mind, especially when you have overlapping patterns.
   Also note that, if no pattern matches the value, the function fails
-  in runtime.
+  at runtime.
 
 
 In addition to pattern matching in the function definition, you can
@@ -507,7 +507,7 @@ isThird42 = error "isThird42: Not implemented!"
 {- |
 =🛡= Recursion
 
-Often, when writing in a functional style, you end up implementing the
+Often, when writing in a functional style, you end up implementing
 __recursive__ functions. Recursive functions are nothing more than
 calling the function itself from the body of the same function.
 
@@ -611,7 +611,7 @@ duplicate = error "duplicate: Not implemented!"
 
 {- |
 =⚔️= Task 7
-Write a function that takes elements of a list only on even positions.
+Write a function that takes elements of a list only in even positions.
 
 🕯 HINT: You need to write a recursive function that pattern matches
   on the list structure. Your function will have several cases and
@@ -658,7 +658,7 @@ number 3 to each element of the list by introducing a lambda function:
 >>> map (\x -> x + 3) [0..5]
 [3,4,5,6,7,8]
 
-The syntax of the lambda functions is somewhat similar to normal ones,
+The syntax of lambda functions is somewhat similar to normal ones,
 except for you don't need to think about its name, which is
 awesome. To establish the start of the lambda function, you should
 write "\" which is a bit similar to the lambda symbol — λ. Then you
@@ -719,7 +719,7 @@ Now you can see that there is nothing magic in HOFs in the end!
 {- |
 =⚔️= Task 8
 
-Implement a function that repeats each element so many times as the
+Implement a function that repeats each element as many times as the
 value of the element itself
 
 >>> smartReplicate [3, 1, 2]
@@ -796,7 +796,7 @@ Another unique Haskell feature is __lazy evaluation__. Haskell is lazy
 by default, which means that it doesn't evaluate expressions when not
 needed. The lazy evaluation has many benefits: avoid doing redundant
 work, provide more composable interfaces. And in this section, we will
-focus on Haskell ability to create infinite data structures and work
+focus on Haskell's ability to create infinite data structures and work
 with them!
 
 For instance, the Haskell standard library has the 'repeat' function
