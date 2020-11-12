@@ -1,6 +1,6 @@
 {- 👋 Welcome to Chapter Three of our journey, Courageous Knight!
 
-Glad to see you back for more challenges. You fight great for the glory of the
+Glad to see you back for more challenges. You fought great for the glory of the
 Functional Programming in the previous Chapters. We are grateful that you are
 continuing to walk this road with us.
 
@@ -128,7 +128,7 @@ are two types of types: product and sum types.
 To give you some basic understanding of the difference between these two, let's
 go to the book shop. A book in there represents a product type: each book has
 the name, author, cover, pages, etc. And all of these properties are mandatory
-and come with the book. Bookshelf, in its turn, is the sum type. Each book in a
+and come with the book. Bookshelf, in its turn, is a sum type. Each book in a
 shelf is a different type, and you can choose one of them at once (there is no
 such book where two or more physical books are sewed together).
 
@@ -162,7 +162,7 @@ BookShelf:
 {- |
 =🛡= Product type
 
-Let's now see how the product data types look like in Haskell.
+Let's now see how product data types look like in Haskell.
 
 Product type should have a type name, one type constructor (the function that
 lets you create the value of the type later) and the description of the fields
@@ -225,7 +225,7 @@ ghci> knightName arthur
 It is comfy to have such getters for all types, so Haskell provides a syntax for
 defining __records__ — named parameters for the product data type fields.
 
-Records have similar syntax for defining in Haskell as (unnamed) ordinary
+Records have a similar syntax for defining in Haskell as (unnamed) ordinary
 product types, but fields are specified in the {} separated by a comma. Each
 field should have a name and a type in this form: 'fieldName :: FieldType'.
 
@@ -266,7 +266,7 @@ features for free when using records over unnamed type fields:
 By default, all functions and constructors work with positional arguments
 (unnamed, that are identified by its position in the type declaration). You
 write a function or a constructor name first, and then you pass arguments
-separated by space. But once we declare a product type as a record, we can use
+separated by spaces. But once we declare a product type as a record, we can use
 field names for specifying constructor values. That means that the position
 doesn't matter anymore as long as we specify the names. So it is like using
 named arguments but only for constructors with records.
@@ -306,7 +306,7 @@ setKnightName newName (MkKnight _ victories) =
 @
 
 ♫ NOTE: By default, GHCi doesn't know how to display values of custom types. If
-  you want to explore custom data types in REPL, you need to add a magical
+  you want to explore custom data types in the REPL, you need to add a magical
   "deriving (Show)" line (will be explained later in this chapter) at the end of a
   record. Like so:
 
@@ -367,7 +367,7 @@ fight following the above rules and returns the amount of gold the knight has
 after the fight. The battle has the following possible outcomes:
 
  ⊛ Knight wins and takes the loot from the monster and adds it to their own
-   earned treasured
+   earned treasure
  ⊛ Monster defeats the knight. In that case return -1
  ⊛ Neither the knight nor the monster wins. On such an occasion, the knight
    doesn't earn any money and keeps what they had before.
@@ -377,7 +377,7 @@ after the fight. The battle has the following possible outcomes:
 {- |
 =🛡= Sum types
 
-Another powerful ambassador of ADT is __sum type__. Unlike ordinary records
+Another powerful ambassador of ADTs is the __sum type__. Unlike ordinary records
 (product types) that always have all the fields you wrote, sum types represent
 alternatives of choices. Sum types can be seen as "one-of" data structures. They
 contain many product types (described in the previous section) as alternatives.
@@ -477,7 +477,7 @@ After defining the city, implement the following functions:
  ✦ buildHouse — add a new living house
  ✦ buildWalls — build walls in the city. But since building walls is a
    complicated task, walls can be built only if the city has a castle
-   and at least 10 living __people__ inside in all houses of the city totally.
+   and at least 10 living __people__ inside in all houses of the city in total.
 -}
 
 {-
@@ -487,7 +487,7 @@ There is one more way to create a custom structure in Haskell. Let's see what
 that is and how it differs from others.
 
 __Newtype__ is a way to create a lightweight wrapper around an existing type.
-Unlike type aliases, newtypes make an entirely new type for the compiler point
+Unlike type aliases, newtypes make an entirely new type from the compiler's point
 of view (as the name suggests). However, such data types don't have additional
 runtime overhead, which means that it would work as fast as the underlying type
 without the wrapper.
@@ -600,9 +600,9 @@ that they can use some type variables as placeholders, representing general
 types. You can either reason about data types in terms of such variables (and
 don't worry about the specific types), or substitute variables with some
 particular types.
-Such polymorphism in Haskell is an example of the __parametric polymorphism__.
+Such polymorphism in Haskell is an example of __parametric polymorphism__.
 
-The process of defining a polymorphic type is akin to the ordinary data type
+The process of defining a polymorphic type is akin to an ordinary data type
 definition. The only difference is that all the type variables should go after
 the type name so that you can reuse them in the constructor fields later.
 
@@ -648,7 +648,7 @@ or we can specify a concrete type:
 isEnoughDiamonds :: TreasureChest Diamond -> Bool
 @
 
-In the same spirit, we can implement a function that creates treasure with some
+In the same spirit, we can implement a function that creates a treasure chest with some
 predefined amount of gold and a given treasure:
 
 @
@@ -674,7 +674,7 @@ data Maybe a
 Haskell doesn't have a concept of "null" values. If you want to work with
 potentially absent values, use the "Maybe" type explicitly.
 
-> Is there a good way to avoid null-pointer bugs? Maybe. © Jasper Van der Jeught
+> Is there a good way to avoid null-pointer bugs? Maybe. © Jasper Van der Jeugt
 
 Another standard polymorphic data type is "Either". It stores either the value
 of one type or a value of another.
@@ -699,7 +699,7 @@ showEither (Right n) = "Right with number: " ++ show n
 @
 
 Now, after we covered polymorphic types, you are finally ready to learn how
-lists are actually defined in the Haskell world. Behold the might list type!
+lists are actually defined in the Haskell world. Behold the mighty list type!
 
 @
 data [] a
@@ -736,7 +736,7 @@ data List a
 
 Before entering the real world of adventures and glorious victories, we should
 prepare for different things in this world. It is always a good idea to
-understand the whole context before going for a quest. And, before fighting a
+understand the whole context before going on a quest. And, before fighting a
 dragon, it makes sense to prepare for different unexpected things. So let's
 define data types describing a Dragon Lair!
 
@@ -756,7 +756,7 @@ parametrise data types in places where values can be of any general type.
 {-
 =🛡= Typeclasses
 
-__Typeclass__ is a regularly used way to express common characteristics of the
+__Typeclass__ is a regularly used way to express common characteristics of
 different data types. In some sense, a typeclass describes the interface of some
 value without telling you the implementation details.
 
@@ -774,15 +774,15 @@ alike: find a path to the particular castle (differs from princess to princess),
 defeat the monster (also unique for each princess) and rescue the beloved
 beauty. So we can see that the "Rescue Mission Plan" is the typeclass, and each
 princess has its own instance for that. If you are a prince on a white horse,
-you'd better check the particular instance for your princess to get into the
+you'd better check the particular instance for your princess to get on the
 salvation journey.
 
-Next, let’s look at one code example for the better illustration of the
+Next, let’s look at one code example for a better illustration of the
 instance-typeclass relationship. We can define a typeclass that would tell us
 one's arch enemy.
 
 The syntax is as follows: you need to use the "class" keyword, then you need to
-specify the typeclass name. Typeclasses should start with the upper letter.
+specify the typeclass name. Typeclasses should start with an upper case letter.
 After that, the type parameter should be identified, which represents the data
 types that would have instances of this typeclass. And, finally, the "where"
 keyword. After, you can specify methods of the typeclass – functions that should
@@ -834,11 +834,11 @@ instance ArchEnemy Double where
 @
 
 And then you can write polymorphic functions and not worry about which specific
-type is underhood until it has the instance of the desired typeclass. For that
+type is under the hood until it has the instance of the desired typeclass. For that
 we are using __constraints__ in Haskell. It is the identification of affiliation
 to the typeclass. The constraints should go after the "::" sign in the function
 type declaration. You can specify one or many constraints. If more than one they
-should be in parenthesis and comma-separated. The end of constraints is
+should be in parentheses and comma-separated. The end of constraints is
 determined with the "=>" arrow, and the function type could be written as usual.
 
 @
@@ -914,10 +914,10 @@ class Append a where
 {-
 =🛡= Standard Typeclasses and Deriving
 
-As many useful data types, standard library in Haskell also comes with some very
+As well as many useful data types, the standard library in Haskell also comes with some very
 essential typeclasses:
 
- ﹡ 'Show' — show the data type value as a 'String'. This helps us to print into
+ ﹡ 'Show' — show the data type value as a 'String'. This helps us to print to
    the terminal in GHCi.
  ﹡ 'Read' — inverse to the 'Show'. By a given String, it is possible to parse
    it into the data type.
@@ -943,7 +943,7 @@ the boilerplate implementation of instances.
 
 The deriving syntax is the following. It should be attached to the data type
 declaration. It consists of the "deriving" keyword, and then typeclass names in
-parenthesis comma-separated.
+parentheses comma-separated.
 
 @
 data Princess = Princess
