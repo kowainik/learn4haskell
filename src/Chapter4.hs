@@ -519,7 +519,7 @@ the (>>=) operator called __bind__.
  gold, we can take all our gold and buy a new chest using our
  gold. The remaining gold can be put to the new chest. The amount of
  money we have determines the quality of our new chest. And this is
- what the monad about — next context can depend on the value in the
+ what monad is about — the next context can depend on the value in the
  current context.
 
 And to expand a bit more on why you need to have the 'Applicative'
@@ -533,7 +533,7 @@ To describe the same in more technical words, The bind (>>=) operator
 takes a value of the type 'f a' ('a' in the 'f' context), a function
 from 'a' to 'f b' ('b' in the 'f' context), and returns a value of
 type 'f b'. So, to understand what it means, let's get back to our
-example with 'Maybe'. But first, we need to get somewhere a function
+example with 'Maybe'. But first, we need to get a function somewhere
 that we would be able to use for the second argument of (>>=) in our
 examples.
 
@@ -577,7 +577,7 @@ when I was a kid, but in reality, there is Nothing special in it!
 Could I even name myself a Monad conqueror now? (Of course, you can,
 but after you try to implement the instances in the exercises)
 
-On the general note, you can notice some similarities between the main
+On a general note, you can notice some similarities between the main
 methods of all three typeclasses:
 
 @
@@ -665,7 +665,7 @@ some functions on it.
 
 Specifically,
 
- ❃ Implement the polymorphic binary tree type that can store any
+ ❃ Implement a polymorphic binary tree type that can store any
    elements inside its nodes
  ❃ Implement the Functor instance for Tree
  ❃ Implement the reverseTree function that reverses the tree and each
