@@ -22,7 +22,7 @@ Here is how it works:
    task proposed to consolidate the results.
  ★ Create a PR with solutions to as many tasks as you can after each Chapter is
    finished.
- ★ Make sure that tests for the Chapter you are working at are passing.
+ ★ Make sure that the tests for the Chapter you are working on are passing.
  ★ Receive some feedback and suggestions from us.
  ★ Merge the PR.
  ★ Go to the next Chapter.
@@ -95,9 +95,9 @@ work, and maybe produce a value of a different type.
 
 Types can be _specific_ (like `Int`, `Integer`, `Double` or `Bool`) and they
 always start with an uppercase letter, or _polymorphic_ (aka general) specified
-through the variables – begin with the lowercase letter. The concept of
+through the variables – begin with a lowercase letter. The concept of
 polymorphism is more sophisticated than working with concrete types, thus we
-won't dive too much into it in this chapter and will work with the concrete
+won't dive too much into it in this chapter and will work with concrete
 types for now.
 
 Furthermore, Haskell is a __statically-typed__ language, which means that each
@@ -116,7 +116,7 @@ immediately see what types will be inferred.
 
 
  {-
-Haskell is a __compiled__ language. At the illustration below, you can see the
+Haskell is a __compiled__ language. In the illustration below, you can see the
 overall picture of the process from your code to the binary of the written
 program:
 
@@ -127,7 +127,7 @@ program:
 +-----------+      +-------------+     +-------------+
 
 In comparison, such languages as Python, JavaScript, etc. are interpreted
-languages. And that could be illustrated in the different workflow:
+languages. And that could be illustrated in this different workflow:
 
 +-----------+      +----------------+     +------------+
 |           |      |                |     |            |
@@ -140,7 +140,7 @@ run it later.
 
 However, most of the time while working with Haskell (especially when learning
 Haskell), you use __GHCi__ to play with functions, see their behaviour and
-explore API of external libraries. GHCi is a __Haskell REPL__
+explore the API of external libraries. GHCi is a __Haskell REPL__
 (read-eval-print-loop). It allows calling functions directly in an interactive
 shell. GHCi interprets Haskell expressions and statements and prints the
 evaluation result of each expression.
@@ -190,7 +190,7 @@ ghci> :q
 {- |
 =⚔️= Task 1
 
-Since types play a crucial role in Haskell, we can start by exploring types of
+Since types play a crucial role in Haskell, we can start by exploring the types of
 some basic expressions. You can inspect the type of expression by using the ":t"
 command in GHCi (short for ":type").
 
@@ -203,7 +203,7 @@ False :: Bool
 specified after these symbols.
 So, the output in this example means that 'False' has type 'Bool'.
 
-(ﾉ◕ヮ◕)ﾉ Your first task! Use GHCi to discover types of the following
+(ﾉ◕ヮ◕)ﾉ Your first task! Use GHCi to discover the types of the following
   expressions and functions:
 
 > Try to guess first and then compare your expectations with GHCi output
@@ -252,7 +252,7 @@ exciting. Call to arms! In other words, let's call some functions.
 
 When calling a function in Haskell, you type a name of the function first, and
 then you specify space-separated function arguments. That's right. No commas, no
-parenthesis. You only need to use () when grouping arguments (e.g. using other
+parentheses. You only need to use () when grouping arguments (e.g. using other
 expressions as arguments).
 
 For example, if the function `foo` takes two arguments, the call of this
@@ -264,7 +264,7 @@ Operators in Haskell are also functions, and you can define your own operators
 as well! The important difference between operators and functions is that
 functions are specified using alphanumeric symbols, and operators are specified
 using "operator" symbols. For example, addition — +, cons — :, list append — ++,
-diamond operator — <>. Also, by default, you call operators in the __infix__
+diamond operator — <>. Also, by default, you call operators in __infix__
 form (operator goes __after__ the first argument), while ordinary functions are
 what-called __prefix__ form (the name goes first, before all arguments).
 
@@ -284,7 +284,7 @@ ghci> 1 + 2
 
 > It may look scary to you, but we will cover all this 'Num' and "=>" later. For
   now, you can think of this as a polymorphic function — in this case, the
-  operator, that can work with any numeric types, including 'Int's, 'Double's,
+  operator, that can work with any numeric type, including 'Ints, 'Doubles,
   etc. Or you can even pass the "+d" option to the ":t" command to see a simpler
   type. In this case, polymorphic types will default to some standard types:
 
@@ -297,7 +297,7 @@ expressions in GHCi
 > As in the previous task, try to guess first and then compare your expectations
   with the GHCi output.
 
-🕯 HINT: if you are curious, it might be interesting to explore types of
+🕯 HINT: if you are curious, it might be interesting to explore the types of
   functions and operators first. Remember this from the previous task? ;)
 
 >>> 1 + 2
@@ -348,7 +348,7 @@ ghci> max True 'x'
 ghci> 10 + True
 
 This is a gentle way to get familiar with various error messages in Haskell.
-In some cases, the error messages could be challenging to decipher and
+In some cases, the error messages can be challenging to decipher and
 understand their meaning. Haskell has a bad reputation for having not-so-helpful
 error messages in some situations. But, of course, such a small challenge won't
 stop you, right? You're a brave warrior, and you can finish all tasks despite
@@ -365,7 +365,7 @@ Let's now check how they are defined and whether we can introduce our own.
 
 When defining a function in Haskell, you write its type signature on the first
 line, and then its body on the following line(s). The type signature should be
-written immediately from the start of a line. Haskell is __indentation-__ and
+written immediately from the start of a line. Haskell is an __indentation-__ and
 __layout-sensitive__ language, so this is important to keep in mind.
 
 For example, here is the type signature of a function that takes a 'Double' and
@@ -380,7 +380,7 @@ GHCi. Now you know that this is the syntax for specifying types in your code as
 well.
 
 The following line should be the function definition start line. You write the
-function name again and give argument names in the same order as you wrote types
+function name again and give argument names in the same order as you wrote the types
 followed by the "=" sign. And you provide the function implementation after "=".
 
 @
@@ -422,7 +422,7 @@ Don't forget the main rule:
 {- |
 =⚔️= Task 3
 
-Below you see the function that finds a square of the sum of two integers. Your
+Below you see the function that finds the square of the sum of two integers. Your
 task is to specify the type of this function.
 
 >>> squareSum 3 4
@@ -507,13 +507,13 @@ Implement a function, that takes two numbers and returns the one closer to zero:
 🕯 HINT: You can use the 'abs' function and the __if-then-else__ Haskell syntax
   for this task.
 
-'if-then-else' is a language construction for expression that returns only one
+'if-then-else' is a language construct for an expression that returns only one
 branch depending on the checked condition. For example:
 
 >>> if even 10 then 0 else 1
 0
 
-The 'if-then-else' constructions must always have both __then__ and __else__
+The 'if-then-else' constructs must always have both __then__ and __else__
 branches because it is an expression and it must always return some value.
 
 👩‍🔬 Due to lazy evaluation in Haskell, only the expression from the branch
@@ -531,7 +531,7 @@ Write a function that returns the middle number among three given numbers.
 2
 
 🕯 HINT: When checking multiple conditions, it is more convenient to use the
-  language construction called "guards" instead of multiple nested 'if-then-else'
+  language construct called "guards" instead of multiple nested 'if-then-else'
   expressions. The syntax of guards is the following:
 
 @
@@ -549,7 +549,7 @@ value after "=" where the condition is true.
 ♫ NOTE: The "=" sign goes after each branch, respectively.
 
 ♫ NOTE: It is essential to have the same indentation before each branch "|"!
-  Remember, that Haskell is indentation- and layout-sensitive language.
+  Remember, that Haskell is an indentation- and layout-sensitive language.
 
 Casual reminder about adding top-level type signatures for all functions :)
 -}
@@ -578,7 +578,7 @@ So far, we've been playing only with simple expressions and function
 definitions. However, in some cases, expressions may become complicated, and it
 could make sense to introduce some helper variables.
 
-You can use the let-in construction in Haskell to define variables.
+You can use the let-in construct in Haskell to define variables.
 Here goes an example:
 
 @
@@ -601,7 +601,7 @@ halfAndTwice n =
 @
 
 In addition to let-in (or sometimes even alternatively to let-in) you can use
-the __where__ construction to define local variables and functions.
+the __where__ construct to define local variables and functions.
 And, again, the example:
 
 @
@@ -657,7 +657,7 @@ firstDigit n = error "firstDigit: Not implemented!"
 
 
 {-
-You did it! Now it is time to open pull request with your changes
+You did it! Now it is time to open a pull request with your changes
 and summon @vrom911 and @chshersh for the review!
 -}
 

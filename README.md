@@ -145,7 +145,7 @@ Starting to learn Haskell with Learn4Haskell is a piece of cake!
 
 1. [Fork this repository](https://docs.github.com/en/free-pro-team@latest/github/getting-started-with-github/fork-a-repo).
 2. :warning: Add the `hacktoberfest` topic to your fork. Otherwise, [your PRs won't count](https://hacktoberfest.digitalocean.com/hacktoberfest-update).
-3. Enable GitHub Actions for your fork repository.
+3. Enable GitHub Actions for your forked repository.
     * Visit: https://github.com/<YOUR_GITHUB_USERNAME>/learn4haskell/actions
 4. [Install the Haskell compiler](#installing-haskell).
 5. Open the `src/Chapter1.hs` file, and start learning and solving tasks!
@@ -164,7 +164,7 @@ Starting to learn Haskell with Learn4Haskell is a piece of cake!
 Learn4Haskell has 4 chapters that you can walk through and submit 4 pull requests to
 complete the Hacktoberfest event (or just for knowledge and your enjoyment).
 
-So, you can start right now with forking. Following this will describe how you can
+So, you can start right now with forking. Following this we'll describe how you can
 install all the necessary items to be able to run this course locally.
 
 ### Installing Haskell
@@ -207,7 +207,7 @@ in the corresponding chapters, run GHCi (Haskell interpreter, explained in the
 course) from the root of this project and load your chapters to check your code.
 Don't worry, each chapter explains all the needed information!
 
-We also provide Makefile with commands to test your solutions locally with the included
+We also provide a Makefile with commands to test your solutions locally with the included
 prepared test-suite. We have also configured the CI using GitHub
 Actions on Learn4Haskell to check your answers at GitHub automatically!
 
