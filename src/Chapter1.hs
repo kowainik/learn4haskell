@@ -518,11 +518,7 @@ mid x y z
 -- False
 isVowel :: Char -> Bool
 isVowel c
-  | c == 'a' = True
-  | c == 'e' = True
-  | c == 'i' = True
-  | c == 'o' = True
-  | c == 'u' = True
+  | c `elem` ['a', 'e', 'i', 'o', 'u'] = True
   | otherwise = False
 
 -- |
