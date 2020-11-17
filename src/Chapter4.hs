@@ -114,23 +114,23 @@ As always, try to guess the output first! And don't forget to insert
 the output in here:
 
 >>> :k Char
-
+Char :: * 
 >>> :k Bool
-
+Bool :: *
 >>> :k [Int]
-
+[Int] :: *
 >>> :k []
-
+[] :: * -> *
 >>> :k (->)
-
+(->) :: * -> * -> *
 >>> :k Either
-
+Either :: * -> * -> *
 >>> data Trinity a b c = MkTrinity a b c
 >>> :k Trinity
-
+Trinity :: * -> * -> * -> *
 >>> data IntBox f = MkIntBox (f Int)
 >>> :k IntBox
-
+IntBox :: (* -> *) -> *
 -}
 
 {- |
@@ -277,11 +277,13 @@ inside or a reward with some treasure. You never know what's inside
 until opened! But the 'Functor' instance allows changing the reward
 inside, so it is quite handy.
 -}
+
+
+
 data Secret e a
     = Trap e
     | Reward a
     deriving (Show, Eq)
-
 
 {- |
 Functor works with types that have kind `* -> *` but our 'Secret' has
@@ -293,7 +295,8 @@ values and apply them to the type level?
 -}
 instance Functor (Secret e) where
     fmap :: (a -> b) -> Secret e a -> Secret e b
-    fmap = error "fmap for Box: not implemented!"
+    fmap f (Reward a) = Reward (f a)
+    fmap f (Trap e) = Trap e
 
 {- |
 =⚔️= Task 3
@@ -306,6 +309,11 @@ typeclasses for standard data types.
 data List a
     = Empty
     | Cons a (List a)
+
+instance Functor List where
+  fmap :: (a -> b) -> List a  -> List b
+  fmap _ Empty           = Empty
+  fmap f (Cons x xs)  = Cons (f x) (fmap f xs)
 
 {- |
 =🛡= Applicative
@@ -469,13 +477,23 @@ Applicatives can be found in many applications:
 =⚔️= Task 4
 
 Implement the Applicative instance for our 'Secret' data type from before.
+
+The (<*>) operator is much juicier: it takes a function inside the
+context, another value in the context, and returns a new value in the
+same context. Apparently, the function somehow is extracted from the
+context and applied to the extracted value.
+
 -}
+
 instance Applicative (Secret e) where
     pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+    pure = Reward
 
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
+    Reward f <*> Reward y = Reward (f y)
+    Reward f <*> Trap y = Trap y 
+    Trap f <*> Trap y = Trap f
+    Trap f <*> Reward y = Trap f
 
 {- |
 =⚔️= Task 5
@@ -489,6 +507,16 @@ Implement the 'Applicative' instance for our 'List' type.
   type.
 -}
 
+instance Applicative List where
+  pure :: a -> List a
+  pure x = Cons x Empty
+
+  (<*>) :: List (a -> b) -> List a -> List b
+  Empty <*> _ = Empty
+  _ <*> Empty = Empty
+  Cons f fs <*> Cons x xs = Cons (f x) (fs <*> xs)
+  -- zipWith id fs xs works in GHCI for unnary functions could be used above?
+  
 
 {- |
 =🛡= Monad
@@ -598,9 +626,12 @@ concepts in the end.
 
 Implement the 'Monad' instance for our 'Secret' type.
 -}
+
 instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+    Trap x >>= _ = Trap x
+    Reward y >>= f = f y
+
 
 {- |
 =⚔️= Task 7
@@ -611,8 +642,30 @@ Implement the 'Monad' instance for our lists.
   maybe a few) to flatten lists of lists to a single list.
 -}
 
+--- ignoring empty lists hereforth
+last :: List a -> a
+last (Cons y Empty) = y
+last (Cons _ xs) = Chapter4.last xs 
 
-{- |
+except_last :: List a -> List a
+except_last (Cons z Empty) = Empty
+except_last (Cons x xs) = Cons x (except_last xs)
+
+concat :: List a -> List a -> List a
+concat Empty xb = xb
+concat xa Empty = xa
+concat xs ys = Chapter4.concat (except_last xs) (Cons (Chapter4.last xs) ys)
+  
+flatten :: List (List a) -> List a
+flatten Empty = Empty
+flatten (Cons x xs) = Chapter4.concat x (flatten xs)
+
+instance Monad List where
+  (>>=) :: List a -> (a -> List b) -> List b
+  Empty >>= _ = Empty
+  Cons x xs >>= f = Chapter4.concat (f x) (xs >>= f)
+
+{- 
 =💣= Task 8*: Before the Final Boss
 
 So far we've been talking only about instances and use cases of
@@ -628,8 +681,11 @@ Can you implement a monad version of AND, polymorphic over any monad?
 
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
+
+
+-- One test is failing ! Just False and Nothing. Hmmm. But I am not sure how to use the HINT
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM m1 m2 = fmap (&&) m1 <*> m2
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss

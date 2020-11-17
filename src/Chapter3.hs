@@ -343,7 +343,11 @@ Define the Book product data type. You can take inspiration from our description
 of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
-
+data Book = MkBook
+  { bookName         :: String
+  , bookAuthor       :: String 
+  , bookPrice        :: Double
+  } deriving (Show)
 {- |
 =⚔️= Task 2
 
@@ -373,6 +377,33 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+
+data Knight = Knight
+  {
+      knightHealth :: Int
+    , knightAttack :: Int
+    , knightGold   :: Int
+  } deriving (Show)
+
+data Monster  = Monster
+  {
+      monsterHealth :: Int
+    , monsterAttack :: Int
+    , monsterGold   :: Int
+  } deriving (Show)
+
+
+fight :: Bool -> Knight -> Monster -> Int
+fight _ (Knight _ _ knightGold) (Monster 0 _ monsterGold) = knightGold + monsterGold
+fight _ (Knight 0 _ knightGold) (Monster _ _ monsterGold) = (-1)
+fight whosechance (Knight knightHealth knightAttack knightGold) (Monster monsterHealth monsterAttack monsterGold)
+  | whosechance  = fight (not whosechance) (Knight knightHealth knightAttack knightGold) 
+                              (Monster (monsterHealth - knightAttack) monsterAttack monsterGold) 
+  | otherwise = fight (not whosechance) (Knight (knightHealth - monsterAttack) knightAttack knightGold) 
+                             (Monster monsterHealth monsterAttack monsterGold) 
+
+
+
 
 {- |
 =🛡= Sum types
@@ -459,6 +490,15 @@ and provide more flexibility when working with data types.
 Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
+data Meals = 
+    Breakfast 
+  | Lunch
+  | Tiffin
+  | Snack
+  | Supper
+  | Dinner
+  | LateNightFridgeRaid
+
 
 {- |
 =⚔️= Task 4
@@ -479,6 +519,41 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
+
+data PublicBuilding = Church | Library deriving Show
+
+data House = House
+  {
+      houseNumber :: Int
+    , peopleInside :: Int 
+  } deriving (Show)
+
+getFolks :: House -> Int
+getFolks (House _ peopleInside) = 
+  peopleInside
+
+data City  = City
+   { 
+    nameCastle :: String  
+  , wall :: Bool
+  , churchOrLibrary :: PublicBuilding
+  , houses :: [ House ]
+   } deriving (Show)
+   
+buildCastle :: String -> City -> City 
+buildCastle castleName (City nameCastle _ _ _) =  (City castleName False Church [])
+
+cityPopulation :: City -> Int
+cityPopulation (City _ _ _ houses) =  foldl (+) 0 (map getFolks houses)
+
+buildHouse :: City -> City
+buildHouse (City nameCastle wall churchOrLibrary houses) = (City nameCastle wall churchOrLibrary (houses ++ [(House 100 1)]))
+
+buildWalls :: City -> City
+buildWalls (City null wall churchOrLibrary houses) = (City null False churchOrLibrary houses)
+buildWalls (City castleName wall churchOrLibrary houses) 
+    | cityPopulation (City castleName wall churchOrLibrary houses) >=10  = (City castleName True churchOrLibrary houses)
+    | otherwise = (City castleName False churchOrLibrary houses)
 
 {-
 =🛡= Newtypes
@@ -577,20 +652,32 @@ calculatePlayerDefense armor dexterity = armor * dexterity
 calculatePlayerHit :: Int -> Int -> Int -> Int
 calculatePlayerHit damage defense health = health + defense - damage
 
+newtype FirstPlayer = FirstPlayer 
+  {
+    unFirstPlayer :: Player
+  }
+newtype SecondPlayer = SecondPlayer 
+  {
+    unSecondPlayer :: Player
+  }
+
+
 -- The second player hits first player and the new first player is returned
-hitPlayer :: Player -> Player -> Player
+hitPlayer :: FirstPlayer -> SecondPlayer -> FirstPlayer
+--hitPlayer :: Player -> Player -> Player
 hitPlayer player1 player2 =
     let damage = calculatePlayerDamage
-            (playerAttack player2)
-            (playerStrength player2)
+            (playerAttack (unSecondPlayer player2))
+            (playerStrength (unSecondPlayer player2))
         defense = calculatePlayerDefense
-            (playerArmor player1)
-            (playerDexterity player1)
+            (playerArmor (unFirstPlayer player1))
+            (playerDexterity (unFirstPlayer player1))
         newHealth = calculatePlayerHit
             damage
             defense
-            (playerHealth player1)
-    in player1 { playerHealth = newHealth }
+            (playerHealth (unFirstPlayer player1))
+    in FirstPlayer ((unFirstPlayer player1) { playerHealth = newHealth })
+
 
 {- |
 =🛡= Polymorphic data types
@@ -731,6 +818,8 @@ data List a
   should go together as one type.
 -}
 
+
+
 {- |
 =⚔️= Task 6
 
@@ -752,6 +841,27 @@ parametrise data types in places where values can be of any general type.
 🕯 HINT: 'Maybe' that some standard types we mentioned above are useful for
   maybe-treasure ;)
 -}
+
+data TreasureChest x = TreasureChest
+    { 
+      treasureChestLoot :: x
+    }
+
+data KnownMagicType
+    = DarkMagic
+    | LightMagic
+    | NeutralMagic
+
+data MagicPower x = MagicPower
+    { 
+       power :: Either KnownMagicType (MagicPower x)
+    }
+
+data Lair l treasure newMagic = Lair 
+ {
+    dragon :: MagicPower newMagic
+  , treasureChest :: Maybe (TreasureChest treasure)
+ }
 
 {-
 =🛡= Typeclasses
@@ -909,7 +1019,25 @@ Implement instances of "Append" for the following types:
 -}
 class Append a where
     append :: a -> a -> a
+ 
+instance (Append a) => Append (Maybe a) where
+  append :: (Maybe a) -> (Maybe a) -> (Maybe a)
+  append (Just x) (Just y) = append (Just x) (Just y)
+  append Nothing _ = error "Bad incoming type"
+  append _ Nothing = error "Bad incoming type"
 
+instance (Append a, Show a) => Append [a] where
+  append :: [a] -> [a] -> [a]
+  append _ s = s
+  append f _ = f
+  append f s = f ++ s
+
+newtype Gold = Gold { unGold :: Int }
+instance Append Gold where
+  append :: Gold -> Gold -> Gold
+  append _ s = s
+  append f _ = f
+  append f s = Gold ((unGold f) + (unGold s))
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -970,6 +1098,27 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
+data Weekdays =   Monday
+                | Tuesday
+                | Wednesday
+                | Thursday
+                | Friday
+                | Saturday
+                | Sunday deriving (Enum, Show, Eq, Read, Ord)
+
+isWeekend :: Weekdays -> Bool
+isWeekend day = case day of 
+  Saturday ->  True
+  Sunday -> True
+  _ -> False
+
+nextDay :: Weekdays -> Weekdays
+nextDay Sunday = Monday
+nextDay day = succ day
+
+daysToParty :: Weekdays -> Int
+daysToParty Friday = 0
+daysToParty day = 1 + daysToParty (nextDay day)
 
 {-
 =💣= Task 9*
@@ -1006,6 +1155,50 @@ Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
 
+data Fighter = Fighter
+    { fighterHealth      :: Int
+    , fighterDefense     :: Int
+    }
+
+calculateFighterHealth :: Int -> Int -> Int
+calculateFighterHealth health defense = health + defense - 1 
+
+calculateFighterDefense :: Int -> Int -> Int
+calculateFighterDefense spell potion = spell + potion
+
+newtype KnightFighter = KnightFighter
+  {
+    unKnight :: Fighter
+  }
+newtype MonsterFighter = MonsterFighter
+  {
+    unMonster :: Fighter
+  }
+
+class FighterAttack a where
+  hitEnemy :: a -> a
+
+instance FighterAttack MonsterFighter where
+  hitEnemy :: MonsterFighter -> MonsterFighter
+  hitEnemy m = 
+    let newHealth = calculateFighterHealth (fighterHealth (unMonster m)) 0
+    in MonsterFighter ((unMonster m) { fighterHealth = newHealth })
+
+instance FighterAttack KnightFighter where
+  hitEnemy :: KnightFighter -> KnightFighter
+  hitEnemy k = 
+    let 
+      boostDefense = calculateFighterDefense 1 1
+      newHealth = calculateFighterHealth (fighterHealth (unKnight k)) 0
+    in KnightFighter ((unKnight k) { fighterHealth = newHealth + boostDefense })
+
+fightOn :: Bool -> KnightFighter -> MonsterFighter -> Int
+fightOn flip k m = 
+  if ((fighterHealth (unKnight k) <= 0) || (fighterHealth (unMonster m) <= 0))  
+    then (-1)
+  else case flip of 
+    True -> fightOn False k (hitEnemy m)
+    False -> fightOn True (hitEnemy k) m
 
 {-
 You did it! Now it is time to open pull request with your changes
