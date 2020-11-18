@@ -738,8 +738,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate []     = []
-smartReplicate (x:xs) = replicate x x ++ smartReplicate xs
+smartReplicate = foldr (\i -> (++) (replicate i i)) []
 
 {- |
 =⚔️= Task 9
@@ -876,10 +875,7 @@ and reverses it.
   cheating!
 -}
 rewind :: [a]->[a]
-rewind = go []
-  where
-    go l []     = l
-    go l (x:xs) = go (x:l) xs
+rewind = foldl (flip(:)) []
 
 
 {-
