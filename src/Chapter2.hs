@@ -364,7 +364,15 @@ Implement a function that returns only the first half of a given list.
 "b"
 -}
 -- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
+--firstHalf l = error "firstHalf: Not implemented!"
+
+firstHalf :: [a] -> Int -> [a]
+firstHalf arr ind = if ind < length arr `div` 2
+                       then [arr !! ind] ++ firstHalf arr (ind+1)
+                    else []
+
+--for this the ind should always be 0
+--Can't think of any alternate solution. Sorry                   
 
 
 {- |
