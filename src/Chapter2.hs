@@ -336,7 +336,7 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList from to list 
+subList from to list
   | from < 0 || to < from = []
   | otherwise = take (to-from+1) $ drop from list
 
@@ -507,7 +507,7 @@ False
 -}
 isThird42 :: (Eq a, Num a) => [a] -> Bool
 isThird42 (_:_:42:_) = True
-isThird42 _ = False
+isThird42 _          = False
 
 
 {- |
@@ -612,7 +612,7 @@ Implement a function that duplicates each element of the list
 
 -}
 duplicate :: [a] -> [a]
-duplicate [] = []
+duplicate []     = []
 duplicate (x:xs) = x:x:duplicate xs
 
 
@@ -629,8 +629,8 @@ Write a function that takes elements of a list only in even positions.
 [2,3,4]
 -}
 takeEven :: [a] -> [a]
-takeEven [] = []
-takeEven [x] = [x]
+takeEven []       = []
+takeEven [x]      = [x]
 takeEven (x:_:xs) = x:takeEven xs
 
 {- |
@@ -738,8 +738,8 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate [] = []
-smartReplicate (x:xs) = replicate x x ++ (smartReplicate xs)
+smartReplicate []     = []
+smartReplicate (x:xs) = replicate x x ++ smartReplicate xs
 
 {- |
 =⚔️= Task 9
@@ -792,11 +792,11 @@ Let's now try to eta-reduce some of the functions and ensure that we
 mastered the skill of eta-reducing.
 -}
 divideTenBy :: Int -> Int
-divideTenBy = div 10 
+divideTenBy = div 10
 
 -- TODO: type ;)
 listElementsLessThan ::Ord a => a->[a]->[a]
-listElementsLessThan x  = filter (< x) 
+listElementsLessThan x  = filter (< x)
 
 -- Can you eta-reduce this one???
 pairMul ::Num a=> [a] -> [a] -> [a]
@@ -857,7 +857,7 @@ list.
 -}
 rotate :: Int->[a]->[a]
 rotate _ [] = []
-rotate n l 
+rotate n l
   | n < 0 = []
   | otherwise = take (length l) $drop n $cycle l
 
@@ -878,7 +878,7 @@ and reverses it.
 rewind :: [a]->[a]
 rewind = go []
   where
-    go l [] = l
+    go l []     = l
     go l (x:xs) = go (x:l) xs
 
 
