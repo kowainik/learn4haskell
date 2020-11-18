@@ -114,23 +114,23 @@ As always, try to guess the output first! And don't forget to insert
 the output in here:
 
 >>> :k Char
-
+Char :: *
 >>> :k Bool
-
+Bool :: *
 >>> :k [Int]
-
+[Int] :: *
 >>> :k []
-
+[] :: * -> *
 >>> :k (->)
-
+(->) :: * -> * -> *
 >>> :k Either
-
+Either :: * -> * -> *
 >>> data Trinity a b c = MkTrinity a b c
 >>> :k Trinity
-
+Trinity :: * -> * -> * -> *
 >>> data IntBox f = MkIntBox (f Int)
 >>> :k IntBox
-
+IntBox :: (* -> *) -> *
 -}
 
 {- |
@@ -293,7 +293,8 @@ values and apply them to the type level?
 -}
 instance Functor (Secret e) where
     fmap :: (a -> b) -> Secret e a -> Secret e b
-    fmap = error "fmap for Box: not implemented!"
+    fmap f (Reward x) = Reward $ f x
+    fmap _ (Trap x) = Trap x
 
 {- |
 =⚔️= Task 3
@@ -305,7 +306,14 @@ typeclasses for standard data types.
 -}
 data List a
     = Empty
-    | Cons a (List a)
+    | Cons a (List a) deriving (Show)
+
+instance Functor List where
+    fmap :: (a -> b) -> List a -> List b
+    fmap f (Cons x a) = Cons (f x) (fmap f a)
+    fmap _ Empty = Empty
+
+
 
 {- |
 =🛡= Applicative
@@ -472,10 +480,11 @@ Implement the Applicative instance for our 'Secret' data type from before.
 -}
 instance Applicative (Secret e) where
     pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+    pure x = Reward x
 
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
+    Trap x <*> _ = Trap x
+    Reward f <*> x = fmap f x
 
 {- |
 =⚔️= Task 5
@@ -488,6 +497,27 @@ Implement the 'Applicative' instance for our 'List' type.
   may also need to implement a few useful helper functions for our List
   type.
 -}
+-- helper to join two List together
+join :: List a -> List a -> List a
+join l1 Empty = l1
+join Empty l2 = l2
+join (Cons x xs) l2 = Cons x $ join xs l2
+
+instance Applicative List where
+    pure :: a -> List a
+    pure x = Cons x Empty
+
+    (<*>) :: List (a -> b) -> List a -> List b
+    Empty <*> _ = Empty
+    (Cons f fs) <*> xs = join (fmap f xs) (fs <*> xs)
+
+    -- (<*>) :: List (a -> b) -> List a -> List b
+    -- Empty <*> _ = Empty
+    -- funcList <*> xs = go funcList xs
+    --     where
+    --         go :: List (a -> b) -> List a -> List b
+    --         go Empty _ = Empty
+    --         go (Cons f fs) xs = join (fmap f xs) (go fs xs)
 
 
 {- |
@@ -600,7 +630,8 @@ Implement the 'Monad' instance for our 'Secret' type.
 -}
 instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+    Trap e >>= _ = Trap e
+    Reward a >>= f = f a
 
 {- |
 =⚔️= Task 7
@@ -610,6 +641,12 @@ Implement the 'Monad' instance for our lists.
 🕯 HINT: You probably will need to implement a helper function (or
   maybe a few) to flatten lists of lists to a single list.
 -}
+
+
+instance Monad List where
+    (>>=) :: List a -> (a -> List b) -> List b
+    Empty >>= _ = Empty
+    (Cons x xs) >>= f = join (f x) (xs >>= f)
 
 
 {- |
@@ -629,7 +666,19 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM m1 m2 =
+    m1 >>= (\x -> m2 >>= (\y -> pure $ x && y))
+
+andM2 :: (Monad m) => m Bool -> m Bool -> m Bool
+andM2 m1 m2 =
+    m1 >>= (\x -> m2 >>= (\y -> return $ x && y))
+
+andM3 :: (Monad m) => m Bool -> m Bool -> m Bool
+andM3 m1 m2 = do
+    x <- m1
+    y <- m2
+    return $ x && y
+
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
@@ -673,6 +722,29 @@ Specifically,
  ❃ Implement the function to convert Tree to list
 -}
 
+data Tree a = Leaf a
+            | Node (Tree a) a (Tree a) deriving (Show, Eq)
+
+data Tree2  = Leaf2 Int
+                | Node2 Tree2 Int Tree2 deriving (Show, Eq)
+
+instance Functor Tree where
+    fmap :: (a -> b) -> Tree a -> Tree b
+    fmap f (Leaf a) = Leaf $ f a
+    fmap f (Node t1 a t2) = Node (fmap f t1) (f a) (fmap f t2)
+
+-- alg:
+-- 1. Call reverseTree for left-subtree.
+-- 2. Call reverseTree for right-subtree.
+-- 3. Swap left and right subtrees.
+reverseTree :: Tree a -> Tree a
+reverseTree (Leaf a) = Leaf a
+reverseTree (Node (Leaf x) a (Leaf y)) = (Node (Leaf y) a (Leaf x))
+reverseTree (Node t1 a t2) = Node (reverseTree t2) a (reverseTree t1)
+
+tree2List :: Tree a -> [a]
+tree2List (Leaf a) = [a]
+tree2List (Node t1 a t2) = [a] ++ tree2List t1 ++ tree2List t2
 
 {-
 You did it! Now it is time to open pull request with your changes
