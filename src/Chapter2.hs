@@ -345,7 +345,8 @@ Don't forget that you can load this module in GHCi to call functions
 from it!
 
 ghci> :l src/Chapter2.hs
--}
+-} 
+
 subList :: Int -> Int -> [a] -> [a]
 subList l r xs =
   if l<0 || r<0 || l>r then []
