@@ -343,7 +343,12 @@ Define the Book product data type. You can take inspiration from our description
 of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
-
+data Book = MkBook
+  { bookTitle :: String
+  ,bookAuthor :: String
+  ,bookCover  :: String
+  ,bookPages  :: Int
+  }
 {- |
 =⚔️= Task 2
 
@@ -374,6 +379,21 @@ after the fight. The battle has the following possible outcomes:
 
 -}
 
+data Knight = Knight
+ {knightHealth :: Int
+ ,knightAttack:: Int
+ ,knightGold   :: Int}
+
+data Monster = Monster
+ {monsterHealth :: Int
+ ,monsterAttack:: Int
+ ,monsterGold   :: Int}
+
+fight :: Monster -> Knight -> Int
+fight m k
+   | knightAttack k > monsterHealth m = monsterGold m
+   | monsterAttack m > knightHealth k = -1
+   | otherwise = 0
 {- |
 =🛡= Sum types
 
@@ -459,6 +479,13 @@ and provide more flexibility when working with data types.
 Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
+data Meal = Breakfast
+  | Brunch
+  | Lunch
+  | Snack
+  | Tea
+  | Dinner
+  | Supper
 
 {- |
 =⚔️= Task 4
@@ -479,7 +506,36 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
+data CityBuilding = Church|Library
+newtype House = House Int
+newtype CastleName = CastleName String
+data CityType = Small | Castled String | Walled String
+data City = City 
+      { citytype::CityType
+      , building:: CityBuilding
+      , houses:: [House]}
 
+
+buildCastle :: City -> String -> City
+buildCastle city name = case citytype city of
+  Small -> city {citytype=Castled name}
+  Walled _ -> city {citytype=Walled name}
+  Castled _ -> city {citytype=Castled name}
+
+buildHouse:: City -> Int -> City
+buildHouse city size = city {houses = House size :houses city}
+
+buildWalls :: City -> City
+buildWalls city = case citytype city of
+  Small -> city
+  Walled _ -> city
+  Castled name
+    | population >=10 -> city {citytype=Walled name}
+    | otherwise -> city
+    where population = foldr (\(House size) pop->pop+size) 0 (houses city)
+
+
+  
 {-
 =🛡= Newtypes
 
