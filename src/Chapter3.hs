@@ -816,7 +816,19 @@ parametrise data types in places where values can be of any general type.
 🕯 HINT: 'Maybe' that some standard types we mentioned above are useful for
   maybe-treasure ;)
 -}
+data TreasureChest treasure = TreasureChest 
+    { treasureChestGold :: Int
+    , treasureChestLoot :: treasure
+    }
+data Dragon p= Dragon
+  { dragonName::String
+  ,dragonPower :: p}
 
+data Lair p t = Lair 
+  {dragonInLair :: Dragon p
+  ,treasureInLair :: Maybe (TreasureChest t)
+  }
+  
 {-
 =🛡= Typeclasses
 
