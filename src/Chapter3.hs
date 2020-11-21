@@ -816,6 +816,7 @@ parametrise data types in places where values can be of any general type.
 🕯 HINT: 'Maybe' that some standard types we mentioned above are useful for
   maybe-treasure ;)
 -}
+
 data TreasureChest treasure = TreasureChest 
     { treasureChestGold :: Int
     , treasureChestLoot :: treasure
@@ -829,7 +830,7 @@ data Lair p t = Lair
   ,treasureInLair :: Maybe (TreasureChest t)
   }
   
-{-
+{-|
 =🛡= Typeclasses
 
 __Typeclass__ is a regularly used way to express common characteristics of
@@ -986,6 +987,19 @@ Implement instances of "Append" for the following types:
 class Append a where
     append :: a -> a -> a
 
+newtype Gold = Gold Int
+
+instance Append Gold where
+  append (Gold g) (Gold h) = Gold $ g+h
+
+instance Append [a] where
+  append l1 l2 = l1 ++ l2
+
+instance (Append a) => Append (Maybe a) where
+  append (Just m1) (Just m2) = Just $ append m1 m2
+  append (Just m1) _ = Just m1
+  append _ (Just m2) = Just m2
+  append _ _ = Nothing
 
 {-
 =🛡= Standard Typeclasses and Deriving
