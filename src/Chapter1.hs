@@ -576,7 +576,7 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c = elem c ['a', 'e', 'i', 'o', 'u']
+isVowel c = c `elem` ['a', 'e', 'i', 'o', 'u']
 
 {- |
 == Local variables and functions
@@ -640,7 +640,7 @@ specifying complex expressions.
 -}
 
 sumLast2 :: Int -> Int
-sumLast2 n = foldr (+) 0 (lastTwo n)
+sumLast2 n = sum (lastTwo n)
   where
     lastTwo :: Int -> [Int]
     lastTwo n =
