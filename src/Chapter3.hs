@@ -1001,7 +1001,7 @@ instance (Append a) => Append (Maybe a) where
   append _ (Just m2) = Just m2
   append _ _ = Nothing
 
-{-
+{- |
 =🛡= Standard Typeclasses and Deriving
 
 As well as many useful data types, the standard library in Haskell also comes with some very
@@ -1047,7 +1047,6 @@ ghci> show (Princess "Anna")
 Princess {princessName = "Anna"}
 
 -}
-
 {-
 =⚔️= Task 8
 
@@ -1060,6 +1059,21 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
+data WeekDay = Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday deriving (Show,Read,Eq,Ord,Enum)
+
+isWeekend::WeekDay->Bool
+isWeekend d 
+  | d == Sunday || d == Saturday = True
+  | otherwise = False
+
+nextDay :: WeekDay->WeekDay
+nextDay Saturday = Sunday
+nextDay d = toEnum $ fromEnum d + 1
+
+daysToParty:: WeekDay->Int
+daysToParty Friday = 0
+daysToParty d = 1 + daysToParty ( nextDay d) -- (daysToParty Saturday) == 6 -- but that's the spec
+
 
 {-
 =💣= Task 9*
