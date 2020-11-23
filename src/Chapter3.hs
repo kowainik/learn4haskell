@@ -1171,7 +1171,7 @@ battle attacker target = go attacker target False
     go a t swapped
       | health t < 0 = Left a
       | swapped && health a < 0 = Right t
-      | swapped = go  (attackAction t a) t False 
+      | swapped = go  (attackAction t a) t False
       | otherwise = go  a (attackAction a t) True
 
 {-
