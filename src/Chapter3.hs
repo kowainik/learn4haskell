@@ -1144,7 +1144,7 @@ instance Fighter FKnight where
   receiveAttack a b 
     | hits > 0 = a {fkhealth = health a-hits}
     | otherwise = a
-    where 
+    where
       hits = attack b - fkdefence a
 
 
