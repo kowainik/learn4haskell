@@ -1156,7 +1156,7 @@ runAction = id
 
 -- should maybe keep track of potions and spells owned by the knight but I don't think adds much to the idea
 drinkPotionAction:: FKnight->Potion->FKnight
-drinkPotionAction k (Potion strength) = k {fkhealth=strength+fkhealth k} 
+drinkPotionAction k (Potion strength) = k {fkhealth=strength+fkhealth k}
 
 castSpellAction:: FKnight->Spell->FKnight
 castSpellAction k (Spell strength) = k {fkdefence=strength+fkdefence k} 
