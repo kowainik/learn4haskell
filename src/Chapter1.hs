@@ -490,7 +490,7 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 lastDigit :: Int -> Int
-lastDigit n = mod n 10
+lastDigit n = mod (abs n) 10
 
 
 {- |
@@ -559,9 +559,12 @@ Casual reminder about adding top-level type signatures for all functions :)
 
 mid :: Int -> Int -> Int -> Int
 mid x y z
-  | y < x && x < z = x
-  | x < y && y < z = y
-  | otherwise = z
+  | y <= x && x <= z = x
+  | y >= x && x >= z = x
+  | x <= y && y <= z = y
+  | x >= y && y >= z = y
+  | x <= z && z <= y = z
+  | x >= z && z >= y = z
 
 {- |
 =⚔️= Task 8
@@ -645,9 +648,9 @@ sumLast2 n = sum (lastTwo n)
     lastTwo :: Int -> [Int]
     lastTwo n =
       let
-        snd = mod n 10
-        fst = div (mod n 100 - snd) 10
-      in [fst, snd]
+        second = mod (abs n) 10
+        first  = div (mod (abs n) 100 - second) 10
+      in [first, second]
 
 {- |
 =💣= Task 10*
@@ -668,8 +671,9 @@ aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
 firstDigit n
-  | n < 10 = n
-  | otherwise = firstDigit (div n 10)
+  | absN < 10 = absN
+  | otherwise = firstDigit (div (absN) 10)
+  where absN = abs n
 
 
 {-
