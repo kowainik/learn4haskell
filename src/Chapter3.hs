@@ -1159,7 +1159,7 @@ drinkPotionAction:: FKnight->Potion->FKnight
 drinkPotionAction k (Potion strength) = k {fkhealth=strength+fkhealth k}
 
 castSpellAction:: FKnight->Spell->FKnight
-castSpellAction k (Spell strength) = k {fkdefence=strength+fkdefence k} 
+castSpellAction k (Spell strength) = k {fkdefence=strength+fkdefence k}
 
 -- tried to do something like battle:: Fighter -> Fighter -> Fighter -- failed, need actual types, not typeclasses
 --                         or battle:: (Fighter a,Fighter b) => a->b->a|b -- failed, it's not typescript
