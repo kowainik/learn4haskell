@@ -535,7 +535,6 @@ buildWalls city = case citytype city of
     where population = foldr (\(House size) pop->pop+size) 0 (houses city)
 
 
-  
 {-
 =🛡= Newtypes
 
