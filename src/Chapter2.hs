@@ -39,6 +39,7 @@ Now, if you are ready, bring it on!
 -}
 
 module Chapter2 where
+import Data.List (take, drop)
 
 {-
 =🛡= Imports
@@ -136,43 +137,43 @@ functions in GHCi and insert the corresponding resulting output below:
 
 List of booleans:
 >>> :t [True, False]
-
+[True, False] :: [Bool]
 
 String is a list of characters:
 >>> :t "some string"
-
+"some string" :: [Char]
 
 Empty list:
 >>> :t []
-
+[] :: [a]
 
 Append two lists:
 >>> :t (++)
-
+(++) :: [a] -> [a] -> [a]
 
 Prepend an element at the beginning of a list:
 >>> :t (:)
-
+(:) :: a -> [a] -> [a]
 
 Reverse a list:
 >>> :t reverse
-
+reverse :: [a] -> [a]
 
 Take first N elements of a list:
 >>> :t take
-
+take :: Int -> [a] -> [a]
 
 Create a list from N same elements:
 >>> :t replicate
-
+take :: Int -> a -> [a]
 
 Split a string by line breaks:
 >>> :t lines
-
+lines :: String -> [String]
 
 Join a list of strings with line breaks:
 >>> :t unlines
-
+lines :: [String] -> String
 
 -}
 
@@ -336,7 +337,9 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList = error "subList: Not implemented!"
+subList x y l
+  | x >= 0 && x <= y = take y (drop x l)
+  | otherwise        = []
 
 {- |
 =⚔️= Task 4
@@ -348,8 +351,8 @@ Implement a function that returns only the first half of a given list.
 >>> firstHalf "bca"
 "b"
 -}
--- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
+firstHalf :: [a] -> [a]
+firstHalf l = take (div (length l) 2) l
 
 
 {- |
@@ -501,8 +504,9 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
-isThird42 = error "isThird42: Not implemented!"
-
+isThird42 :: [Int] -> Bool
+isThird42 (_:_:42:_) = True
+isThird42 _          = False
 
 {- |
 =🛡= Recursion
@@ -606,7 +610,8 @@ Implement a function that duplicates each element of the list
 
 -}
 duplicate :: [a] -> [a]
-duplicate = error "duplicate: Not implemented!"
+duplicate [] = []
+duplicate (x:xs) = x:x:duplicate xs
 
 
 {- |
@@ -621,7 +626,14 @@ Write a function that takes elements of a list only in even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
-takeEven = error "takeEven: Not implemented!"
+takeEven :: [a] -> [a]
+takeEven = go 0 []
+  where
+    go :: Int -> [a] -> [a] -> [a]
+    go _ acc [] = acc
+    go i acc (x:xs)
+      | (mod i 2) == 0 = go (i+1) (acc ++ [x]) xs
+      | otherwise      = go (i+1) acc xs 
 
 {- |
 =🛡= Higher-order functions
@@ -728,7 +740,8 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = error "smartReplicate: Not implemented!"
+smartReplicate l =
+  concat $ map (\n -> replicate n n) l
 
 {- |
 =⚔️= Task 9
@@ -741,8 +754,8 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains = error "contains: Not implemented!"
-
+contains :: (Eq a) => a -> [[a]] -> [[a]]
+contains e ll = filter (elem e) ll
 
 {- |
 =🛡= Eta-reduction
@@ -781,13 +794,15 @@ Let's now try to eta-reduce some of the functions and ensure that we
 mastered the skill of eta-reducing.
 -}
 divideTenBy :: Int -> Int
-divideTenBy x = div 10 x
+divideTenBy = div 10
 
 -- TODO: type ;)
-listElementsLessThan x l = filter (< x) l
+listElementsLessThan :: (Ord a) => a -> [a] -> [a]
+listElementsLessThan x = filter (< x)
 
 -- Can you eta-reduce this one???
-pairMul xs ys = zipWith (*) xs ys
+pairMul :: Num a => [a] -> [a] -> [a]
+pairMul = zipWith (*)
 
 {- |
 =🛡= Lazy evaluation
@@ -842,7 +857,10 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate = error "rotate: Not implemented!"
+rotate :: Int -> [a] -> [a]
+rotate n xs
+  | n < 0     = []
+  | otherwise = take (length xs) $ drop n (cycle xs)
 
 {- |
 =💣= Task 12*
@@ -858,8 +876,11 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind = error "rewind: Not Implemented!"
-
+rewind :: [a] -> [a]
+rewind = go []
+  where
+    go acc []     = acc
+    go acc (x:xs) = (rewind xs) ++ (x:acc)
 
 {-
 You did it! Now it is time to open pull request with your changes
