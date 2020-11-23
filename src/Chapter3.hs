@@ -625,7 +625,7 @@ newtype Damage    = Damage  Int
 newtype Defense   = Defense  Int
 
 data Player = Player
-    { playerHealth    :: Health   
+    { playerHealth    :: Health
     , playerArmor     :: Armor    
     , playerAttack    :: Attack   
     , playerDexterity :: Dexterity
