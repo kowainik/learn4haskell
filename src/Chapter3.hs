@@ -1110,6 +1110,70 @@ Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
 
+class Fighter a where
+   attack :: a -> Int
+   health :: a -> Int
+   receiveAttack :: Fighter b => a -> b -> a
+
+
+data FMonster = FMonster 
+  {fmname::String
+  ,fmattack::Int
+  ,fmhealth::Int
+  } deriving (Show)
+
+instance Fighter FMonster where
+  attack = fmattack
+  health = fmhealth
+  receiveAttack a b = a {fmhealth = health a-attack b}
+
+newtype Potion = Potion Int deriving Show
+newtype Spell = Spell Int deriving Show
+
+data FKnight = FKnight 
+  {fkname::String
+  ,fkattack::Int
+  ,fkhealth::Int
+  ,fkdefence::Int
+  } deriving (Show)
+
+
+instance Fighter FKnight where
+  attack = fkattack
+  health = fkhealth
+  receiveAttack a b 
+    | hits > 0 = a {fkhealth = health a-hits}
+    | otherwise = a
+    where 
+      hits = attack b - fkdefence a
+
+
+attackAction:: (Fighter a, Fighter b)=> a->b->b
+attackAction a b = receiveAttack b a
+
+runAction:: FMonster -> FMonster
+runAction = id
+
+-- should maybe keep track of potions and spells owned by the knight but I don't think adds much to the idea
+drinkPotionAction:: FKnight->Potion->FKnight
+drinkPotionAction k (Potion strength) = k {fkhealth=strength+fkhealth k} 
+
+castSpellAction:: FKnight->Spell->FKnight
+castSpellAction k (Spell strength) = k {fkdefence=strength+fkdefence k} 
+
+-- tried to do something like battle:: Fighter -> Fighter -> Fighter -- failed, need actual types, not typeclasses
+--                         or battle:: (Fighter a,Fighter b) => a->b->a|b -- failed, it's not typescript
+--                         or battle:: (Fighter a,Fighter b) => a->b->c -- failed, can't guess what C would be bound to
+-- I do like Either, it's the real thing
+-- would have been interesting to add run (and then either is not a solution), potions and spells, but make little sense without random numbers and demand some sort of strategy
+battle:: (Fighter a,Fighter b) => a->b->Either a b
+battle attacker target = go attacker target False
+  where 
+    go a t swapped
+      | health t < 0 = Left a
+      | swapped && health a < 0 = Right t
+      | swapped = go  (attackAction t a) t False 
+      | otherwise = go  a (attackAction a t) True
 
 {-
 You did it! Now it is time to open pull request with your changes
