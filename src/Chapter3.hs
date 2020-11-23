@@ -627,7 +627,7 @@ newtype Defense   = Defense  Int
 data Player = Player
     { playerHealth    :: Health
     , playerArmor     :: Armor
-    , playerAttack    :: Attack   
+    , playerAttack    :: Attack
     , playerDexterity :: Dexterity
     , playerStrength  :: Strength 
     }
