@@ -510,7 +510,7 @@ data CityBuilding = Church|Library
 newtype House = House Int
 newtype CastleName = CastleName String
 data CityType = Small | Castled String | Walled String
-data City = City 
+data City = City
       { citytype::CityType
       , building:: CityBuilding
       , houses:: [House]}
