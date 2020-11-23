@@ -645,9 +645,8 @@ sumLast2 n = sum (lastTwo n)
     lastTwo :: Int -> [Int]
     lastTwo n =
       let
-        mod10 = mod n 10
-        fst = div (mod n 100 - mod10) 10
-        snd = mod10
+        snd = mod n 10
+        fst = div (mod n 100 - snd) 10
       in [fst, snd]
 
 {- |
