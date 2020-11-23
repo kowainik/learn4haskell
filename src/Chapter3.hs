@@ -1168,7 +1168,7 @@ castSpellAction k (Spell strength) = k {fkdefence=strength+fkdefence k}
 -- would have been interesting to add run (and then either is not a solution), potions and spells, but make little sense without random numbers and demand some sort of strategy
 battle:: (Fighter a,Fighter b) => a->b->Either a b
 battle attacker target = go attacker target False
-  where 
+  where
     go a t swapped
       | health t < 0 = Left a
       | swapped && health a < 0 = Right t
