@@ -505,6 +505,14 @@ Implement the 'Applicative' instance for our 'List' type.
   type.
 -}
 
+-- Note to reviewers: if length don't matchthis will stop at the shortest length. Not ideal but looks the least surprising
+instance Applicative List where
+  pure:: a -> List a
+  pure a = Cons a Empty
+  (<*>):: List (a->b) -> List a -> List b
+  (<*>) Empty _                 = Empty
+  (<*>) _ Empty                 = Empty
+  (<*>) (Cons f fs) (Cons a as) = Cons (f a) (fs <*> as)
 
 {- |
 =🛡= Monad
