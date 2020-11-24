@@ -624,7 +624,9 @@ Implement the 'Monad' instance for our 'Secret' type.
 -}
 instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+    -- (>>=) =
+    Trap e >>= _   = Trap e
+    Reward r >>= f = f r
 
 {- |
 =⚔️= Task 7
@@ -635,6 +637,20 @@ Implement the 'Monad' instance for our lists.
   maybe a few) to flatten lists of lists to a single list.
 -}
 
+
+instance Monad List where
+  (>>=) :: List a -> (a->List b)->List b
+  Empty >>= _ = Empty
+  l >>= f     = flatten (fmap f l)
+    where
+      concatenate:: List a -> List a -> List a
+      concatenate l1 l2 = case l1 of
+        Empty     -> l2
+        Cons x xs -> Cons x (concatenate xs l2)
+      flatten:: List(List a)->List a
+      flatten list = case list of
+        Empty     -> Empty
+        Cons x xs -> concatenate x (flatten xs)
 
 {- |
 =💣= Task 8*: Before the Final Boss
