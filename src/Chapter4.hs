@@ -669,7 +669,8 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM a b = fmap (&&) a <*> b -- only needs applicative
+-- andM x y=(x >>= (\a -> pure (&& a)))<*>y -- follows hint but quite ugly
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
