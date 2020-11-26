@@ -563,8 +563,7 @@ mid x y z
   | y >= x && x >= z = x
   | x <= y && y <= z = y
   | x >= y && y >= z = y
-  | x <= z && z <= y = z
-  | x >= z && z >= y = z
+  | otherwise = z
 
 {- |
 =⚔️= Task 8
@@ -648,8 +647,8 @@ sumLast2 n = sum (lastTwo n)
     lastTwo :: Int -> [Int]
     lastTwo n =
       let
-        second = mod (abs n) 10
-        first  = div (mod (abs n) 100 - second) 10
+        (rest, second) = divMod (abs n) 10
+        first          = mod rest 10
       in [first, second]
 
 {- |
