@@ -514,7 +514,7 @@ True
 False
 -}
 isThird42 :: (Eq a, Num a) => [a] -> Bool
-isThird42 (_:_:subject:_) = subject == 42
+isThird42 (_:_:42:_) = True
 isThird42 _ = False
 
 {- |
