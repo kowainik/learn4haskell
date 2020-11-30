@@ -878,8 +878,14 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
+-- alternatively
+-- rewind = foldl (flip (:)) []
 rewind [] = []
-rewind (x:xs) = rewind xs ++ [x]
+rewind xs = go [] xs
+  where
+    go :: [a] -> [a] -> [a]
+    go acc [] = acc
+    go acc (y:ys) = go (y : acc) ys
 
 {-
 You did it! Now it is time to open pull request with your changes
