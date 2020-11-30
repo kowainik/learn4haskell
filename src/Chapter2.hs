@@ -348,7 +348,7 @@ ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
 subList n m list
-  | n < 0 = []
+  | n < 0 || m < n = []
   | otherwise = take (m - n + 1) $ drop n list
 
 {- |
