@@ -861,7 +861,7 @@ list.
 rotate :: Int -> [a] -> [a]
 rotate n xs
   | n < 0 = []
-  | otherwise = take (length xs) $ drop n (cycle xs)
+  | otherwise = let count = length xs in take count $ drop (n `mod` count) (cycle xs)
 
 {- |
 =💣= Task 12*
