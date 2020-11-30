@@ -5,7 +5,6 @@ Happy to see you here, on the way to the wonderful Functional Programming land
 with Haskell! Fight the fierce Monad Dragon and save the globe from despicable
 runtime exceptions!
 
-
 We appreciate your curiosity and will try to provide you with all the necessary
 equipment for your training before the battle in the real FP world. Learning
 Functional Programming can be challenging. But we designed this training to be
@@ -43,7 +42,6 @@ concepts on the way. In this chapter, you are going to learn:
    variables
  ✧ How to write your function from scratch
  ✧ Some standard Haskell functions
-
 
 We are leaving a number of tasks on our path. Your goal is to solve them all and
 make the test for Chapter One green.
@@ -115,7 +113,6 @@ signatures__ and provide types in different situations where you don't
 immediately see what types will be inferred.
 -}
 
-
  {-
 Haskell is a __compiled__ language. In the illustration below, you can see the
 overall picture of the process from your code to the binary of the written
@@ -174,7 +171,6 @@ Now, you can evaluate some expressions and see their results immediately.
   You will also see lines started with "ghci>". They are also supposed to be
   evaluated in GHCi, but our testing system doesn't check their output.
   They are here just to showcase the different usages of GHCi.
-
 
 GHCi can do much more than evaluating expressions. It also contains some special
 commands starting with a colon. For example, to see the list of all available
@@ -357,7 +353,6 @@ all obstacles! And we are always here to help and to decrypt these ancient
 scripts together.
 -}
 
-
 {- |
 =🛡= Defining a function
 
@@ -418,7 +413,6 @@ need to write types manually to challenge yourself.
 Don't forget the main rule:
 **Always provide type signatures for top-level functions in Haskell.**
 -}
-
 
 {- |
 =⚔️= Task 3
@@ -504,7 +498,6 @@ Implement a function, that takes two numbers and returns the one closer to zero:
 >>> closestToZero (-7) 3
 3
 
-
 🕯 HINT: You can use the 'abs' function and the __if-then-else__ Haskell syntax
   for this task.
 
@@ -573,7 +566,9 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel = (`elem` "aeiou")
+isVowel c
+  | c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' = True
+  | otherwise = False
 
 {- |
 == Local variables and functions
