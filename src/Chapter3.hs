@@ -144,7 +144,6 @@ Book:
  AND book cover
  AND book pages
 
-
 -- Sum type
 BookShelf:
     Good  book 1 : {Book}
@@ -467,7 +466,6 @@ acceptLoot loot = case loot of
     WizardStaff _ _ -> "What?! I'm not a wizard, take it back!"
 @
 
-
 To sum up all the above, a data type in Haskell can have zero or more
 constructors, and each constructor can have zero or more fields. This altogether
 gives us product types (records with fields) and sum types (alternatives). The
@@ -725,7 +723,6 @@ mkMehChest treasure = TreasureChest
     }
 @
 
-
 Polymorphic Algebraic Data Types are a great deal! One of the most common and
 useful standard polymorphic types is __"Maybe"__. It represents the notion of
 optional value (maybe the value is there, or maybe it is not).
@@ -893,7 +890,6 @@ instance ArchEnemy Bool where
     getArchEnemy True = "False"
     getArchEnemy False = "True"
 
-
 instance ArchEnemy Int where
     getArchEnemy :: Int -> String
     getArchEnemy i = case i of
@@ -942,7 +938,6 @@ ghci> revealArchEnemy "An adorable string that has no enemies (✿◠ω◠)"
     • In the expression: revealArchEnemy "An adorable string that has no enemies (✿◠ω◠)"
       In an equation for 'it': it = revealArchEnemy "An adorable string that has no enemies (✿◠ω◠)"
 
-
 Interestingly, it is possible to reuse existing instances of data types in the
 same typeclass instances as well. And we also can reuse the __constraints__ in
 the instance declaration for that!
@@ -984,7 +979,7 @@ Implement instances of "Append" for the following types:
 -}
 {- ORMOLU_ENABLE -}
 class Append a where
-    append :: a -> a -> a
+  append :: a -> a -> a
 
 newtype Gold = Gold Int
 
@@ -1137,90 +1132,104 @@ contestants, and write a function that decides the outcome of a fight!
 -}
 
 {- ORMOLU_ENABLE -}
-newtype StatHealth = StatHealth Int
+newtype StatHealth = StatHealth Int deriving (Show)
 
-newtype StatAttack = StatAttack Int
+newtype StatAttack = StatAttack Int deriving (Show)
 
-newtype StatDefense = StatDefense Int
+newtype StatDefense = StatDefense Int deriving (Show)
 
 class Fighter a where
-  actions :: (Fighter b) => a -> [b -> (a, b)]
-  attack :: (Fighter b) => a -> b -> (a, b)
+  actions :: (Fighter b) => a -> [b -> (Maybe a, Maybe b)]
+  attack :: (Fighter b) => a -> b -> (Maybe a, Maybe b)
   health :: a -> StatHealth
 
   -- takes damage, and return an updated fighter with new HP
-  damage :: a -> StatAttack -> a
+  damage :: a -> StatAttack -> Maybe a
 
 class (Fighter a) => FKnight a where
   -- assume no resource management
-  castSpell :: (Fighter b) => a -> b -> (a, b)
+  castSpell :: (Fighter b) => a -> b -> (Maybe a, Maybe b)
 
   defense :: a -> StatDefense
 
   -- assuming bottomless potion
-  drinkPotion :: (Fighter b) => a -> b -> (a, b)
+  drinkPotion :: (Fighter b) => a -> b -> (Maybe a, Maybe b)
 
 class (Fighter a) => FMonster a where
-  runAway :: (Fighter b) => a -> b -> (a, b)
+  runAway :: (Fighter b) => a -> b -> (Maybe a, Maybe b)
+  runAway _ target = (Nothing, Just target)
 
-data FighterKnight p q = MkFighterKnight
-  { fighterKnightActions :: [p -> q -> (p, q)],
-    fighterKnightHealth :: StatHealth,
+data FighterKnight = MkFighterKnight
+  { fighterKnightHealth :: StatHealth,
     fighterKnightAttack :: StatAttack,
     fighterKnightDefense :: StatDefense
   }
+  deriving (Show)
 
-data FighterMonster p q = MkFighterMonster
-  { fighterMonsterAction :: [p -> q -> (p, q)],
-    fighterMonsterHealth :: StatHealth,
+data FighterMonster = MkFighterMonster
+  { fighterMonsterHealth :: StatHealth,
     fighterMonsterAttack :: StatAttack
   }
+  deriving (Show)
 
 -- implement knight
-instance (Fighter p, Fighter q) => Fighter (FighterKnight p q) where
-  actions :: (Fighter b) => FighterKnight p q -> [b -> (FighterKnight p q, b)]
-  actions source = map (\f -> f source) $ fighterKnightActions source
+instance Fighter FighterKnight where
+  actions source = cycle $ map (\f -> f source) [castSpell, attack, drinkPotion, attack]
 
   --actions source = [attack source]
 
-  attack attacker target = (attacker, damage target (fighterKnightAttack attacker))
+  attack attacker target = (Just attacker, damage target (fighterKnightAttack attacker))
 
   health = fighterKnightHealth
-  damage x (StatAttack y) =
-    x {fighterKnightHealth = newHealth}
+  damage x (StatAttack y)
+    | newHealth > 0 = Just x {fighterKnightHealth = StatHealth newHealth}
+    | otherwise = Nothing
     where
       (StatHealth hp) = health x
       (StatDefense def) = defense x
-      newHealth = StatHealth $ hp + def - y
+      newHealth = if y > def then hp + def - y else hp
 
-instance FKnight (FighterKnight p q) where
+instance FKnight FighterKnight where
   castSpell caster target =
     let (StatDefense def) = defense caster
-     in (caster {fighterKnightDefense = StatDefense $ def + 10}, target)
+     in (Just $ caster {fighterKnightDefense = StatDefense $ def + 10}, Just target)
 
   defense = fighterKnightDefense
   drinkPotion consumer target =
     let (StatHealth hp) = health consumer
-     in (consumer {fighterKnightHealth = StatHealth $ hp + 10}, target)
+     in (Just $ consumer {fighterKnightHealth = StatHealth $ hp + 10}, Just target)
 
 -- implement monster
-instance Fighter (FighterMonster p q) where
-  actions source = map (\f -> f source) [attack, runAway]
+instance Fighter FighterMonster where
+  actions source = cycle $ map (\f -> f source) [attack, attack, attack, attack, attack, attack, runAway]
 
-  attack attacker target = (attacker, damage target (fighterMonsterAttack attacker))
+  attack attacker target = (Just attacker, damage target (fighterMonsterAttack attacker))
 
   health = fighterMonsterHealth
-  damage x (StatAttack y) =
-    x {fighterMonsterHealth = newHealth}
+  damage x (StatAttack y)
+    | hp - y > 0 = Just x {fighterMonsterHealth = StatHealth newHealth}
+    | otherwise = Nothing
     where
       (StatHealth hp) = health x
-      newHealth = StatHealth $ hp - y
+      newHealth = hp - y
 
-instance FMonster (FighterMonster p q) where
-  runAway source target = (source, target)
+instance FMonster FighterMonster
 
-engageBattle :: Fighter a => a -> a -> a
-engageBattle = error "unimplemented"
+engageBattle :: (Fighter a, Fighter b) => a -> b -> Either a b
+engageBattle attacker defender =
+  go 0 (0, 0) (Just attacker) (Just defender)
+  where
+    go :: (Fighter a, Fighter b) => Int -> (Int, Int) -> Maybe a -> Maybe b -> Either a b
+    go _ _ Nothing (Just dfder) = Right dfder
+    go _ _ (Just atker) Nothing = Left atker
+    go turn (attackerIdx, defenderIdx) (Just atker) (Just dfder)
+      | even turn =
+        let (atkerNew, dfderNew) = actions atker !! attackerIdx $ dfder
+         in go (turn + 1) (attackerIdx + 1, defenderIdx) atkerNew dfderNew
+      | odd turn =
+        let (dfderNew, atkerNew) = actions dfder !! defenderIdx $ atker
+         in go (turn + 1) (attackerIdx, defenderIdx + 1) atkerNew dfderNew
+    go _ _ _ _ = error "Not supposed to happen"
 
 {- ORMOLU_DISABLE -}
 
