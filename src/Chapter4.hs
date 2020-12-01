@@ -246,7 +246,6 @@ Nothing :: Maybe a
 >>> :t fmap (replicate 3) Nothing
 fmap (replicate 3) Nothing :: Maybe [a]
 
-
 In GHCi we see 'Nothing', but it is not the same 'Nothing' that it's
 been before. Its type has changed.
 
@@ -291,7 +290,6 @@ data Secret e a
     = Trap e
     | Reward a
     deriving (Show, Eq)
-
 
 {- |
 Functor works with types that have kind `* -> *` but our 'Secret' has
@@ -644,7 +642,6 @@ Implement the 'Monad' instance for our lists.
   maybe a few) to flatten lists of lists to a single list.
 -}
 
-
 {- |
 =💣= Task 8*: Before the Final Boss
 
@@ -662,7 +659,7 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM a b = (a >>= (\x -> pure (x &&))) <*> b
+andM a b = a >>= (\x -> if x then b >>= (\y -> pure (x && y)) else pure x)
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
@@ -679,7 +676,6 @@ more remarkable for you! This will take you a few minutes, but is
 precious for us and future journey starters:
 
  * https://docs.google.com/forms/d/e/1FAIpQLScBVhLxq5CgGnAfIGUE-fCoOUqeGkDY2HXzbT7KV2jjLOsmjQ/viewform
-
 
 Also, challenge your friends with this course and spread the word about us!
 We are @kowainik on Twitter. You can also use #Learn4Haskell hashtag to share
@@ -705,7 +701,6 @@ Specifically,
    subtree of a tree
  ❃ Implement the function to convert Tree to list
 -}
-
 
 {-
 You did it! Now it is time to open pull request with your changes
