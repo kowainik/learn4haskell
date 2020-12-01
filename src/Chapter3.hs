@@ -1215,13 +1215,13 @@ instance Fighter FighterMonster where
 
 instance FMonster FighterMonster
 
-engageBattle :: (Fighter a, Fighter b) => a -> b -> Either a b
+engageBattle :: (Fighter a, Fighter b) => a -> b -> (Maybe a, Maybe b)
 engageBattle attacker defender =
   go 0 (0, 0) (Just attacker) (Just defender)
   where
-    go :: (Fighter a, Fighter b) => Int -> (Int, Int) -> Maybe a -> Maybe b -> Either a b
-    go _ _ Nothing (Just dfder) = Right dfder
-    go _ _ (Just atker) Nothing = Left atker
+    go :: (Fighter a, Fighter b) => Int -> (Int, Int) -> Maybe a -> Maybe b -> (Maybe a, Maybe b)
+    go _ _ Nothing (Just dfder) = (Nothing, Just dfder)
+    go _ _ (Just atker) Nothing = (Just atker, Nothing)
     go turn (attackerIdx, defenderIdx) (Just atker) (Just dfder)
       | even turn =
         let (atkerNew, dfderNew) = actions atker !! attackerIdx $ dfder
