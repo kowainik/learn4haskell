@@ -1,3 +1,4 @@
+{- ORMOLU_DISABLE -}
 {- 👋 Welcome to Chapter Four / Four of our journey, Staunch Wanderer!
 
 Our adventure together has almost come to an end. It has been a
@@ -114,22 +115,30 @@ As always, try to guess the output first! And don't forget to insert
 the output in here:
 
 >>> :k Char
+Char :: *
 
 >>> :k Bool
+Bool :: *
 
 >>> :k [Int]
+[Int] :: *
 
 >>> :k []
+[] :: * -> *
 
 >>> :k (->)
+(->) :: * -> * -> *
 
 >>> :k Either
+Either :: * -> * -> *
 
 >>> data Trinity a b c = MkTrinity a b c
 >>> :k Trinity
+Trinity :: * -> * -> * -> *
 
 >>> data IntBox f = MkIntBox (f Int)
 >>> :k IntBox
+IntBox :: (* -> *) -> *
 
 -}
 
@@ -259,6 +268,7 @@ name.
 
 > QUESTION: Can you understand why the following implementation of the
   Functor instance for Maybe doesn't compile?
+  ANSWER: there is no transformation from (a) to (f a) hence violates the signature
 
 @
 instance Functor Maybe where
@@ -293,7 +303,8 @@ values and apply them to the type level?
 -}
 instance Functor (Secret e) where
     fmap :: (a -> b) -> Secret e a -> Secret e b
-    fmap = error "fmap for Box: not implemented!"
+    fmap _ (Trap e) = Trap e
+    fmap f (Reward a) = Reward $ f a
 
 {- |
 =⚔️= Task 3
@@ -306,6 +317,11 @@ typeclasses for standard data types.
 data List a
     = Empty
     | Cons a (List a)
+
+instance Functor List where
+  fmap :: (a -> b) -> List a -> List b
+  fmap _ Empty = Empty
+  fmap f (Cons x xs) = Cons (f x) $ fmap f xs
 
 {- |
 =🛡= Applicative
@@ -472,10 +488,11 @@ Implement the Applicative instance for our 'Secret' data type from before.
 -}
 instance Applicative (Secret e) where
     pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+    pure = Reward
 
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
+    (<*>) (Trap e) _ = Trap e
+    (<*>) (Reward f) m1 = fmap f m1
 
 {- |
 =⚔️= Task 5
@@ -488,7 +505,22 @@ Implement the 'Applicative' instance for our 'List' type.
   may also need to implement a few useful helper functions for our List
   type.
 -}
+{- ORMOLU_ENABLE -}
+instance Applicative List where
+  pure :: a -> List a
+  pure x = Cons x Empty
 
+  (<*>) Empty _ = Empty
+  (<*>) fs ms =
+    goM Empty ms
+    where
+      goF acc Empty _ = acc
+      goF acc (Cons f fTail) m = goF (Cons (f m) acc) fTail m
+
+      goM acc Empty = acc
+      goM acc (Cons m mTail) = goF (goM acc mTail) fs m
+
+{- ORMOLU_DISABLE -}
 
 {- |
 =🛡= Monad
@@ -600,7 +632,8 @@ Implement the 'Monad' instance for our 'Secret' type.
 -}
 instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+    (>>=) (Trap e) _ = Trap e
+    (>>=) (Reward e) f = f e
 
 {- |
 =⚔️= Task 7
@@ -629,7 +662,7 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM a b = (a >>= (\x -> pure (x &&))) <*> b
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
