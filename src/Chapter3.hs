@@ -1,3 +1,4 @@
+{- ORMOLU_DISABLE -}
 {- 👋 Welcome to Chapter Three of our journey, Courageous Knight!
 
 Glad to see you back for more challenges. You fought great for the glory of the
@@ -343,6 +344,11 @@ Define the Book product data type. You can take inspiration from our description
 of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
+data Book = MkBook {
+  bookName :: String,
+  bookPublisher :: String,
+  bookPages :: Int
+} deriving (Show)
 
 {- |
 =⚔️= Task 2
@@ -373,6 +379,23 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+data LivingThing = MkLivingThing {
+  entityHealth :: Int,
+  entityAttack :: Int,
+  entityGold :: Int
+} deriving (Show)
+type Knight = LivingThing
+type Monster = LivingThing
+
+fight :: Monster -> Knight -> Int
+fight monster knight
+  | monsterSurvivesAttack && knightSurvivesAttack = entityGold knight
+  | monsterSurvivesAttack = resultIfKnightIsDefeated
+  | otherwise = entityGold knight + entityGold monster
+  where
+    monsterSurvivesAttack = entityHealth monster - entityAttack knight > 0
+    knightSurvivesAttack = entityHealth knight - entityAttack monster > 0
+    resultIfKnightIsDefeated = -1
 
 {- |
 =🛡= Sum types
@@ -459,6 +482,7 @@ and provide more flexibility when working with data types.
 Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
+data MealTypes = Breakfast | NonBreakfast
 
 {- |
 =⚔️= Task 4
@@ -479,6 +503,41 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
+
+{- ORMOLU_ENABLE -}
+data Castle = MkCastle String
+
+data Wall = BrickWall
+
+data Facility = Church | Library
+
+data People = Citizen
+
+data House = MkHouse [People]
+
+data City = MkCityNoCastle Facility [House] | MkCityWithCastle Castle [Wall] Facility [House]
+
+buildCastle :: City -> String -> City
+buildCastle (MkCityWithCastle _ walls facility houses) name =
+  MkCityWithCastle (MkCastle name) walls facility houses
+buildCastle (MkCityNoCastle facility houses) name =
+  MkCityWithCastle (MkCastle name) [] facility houses
+
+buildHouse :: City -> City
+buildHouse (MkCityWithCastle castle walls facility houses) =
+  MkCityWithCastle castle walls facility $ MkHouse [Citizen] : houses
+buildHouse (MkCityNoCastle facility houses) =
+  MkCityNoCastle facility $ MkHouse [Citizen] : houses
+
+buildWalls :: City -> City
+buildWalls (MkCityWithCastle castle walls facility houses)
+  | sum (map houseCountMember houses) >= 10 = MkCityWithCastle castle (BrickWall : walls) facility houses
+  | otherwise = MkCityWithCastle castle walls facility houses
+  where
+    houseCountMember (MkHouse members) = length members
+buildWalls city = city
+
+{- ORMOLU_DISABLE -}
 
 {-
 =🛡= Newtypes
@@ -560,22 +619,29 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+newtype Health = Health Int
+newtype Armor = Armor Int
+newtype Attack = Attack Int
+newtype Dexterity = Dexterity Int
+newtype Strength = Strength Int
+newtype Damage = Damage Int
+newtype Defense = Defense Int
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+calculatePlayerDamage :: Attack -> Strength -> Damage
+calculatePlayerDamage (Attack attack) (Strength strength) = Damage $ attack + strength
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense (Armor armor) (Dexterity dexterity) = Defense $ armor * dexterity
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit (Damage damage) (Defense defense) (Health health) = Health $ health + defense - damage
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -753,6 +819,15 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
+-- copy-pasta from previous section
+data TreasureChest x = TreasureChest
+    { treasureChestGold :: Int
+    , treasureChestLoot :: x
+    }
+
+newtype Dragon m = MkDragon m
+data Lair m x = MkLair (Dragon m) (Maybe (TreasureChest x))
+
 {-
 =🛡= Typeclasses
 
@@ -907,9 +982,39 @@ Implement instances of "Append" for the following types:
   ✧ *(Challenge): "Maybe" where append is appending of values inside "Just" constructors
 
 -}
+{- ORMOLU_ENABLE -}
 class Append a where
     append :: a -> a -> a
 
+newtype Gold = Gold Int
+
+instance Append Gold where
+  append (Gold x) (Gold y) = Gold $ x + y
+
+-- copy pasta from previous section
+data List a
+  = Empty
+  | Cons a (List a)
+
+instance Append (List a) where
+  append x y = combine Empty x y
+    where
+      -- rebuild cons, unlike implmenting reverse in previous chapter
+      teardown :: List a -> List a -> List a
+      teardown acc Empty = acc
+      teardown acc (Cons z zs) = Cons z (teardown acc zs)
+      -- reconstruct the list, one after another
+      combine :: List a -> List a -> List a -> List a
+      combine acc Empty Empty = acc
+      combine acc xs ys = combine (teardown (teardown acc xs) ys) Empty Empty
+
+-- note2self: constraint means type a implements Append already, and now we are implementing for (Maybe a)
+instance (Append a) => Append (Maybe a) where
+  append _ Nothing = Nothing
+  append Nothing _ = Nothing
+  append (Just x) (Just y) = Just (append x y)
+
+{- ORMOLU_DISABLE -}
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -971,6 +1076,31 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
+{- ORMOLU_ENABLE -}
+data Weekday = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday deriving (Show, Eq, Ord, Enum)
+
+isWeekend :: Weekday -> Bool
+isWeekend x
+  | x == Saturday || x == Sunday = True
+  | otherwise = False
+
+nextDay :: Weekday -> Weekday
+nextDay Sunday = Monday
+nextDay day = succ day
+
+daysToParty :: Weekday -> Int
+daysToParty day =
+  length
+    ( takeWhile
+        (/= Friday)
+        ( drop
+            (fromEnum day)
+            (cycle (enumFrom Monday))
+        )
+    )
+
+{- ORMOLU_DISABLE -}
+
 {-
 =💣= Task 9*
 
@@ -1006,6 +1136,93 @@ Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
 
+{- ORMOLU_ENABLE -}
+newtype StatHealth = StatHealth Int
+
+newtype StatAttack = StatAttack Int
+
+newtype StatDefense = StatDefense Int
+
+class Fighter a where
+  actions :: (Fighter b) => a -> [b -> (a, b)]
+  attack :: (Fighter b) => a -> b -> (a, b)
+  health :: a -> StatHealth
+
+  -- takes damage, and return an updated fighter with new HP
+  damage :: a -> StatAttack -> a
+
+class (Fighter a) => FKnight a where
+  -- assume no resource management
+  castSpell :: (Fighter b) => a -> b -> (a, b)
+
+  defense :: a -> StatDefense
+
+  -- assuming bottomless potion
+  drinkPotion :: (Fighter b) => a -> b -> (a, b)
+
+class (Fighter a) => FMonster a where
+  runAway :: (Fighter b) => a -> b -> (a, b)
+
+data FighterKnight p q = MkFighterKnight
+  { fighterKnightActions :: [p -> q -> (p, q)],
+    fighterKnightHealth :: StatHealth,
+    fighterKnightAttack :: StatAttack,
+    fighterKnightDefense :: StatDefense
+  }
+
+data FighterMonster p q = MkFighterMonster
+  { fighterMonsterAction :: [p -> q -> (p, q)],
+    fighterMonsterHealth :: StatHealth,
+    fighterMonsterAttack :: StatAttack
+  }
+
+-- implement knight
+instance (Fighter p, Fighter q) => Fighter (FighterKnight p q) where
+  actions :: (Fighter b) => FighterKnight p q -> [b -> (FighterKnight p q, b)]
+  actions source = map (\f -> f source) $ fighterKnightActions source
+
+  --actions source = [attack source]
+
+  attack attacker target = (attacker, damage target (fighterKnightAttack attacker))
+
+  health = fighterKnightHealth
+  damage x (StatAttack y) =
+    x {fighterKnightHealth = newHealth}
+    where
+      (StatHealth hp) = health x
+      (StatDefense def) = defense x
+      newHealth = StatHealth $ hp + def - y
+
+instance FKnight (FighterKnight p q) where
+  castSpell caster target =
+    let (StatDefense def) = defense caster
+     in (caster {fighterKnightDefense = StatDefense $ def + 10}, target)
+
+  defense = fighterKnightDefense
+  drinkPotion consumer target =
+    let (StatHealth hp) = health consumer
+     in (consumer {fighterKnightHealth = StatHealth $ hp + 10}, target)
+
+-- implement monster
+instance Fighter (FighterMonster p q) where
+  actions source = map (\f -> f source) [attack, runAway]
+
+  attack attacker target = (attacker, damage target (fighterMonsterAttack attacker))
+
+  health = fighterMonsterHealth
+  damage x (StatAttack y) =
+    x {fighterMonsterHealth = newHealth}
+    where
+      (StatHealth hp) = health x
+      newHealth = StatHealth $ hp - y
+
+instance FMonster (FighterMonster p q) where
+  runAway source target = (source, target)
+
+engageBattle :: Fighter a => a -> a -> a
+engageBattle = error "unimplemented"
+
+{- ORMOLU_DISABLE -}
 
 {-
 You did it! Now it is time to open pull request with your changes
