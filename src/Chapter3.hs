@@ -1083,15 +1083,7 @@ nextDay day
   | otherwise = succ day
 
 daysToParty :: Weekday -> Int
-daysToParty day =
-  length
-    ( takeWhile
-        (/= Friday)
-        ( drop
-            (fromEnum day)
-            (cycle (enumFrom Monday))
-        )
-    )
+daysToParty day = ((fromEnum Friday + 7) - fromEnum day) `mod` 7
 
 {- ORMOLU_DISABLE -}
 
