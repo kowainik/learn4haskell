@@ -505,34 +505,36 @@ After defining the city, implement the following functions:
 {- ORMOLU_ENABLE -}
 data Castle = MkCastle String
 
-data Wall = BrickWall
+data Wall = WallsNotBuilt | WallsAreBuilt
 
 data Facility = Church | Library
 
-data People = Citizen
+data House = HouseOfOnePerson | HouseOfTwoPeople | HouseOfThreePeople | HouseOfFourPeople
 
-data House = MkHouse [People]
-
-data City = MkCityNoCastle Facility [House] | MkCityWithCastle Castle [Wall] Facility [House]
+data City = MkCityNoCastle Facility [House] | MkCityWithCastle Castle Wall Facility [House]
 
 buildCastle :: City -> String -> City
-buildCastle (MkCityWithCastle _ walls facility houses) name =
-  MkCityWithCastle (MkCastle name) walls facility houses
+buildCastle (MkCityWithCastle _ wall facility houses) name =
+  MkCityWithCastle (MkCastle name) wall facility houses
 buildCastle (MkCityNoCastle facility houses) name =
-  MkCityWithCastle (MkCastle name) [] facility houses
+  MkCityWithCastle (MkCastle name) WallsNotBuilt facility houses
 
 buildHouse :: City -> City
 buildHouse (MkCityWithCastle castle walls facility houses) =
-  MkCityWithCastle castle walls facility $ MkHouse [Citizen] : houses
+  MkCityWithCastle castle walls facility $ HouseOfOnePerson : houses
 buildHouse (MkCityNoCastle facility houses) =
-  MkCityNoCastle facility $ MkHouse [Citizen] : houses
+  MkCityNoCastle facility $ HouseOfOnePerson : houses
 
 buildWalls :: City -> City
 buildWalls (MkCityWithCastle castle walls facility houses)
-  | sum (map houseCountMember houses) >= 10 = MkCityWithCastle castle (BrickWall : walls) facility houses
+  | sum (map houseGetPeople houses) >= 10 = MkCityWithCastle castle WallsAreBuilt facility houses
   | otherwise = MkCityWithCastle castle walls facility houses
   where
-    houseCountMember (MkHouse members) = length members
+    houseGetPeople :: House -> Int
+    houseGetPeople HouseOfOnePerson = 1
+    houseGetPeople HouseOfTwoPeople = 2
+    houseGetPeople HouseOfThreePeople = 3
+    houseGetPeople HouseOfFourPeople = 4
 buildWalls city = city
 
 {- ORMOLU_DISABLE -}
