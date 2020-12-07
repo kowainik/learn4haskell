@@ -992,18 +992,14 @@ instance Append Gold where
 data List a
   = Empty
   | Cons a (List a)
+  deriving (Show)
 
 instance Append (List a) where
-  append x y = combine Empty x y
+  append x y = merge y x
     where
-      -- rebuild cons, unlike implmenting reverse in previous chapter
-      teardown :: List a -> List a -> List a
-      teardown acc Empty = acc
-      teardown acc (Cons z zs) = Cons z (teardown acc zs)
-      -- reconstruct the list, one after another
-      combine :: List a -> List a -> List a -> List a
-      combine acc Empty Empty = acc
-      combine acc xs ys = combine (teardown (teardown acc xs) ys) Empty Empty
+      merge :: List a -> List a -> List a
+      merge acc Empty = acc
+      merge acc (Cons z zs) = Cons z (merge acc zs)
 
 -- note2self: constraint means type a implements Append already, and now we are implementing for (Maybe a)
 instance (Append a) => Append (Maybe a) where
