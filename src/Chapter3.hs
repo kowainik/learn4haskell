@@ -1129,9 +1129,11 @@ newtype StatAttack = StatAttack Int deriving (Show)
 
 newtype StatDefense = StatDefense Int deriving (Show)
 
+type ActionOutcome a b = (Maybe a, Maybe b)
+
 class Fighter a where
-  actions :: (Fighter b) => a -> [b -> (Maybe a, Maybe b)]
-  attack :: (Fighter b) => a -> b -> (Maybe a, Maybe b)
+  actions :: (Fighter b) => a -> [b -> ActionOutcome a b]
+  attack :: (Fighter b) => a -> b -> ActionOutcome a b
   health :: a -> StatHealth
 
   -- takes damage, and return an updated fighter with new HP
@@ -1139,15 +1141,15 @@ class Fighter a where
 
 class (Fighter a) => FKnight a where
   -- assume no resource management
-  castSpell :: (Fighter b) => a -> b -> (Maybe a, Maybe b)
+  castSpell :: (Fighter b) => a -> b -> ActionOutcome a b
 
   defense :: a -> StatDefense
 
   -- assuming bottomless potion
-  drinkPotion :: (Fighter b) => a -> b -> (Maybe a, Maybe b)
+  drinkPotion :: (Fighter b) => a -> b -> ActionOutcome a b
 
 class (Fighter a) => FMonster a where
-  runAway :: (Fighter b) => a -> b -> (Maybe a, Maybe b)
+  runAway :: (Fighter b) => a -> b -> ActionOutcome a b
   runAway _ target = (Nothing, Just target)
 
 data FighterKnight = MkFighterKnight
@@ -1176,8 +1178,8 @@ instance Fighter FighterKnight where
     | newHealth > 0 = Just x {fighterKnightHealth = StatHealth newHealth}
     | otherwise = Nothing
     where
-      (StatHealth hp) = health x
-      (StatDefense def) = defense x
+      StatHealth hp = health x
+      StatDefense def = defense x
       newHealth = if y > def then hp + def - y else hp
 
 instance FKnight FighterKnight where
@@ -1206,11 +1208,11 @@ instance Fighter FighterMonster where
 
 instance FMonster FighterMonster
 
-engageBattle :: (Fighter a, Fighter b) => a -> b -> (Maybe a, Maybe b)
+engageBattle :: (Fighter a, Fighter b) => a -> b -> ActionOutcome a b
 engageBattle attacker defender =
   go 0 (0, 0) (Just attacker) (Just defender)
   where
-    go :: (Fighter a, Fighter b) => Int -> (Int, Int) -> Maybe a -> Maybe b -> (Maybe a, Maybe b)
+    go :: (Fighter a, Fighter b) => Int -> (Int, Int) -> Maybe a -> Maybe b -> ActionOutcome a b
     go _ _ Nothing (Just dfder) = (Nothing, Just dfder)
     go _ _ (Just atker) Nothing = (Just atker, Nothing)
     go turn (attackerIdx, defenderIdx) (Just atker) (Just dfder)
