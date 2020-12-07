@@ -1003,8 +1003,8 @@ instance Append (List a) where
 
 -- note2self: constraint means type a implements Append already, and now we are implementing for (Maybe a)
 instance (Append a) => Append (Maybe a) where
-  append _ Nothing = Nothing
-  append Nothing _ = Nothing
+  append alpha Nothing = alpha
+  append Nothing beta = beta
   append (Just x) (Just y) = Just (append x y)
 
 {- ORMOLU_DISABLE -}
