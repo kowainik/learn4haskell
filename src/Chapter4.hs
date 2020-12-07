@@ -314,7 +314,7 @@ typeclasses for standard data types.
 -}
 data List a
     = Empty
-    | Cons a (List a)
+    | Cons a (List a) deriving(Show)
 
 instance Functor List where
   fmap :: (a -> b) -> List a -> List b
@@ -508,15 +508,17 @@ instance Applicative List where
   pure :: a -> List a
   pure x = Cons x Empty
 
+  (<*>) :: List (a -> b) -> List a -> List b
   (<*>) Empty _ = Empty
-  (<*>) fs ms =
-    goM Empty ms
+  (<*>) fs ms = loopM Empty ms fs
     where
-      goF acc Empty _ = acc
-      goF acc (Cons f fTail) m = goF (Cons (f m) acc) fTail m
+      loopM :: List b -> List a -> List (a -> b) -> List b
+      loopM acc Empty _ = acc
+      loopM acc (Cons mHead mTail) f = loopF (loopM acc mTail f) f mHead
 
-      goM acc Empty = acc
-      goM acc (Cons m mTail) = goF (goM acc mTail) fs m
+      loopF :: List b -> List (a -> b) -> a -> List b
+      loopF acc Empty _ = acc
+      loopF acc (Cons f fTail) m = Cons (f m) $ loopF acc fTail m
 
 {- ORMOLU_DISABLE -}
 
