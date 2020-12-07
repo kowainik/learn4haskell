@@ -1070,7 +1070,7 @@ implement the following functions:
 -}
 
 {- ORMOLU_ENABLE -}
-data Weekday = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday deriving (Show, Eq, Ord, Enum)
+data Weekday = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday deriving (Show, Eq, Ord, Enum, Bounded)
 
 isWeekend :: Weekday -> Bool
 isWeekend x
@@ -1078,8 +1078,9 @@ isWeekend x
   | otherwise = False
 
 nextDay :: Weekday -> Weekday
-nextDay Sunday = Monday
-nextDay day = succ day
+nextDay day
+  | day == maxBound = minBound
+  | otherwise = succ day
 
 daysToParty :: Weekday -> Int
 daysToParty day =
