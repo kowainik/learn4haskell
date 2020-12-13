@@ -504,21 +504,22 @@ Implement the 'Applicative' instance for our 'List' type.
   type.
 -}
 {- ORMOLU_ENABLE -}
+-- copy pasta from chap3 instead of importing
+append :: List a -> List a -> List a
+append x y = merge y x
+  where
+    merge :: List a -> List a -> List a
+    merge acc Empty = acc
+    merge acc (Cons z zs) = Cons z (merge acc zs)
+
 instance Applicative List where
   pure :: a -> List a
   pure x = Cons x Empty
 
   (<*>) :: List (a -> b) -> List a -> List b
+  (<*>) _ Empty = Empty
   (<*>) Empty _ = Empty
-  (<*>) fs ms = loopM Empty ms fs
-    where
-      loopM :: List b -> List a -> List (a -> b) -> List b
-      loopM acc Empty _ = acc
-      loopM acc (Cons mHead mTail) f = loopF (loopM acc mTail f) f mHead
-
-      loopF :: List b -> List (a -> b) -> a -> List b
-      loopF acc Empty _ = acc
-      loopF acc (Cons f fTail) m = Cons (f m) $ loopF acc fTail m
+  (<*>) (Cons f fs) ms = append (f <$> ms) (fs <*> ms)
 
 {- ORMOLU_DISABLE -}
 
