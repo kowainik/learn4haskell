@@ -343,6 +343,11 @@ Define the Book product data type. You can take inspiration from our description
 of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
+data Book = Book {
+  bookName :: String,
+  bookAuthor :: String,
+  bookPage :: Int
+}
 
 {- |
 =⚔️= Task 2
@@ -374,6 +379,23 @@ after the fight. The battle has the following possible outcomes:
 
 -}
 
+data Knight = Knight {
+  knightName :: String,
+  knightHealth :: Int,
+  knightAttack :: Int,
+  knightGold :: Int
+}
+data Monster = Monster {
+  monsterName :: String,
+  monsterHealth :: Int,
+  monsterAttack :: Int,
+  monsterGold :: Int
+}
+fight :: Knight -> Monster -> Int
+fight k m
+    | knightAttack k >= monsterHealth m = knightGold k + monsterGold m
+    | knightAttack k < monsterHealth m && monsterAttack m >= knightHealth k = (-1)
+    | knightAttack k < monsterHealth m && monsterAttack m < knightHealth k = knightGold k
 {- |
 =🛡= Sum types
 
@@ -460,6 +482,15 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data Meal
+    = Breakfast
+    | Lunch
+    | Dinner
+    | Brunch
+    | Supper
+    | Snack
+    | AfternoonTea
+
 {- |
 =⚔️= Task 4
 
@@ -479,6 +510,34 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
+
+data Castle = NoCastle | Castle String deriving (Eq,Show)
+data Wall = NoWall | Wall deriving (Show)
+data ChurchOrLibrary
+    = Church
+    | Library deriving (Show)
+data House = House {
+    housePeople :: Int
+} deriving (Show)
+data City = City {
+  cityCastle :: Castle,
+  cityWall :: Wall,
+  cityChurchOrLibrary :: ChurchOrLibrary,
+  cityHouses :: [House]
+} deriving (Show)
+buildCastle :: City -> String -> City
+buildCastle city name = city {cityCastle = Castle name}
+buildHouse :: City -> Int -> City
+buildHouse city people
+    | people <= 4 && people >= 1 = city {cityHouses = (House {housePeople = people}) : (cityHouses city)}
+    | otherwise = city
+sumPeople :: [House] -> Int
+sumPeople (x:xs) = (housePeople x) + (sumPeople xs)
+sumPeople [] = 0
+buildWalls :: City -> City
+buildWalls city
+    | (sumPeople (cityHouses city) >= 10) && (cityCastle city /= NoCastle) = city {cityWall = Wall}
+    | otherwise = city
 
 {-
 =🛡= Newtypes
@@ -560,22 +619,29 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+newtype Attack = Attack {unAttack :: Int}
+newtype Armor = Armor {unArmor :: Int}
+newtype Health = Health {unHealth :: Int}
+newtype Dexterity = Dexterity {unDexterity :: Int}
+newtype Strength = Strength {unStrength :: Int}
+newtype Damage = Damage {unDamage :: Int}
+newtype Defense = Defense {unDefense :: Int}
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+calculatePlayerDamage :: Attack -> Strength -> Damage
+calculatePlayerDamage attack strength = Damage (unAttack attack + unStrength strength)
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense armor dexterity = Defense (unArmor armor * unDexterity dexterity)
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit damage defense health = Health (unHealth health + unDefense defense - unDamage damage)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -752,6 +818,38 @@ parametrise data types in places where values can be of any general type.
 🕯 HINT: 'Maybe' that some standard types we mentioned above are useful for
   maybe-treasure ;)
 -}
+data TreasureChest x = TreasureChest {
+    treasureChestGold :: Int,
+    treasureChestLoot :: x
+} deriving(Show)
+
+mkTreasureChest :: Int -> t -> TreasureChest t
+mkTreasureChest x t = TreasureChest {
+  treasureChestGold = x,
+  treasureChestLoot = t
+}
+
+data Magic x = Magic {
+  magicPower :: Int,
+  magicType :: x
+} deriving(Show)
+
+mkMagic :: Int -> x -> Magic x
+mkMagic x t = Magic {
+  magicPower = x,
+  magicType = t
+}
+
+data Dragon x = Dragon {
+  dragonHealth :: Int,
+  dragonAttack :: Int,
+  dragonMagic :: Magic x
+} deriving(Show)
+
+data Lair x y = Lair {
+  lairDragon :: Dragon x,
+  lairTreasure :: Maybe (TreasureChest y)
+} deriving(Show)
 
 {-
 =🛡= Typeclasses
@@ -910,6 +1008,24 @@ Implement instances of "Append" for the following types:
 class Append a where
     append :: a -> a -> a
 
+data Gold = Gold {
+    goldAmount :: Int
+}
+
+instance Append Gold where
+    append :: Gold -> Gold -> Gold
+    append a b = Gold {goldAmount = goldAmount a + goldAmount b}
+
+instance Append [a] where
+    append :: [a] -> [a] -> [a]
+    append a b = a ++ b
+
+instance (Append a) => Append (Maybe a) where
+    append :: (Maybe a) -> (Maybe a) -> (Maybe a)
+    append (Just a) (Just b) = Just (append a b)
+    append Nothing (Just b) = Just b
+    append (Just a) Nothing = Just a
+    append Nothing Nothing = Nothing
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -971,6 +1087,30 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
+data Weekday
+    = Sunday
+    | Monday
+    | Tuesday
+    | Wednesday
+    | Thursday
+    | Friday
+    | Saturday
+    deriving (Enum, Show, Eq)
+isWeekend :: Weekday -> Bool
+isWeekend a
+    | a == Saturday = True
+    | a == Sunday = True
+    | otherwise = False
+nextDay :: Weekday -> Weekday
+nextDay a
+    | a == Saturday = Sunday
+    | otherwise = succ a
+daysToParty :: Weekday -> Int
+daysToParty a = mod ((fromEnum Friday) - (fromEnum a) + 7) 7
+
+intToWeekday :: Int -> Weekday
+intToWeekday a = toEnum a
+
 {-
 =💣= Task 9*
 
@@ -1005,6 +1145,95 @@ properties using typeclasses, but they are different data types in the end.
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
+
+class Fighter a where
+  getHealth :: a -> Int
+  getAttack :: a -> Int
+  getHurt :: a -> Int -> a
+  addHealth :: a -> Int -> a
+  addDefense :: a -> Int -> a
+  runAway :: a -> a
+  getActions :: a -> [Action]
+  getName :: a -> String
+
+data Action
+    = SimpleAttack
+    | DrinkPotion
+    | CastSpell
+    | RunAway deriving (Eq, Show)
+data KnightFighter = KnightFighter {
+  knightFighterName :: String,
+  knightFighterHealth :: Int,
+  knightFighterAttack :: Int,
+  knightFighterDefense :: Int,
+  knightFighterActions :: [Action]
+} deriving(Show)
+data MonsterFighter = MonsterFighter {
+  monsterFighterName :: String,
+  monsterFighterHealth :: Int,
+  monsterFighterAttack :: Int,
+  monsterFighterActions :: [Action]
+} deriving(Show)
+instance Fighter KnightFighter where
+    getName :: KnightFighter -> String
+    getName a = knightFighterName a
+    getHealth :: KnightFighter -> Int
+    getHealth a = knightFighterHealth a
+    getAttack :: KnightFighter -> Int
+    getAttack a = knightFighterAttack a
+    getHurt :: KnightFighter -> Int -> KnightFighter
+    getHurt a b = a {knightFighterHealth = max ((knightFighterHealth a) - (max (b - (knightFighterDefense a)) 0)) 0}
+    addHealth :: KnightFighter -> Int -> KnightFighter
+    addHealth a b = a {knightFighterHealth = knightFighterHealth a + b}
+    addDefense :: KnightFighter -> Int -> KnightFighter
+    addDefense a b = a {knightFighterDefense = knightFighterDefense a + b}
+    runAway :: KnightFighter -> KnightFighter
+    runAway a = a
+    getActions :: KnightFighter -> [Action]
+    getActions a = concat (repeat (knightFighterActions a))
+
+instance Fighter MonsterFighter where
+    getName :: MonsterFighter -> String
+    getName a = monsterFighterName a
+    getHealth :: MonsterFighter -> Int
+    getHealth a = monsterFighterHealth a
+    getAttack :: MonsterFighter -> Int
+    getAttack a = monsterFighterAttack a
+    getHurt :: MonsterFighter -> Int -> MonsterFighter
+    getHurt a b = a {monsterFighterHealth = max ((monsterFighterHealth a) - b) 0}
+    addHealth :: MonsterFighter -> Int -> MonsterFighter
+    addHealth a b = a 
+    addDefense :: MonsterFighter -> Int -> MonsterFighter
+    addDefense a b = a
+    runAway :: MonsterFighter -> MonsterFighter
+    runAway a = a {monsterFighterHealth = 0}
+    getActions :: MonsterFighter -> [Action]
+    getActions a = concat (repeat (monsterFighterActions a))
+
+actOther :: (Fighter a, Fighter b) => a -> Action -> b -> b
+actOther a b c
+    | b == SimpleAttack = getHurt c (getAttack a)
+    | otherwise = c
+actSelf :: (Fighter a) => a -> Action -> a
+actSelf a b
+    | b == SimpleAttack = a
+    | b == DrinkPotion = addHealth a 10
+    | b == CastSpell = addDefense a 10
+    | b == RunAway = runAway a
+
+act :: (Fighter a, Fighter b) => a -> b -> [(Action, Action)] -> String
+act a b ((x,y):xs) =
+    let a2 = actSelf a x
+        b2 = actOther a x b
+    in
+        if getHealth b2 == 0 then getName a else
+            let a3 = actOther b2 y a2
+                b3 = actSelf b2 y
+            in
+              if getHealth a3 == 0 then getName b else act a3 b3 xs
+
+goFight :: (Fighter a, Fighter b) => a -> b -> String
+goFight a b = (act a b (zip (getActions a) (getActions b))) ++ " wins"
 
 
 {-
