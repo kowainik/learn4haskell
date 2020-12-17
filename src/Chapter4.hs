@@ -506,12 +506,9 @@ Implement the 'Applicative' instance for our 'List' type.
 {- ORMOLU_ENABLE -}
 -- copy pasta from chap3 instead of importing
 append :: List a -> List a -> List a
-append x y = merge y x
-  where
-    merge :: List a -> List a -> List a
-    merge Empty zs = zs
-    merge acc Empty = acc
-    merge acc (Cons z zs) = Cons z (merge acc zs)
+append Empty xs = xs
+append xs Empty = xs
+append (Cons x xs) ys = Cons x (append xs ys)
 
 instance Applicative List where
   pure :: a -> List a
