@@ -509,6 +509,7 @@ append :: List a -> List a -> List a
 append x y = merge y x
   where
     merge :: List a -> List a -> List a
+    merge Empty zs = zs
     merge acc Empty = acc
     merge acc (Cons z zs) = Cons z (merge acc zs)
 
