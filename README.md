@@ -4,7 +4,7 @@
 
 🚨 __Important notice: This course continues BAU even after Hacktoberfest__ 🚨
 
-You can find the results of Hacktoberfest 2020 in the following blog post:
+You can find the results of Hacktoberfest 2020 for [Learn4Haskell](https://github.com/kowainik/learn4haskell) in the following blog post:
 
  * [Brave New Hacktoberfest](https://kowainik.github.io/posts/hacktoberfest2020)
 
@@ -254,4 +254,4 @@ You can help us by supporting us on Ko-Fi or via GitHub sponsorship program:
 
 We also appreciate any feedback on our course a lot! You can submit your
 feedback using the following form:
-* https://docs.google.com/forms/d/e/1FAIpQLScBVhLxq5CgGnAfIGUE-fCoOUqeGkDY2HXzbT7KV2jjLOsmjQ/viewform
+* [Feedback Form](https://docs.google.com/forms/d/e/1FAIpQLScBVhLxq5CgGnAfIGUE-fCoOUqeGkDY2HXzbT7KV2jjLOsmjQ/viewform)
