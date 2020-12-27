@@ -158,7 +158,7 @@ Starting to learn Haskell with Learn4Haskell is a piece of cake!
  > Everyone has their solutions to the included tasks, and they don't mix together
  > well in one repo 🙂
 
-> However, if you find some bugs or problems in this repo, you can of course
+> However, if you find some bugs or problems in this repo, you can
 > open a PR to Learn4Haskell directly. We appreciate any help and feedback!
 
 Learn4Haskell has 4 chapters that you can walk through and submit 4 pull requests to
