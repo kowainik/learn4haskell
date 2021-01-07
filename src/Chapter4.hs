@@ -37,8 +37,9 @@ if you want some feedback on your solutions.
 Perfect. Let's crush this!
 -}
 
-{-# LANGUAGE ConstraintKinds #-}
-{-# LANGUAGE InstanceSigs    #-}
+{-# LANGUAGE ConstraintKinds     #-}
+{-# LANGUAGE InstanceSigs        #-}
+{-# LANGUAGE FlexibleContexts    #-}
 
 module Chapter4 where
 
@@ -130,7 +131,7 @@ Either :: * -> * -> *
 Trinity :: * -> * -> * -> *
 >>> data IntBox f = MkIntBox (f Int)
 >>> :k IntBox
-IntBox :: * -> *
+IntBox :: (* -> *) -> *
 -}
 
 {- |
@@ -479,10 +480,11 @@ Implement the Applicative instance for our 'Secret' data type from before.
 -}
 instance Applicative (Secret e) where
     pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+    pure = Reward
 
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
+    Trap x <*> _ = Trap x
+    Reward f <*> x = fmap f x
 
 {- |
 =⚔️= Task 5
@@ -495,6 +497,18 @@ Implement the 'Applicative' instance for our 'List' type.
   may also need to implement a few useful helper functions for our List
   type.
 -}
+
+instance Applicative List where
+  pure :: a -> List a
+  pure x = Cons x Empty
+
+  (<*>) :: List (a -> b) -> List a -> List b
+  Empty <*> _ = Empty
+  _ <*> Empty = Empty
+  Cons f fs <*> xs = go (fmap f xs) (fs <*> xs)
+    where go :: List a -> List a -> List a
+          go Empty bs = bs
+          go (Cons a as) bs = Cons a (go as bs) 
 
 
 {- |
