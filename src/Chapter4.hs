@@ -505,10 +505,7 @@ instance Applicative List where
   (<*>) :: List (a -> b) -> List a -> List b
   Empty <*> _ = Empty
   _ <*> Empty = Empty
-  Cons f fs <*> xs = go (fmap f xs) (fs <*> xs)
-    where go :: List a -> List a -> List a
-          go Empty bs = bs
-          go (Cons a as) bs = Cons a (go as bs) 
+  Cons f fs <*> xs = append (fmap f xs) (fs <*> xs)
 
 
 {- |
@@ -621,7 +618,8 @@ Implement the 'Monad' instance for our 'Secret' type.
 -}
 instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+    Trap x >>= _ = Trap x
+    Reward x >>= f = f x
 
 {- |
 =⚔️= Task 7
@@ -632,6 +630,19 @@ Implement the 'Monad' instance for our lists.
   maybe a few) to flatten lists of lists to a single list.
 -}
 
+instance Monad List where
+  (>>=) :: List a -> (a -> List b) -> List b
+  Empty >>= _ = Empty
+  Cons a as >>= f = go (f a) (as >>= f)
+    where go :: List a -> List a -> List a
+          go Empty bs = bs
+          go (Cons a as) bs = Cons a (go as bs)
+
+replicate' :: Int -> a -> List a
+replicate' n x
+  | n == 1 = Cons x Empty
+  | n > 1 = Cons x (replicate' (n - 1) x)
+  | otherwise = Empty
 
 {- |
 =💣= Task 8*: Before the Final Boss
@@ -650,7 +661,14 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM m1 m2 = do
+  a <- m1
+
+  if a then do
+    b <- m2
+
+    pure b
+  else pure a
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
@@ -687,13 +705,34 @@ some functions on it.
 Specifically,
 
  ❃ Implement the polymorphic binary tree type that can store any
-   elements inside its nodes
+   elements inside its nodes (DONE)
  ❃ Implement the Functor instance for Tree
  ❃ Implement the reverseTree function that reverses the tree and each
    subtree of a tree
  ❃ Implement the function to convert Tree to list
 -}
 
+data Tree a
+  = EmptyTree
+  | Node a (Tree a) (Tree a)
+  deriving Show
+
+instance Functor Tree where
+  fmap :: (a -> b) -> Tree a -> Tree b
+  fmap _ EmptyTree = EmptyTree
+  fmap f (Node x left right) = Node (f x) (fmap f left) (fmap f right)
+
+reverseTree :: Tree a -> Tree a
+reverseTree EmptyTree = EmptyTree
+reverseTree (Node x left right) = Node x (reverseTree right) (reverseTree left)
+
+treeToList :: Tree a -> List a
+treeToList EmptyTree = Empty
+treeToList (Node x left right) = Cons x (append (treeToList left) (treeToList right))
+
+append :: List a -> List a -> List a
+append Empty bs = bs
+append (Cons a as) bs = Cons a (append as bs)
 
 {-
 You did it! Now it is time to the open pull request with your changes
