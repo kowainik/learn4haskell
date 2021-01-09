@@ -1,6 +1,6 @@
 {- 👋 Welcome to Chapter Three of our journey, Courageous Knight!
 
-Glad to see you back for more challenges. You fight great for the glory of the
+Glad to see you back for more challenges. You fought great for the glory of the
 Functional Programming in the previous Chapters. We are grateful that you are
 continuing to walk this road with us.
 
@@ -128,7 +128,7 @@ are two types of types: product and sum types.
 To give you some basic understanding of the difference between these two, let's
 go to the book shop. A book in there represents a product type: each book has
 the name, author, cover, pages, etc. And all of these properties are mandatory
-and come with the book. Bookshelf, in its turn, is the sum type. Each book in a
+and come with the book. Bookshelf, in its turn, is a sum type. Each book in a
 shelf is a different type, and you can choose one of them at once (there is no
 such book where two or more physical books are sewed together).
 
@@ -162,7 +162,7 @@ BookShelf:
 {- |
 =🛡= Product type
 
-Let's now see how the product data types look like in Haskell.
+Let's now see how product data types look like in Haskell.
 
 Product type should have a type name, one type constructor (the function that
 lets you create the value of the type later) and the description of the fields
@@ -204,10 +204,10 @@ arthur = MkKnight "Arthur" 100
 A constructor is just a function from fields to the type! You can verify this in GHCi:
 
 ghci> :t MkKnight
-MkNight :: String -> Int -> Knight
+MkKnight :: String -> Int -> Knight
 
 As in a regular function, you need to provide a 'String' and an 'Int' to the
-'MkNight' constructor in order to get the full-fledged 'Knight'.
+'MkKnight' constructor in order to get the full-fledged 'Knight'.
 
 Also, you can write a function that takes a Knight and returns its name.
 It is convenient to use pattern matching for that:
@@ -225,7 +225,7 @@ ghci> knightName arthur
 It is comfy to have such getters for all types, so Haskell provides a syntax for
 defining __records__ — named parameters for the product data type fields.
 
-Records have similar syntax for defining in Haskell as (unnamed) ordinary
+Records have a similar syntax for defining in Haskell as (unnamed) ordinary
 product types, but fields are specified in the {} separated by a comma. Each
 field should have a name and a type in this form: 'fieldName :: FieldType'.
 
@@ -266,7 +266,7 @@ features for free when using records over unnamed type fields:
 By default, all functions and constructors work with positional arguments
 (unnamed, that are identified by its position in the type declaration). You
 write a function or a constructor name first, and then you pass arguments
-separated by space. But once we declare a product type as a record, we can use
+separated by spaces. But once we declare a product type as a record, we can use
 field names for specifying constructor values. That means that the position
 doesn't matter anymore as long as we specify the names. So it is like using
 named arguments but only for constructors with records.
@@ -306,7 +306,7 @@ setKnightName newName (MkKnight _ victories) =
 @
 
 ♫ NOTE: By default, GHCi doesn't know how to display values of custom types. If
-  you want to explore custom data types in REPL, you need to add a magical
+  you want to explore custom data types in the REPL, you need to add a magical
   "deriving (Show)" line (will be explained later in this chapter) at the end of a
   record. Like so:
 
@@ -343,14 +343,6 @@ Define the Book product data type. You can take inspiration from our description
 of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
-data Book = Book
-    { title :: String
-    , subtitle :: String
-    , description :: String
-    , minPrice :: Double
-    , suggestedPrice :: Double
-    , author :: String
-    }
 
 {- |
 =⚔️= Task 2
@@ -375,63 +367,17 @@ fight following the above rules and returns the amount of gold the knight has
 after the fight. The battle has the following possible outcomes:
 
  ⊛ Knight wins and takes the loot from the monster and adds it to their own
-   earned treasured
+   earned treasure
  ⊛ Monster defeats the knight. In that case return -1
  ⊛ Neither the knight nor the monster wins. On such an occasion, the knight
    doesn't earn any money and keeps what they had before.
 
 -}
-data Unit = Unit
-    { health :: Int
-    , attack :: Int
-    , gold :: Int
-    }
-    deriving (Show)
-
-newtype Knight = Knight { unKnight :: Unit } deriving (Show)
-newtype Monster = Monster { unMonster :: Unit } deriving (Show)
-data UnitType
-    = MonsterType
-    | KnightType
-type CurrentUnit = Unit
-type AttackedUnit = Unit
-
-mkUnit :: Int -> Int -> Int -> Maybe Unit
-mkUnit health attack gold
-    | health >= 0 && attack > 0 && gold >= 0 = Just unit
-    | otherwise = Nothing
-    where unit = Unit { health = health, attack = attack, gold = gold }
-
-mkKnight :: Int -> Int -> Int -> Maybe Knight
-mkKnight health attack gold =
-    case maybeUnit of
-        Just unit -> Just (Knight unit)
-        Nothing -> Nothing
-    where maybeUnit = mkUnit health attack gold
-
-mkMonster :: Int -> Int -> Int -> Maybe Monster
-mkMonster health attack gold =
-    case maybeUnit of
-        Just unit -> Just (Monster unit)
-        Nothing -> Nothing
-    where maybeUnit = mkUnit health attack gold
-
-fight :: Knight -> Monster -> Int
-fight knight monster = go True knightUnit monsterUnit
-    where knightUnit = unKnight knight
-          monsterUnit = unMonster monster
-          go :: Bool -> CurrentUnit -> AttackedUnit -> Int
-          go isKnightCurrent (Unit cHealth cAttack cGold) (Unit aHealth aAttack aGold)
-              | aHealth - cAttack <= 0 && isKnightCurrent = aGold
-              | aHealth - cAttack <= 0 && not isKnightCurrent = -1
-              | otherwise = go (not isKnightCurrent) aPlayer cPlayer
-              where aPlayer = Unit (aHealth - cAttack) aAttack aGold
-                    cPlayer = Unit cHealth cAttack cGold
 
 {- |
 =🛡= Sum types
 
-Another powerful ambassador of ADT is __sum type__. Unlike ordinary records
+Another powerful ambassador of ADTs is the __sum type__. Unlike ordinary records
 (product types) that always have all the fields you wrote, sum types represent
 alternatives of choices. Sum types can be seen as "one-of" data structures. They
 contain many product types (described in the previous section) as alternatives.
@@ -513,18 +459,6 @@ and provide more flexibility when working with data types.
 Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
-data Meal
-    = Breakfast
-    | Lunch
-    | Dinner
-    | Brunch
-    | Linner
-    | Dinfast
-    | RegularSnack
-    | MidnightSnack
-    | HeavySnack
-    | FoodComaSnack
-    | ISwearJustABite
 
 {- |
 =⚔️= Task 4
@@ -543,74 +477,8 @@ After defining the city, implement the following functions:
  ✦ buildHouse — add a new living house
  ✦ buildWalls — build walls in the city. But since building walls is a
    complicated task, walls can be built only if the city has a castle
-   and at least 10 living __people__ inside in all houses of the city totally.
+   and at least 10 living __people__ inside in all houses of the city in total.
 -}
-newtype House = House Int
-    deriving (Show)
-
-type Houses = [House]
-
-newtype CastleName = CastleName String
-    deriving (Show)
-
-data CityConfig
-    = OnlyCastle CastleName 
-    | CastleAndWall CastleName 
-    | NoCastle
-    deriving (Show)
-
-data Knowledge
-    = Church
-    | Library
-    deriving (Show)
-
-data MagicalCity = MagicalCity
-    { cityConfig :: CityConfig
-    , cityKnowledge :: Knowledge
-    , cityHouses :: Houses
-    }
-    deriving (Show)
-
-unHouse :: House -> Int
-unHouse (House houseSize) = houseSize
-
-mkHouse :: House -> Maybe House
-mkHouse house 
-    | houseSize > 4 = Nothing
-    | otherwise = Just (House houseSize)
-    where houseSize = unHouse house
-
-buildHouse :: House -> MagicalCity -> MagicalCity
-buildHouse unsafeHouse city =
-    case maybeHouse of
-        Just house -> city { cityHouses = house:currentHouses }
-        Nothing -> city
-    where maybeHouse = mkHouse unsafeHouse
-          currentHouses = cityHouses city
-
-unCastleName :: CastleName -> String
-unCastleName (CastleName name) = name
-
-mkCastleName :: String -> Maybe CastleName
-mkCastleName name
-    | null name = Nothing
-    | otherwise = Just (CastleName name)
-
-buildCastle :: Maybe CastleName -> MagicalCity -> MagicalCity
-buildCastle (Just castleName) city = 
-    case cityConfig city of
-        CastleAndWall _ -> city { cityConfig = CastleAndWall castleName } 
-        _ -> city { cityConfig = OnlyCastle castleName }
-buildCastle _ city = city
-
-buildWalls :: MagicalCity -> MagicalCity
-buildWalls city =
-    case cityConfig city of
-        OnlyCastle name ->
-            if sum (map unHouse $ cityHouses city) >= 10 then
-                city { cityConfig = CastleAndWall name }
-            else city
-        _ -> city
 
 {-
 =🛡= Newtypes
@@ -619,7 +487,7 @@ There is one more way to create a custom structure in Haskell. Let's see what
 that is and how it differs from others.
 
 __Newtype__ is a way to create a lightweight wrapper around an existing type.
-Unlike type aliases, newtypes make an entirely new type for the compiler point
+Unlike type aliases, newtypes make an entirely new type from the compiler's point
 of view (as the name suggests). However, such data types don't have additional
 runtime overhead, which means that it would work as fast as the underlying type
 without the wrapper.
@@ -692,57 +560,22 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
-
-newtype Health = Health Int
-    deriving (Show)
-
-newtype Armor = Armor Int
-    deriving (Show)
-
-newtype Dexterity = Dexterity Int
-    deriving (Show)
-
-newtype Defense = Defense Int
-    deriving (Show)
-
-newtype Attack = Attack Int
-    deriving (Show)
-
-newtype Strength = Strength Int
-    deriving (Show)
-
-newtype Damage = Damage Int
-    deriving (Show)
-
 data Player = Player
-    { playerHealth    :: Health
-    , playerArmor     :: Armor
-    , playerAttack    :: Attack
-    , playerDexterity :: Dexterity
-    , playerStrength  :: Strength
+    { playerHealth    :: Int
+    , playerArmor     :: Int
+    , playerAttack    :: Int
+    , playerDexterity :: Int
+    , playerStrength  :: Int
     }
-    deriving (Show)
 
-calculatePlayerDamage :: Attack -> Strength -> Damage
-calculatePlayerDamage (Attack attack) (Strength strength)
-    | isNotNegative = Damage damage
-    | otherwise = Damage 0
-    where isNotNegative = attack >= 0 && strength >= 0
-          damage = attack + strength
+calculatePlayerDamage :: Int -> Int -> Int
+calculatePlayerDamage attack strength = attack + strength
 
-calculatePlayerDefense :: Armor -> Dexterity -> Defense
-calculatePlayerDefense (Armor armor) (Dexterity dexterity)
-    | isNotNegative = Defense defense
-    | otherwise = Defense 0
-    where isNotNegative = armor >= 0 && dexterity >= 0
-          defense = armor * dexterity
+calculatePlayerDefense :: Int -> Int -> Int
+calculatePlayerDefense armor dexterity = armor * dexterity
 
-calculatePlayerHit :: Damage -> Defense -> Health -> Health
-calculatePlayerHit (Damage damage) (Defense defense) (Health health)
-    | newHealth > health = Health health
-    | newHealth < 0 = Health 0
-    | otherwise = Health newHealth
-    where newHealth = health + defense - damage
+calculatePlayerHit :: Int -> Int -> Int -> Int
+calculatePlayerHit damage defense health = health + defense - damage
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -767,9 +600,9 @@ that they can use some type variables as placeholders, representing general
 types. You can either reason about data types in terms of such variables (and
 don't worry about the specific types), or substitute variables with some
 particular types.
-Such polymorphism in Haskell is an example of the __parametric polymorphism__.
+Such polymorphism in Haskell is an example of __parametric polymorphism__.
 
-The process of defining a polymorphic type is akin to the ordinary data type
+The process of defining a polymorphic type is akin to an ordinary data type
 definition. The only difference is that all the type variables should go after
 the type name so that you can reuse them in the constructor fields later.
 
@@ -815,7 +648,7 @@ or we can specify a concrete type:
 isEnoughDiamonds :: TreasureChest Diamond -> Bool
 @
 
-In the same spirit, we can implement a function that creates treasure with some
+In the same spirit, we can implement a function that creates a treasure chest with some
 predefined amount of gold and a given treasure:
 
 @
@@ -841,7 +674,7 @@ data Maybe a
 Haskell doesn't have a concept of "null" values. If you want to work with
 potentially absent values, use the "Maybe" type explicitly.
 
-> Is there a good way to avoid null-pointer bugs? Maybe. © Jasper Van der Jeught
+> Is there a good way to avoid null-pointer bugs? Maybe. © Jasper Van der Jeugt
 
 Another standard polymorphic data type is "Either". It stores either the value
 of one type or a value of another.
@@ -866,7 +699,7 @@ showEither (Right n) = "Right with number: " ++ show n
 @
 
 Now, after we covered polymorphic types, you are finally ready to learn how
-lists are actually defined in the Haskell world. Behold the might list type!
+lists are actually defined in the Haskell world. Behold the mighty list type!
 
 @
 data [] a
@@ -903,7 +736,7 @@ data List a
 
 Before entering the real world of adventures and glorious victories, we should
 prepare for different things in this world. It is always a good idea to
-understand the whole context before going for a quest. And, before fighting a
+understand the whole context before going on a quest. And, before fighting a
 dragon, it makes sense to prepare for different unexpected things. So let's
 define data types describing a Dragon Lair!
 
@@ -920,20 +753,10 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
-data TreasureChest a = TreasureChest
-    { treasureChestGold :: Int
-    , treasureChestLoot :: a
-    }
-
-data Lair a b = Lair
-    { lairChest :: Maybe (TreasureChest a)
-    , lairDragon :: b
-    }
-
 {-
 =🛡= Typeclasses
 
-__Typeclass__ is a regularly used way to express common characteristics of the
+__Typeclass__ is a regularly used way to express common characteristics of
 different data types. In some sense, a typeclass describes the interface of some
 value without telling you the implementation details.
 
@@ -951,15 +774,15 @@ alike: find a path to the particular castle (differs from princess to princess),
 defeat the monster (also unique for each princess) and rescue the beloved
 beauty. So we can see that the "Rescue Mission Plan" is the typeclass, and each
 princess has its own instance for that. If you are a prince on a white horse,
-you'd better check the particular instance for your princess to get into the
+you'd better check the particular instance for your princess to get on the
 salvation journey.
 
-Next, let’s look at one code example for the better illustration of the
+Next, let’s look at one code example for a better illustration of the
 instance-typeclass relationship. We can define a typeclass that would tell us
 one's arch enemy.
 
 The syntax is as follows: you need to use the "class" keyword, then you need to
-specify the typeclass name. Typeclasses should start with the upper letter.
+specify the typeclass name. Typeclasses should start with an upper case letter.
 After that, the type parameter should be identified, which represents the data
 types that would have instances of this typeclass. And, finally, the "where"
 keyword. After, you can specify methods of the typeclass – functions that should
@@ -984,7 +807,7 @@ And that 'getArchEnemy' method could be used with a lot of data types: Bool,
 Double,… name them all! Let’s have our first instances to show how it works:
 
 The syntax is simple and consistent with the typeclass declaration, but instead
-of the "class: keyword you need to have the "instance" keyword. Of course,
+of the "class" keyword you need to have the "instance" keyword. Of course,
 instead of the type parameter, you have to specify the concrete type, for which
 you are implementing the instance. And all the necessary methods should have its
 implementation for the particular data type.
@@ -1011,11 +834,11 @@ instance ArchEnemy Double where
 @
 
 And then you can write polymorphic functions and not worry about which specific
-type is underhood until it has the instance of the desired typeclass. For that
-we are using __constrains__ in Haskell. It is the identification of affiliation
+type is under the hood until it has the instance of the desired typeclass. For that
+we are using __constraints__ in Haskell. It is the identification of affiliation
 to the typeclass. The constraints should go after the "::" sign in the function
 type declaration. You can specify one or many constraints. If more than one they
-should be in parenthesis and comma-separated. The end of constraints is
+should be in parentheses and comma-separated. The end of constraints is
 determined with the "=>" arrow, and the function type could be written as usual.
 
 @
@@ -1087,32 +910,14 @@ Implement instances of "Append" for the following types:
 class Append a where
     append :: a -> a -> a
 
-newtype Gold = Gold Int
-    deriving (Show)
-
-instance Append Gold where
-    append :: Gold -> Gold -> Gold
-    append (Gold goldA) (Gold goldB)
-        | isNotNegative = Gold (goldA + goldB)
-        | otherwise = Gold 0
-        where isNotNegative = goldA >= 0 && goldB >= 0
-
-instance Append [a] where
-    append :: [a] -> [a] -> [a]
-    append = (++)
-
-instance (Append a) => Append (Maybe a) where
-    append :: Maybe a -> Maybe a -> Maybe a
-    append (Just a) (Just b) = Just (append a b)
-    append _ _ = Nothing
 
 {-
 =🛡= Standard Typeclasses and Deriving
 
-As many useful data types, standard library in Haskell also comes with some very
+As well as many useful data types, the standard library in Haskell also comes with some very
 essential typeclasses:
 
- ﹡ 'Show' — show the data type value as a 'String'. This helps us to print into
+ ﹡ 'Show' — show the data type value as a 'String'. This helps us to print to
    the terminal in GHCi.
  ﹡ 'Read' — inverse to the 'Show'. By a given String, it is possible to parse
    it into the data type.
@@ -1138,7 +943,7 @@ the boilerplate implementation of instances.
 
 The deriving syntax is the following. It should be attached to the data type
 declaration. It consists of the "deriving" keyword, and then typeclass names in
-parenthesis comma-separated.
+parentheses comma-separated.
 
 @
 data Princess = Princess
@@ -1165,33 +970,6 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
-
-data Day
-    = Monday
-    | Tuesday
-    | Wednesday
-    | Thursday
-    | Friday
-    | Saturday
-    | Sunday
-    deriving (Show, Eq, Enum, Bounded)
-
-isWeekend :: Day -> Bool
-isWeekend day
-    | day == Saturday || day == Sunday = True
-    | otherwise = False
-
-nextDay :: Day -> Day
-nextDay day
-    | day == maxBound = minBound
-    | otherwise = succ day
-
-daysToParty :: Day -> Int
-daysToParty day
-    | diffToFriday < 0 = 7 + diffToFriday
-    | otherwise = 4 - dayNum
-    where dayNum = fromEnum day
-          diffToFriday = 4 - dayNum
 
 {-
 =💣= Task 9*
@@ -1227,123 +1005,10 @@ properties using typeclasses, but they are different data types in the end.
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
-newtype NewHealth = NewHealth Int deriving (Show)
 
-newtype NewAttack = NewAttack Int deriving (Show)
-
-newtype NewDefense = NewDefense Int deriving (Show)
-
-data NewType
-    = NewMonster
-    | NewKnight NewDefense
-    deriving (Show)
-
-data NewUnit = NewUnit
-    { newUnitType :: NewType
-    , newUnitHealth :: NewHealth
-    , newUnitAttack :: NewAttack
-    , newUnitInBattle :: Bool
-    }
-    deriving (Show)
-
-class KnightUnit a where
-    castSpell :: a -> a
-    
-    drinkPotion :: a -> a
-
-class MonsterUnit a where
-    runAway :: a -> a
-
-class (KnightUnit a, MonsterUnit a) => BattleUnit a where
-    newAttack :: a -> a -> a
-
-    battle :: a -> a -> a
-
-instance KnightUnit NewUnit where
-    castSpell :: NewUnit -> NewUnit
-    castSpell unit = case newUnitType unit of
-        NewKnight newDefense -> 
-            let NewDefense def = newDefense
-            in case mkNewDefense def of
-                   Just uppedDefense -> unit { newUnitType = NewKnight uppedDefense }
-                   Nothing -> unit
-        _ -> unit
-               
-
-    drinkPotion :: NewUnit -> NewUnit
-    drinkPotion knight@(NewUnit (NewKnight _) _ _ _) =
-        case maybeUppedHealth of
-            Just uppedHealth -> knight { newUnitHealth = uppedHealth }
-            Nothing -> knight
-        where NewHealth health = newUnitHealth knight 
-              maybeUppedHealth = mkNewHealth (health + 5)
-    drinkPotion _ = error "This unit is not of knight type."
-
-instance MonsterUnit NewUnit where
-    runAway :: NewUnit -> NewUnit
-    runAway unit@(NewUnit NewMonster _ _ True) = unit {newUnitInBattle = False}
-    runAway unit@(NewUnit (NewKnight _) _ _ _)
-        = error "This unit is not of monster type."
-    runAway unit@(NewUnit NewMonster _ _ False)
-        = error "This monster unit is already not in battle."
-
-instance BattleUnit NewUnit where
-    newAttack :: NewUnit -> NewUnit -> NewUnit
-    newAttack unitA unitB =
-        case newUnitType unitA of
-            NewKnight aDefense -> unitA { newUnitHealth = computeBUHealth aHealth aDefense bAttack }
-            NewMonster -> unitA { newUnitHealth = computeBUHealth aHealth (NewDefense 0) bAttack }
-        where bAttack = newUnitAttack unitB
-              aHealth = newUnitHealth unitA
-
-    battle :: NewUnit -> NewUnit -> NewUnit
-    battle unitA unitB = undefined
-
-mkNewHealth :: Int -> Maybe NewHealth
-mkNewHealth hp 
-    | hp > 0 = Just (NewHealth hp)
-    | otherwise = Nothing
-
-mkNewDefense :: Int -> Maybe NewDefense
-mkNewDefense def
-    | def >= 0 = Just (NewDefense def)
-    | otherwise = Nothing
-
-mkNewAttack :: Int -> Maybe NewAttack
-mkNewAttack atk
-    | atk > 0 = Just (NewAttack atk)
-    | otherwise = Nothing
-
-mkNewUnit :: NewType -> NewHealth -> NewDefense -> NewAttack -> Bool -> NewUnit
-mkNewUnit unitType (Health health) (NewDefense defense) (NewAttack attack) isInBattle
-    | isValidHealth && isValidDefense && isValidAttack
-        = let newHealth = mkNewHealth health
-              newDefense = mkNewDefense defense
-              newAttack = mkNewAttack
-          in NewUnit { newUnitType = NewKnight newDefense
-                     , newUnitHealth = newHealth
-                     , newUnitAttack = newAttack
-                     , newUnitInBattle = isInBattle 
-                     }
-    | otherwise = error "There's at least one unit attribute that's not valid."
-    where isValidHealth = health > 0
-          isValidDefense = defense >= 0
-          isValidAttack = attack > 0
-
--- unitA is attacked by unitB
-computeBUHealth :: NewHealth -> NewDefense -> NewAttack -> NewHealth
-computeBUHealth aHealth aDefense bAttack
-    | health < 0 && health == 0 = NewHealth health
-    | damagedHealth > health = NewHealth health
-    | damagedHealth < 0 = NewHealth 0
-    | otherwise = NewHealth damagedHealth
-    where NewHealth health = aHealth
-          NewDefense defense = aDefense
-          NewAttack attack = bAttack
-          damagedHealth = health + defense - attack
 
 {-
-You did it! Now it is time to the open pull request with your changes
+You did it! Now it is time to open pull request with your changes
 and summon @vrom911 and @chshersh for the review!
 -}
 
