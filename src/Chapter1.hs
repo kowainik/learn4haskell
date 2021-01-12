@@ -558,7 +558,7 @@ mid :: Int -> Int -> Int -> Int
 mid x y z
     | (x > y && x < z) || (x > z && x < y) = x
     | (y > x && y < z) || (y > z && y < x) = y
-    | (z > x && z < y) || (z > y && z < x) = x
+    | (z > x && z < y) || (z > y && z < x) = z
     | otherwise = if x == y then x else z
 {- |
 =⚔️= Task 8
