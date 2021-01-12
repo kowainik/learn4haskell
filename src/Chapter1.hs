@@ -490,7 +490,8 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 lastDigit :: Int -> Int -- What about last digit of a float?
-lastDigit n = mod n 10
+lastDigit n = 
+    if n < 0 then mod (n * (-1)) 10 else mod n 10
 
 
 {- |
@@ -521,7 +522,7 @@ branches because it is an expression and it must always return some value.
 -}
 closestToZero :: Int -> Int -> Int
 closestToZero x y =
-    if abs x <= y then x else y
+    if abs x <= abs y then x else y
 
 
 {- |
@@ -644,8 +645,9 @@ specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
 sumLast2 n =
-    let first = mod n 10
-        second = mod (div n 10) 10
+    let npositive = if n < 0 then n * (-1) else n
+        first = mod npositive 10
+        second = mod (div npositive 10) 10
     in (first + second)
 
 
