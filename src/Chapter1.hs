@@ -670,11 +670,11 @@ aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
 firstDigit n
-    | n < 10 = n
+    | npositive < 10 = npositive
     | otherwise = 
-        let x = div n 10
+        let x = div npositive 10
         in (firstDigit x)
-
+  where npositive = if n < 0 then n * (-1) else n
 
 {-
 You did it! Now it is time to open a pull request with your changes
