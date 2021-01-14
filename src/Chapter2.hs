@@ -198,7 +198,7 @@ to guess first, what you will see.
 >>> [10 .. 1]
 []
 >>> [10, 9 .. 1]  -- backwards list with explicit step
-[10,9,8,7,6,5,4,3,2,1]
+[10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 >>> length [4, 10, 5]  -- list length
 [3]
 >>> replicate 5 True
