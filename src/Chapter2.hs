@@ -186,7 +186,7 @@ Evaluate the following expressions in GHCi and insert the answers. Try
 to guess first, what you will see.
 
 >>> [10, 2] ++ [3, 1, 5]
-[10, 2, 3, 1, 5]
+[10,2,3,1,5]
 >>> [] ++ [1, 4]  -- [] is an empty list
 [1, 4]
 >>> 3 : [1, 2]
