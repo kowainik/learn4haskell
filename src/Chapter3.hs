@@ -489,6 +489,11 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data Meals
+    = Breakfast
+    | Lunch
+    | Dinner
+
 {- |
 =⚔️= Task 4
 
@@ -509,6 +514,75 @@ After defining the city, implement the following functions:
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
 
+data Castle
+    = NoCastle
+    | Castle
+        {
+            castleName :: String
+        }
+    | CastleWithWalls  
+        {
+            castleName :: String
+        }
+    deriving (Show)
+
+data Structure
+    = Church
+    | Library
+    deriving (Show)
+
+data House = House
+    {
+        houseSize :: Int
+    } deriving (Show)
+
+data City = City
+    {
+        cityCastle :: Castle,
+        cityStructure :: Structure,
+        cityHouses :: [House]
+    } deriving (Show)
+
+buildCastle :: City -> String -> City
+buildCastle city castleName
+    = city { cityCastle = Castle castleName }
+
+buildHouse :: City -> Int -> City
+buildHouse city houseSize
+    | houseSize < 1 || houseSize > 4 = city
+    | otherwise = city { cityHouses = newHouses }
+    where newHouses = House houseSize : cityHouses city 
+
+buildWalls :: City -> City
+buildWalls city
+    | cityHasCastle city && getCityPopulation city >= 10 = city { cityCastle = CastleWithWalls  name }
+    | otherwise = city
+    where name = castleName (cityCastle city)
+
+getCityPopulation :: City -> Int 
+getCityPopulation city = sum $ map houseSize (cityHouses city)
+
+cityHasCastle :: City -> Bool 
+cityHasCastle city = case cityCastle city of
+    NoCastle -> False 
+    CastleWithWalls _ -> True
+    Castle _ -> True
+
+myCastle = NoCastle
+myStructure = Library
+myHouses = [House 4, House 4, House 3]
+myCity = City myCastle myStructure myHouses 
+
+{- Please help me understand best practices because of immutability:
+with the above definitions loaded the following function:
+    `myCity = buildCastle myCity "myCastle"` will run successfully,
+however, when `myCity` is called it afterwards it will hang.
+I am guessing this is because of immutability.
+So if I instead run:
+    `newCity = buildCastle myCity "myCastle"`
+both `myCity` and `newCity` are accessible.
+How can I use `buildCastle` without having to change the city name?
+ -}
 {-
 =🛡= Newtypes
 
