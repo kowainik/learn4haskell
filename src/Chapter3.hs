@@ -343,6 +343,14 @@ Define the Book product data type. You can take inspiration from our description
 of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
+data Book = Book
+    {
+      bookName :: String,
+      bookISBN :: String,
+      bookAuthor :: String, 
+      bookPages :: Int,
+      bookDescription :: String
+    } deriving (Show)
 
 {- |
 =⚔️= Task 2
@@ -373,6 +381,27 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+
+data Monster = Monster
+    {
+        monsterHealth :: Int, 
+        monsterAttack :: Int,
+        monsterGold :: Int
+    } deriving (Show)
+
+data Knight = Knight
+    {
+        knightName :: String,
+        knightHealth :: Int,
+        knightAttack :: Int,
+        knightGold :: Int
+    } deriving (Show)
+
+fight :: Knight -> Monster -> Int 
+fight (Knight _ knightHealth knightAttack knightGold) (Monster monsterHealth monsterAttack monsterGold)
+    | knightAttack >= monsterHealth = knightGold + monsterGold
+    | monsterAttack >= knightHealth = -1
+    | otherwise = knightGold
 
 {- |
 =🛡= Sum types
