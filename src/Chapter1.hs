@@ -524,7 +524,7 @@ branches because it is an expression and it must always return some value.
 -}
 
 closestToZero :: Int -> Int -> Int
-closestToZero x y = if (abs x) > (abs y) then y else x 
+closestToZero x y = if abs x > abs y then y else x 
 
 
 {- |
@@ -560,9 +560,9 @@ Casual reminder about adding top-level type signatures for all functions :)
 
 mid :: Int -> Int -> Int -> Int
 mid x y z
-    | (x > y && x < z) || (x < y && x > z) = x
-    | (y > x && y < z) || (y < x && y > z) = y
-    | (z > x && z < y) || (z < x && z > y) = z
+    | (x >= y && x <= z) || (x <= y && x >= z) = x
+    | (y >= x && y <= z) || (y <= x && y >= z) = y
+    | otherwise = z
 
 {- |
 =⚔️= Task 8
@@ -584,7 +584,7 @@ isVowel c
     | c == 'i' = True
     | c == 'o' = True
     | c == 'u' = True
-    | not (c == 'a') = False
+    | otherwise = False
 
 
 {- |
@@ -649,9 +649,8 @@ specifying complex expressions.
 -}
 
 sumLast2 :: Integer -> Integer
-sumLast2 n = let x = mod n 10
-                 y = mod (div n 10) 10
-                 in x + y
+sumLast2 n = let (x, y) = divMod (abs n) 10
+                 in (mod x 10) + y
 
 
 {- |
@@ -673,7 +672,7 @@ aren't ready for this boss yet!
 -}
 
 firstDigit :: Integer -> Integer
-firstDigit n = if (div n 10) == 0 then n else firstDigit (div n 10)
+firstDigit n = if (div (abs n) 10) == 0 then n else firstDigit (div (abs n) 10)
 
 
 {-
