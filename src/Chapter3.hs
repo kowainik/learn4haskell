@@ -583,6 +583,7 @@ So if I instead run:
 both `myCity` and `newCity` are accessible.
 How can I use `buildCastle` without having to change the city name?
  -}
+
 {-
 =🛡= Newtypes
 
@@ -664,21 +665,51 @@ introducing extra newtypes.
     implementation of the "hitPlayer" function at all!
 -}
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
-    }
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
+    } deriving (Show)
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+newtype Attack = Attack 
+    {
+        attackValue :: Int
+    } deriving (Show)
+newtype Strength = Strength
+    {
+        strengthValue :: Int
+    } deriving (Show)
+newtype Damage = Damage 
+    {
+        damageValue :: Int
+    } deriving (Show)
+newtype Armor = Armor 
+    {
+        armorValue :: Int
+    } deriving (Show)
+newtype Dexterity = Dexterity 
+    {
+        dexterityValue :: Int
+    } deriving (Show)
+newtype Defense = Defense 
+    {
+        defenseValue :: Int
+    } deriving (Show)
+newtype Health = Health 
+    {
+        healthValue :: Int
+    } deriving (Show)
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerDamage :: Attack -> Strength -> Damage
+calculatePlayerDamage attack strength = Damage (attackValue attack + strengthValue strength)
+
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense armor dexterity = Defense (armorValue armor * dexterityValue dexterity)
+
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit damage defense health = Health (healthValue health + defenseValue defense - damageValue damage)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -695,6 +726,8 @@ hitPlayer player1 player2 =
             (playerHealth player1)
     in player1 { playerHealth = newHealth }
 
+player1 = Player (Health 10) (Armor 10) (Attack 10) (Dexterity 10) (Strength 10) 
+player2 = Player (Health 20) (Armor 20) (Attack 200) (Dexterity 20) (Strength 20) 
 {- |
 =🛡= Polymorphic data types
 
@@ -856,6 +889,15 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
+data DragonLair x y = DragonLair
+    {
+        treasure :: Maybe x,
+        dragon :: y
+    }
+newtype Dragon x = Dragon
+    {
+        dragonPower :: x
+    }
 {-
 =🛡= Typeclasses
 
@@ -868,7 +910,7 @@ order to show that the data type obeys the typeclasses rules and to use the
 methods of the typeclass on the data values, you need to provide the work
 instructions under this particular typeclass. And that is the instance of the
 data type for the specific typeclass.
-
+===
 Let’s consolidate the typeclasses and instances concepts on the analogues from
 our fantasy world.
 
@@ -1013,6 +1055,23 @@ Implement instances of "Append" for the following types:
 class Append a where
     append :: a -> a -> a
 
+instance Append Gold where
+    append :: Gold -> Gold -> Gold
+    append (Gold x) (Gold y) = Gold (x + y)
+
+newtype Gold = Gold Int
+
+instance Append [a] where
+    append :: [a] -> [a] -> [a]
+    append x y = x ++ y
+
+instance (Append a) => Append (Maybe a) where
+    append :: Maybe a -> Maybe a -> Maybe a
+    append (Just x) (Just y) = Just (append x y)
+    append (Just x) _ = Just x
+    append _ (Just y) = Just y
+    append _ _ = Nothing
+
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -1074,6 +1133,31 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
+data Day
+    = Monday
+    | Tuesday
+    | Wednesday
+    | Thursday
+    | Friday
+    | Saturday
+    | Sunday
+    deriving (Show, Eq, Enum, Bounded)
+
+isWeekend :: Day -> Bool 
+isWeekend day
+    | elem day [Friday, Saturday, Sunday] = True 
+    | otherwise = False
+
+nextDay :: Day -> Day
+nextDay day
+    | day == maxBound = minBound
+    | otherwise = succ day
+
+daysToParty :: Day -> Int 
+daysToParty day
+    | fromEnum day > fromEnum Friday = fromEnum Friday - fromEnum day + fromEnum (maxBound :: Day) + 1
+    | otherwise = fromEnum Friday - fromEnum day
+
 {-
 =💣= Task 9*
 
@@ -1108,6 +1192,27 @@ properties using typeclasses, but they are different data types in the end.
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
+class Entity x where
+    attack :: x -> Int
+
+data T9Knight = T9Knight
+    {
+        t9knightHealth :: Int,
+        t9knightAttack :: Int,
+        t9knightDefence :: Int,
+        t9knightActions :: [KnightAction]
+    } deriving (Show)
+data T9Monster = T9Monster
+    {
+        t9MonsterHealth :: Int,
+        t9MonsterAttack :: Int
+    } deriving (Show)
+
+data KnightAction
+    = KnightAttack
+    | KnightPotion
+    | KnightSpell
+    deriving (Show)
 
 
 {-
