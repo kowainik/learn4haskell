@@ -1065,13 +1065,14 @@ instance Append [a] where
     append :: [a] -> [a] -> [a]
     append x y = x ++ y
 
-instance (Append a) => Append (Maybe a) where
+instance Append a => Append (Maybe a) where
     append :: Maybe a -> Maybe a -> Maybe a
     append (Just x) (Just y) = Just (append x y)
     append (Just x) _ = Just x
     append _ (Just y) = Just y
     append _ _ = Nothing
 
+{- I get the idea behind this function, but what's the valid syntax to call it?? -}
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -1192,27 +1193,7 @@ properties using typeclasses, but they are different data types in the end.
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
-class Entity x where
-    attack :: x -> Int
 
-data T9Knight = T9Knight
-    {
-        t9knightHealth :: Int,
-        t9knightAttack :: Int,
-        t9knightDefence :: Int,
-        t9knightActions :: [KnightAction]
-    } deriving (Show)
-data T9Monster = T9Monster
-    {
-        t9MonsterHealth :: Int,
-        t9MonsterAttack :: Int
-    } deriving (Show)
-
-data KnightAction
-    = KnightAttack
-    | KnightPotion
-    | KnightSpell
-    deriving (Show)
 
 
 {-
