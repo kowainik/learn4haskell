@@ -336,10 +336,11 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList a b xs 
+subList a b xs
+  | b >= a = []
   | a < 0 || b < 0 = []
   | otherwise = take l ys
-    where 
+    where
       l = b - a + 1
       ys = drop a xs
 
@@ -614,7 +615,7 @@ Implement a function that duplicates each element of the list
 -}
 duplicate :: [a] -> [a]
 duplicate [] = []
-duplicate (x:xs) = [x,x] ++ duplicate xs
+duplicate (x:xs) = x : x : duplicate xs
 
 {- |
 =⚔️= Task 7
@@ -631,7 +632,7 @@ Write a function that takes elements of a list only on even positions.
 takeEven :: [a] -> [a]
 takeEven [] = []
 takeEven [x] = [x]
-takeEven (x:_:xs) = [x] ++ takeEven xs
+takeEven (x:_:xs) = x : takeEven xs
 
 {- |
 =🛡= Higher-order functions
@@ -739,7 +740,7 @@ value of the element itself
 -}
 smartReplicate :: [Int] -> [Int]
 smartReplicate [] = []
-smartReplicate (x:xs) = replicate x x ++ smartReplicate xs
+smartReplicate (x:xs) = concatMap (replicate x) (smartReplicate xs)
 
 {- |
 =⚔️= Task 9
@@ -856,8 +857,9 @@ list.
 🕯 HINT: Use the 'cycle' function
 -}
 rotate :: Int -> [a] -> [a]
-rotate a l 
-  | a < 0 = []
+rotate a l
+  | null l = []
+  | a <= 0 = []
   | otherwise = take (length l) (drop a (cycle l))
 
 {- |
@@ -876,7 +878,10 @@ and reverses it.
 -}
 rewind :: [a] -> [a]
 rewind [] = []
-rewind (x:xs) = rewind xs ++ [x]
+rewind l = go [] l
+  where
+    go acc [] = acc
+    go acc (x:xs) = go (x:acc) xs
 
 {-
 You did it! Now it is time to the open pull request with your changes
