@@ -332,6 +332,14 @@ ghci|     } deriving (Show)
 ghci| :}
 ghci>
 
+
+ :{
+ data Knight = MkKnight
+     { knightName      :: String
+     , knightVictories :: Int
+     } deriving (Show)
+ :}
+
 Although, it may be easier to define data types in the module, and load it
 afterwards.
 -}
@@ -343,6 +351,13 @@ Define the Book product data type. You can take inspiration from our description
 of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
+
+data Book = CreateBook
+  { title :: String
+  , author :: String
+  , genre :: String
+  , pages :: Int
+  }
 
 {- |
 =⚔️= Task 2
@@ -373,6 +388,71 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+
+data Monster = SummonMonster
+  { monName :: String
+  , monLevel :: Int
+  , monsterType :: String
+  , monHealth :: Int
+  , monAttack :: Int
+  , monGold :: Int
+  }
+
+data Knight = CallKnight
+  { name :: String
+  , level :: Int
+  , health :: Int
+  , attack :: Int
+  , gold :: Int
+  }
+  
+{- |
+:{
+veronika = CallKnight
+    { name = "Veronika"
+    , level = 99
+    , health = 9999
+    , attack = 999
+    , gold = 999
+    }
+
+undeadDragon = SummonMonster
+  { monName = "Undead Dragon"
+  , monLevel = 80
+  , monsterType = "Undead"
+  , monHealth = 800
+  , monAttack = 200
+  , monGold = 250
+  }
+:}
+
+:{
+veronika = CallKnight
+    { name = "Veronika"
+    , level = 99
+    , health = 9999
+    , attack = 999
+    , gold = 1000
+    }
+
+undeadDragon = SummonMonster
+  { monName = "Undead Dragon"
+  , monLevel = 80
+  , monsterType = "Undead"
+  , monHealth = 20000
+  , monAttack = 200
+  , monGold = 250
+  }
+:}
+
+-}
+
+fight :: Monster -> Knight -> Int
+fight undeadDragon veronika 
+  | monHealth undeadDragon - attack veronika < 0 = gold veronika + monGold undeadDragon
+  | health veronika - monAttack undeadDragon < 0 = -1
+  | otherwise = fight undeadDragon veronika
+
 
 {- |
 =🛡= Sum types
@@ -460,6 +540,24 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data Meal
+  = Breakfast
+  | Lunch
+  | Dinner
+  | Tea
+  | Supper
+  | Brunch
+  | ThreeCourse
+  | FourCourse
+  | FiveCourse
+  | SixCourse
+  | SevenCourse
+  | EightCourse
+  | NineCourse
+  | Buffet
+  | MixedGrill
+  | Picnic
+
 {- |
 =⚔️= Task 4
 
@@ -479,6 +577,99 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
+
+data Castle = MkCastle
+  { castleName :: String
+  , wall :: Bool
+  } deriving (Show)
+
+data SpecialBuilding
+  = Church
+  | Library deriving (Show)
+
+data House = BuildHouse
+  { numberOfPeople :: Int
+  , personOne :: String
+  , personTwo :: Maybe String
+  , personThree :: Maybe String
+  , personFour :: Maybe String
+  } deriving (Show)
+
+data MagicalCity = RaiseCity
+  { hasCastle :: Maybe Castle
+  , featureBuilding :: SpecialBuilding
+  , houses :: [House]
+  } deriving (Show)
+
+{- |
+After defining the city, implement the following functions:
+
+ ✦ buildCastle — build a castle in the city. If the city already has a castle,
+   the old castle is destroyed, and the new castle with the __new name__ is built
+ ✦ buildHouse — add a new living house
+ ✦ buildWalls — build walls in the city. But since building walls is a
+   complicated task, walls can be built only if the city has a castle
+   and at least 10 living __people__ inside in all houses of the city totally.
+-}
+
+ancientCastle = MkCastle
+  { castleName = "Ancient Castle"
+  , wall = True
+  }
+
+cathedral = Church
+
+redHouse = BuildHouse
+  { numberOfPeople = 1
+  , personOne = "Bob"
+  , personTwo = Nothing
+  , personThree = Nothing
+  , personFour = Nothing
+  }
+
+blueHouse = BuildHouse
+  { numberOfPeople = 2
+  , personOne = "Sally"
+  , personTwo = Just "Steve"
+  , personThree = Nothing
+  , personFour = Nothing
+  }
+
+lostCity = RaiseCity
+  { hasCastle = Just ancientCastle
+  , featureBuilding = cathedral
+  , houses = [redHouse, blueHouse]
+  }
+
+buildCastle :: MagicalCity -> String -> Bool -> MagicalCity
+buildCastle city newCastleName hasWalls = city { hasCastle = Just (MkCastle newCastleName hasWalls) }
+
+buildHouse :: Int -> String -> Maybe String -> Maybe String -> Maybe String -> House
+buildHouse numberOfResidents personOneName personTwoName personThreeName personFourName = BuildHouse
+  { numberOfPeople = numberOfResidents
+  , personOne = personOneName
+  , personTwo =  personTwoName
+  , personThree = personThreeName
+  , personFour = personFourName
+  }
+
+totalNumberOfPeople :: [House] -> Int
+totalNumberOfPeople houses  = sum (map(\i -> numberOfPeople i) houses)
+
+{-|
+:{
+blueHouse = BuildHouse
+  { numberOfPeople = 11
+  , personOne = "Sally"
+  , personTwo = Just "Steve"
+  , personThree = Nothing
+  , personFour = Nothing
+  }
+:}
+-}
+
+buildWall :: [House] -> String -> Castle
+buildWall houses castleName = if totalNumberOfPeople houses >= 10 then MkCastle castleName True else MkCastle castleName False
 
 {-
 =🛡= Newtypes
@@ -560,22 +751,32 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+
+newtype Health = Health Int
+newtype Armor = Armor Int
+newtype Attack = Attack Int
+newtype Dexterity = Dexterity Int
+newtype Strength = Strength Int
+
+newtype Damage = Damage Int
+newtype Defense = Defense Int
+
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+calculatePlayerDamage :: Attack -> Strength -> Damage
+calculatePlayerDamage (Attack attack) (Strength strength) = Damage(attack + strength)
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense (Armor armor) (Dexterity dexterity) = Defense(armor * dexterity)
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit (Damage damage) (Defense defense) (Health health) = Health(health + defense - damage)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -752,6 +953,18 @@ parametrise data types in places where values can be of any general type.
 🕯 HINT: 'Maybe' that some standard types we mentioned above are useful for
   maybe-treasure ;)
 -}
+
+data Dragon treasure power = Dragon
+  {
+    lairChest :: Maybe (TreasureChest treasure)
+  , power :: power
+  }
+
+data TreasureChest x = TreasureChest
+  {
+    chestGold :: Int
+  , loot :: x
+  }
 
 {-
 =🛡= Typeclasses
