@@ -209,34 +209,34 @@ So, the output in this example means that 'False' has type 'Bool'.
 > Try to guess first and then compare your expectations with GHCi output
 
 >>> :t True
-Bool
+True :: Bool
 >>> :t 'a'
-Char
+'a' :: Char
 >>> :t 42
-Num
+42 :: Num p => p
 
 A pair of boolean and char:
 >>> :t (True, 'x')
-(Bool, Char)
+(True, 'x') :: (Bool, Char)
 {- Makes sense -}
 
 Boolean negation:
 >>> :t not
-Bool -> Bool
+not :: Bool -> Bool
 
 Boolean 'and' operator:
 >>> :t (&&)
-Bool -> Bool -> Bool
+(&&) :: Bool -> Bool -> Bool
 {- Surprised -}
 
 Addition of two numbers:
 >>> :t (+)
-Num a => a -> a -> a
+(+) :: Num a => a -> a -> a
 {- Surprised -}
 
 Maximum of two values:
 >>> :t max
-Ord a => a -> a -> a
+max :: Ord a => a -> a -> a
 {- Very unique -}
 
 You might not understand each type at this moment, but don't worry! You've only
@@ -455,6 +455,9 @@ Implement the function that takes an integer value and returns the next 'Int'.
 -}
 next :: Int -> Int
 next x = x + 1
+{-
+greater than max -> minimum
+-}
 
 {- |
 After you've implemented the function (or even during the implementation), you
@@ -496,7 +499,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int
-lastDigit n = mod n 10
+lastDigit n = mod (abs n) 10
 
 
 {- |
@@ -561,9 +564,9 @@ Casual reminder about adding top-level type signatures for all functions :)
 -}
 mid :: Int -> Int -> Int -> Int
 mid x y z
-  | (x < y && y < z) || (z < y && y < x) = y
-  | (x > y && x < z) || (x > z && x < y) = x
-  | (z > y && z < x) || (z > x && z < y) = z
+  | (x <= y && y <= z) || (z <= y && y <= x) = y
+  | (x >= y && x <= z) || (x >= z && x <= y) = x
+  | otherwise = z
 {- |
 =⚔️= Task 8
 
@@ -644,7 +647,7 @@ specifying complex expressions.
 sumLast2 :: Int -> Int  
 sumLast2 n = div lastTwoDigits 10 + mod lastTwoDigits 10
   where
-    lastTwoDigits = mod n 100
+    lastTwoDigits = mod (abs n) 100
 
 {-
 I got stuck for awhile as I did not carefully read integral division (div)
@@ -655,8 +658,8 @@ Option2:
 
 sumLast2 :: Int -> Int 
 sumLast2 n = 
-  let lastDigit = mod n 10
-      secondLastDigit = div (mod n 100) 10
+  let lastDigit = mod (abs n) 10
+      secondLastDigit = div (mod (abs n) 100) 10
   in lastDigit + secondLastDigit
 -}
 
@@ -680,7 +683,9 @@ aren't ready for this boss yet!
 -}
 
 firstDigit :: Int -> Int
-firstDigit n = if n < 10 then mod n 10 else firstDigit (div n 10)
+firstDigit n = if absN < 10 then mod absN 10 else firstDigit (div absN 10)
+  where
+    absN = abs n
 
 {-
 You did it! Now it is time to open a pull request with your changes
