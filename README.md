@@ -20,7 +20,7 @@ already and don't try to go out of those boundaries.
 But why not use this time to learn something challenging, something fresh,
 something that you never had time for?
 
-You can get the benefits of Hacktoberfest while learning something new 
+You can get the benefits of Hacktoberfest while learning something new
 fascinating concepts – Functional Programming with Haskell.
 
 And we're here to help!
@@ -154,6 +154,7 @@ Starting to learn Haskell with Learn4Haskell is a piece of cake!
    [Pull Request](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request)
    __to your fork__ with the solution and mention @vrom911 and @chshersh and we
    would be on our way for the review.
+
  > Note, that you should open a PR for your fork of this repo, not this repo.
  > Everyone has their solutions to the included tasks, and they don't mix together
  > well in one repo 🙂
@@ -170,12 +171,11 @@ install all the necessary items to be able to run this course locally.
 ### Installing Haskell
 
 If you're on Windows, install the `haskell-dev` and `make` packages [using Chocolatey](https://chocolatey.org/install).
+
 ```shell
 choco install haskell-dev make
 refreshenv
 ```
-
-Then, do [the workaround](https://www.stackage.org/blog/2020/08/ghc-8-10-2-windows-workaround) to alleviate a GHC 8.10.2 issue on Windows which prevents the test suite from building correctly.
 
 If you're on Linux or macOS, then the process is easy:
 
@@ -187,8 +187,8 @@ If you're on Linux or macOS, then the process is easy:
    terminal
 
     ```shell
-    ghcup install ghc 8.10.2
-    ghcup set ghc 8.10.2
+    ghcup install ghc 8.10.4
+    ghcup set ghc 8.10.4
     ghcup install cabal 3.2.0.0
     ```
 3. Run `cabal update` to fetch the latest info about Haskell packages.
