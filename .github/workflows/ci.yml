@@ -1,25 +1,24 @@
 name: CI
 
-# Trigger the workflow on push or pull request, but only for the main branch
 on:
   pull_request:
+    types: [synchronize, opened, reopened]
   push:
     branches: [main]
 
 jobs:
   build:
     name: Build Learn4Haskell
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         cabal: ["3.2"]
-        ghc: ["8.10.2"]
+        ghc: ["8.10.4"]
 
     steps:
     - uses: actions/checkout@v2
-      if: github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/main'
 
-    - uses: actions/setup-haskell@v1.1.4
+    - uses: haskell/actions/setup@v1
       name: Setup Haskell
       with:
         ghc-version: ${{ matrix.ghc }}
@@ -37,16 +36,15 @@ jobs:
 
   chapter1:
     name: Chapter One
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         cabal: ["3.2"]
-        ghc: ["8.10.2"]
+        ghc: ["8.10.4"]
     steps:
     - uses: actions/checkout@v2
-      if: github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/main'
 
-    - uses: actions/setup-haskell@v1.1.4
+    - uses: haskell/actions/setup@v1
       name: Setup Haskell
       with:
         ghc-version: ${{ matrix.ghc }}
@@ -73,16 +71,15 @@ jobs:
 
   chapter2:
     name: Chapter Two
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         cabal: ["3.2"]
-        ghc: ["8.10.2"]
+        ghc: ["8.10.4"]
     steps:
     - uses: actions/checkout@v2
-      if: github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/main'
 
-    - uses: actions/setup-haskell@v1.1.4
+    - uses: haskell/actions/setup@v1
       name: Setup Haskell
       with:
         ghc-version: ${{ matrix.ghc }}
@@ -109,16 +106,15 @@ jobs:
 
   chapter3:
     name: Chapter Three
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         cabal: ["3.2"]
-        ghc: ["8.10.2"]
+        ghc: ["8.10.4"]
     steps:
     - uses: actions/checkout@v2
-      if: github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/main'
 
-    - uses: actions/setup-haskell@v1.1.4
+    - uses: haskell/actions/setup@v1
       name: Setup Haskell
       with:
         ghc-version: ${{ matrix.ghc }}
@@ -136,16 +132,15 @@ jobs:
 
   chapter4:
     name: Chapter Four
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         cabal: ["3.2"]
-        ghc: ["8.10.2"]
+        ghc: ["8.10.4"]
     steps:
     - uses: actions/checkout@v2
-      if: github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/main'
 
-    - uses: actions/setup-haskell@v1.1.4
+    - uses: haskell/actions/setup@v1
       name: Setup Haskell
       with:
         ghc-version: ${{ matrix.ghc }}
