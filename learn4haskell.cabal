@@ -15,7 +15,7 @@ copyright:           2020 Kowainik
 build-type:          Simple
 extra-doc-files:     README.md
                      CHANGELOG.md
-tested-with:         GHC == 8.10.2
+tested-with:         GHC == 8.10.4
 
 source-repository head
   type:                git
@@ -65,7 +65,7 @@ test-suite learn4haskell-test
   build-depends:       learn4haskell
                      , hspec ^>= 2.7.4
                      , hspec-hedgehog
-                     , hedgehog  >= 1.0.2 && < 2 
+                     , hedgehog  >= 1.0.2 && < 2
   ghc-options:         -threaded
                        -rtsopts
                        -with-rtsopts=-N
