@@ -644,15 +644,21 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 
-sumLast2 :: Int -> Int  
-sumLast2 n = div lastTwoDigits 10 + mod lastTwoDigits 10
-  where
-    lastTwoDigits = mod (abs n) 100
+sumLast2 :: Int -> Int
+sumLast2 n =
+ let (sl, l) = divMod (abs n) 10
+ in (mod sl 10) + l
 
 {-
 I got stuck for awhile as I did not carefully read integral division (div)
 num = abcd
 get c and get d and c + d
+
+Option1:
+sumLast2 :: Int -> Int  
+sumLast2 n = div lastTwoDigits 10 + mod lastTwoDigits 10
+  where
+    lastTwoDigits = mod (abs n) 100
 
 Option2:
 
@@ -683,7 +689,7 @@ aren't ready for this boss yet!
 -}
 
 firstDigit :: Int -> Int
-firstDigit n = if absN < 10 then mod absN 10 else firstDigit (div absN 10)
+firstDigit n = if absN < 10 then absN else firstDigit (div absN 10)
   where
     absN = abs n
 
