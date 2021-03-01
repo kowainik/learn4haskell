@@ -186,44 +186,44 @@ Evaluate the following expressions in GHCi and insert the answers. Try
 to guess first, what you will see.
 
 >>> [10, 2] ++ [3, 1, 5]
-[10, 2, 3, 1, 5]
+[10,2,3,1,5]
 
 >>> [] ++ [1, 4]  -- [] is an empty list
-[1, 4]
+[1,4]
 
 >>> 3 : [1, 2]
-[3, 1, 2]
+[3,1,2]
 
 >>> 4 : 2 : [5, 10]  -- prepend multiple elements
-[4, 2, 5, 10]
+[4,2,5,10]
 
 >>> [1 .. 10]  -- list ranges
-[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+[1,2,3,4,5,6,7,8,9,10]
 
 >>> [10 .. 1]
 []
 {- Interesting... -}
 
 >>> [10, 9 .. 1]  -- backwards list with explicit step
-[10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+[10,9,8,7,6,5,4,3,2,1]
 
 >>> length [4, 10, 5]  -- list length
 3
 
 >>> replicate 5 True
-[True, True, True, True, True]
+[True,True,True,True,True]
 
 >>> take 5 "Hello, World!"
 "Hello"
 
 >>> drop 5 "Hello, World!"
-", Wrold!"
+", World!"
 
 >>> zip "abc" [1, 2, 3]  -- convert two lists to a single list of pairs
-[(a, 1), (b, 2), (c, 3)]
+[('a',1),('b',2),('c',3)]
 
 >>> words "Hello   Haskell     World!"  -- split the string into the list of words
-["Hello", "Haskell", "World!"]
+["Hello","Haskell","World!"]
 
 
 👩‍🔬 Haskell has a lot of syntax sugar. In the case with lists, any
@@ -353,7 +353,6 @@ subList :: Int -> Int -> [a] -> [a]
 subList startPos endPos l
   | startPos >= 0 && startPos <= endPos && endPos < len = drop startPos (take (endPos + 1) l)
   | startPos >= 0 && startPos < endPos && endPos >= len = drop startPos l
-  | startPos < 0 && startPos < endPos && endPos < len = take (endPos + 1) l
   | otherwise = []
   where
     len = length l
@@ -686,10 +685,10 @@ takeEven :: [a] -> [a]
 takeEven l = go (length l) l
   where
     go :: Int -> [a] -> [a]
-    go 0 n = n
+    go 0 _ = []
     go 1 n = n
-    go 2 (x:y:xys) = x : xys
-    go i (x:y:xys) = x : (go (i-2) xys)
+    go 2 (x:_:xys) = x : xys
+    go i (x:_:xys) = x : (go (i-2) xys)
 
 
 {- |
@@ -818,8 +817,7 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 
--- TODO: how do I correctly define these types? After coming up with logic for contains I just did :t contains ...
-contains :: (Foldable t, Eq a) => a -> [t a] -> [t a]
+contains :: Int -> [[Int]] -> [[Int]]
 contains x l = filter (\e -> (elem x e)) l
 
 
@@ -933,10 +931,12 @@ list.
 🕯 HINT: Use the 'cycle' function
 -}
 rotate :: Int -> [Int] -> [Int]
-rotate n l = drop num (take (num+len) (cycle l))
+rotate n l 
+  | n < 0 = []
+  | otherwise = drop num (take (num+len) (cycle l))
   where
     len = length l
-    num = mod n len
+    num = if len > 0 then mod n len else 0
 
 {- |
 =💣= Task 12*
@@ -952,11 +952,11 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-remind :: [Int] -> [Int]
-remind l = go (length l) l
+rewind :: [a] -> [a]
+rewind l = go (length l) l
   where
-    go :: Int -> [Int] -> [Int]
-    go 0 [] = []
+    go :: Int -> [a] -> [a]
+    go 0 _ = []
     go 1 l1 = l1
     go i (x:xs) = (go (i-1) xs) ++ [x]
 
