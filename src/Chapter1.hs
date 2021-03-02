@@ -561,7 +561,7 @@ mid :: Int -> Int -> Int -> Int
 mid x y z
   | z <= x && x <= y || y <= x && x <= z    = x
   | x <= y && y <= z || z <= y && y <= x    = y
-  | x <= z && z <= y || y <= z && z <= x    = z
+  | otherwise                               = z
 
 {- |
 =⚔️= Task 8
@@ -679,9 +679,9 @@ firstDigit :: Int -> Int
 firstDigit n =
   let m = abs n
   in if m < 10
-    then m
-    else let r = div m 10
-      in firstDigit r
+      then m
+      else let r = div m 10
+           in firstDigit r
 
 
 {-
