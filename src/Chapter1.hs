@@ -491,7 +491,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int
-lastDigit = (`mod` 10) . (abs)
+lastDigit = (`mod` 10) . abs
 
 
 {- |
@@ -521,7 +521,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = if (abs x) < (abs y) then x else y
+closestToZero x y = if abs x < abs y then x else y
 
 
 {- |
@@ -642,13 +642,13 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
-sumLast2 = positiveSumLast2 . abs
+sumLast2 = go . abs
   where
-    positiveSumLast2 :: Int -> Int
-    positiveSumLast2 n = last + secondLast
+    go :: Int -> Int
+    go n = lastNum + secondLastNum
       where
-        last = n `mod` 10
-        secondLast = ((`mod` 10).(`div` 10)) n
+        (divNum, lastNum) = n `divMod` 10
+        secondLastNum = divNum `mod` 10
 
 {- |
 =💣= Task 10*
@@ -668,12 +668,12 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
-firstDigit = (positiveFirstDigit . abs)
+firstDigit = positiveFirstDigit . abs
   where 
     positiveFirstDigit :: Int -> Int
-    positiveFirstDigit elem
-      | elem >= 10 = positiveFirstDigit (div elem 10)
-      | otherwise = elem
+    positiveFirstDigit x
+      | x >= 10 = positiveFirstDigit (div x 10)
+      | otherwise = x
 
 
 {-
