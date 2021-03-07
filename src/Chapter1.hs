@@ -492,7 +492,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int
-lastDigit n = n `mod` 10
+lastDigit n = (abs n) `mod` 10
 
 
 {- |
@@ -522,12 +522,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y
-    | x == 0 || y == 0 = 0
-    | x > 0 && y > 0 = min x y
-    | x > 0 && y < 0 = if x < (y * (-1)) then x else y
-    | y > 0 = if (x * (-1)) < y then x else y
-    | otherwise = if x > y then x else y
+closestToZero x y = if (abs x) > (abs y) then y else x
 
 
 {- |
@@ -652,10 +647,9 @@ specifying complex expressions.
 sumLast2:: Int -> Int
 sumLast2 n  
     | n == 0 = 0
-    | n < 10 = n
-    | otherwise = (n `mod` 100) `div` 10 + n `mod` 10
-    -- where lastN n = n `mod` 10
-    --       secondLastN n = (n `mod` 100) `div` 10
+    | n > (-10) && n < 10 = abs n
+    | otherwise = ((abs n) `mod` 100) `div` 10 + (abs n) `mod` 10
+   
    
 
 
@@ -680,8 +674,8 @@ aren't ready for this boss yet!
 firstDigit:: Int -> Int
 firstDigit k 
     | k == 0 = 0
-    | k < 10 = k
-    | otherwise = firstDigit (k `div` 10)
+    | k > (-10) && k < 10 = abs k
+    | otherwise = firstDigit ((abs k) `div` 10)
 
 {-
 You did it! Now it is time to open a pull request with your changes
