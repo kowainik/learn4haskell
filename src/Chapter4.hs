@@ -114,23 +114,30 @@ As always, try to guess the output first! And don't forget to insert
 the output in here:
 
 >>> :k Char
+Char :: *
 
 >>> :k Bool
+Bool :: *
 
 >>> :k [Int]
+[Int] :: *
 
 >>> :k []
+[] :: * -> *
 
 >>> :k (->)
+(->) :: * -> * -> *
 
 >>> :k Either
+Either :: * -> * -> *
 
 >>> data Trinity a b c = MkTrinity a b c
 >>> :k Trinity
+Trinity :: * -> * -> * -> *
 
 >>> data IntBox f = MkIntBox (f Int)
 >>> :k IntBox
-
+IntBox :: (* -> *) -> *
 -}
 
 {- |
@@ -266,6 +273,10 @@ instance Functor Maybe where
     fmap f (Just a) = Just (f a)
     fmap _ x = x
 @
+
+A: Because "fmap _ x = x" which gets matched in the case of "Nothing", assumes that the return type and input type matches,
+which as we've seen above can be a different "Nothing" type. eg. in the `replicate 3`, case the type we are enforcing on the rhs of 
+that pattern match is "Maybe a", whereas it has been declared as `Maybe b` which corresponds to Maybe [a] for `replicate`.
 -}
 
 {- |
@@ -293,7 +304,8 @@ values and apply them to the type level?
 -}
 instance Functor (Secret e) where
     fmap :: (a -> b) -> Secret e a -> Secret e b
-    fmap = error "fmap for Box: not implemented!"
+    fmap f (Reward a) = Reward (f a)
+    fmap _ (Trap t) = Trap t
 
 {- |
 =⚔️= Task 3
@@ -306,6 +318,11 @@ typeclasses for standard data types.
 data List a
     = Empty
     | Cons a (List a)
+
+instance Functor List where
+  fmap :: (a -> b) -> List a -> List b
+  fmap f (Cons x xs) = Cons (f x) (fmap f xs)
+  fmap _ Empty = Empty
 
 {- |
 =🛡= Applicative
@@ -470,12 +487,16 @@ Applicatives can be found in many applications:
 
 Implement the Applicative instance for our 'Secret' data type from before.
 -}
+
+-- Useful supplementary reading: https://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html
+
 instance Applicative (Secret e) where
     pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+    pure = Reward
 
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
+    (Reward f) <*> x = fmap f x
+    (Trap e) <*> _ = Trap e
 
 {- |
 =⚔️= Task 5
@@ -489,6 +510,17 @@ Implement the 'Applicative' instance for our 'List' type.
   type.
 -}
 
+concatList :: List a -> List a -> List a
+concatList (Cons x xs) ys = Cons x (concatList xs ys)
+concatList Empty ys = ys
+
+instance Applicative List where
+  pure :: a -> List a
+  pure x =  Cons x Empty
+
+  (<*>) :: List (a -> b) -> List a -> List b
+  (Cons f fs) <*> xs = fmap f xs `concatList` (fs <*> xs)
+  Empty <*> _ = Empty
 
 {- |
 =🛡= Monad
@@ -600,7 +632,8 @@ Implement the 'Monad' instance for our 'Secret' type.
 -}
 instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+    (Reward x) >>= f = f x
+    (Trap t) >>= _ = Trap t
 
 {- |
 =⚔️= Task 7
@@ -610,7 +643,10 @@ Implement the 'Monad' instance for our lists.
 🕯 HINT: You probably will need to implement a helper function (or
   maybe a few) to flatten lists of lists to a single list.
 -}
-
+instance Monad List where
+  (>>=) :: List a -> (a -> List b) -> List b
+  (Cons x xs) >>= f = concatList (f x) (xs >>= f)
+  Empty >>= _ = Empty
 
 {- |
 =💣= Task 8*: Before the Final Boss
@@ -628,8 +664,9 @@ Can you implement a monad version of AND, polymorphic over any monad?
 
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
+
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM xm ym = (ym >>= (\y -> pure (&& y))) <*> xm
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
@@ -672,6 +709,22 @@ Specifically,
    subtree of a tree
  ❃ Implement the function to convert Tree to list
 -}
+data BTree a = Leaf | Node a (BTree a) (BTree a)
+
+instance Functor BTree where
+  fmap :: (a -> b) -> BTree a -> BTree b
+  fmap f (Node x xleft xright) = Node (f x) (fmap f xleft) (fmap f xright)
+  fmap _ Leaf = Leaf
+
+-- Were the questions below supposed to be solved using the `fmap` above?
+
+reverseTree :: BTree a -> BTree a
+reverseTree (Node x xleft xright) = Node x xright xleft
+reverseTree Leaf = Leaf
+
+toList :: BTree a -> [a]
+toList (Node x xleft xright) = x : toList xleft ++ toList xright
+toList Leaf = []
 
 
 {-
