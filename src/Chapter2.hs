@@ -354,6 +354,7 @@ ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
 subList start end xs
+  | end < start = []
   | start >= 0 && end >= 0 = (take (end - start + 1) . drop start) xs
   | otherwise = []
 
@@ -368,9 +369,7 @@ Implement a function that returns only the first half of a given list.
 "b"
 -}
 firstHalf :: [a] -> [a]
-firstHalf xs
-  | even len = take (div len 2) xs
-  | otherwise = take (div (len-1) 2) xs
+firstHalf xs = take (div len 2) xs
   where
     len = length xs
 
@@ -876,8 +875,13 @@ list.
 -}
 rotate :: Int -> [a] -> [a]
 rotate num lst 
-  | num >= 0  = take (length lst) (drop num (cycle lst))
-  | otherwise = []
+  | num < 0 || len == 0 = []
+  | reducedNum == 0     = lst
+  | reducedNum >= 0     = take len (drop reducedNum (cycle lst))
+  | otherwise           = []
+  where
+    reducedNum = num `mod` len
+    len = length lst
 
 {- |
 =💣= Task 12*
@@ -894,11 +898,11 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind lst = case lst of
-  [] -> []
-  [x] -> [x]
-  xs -> last xs :  rewind (init xs)
-
+rewind = go []
+  where
+    go :: [a] -> [a] -> [a]
+    go xs (y:ys) = go (y:xs) ys
+    go xs [] = xs
 
 {-
 You did it! Now it is time to open pull request with your changes
