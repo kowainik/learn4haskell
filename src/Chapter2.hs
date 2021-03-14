@@ -348,10 +348,17 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList x y z = if (x < 0 || y < 1 || null z) then [] else if cutTailN y z > 0 then drop x ((iterate init z) !! cutTailN y z) else if x >= 0 then drop x z else []
-    where 
-      cutTailN:: Int -> [a] -> Int
-      cutTailN y z = length z - y - 1
+subList x y z 
+    | x < 0 = []
+    | y < 0 = []
+    | null z = []
+    | otherwise = drop x (take (y + 1) z)
+  
+  
+  -- if (x < 0 || y < 1 || null z) then [] else if cutTailN y z > 0 then drop x ((iterate init z) !! cutTailN y z) else if x >= 0 then drop x z else []
+  --   where 
+  --     cutTailN:: Int -> [a] -> Int
+  --     cutTailN y z = length z - y - 1
   
 {- |
 =⚔️= Task 4
@@ -364,7 +371,12 @@ Implement a function that returns only the first half of a given list.
 "b"
 -}
 firstHalf:: [a] -> [a]
-firstHalf l = (iterate init l)!! (length l - ((length l) `div` 2))
+firstHalf [] = []
+firstHalf l =
+    let len = length l
+    in take (len - len `div` 2) l
+
+-- firstHalf l = (iterate init l)!! (length l - ((length l) `div` 2))
 
 
 {- |
@@ -642,8 +654,8 @@ Write a function that takes elements of a list only in even positions.
 -}
 takeEven :: [a] -> [a]
 takeEven [] = []
-takeEven (x:xs:xss) = x : takeEven xss
-takeEven (x:xs) = [x] 
+takeEven (x:_:xs) = x : takeEven xs
+takeEven [x] = [x] 
 {- |
 =🛡= Higher-order functions
 
@@ -749,7 +761,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = concat(map (\x -> replicate (abs x) x) l)
+smartReplicate l = concatMap (\x -> replicate (abs x) x) l
 
 {- |
 =⚔️= Task 9
@@ -763,7 +775,8 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: Int -> [[Int]] -> [[Int]]
-contains n l = map (\x -> if n `elem` x then x else []) l
+contains n l = filter (\x -> n `elem` x) l
+-- contains n l = map (\x -> if n `elem` x then x else []) l
 
 
 {- |
@@ -886,8 +899,11 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind [] = []
-rewind (x:xs) = (rewind xs) ++ [x]
+rewind l = go [] l
+    where 
+      go :: [a] -> [a] -> [a]
+      go k [] = k
+      go k (x:xs) = go (x:k) xs
 
 
 
