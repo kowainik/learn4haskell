@@ -374,7 +374,7 @@ firstHalf:: [a] -> [a]
 firstHalf [] = []
 firstHalf l =
     let len = length l
-    in take (len - len `div` 2) l
+    in take (len `div` 2) l
 
 -- firstHalf l = (iterate init l)!! (length l - ((length l) `div` 2))
 
