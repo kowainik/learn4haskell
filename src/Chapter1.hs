@@ -671,7 +671,7 @@ firstDigit n = firstDigitAbs (abs n)
     firstDigitAbs :: Int -> Int
     firstDigitAbs absN
       | absN `div` 10 == 0 = absN
-      | otherwise = firstDigit (absN `div` 10)
+      | otherwise = firstDigitAbs (absN `div` 10)
 
 {-
 You did it! Now it is time to open a pull request with your changes
