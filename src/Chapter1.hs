@@ -575,9 +575,7 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c
-  | c `elem` "aiueo" = True
-  | otherwise = False
+isVowel c = c `elem` "aiueo"
 
 
 {- |
@@ -643,8 +641,8 @@ specifying complex expressions.
 sumLast2 :: Int -> Int
 sumLast2 n =
   let absN = abs n
-      last1 = absN `mod` 10
-      last2 = (absN `mod` 100) `div` 10
+      (rest, last1) = divMod absN 10
+      (_, last2) = divMod rest 10
   in last1 + last2
 
 
@@ -671,7 +669,7 @@ firstDigit n = firstDigitAbs (abs n)
     firstDigitAbs :: Int -> Int
     firstDigitAbs absN
       | absN `div` 10 == 0 = absN
-      | otherwise = firstDigit (absN `div` 10)
+      | otherwise = firstDigitAbs (absN `div` 10)
 
 {-
 You did it! Now it is time to open a pull request with your changes
