@@ -350,7 +350,8 @@ ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
 subList start end list
-  | start < 0 || end < 0 = []
+  | start < 0 = []
+  | end < 0 = []
   | otherwise = take (end - start + 1) (drop start list)
 
 {- |
@@ -363,7 +364,8 @@ Implement a function that returns only the first half of a given list.
 >>> firstHalf "bca"
 "b"
 -}
--- PUT THE FUNCTION TYPE IN HERE
+
+firstHalf :: [a] -> [a]
 firstHalf l = take halfLenght l
   where
     halfLenght = div (length l) 2
@@ -764,7 +766,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = concat (map (\a -> replicate a a) l)
+smartReplicate = concatMap (\a -> replicate a a)
 
 {- |
 =⚔️= Task 9
@@ -778,7 +780,7 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: Int -> [[Int]] -> [[Int]]
-contains number lists = filter (\list -> elem number list) lists
+contains number = filter (elem number)
 
 
 {- |
@@ -881,10 +883,12 @@ list.
 🕯 HINT: Use the 'cycle' function
 -}
 rotate :: Int -> [Int] -> [Int]
+rotate _ [] = []
 rotate n l
-  | length l == 0 = []
   | n < 0 = []
-  | otherwise = drop n (take (length l + n) (cycle l))
+  | otherwise = drop optN (take (length l + optN) (cycle l))
+  where
+    optN = mod n (length l)
 
 {- |
 =💣= Task 12*
@@ -901,8 +905,11 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind [] = []
-rewind (x:xs) = (rewind xs) ++ [x]
+rewind l = go [] l
+  where
+    go :: [a] -> [a] -> [a]
+    go acc [] = acc
+    go acc (x:xs) = go (x:acc) xs
 
 {-
 You did it! Now it is time to open pull request with your changes
