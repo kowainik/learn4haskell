@@ -344,6 +344,12 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = MkBook {
+  bookTitle     :: String
+  , bookAuthor  :: String
+  , bookISBN    :: Int
+}
+
 {- |
 =⚔️= Task 2
 
@@ -373,6 +379,24 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+
+data Knight = MkKnight {
+  knightHealth    :: Int
+  , knightAttack  :: Int
+  , knightGold    :: Int
+}
+
+data Monster = MkMonster {
+  monsterHealth   :: Int
+  , monsterAttack :: Int
+  , monsterGold   :: Int
+}
+
+fight :: Knight -> Monster -> Int
+fight kn mn
+  | knightAttack kn >= monsterHealth mn   = knightGold kn + monsterGold mn
+  | monsterAttack mn >= knightHealth kn   = -1
+  | otherwise                             = knightGold kn
 
 {- |
 =🛡= Sum types
@@ -460,6 +484,28 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data MealType =
+  SecondBreakfast
+  | Lunch
+
+{-
+mtTranslation :: MealType -> String
+mtTranslation SecondaColazione = "Second Breakfast"
+mtTranslation Pranzo = "Lunch"
+
+data Croissant = MKCroissant {
+  pastry :: String
+  , cCookingTime :: Int
+}
+
+data Steak = MkSteak {
+  nEggs :: Int
+  , pcCookingTime :: Int
+}
+
+data Meal = SecondBreakfast Croissant | Lunch Steak
+-}
+
 {- |
 =⚔️= Task 4
 
@@ -479,6 +525,45 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
+
+data Wall = MkWall
+
+data Castle = ACastle String Wall | NoCastle
+
+data RecreationBuilding = Church | Library
+
+data House = OneHouse | TwoHouse | ThreeHouse | FourHouse
+
+data City = MkCity {
+  optionalCastle :: Castle
+  , cityBuilding :: RecreationBuilding
+  , houses       :: [House]
+}
+
+{-
+data City = MkCity Castle RecreationBuilding [House]
+-}
+
+buildCastle :: City -> String -> City
+buildCastle oldCity newName = oldCity { optionalCastle = ACastle newName MkWall }
+
+buildHouse :: City -> House -> City
+buildHouse oldCity newHouse = oldCity { houses = newHouse : houses oldCity }
+
+buildWalls :: City -> Wall -> City
+buildWalls oldCity newWall
+  | totalCitizens >= (10 :: Int) = oldCity { optionalCastle = justWalls (optionalCastle oldCity) }
+  | otherwise = oldCity
+  where
+    totalCitizens = (sum . map nInhabitants . houses) oldCity
+
+    nInhabitants OneHouse = 1
+    nInhabitants TwoHouse = 2
+    nInhabitants ThreeHouse = 3
+    nInhabitants FourHouse = 4
+
+    justWalls (ACastle oldName _) = ACastle oldName newWall
+    justWalls NoCastle = NoCastle
 
 {-
 =🛡= Newtypes
@@ -560,22 +645,32 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+
+newtype Health    = MkHealth    Int
+newtype Armor     = MkArmor     Int
+newtype Attack    = MkAttack    Int
+newtype Dexterity = MkDexterity Int
+newtype Strength  = MkStrength  Int
+
+newtype Damage    = MkDamage    Int
+newtype Defense   = MkDefense   Int
+
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+calculatePlayerDamage :: Attack -> Strength -> Damage
+calculatePlayerDamage (MkAttack x) (MkStrength y) = MkDamage (x + y)
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense (MkArmor x) (MkDexterity y) = MkDefense (x * y)
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit (MkDamage x) (MkDefense y) (MkHealth z) = MkHealth (x + y - z)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -753,6 +848,20 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
+newtype Dragon powerType = MkDragon {
+  power :: powerType
+}
+
+data TreasureChest treasureType = MkTreasureChest {
+  treasureChestGold :: Int
+  , treasureChestLoot :: treasureType
+}
+
+data DragonLair powerType treasureType = MkDragonLair {
+  dragon :: Dragon powerType
+  , treasureChest :: Maybe treasureType
+}
+
 {-
 =🛡= Typeclasses
 
@@ -910,6 +1019,18 @@ Implement instances of "Append" for the following types:
 class Append a where
     append :: a -> a -> a
 
+newtype Gold = MkGold {
+  goldAmount :: Int
+}
+
+instance Append Gold where
+    append :: Gold -> Gold -> Gold
+    append (MkGold x) (MkGold y) = MkGold (x+y)
+
+instance Append [a] where
+    append :: [a] -> [a] -> [a]
+    append xs1 xs2 = xs1 ++ xs2
+
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -971,6 +1092,42 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
+data Weekday = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday
+  deriving (Show, Eq, Bounded, Enum)
+
+isWeekend :: Weekday -> Bool
+isWeekend day
+  | day == pred maxBound  = True
+  | day == maxBound       = True
+  | otherwise             = False
+
+{-
+-- I would like to be able to express the cycling property of the function nextDay in terms of its minBound and maxBound
+-- I've had no luck so far...
+nextDay :: Weekday -> Weekday
+nextDay maxBound = minBound
+nextDay x = succ x
+-}
+
+-- I'm not quite happy with this either because I would have loved to use succ. Oh well w/e.
+nextDay :: Weekday -> Weekday
+nextDay x = cycle [minBound .. maxBound] !! (fromEnum x + 1)
+
+{-
+-- Actually maybe it's better to do a tail recursion here
+daysToParty :: Weekday -> Int
+daysToParty Friday  = 0
+daysToParty x       = 1 + daysToParty (nextDay x)
+-}
+
+-- Am I using a bazooka to shoot a fly here?
+daysToParty :: Weekday -> Int
+daysToParty = go 0
+  where
+    go :: Int -> Weekday -> Int
+    go n Friday = n
+    go n x = go (n + 1) (nextDay x)
+
 {-
 =💣= Task 9*
 
@@ -1005,7 +1162,6 @@ properties using typeclasses, but they are different data types in the end.
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
-
 
 {-
 You did it! Now it is time to open pull request with your changes
