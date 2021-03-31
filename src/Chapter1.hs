@@ -640,9 +640,9 @@ specifying complex expressions.
 -}
 
 sumLast2 :: Int -> Int
-sumLast2 n =  let last = mod n 10
+sumLast2 n =  let last1 = mod n 10
                   secondLast = mod (div n 10) 10
-              in (last + secondLast)
+              in (last1 + secondLast)
 
 
 {- |
