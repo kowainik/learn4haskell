@@ -187,8 +187,8 @@ to guess first, what you will see.
 
 >>> [10, 2] ++ [3, 1, 5]
 [10,2,3,1,5]
->>> [] ++ [1, 4]  -- [] is an empty list
-[1, 4]
+>>> [] ++ [1,4]  -- [] is an empty list
+[1,4]
 >>> 3 : [1, 2]
 [3,1,2]
 >>> 4 : 2 : [5, 10]  -- prepend multiple elements
@@ -206,7 +206,7 @@ to guess first, what you will see.
 >>> take 5 "Hello, World!"
 "Hello"
 >>> drop 5 "Hello, World!"
-", World!""
+", World!"
 >>> zip "abc" [1, 2, 3]  -- convert two lists to a single list of pairs
 [('a',1),('b',2),('c',3)]
 >>> words "Hello   Haskell     World!"  -- split the string into the list of words
