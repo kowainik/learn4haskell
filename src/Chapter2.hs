@@ -338,8 +338,9 @@ ghci> :l src/Chapter2.hs
 
 subList :: Int -> Int -> [a] -> [a]
 subList x y list
-  | x >= 0 = (take (y - x + 1) . drop x) list
-  | otherwise = []
+  | x < 0 = []
+  | y < x = []
+  | otherwise = (take (y - x + 1) . drop x) list
 
 {- |
 =⚔️= Task 4
@@ -506,7 +507,7 @@ True
 False
 -}
 isThird42 :: [Int] -> Bool
-isThird42   (_ : _ : x : _ ) = if (x == 42) then True else False
+isThird42   (_ : _ : 42 : _ ) =  True 
 isThird42  _ = False
 
 
@@ -630,11 +631,11 @@ Write a function that takes elements of a list only in even positions.
 -}
 takeEven :: [a] -> [a]
 takeEven [] = []
-takeEven y = go 0 y
+takeEven y = go True y
   where
-    go :: Int -> [a] -> [a]
+    go :: Bool -> [a] -> [a]
     go _ [] = [] 
-    go acc (x:xs) = if (mod acc 2) == 0 then x : go (acc + 1) xs else go (acc + 1) xs
+    go even (x:xs) = if even then x : go (not even) xs else go (not even) xs
 
 {- |
 =🛡= Higher-order functions
@@ -741,10 +742,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate [] = []
-smartReplicate l = concat( map (\ (x) -> (replicate x x) ) l )
-
-
+smartReplicate = concatMap (\ (x) -> (replicate x x) )
 
 {- |
 =⚔️= Task 9
@@ -759,11 +757,7 @@ the list with only those lists that contain a passed element.
 -}
 contains ::  Int -> [[Int]] -> [[Int]]
 contains _ [] = []
-contains i list = go i list
-  where
-    go :: Int -> [[Int]] -> [[Int]]
-    go _ [] = [] 
-    go item (x:xs) = if elem item x then x : go item xs else go item xs
+contains i list = filter (\x -> (filter (\y -> y == i) x) /= []) list
 
 
 {- |
@@ -868,11 +862,14 @@ list.
 🕯 HINT: Use the 'cycle' function
 -}
 rotate :: Int -> [Int] -> [Int]
+rotate _ [] = []
 rotate times list
-  | mod times (length(list)) == 0 = list
-  | times > 0 = (take (length(list)) . drop (mod times (length(list)))) (cycle list)
-  | otherwise = []
-
+  | times <= 0 = list
+  | (withoutFullRotations times list) == 0 = list
+  | otherwise = (take (length list) . drop (withoutFullRotations times list)) (cycle list)
+    where
+      withoutFullRotations :: Int -> [a] -> Int
+      withoutFullRotations times list = mod times (length(list))
 
 {- |
 =💣= Task 12*
@@ -891,7 +888,11 @@ and reverses it.
 rewind :: [a] -> [a]
 rewind [] = []
 rewind [x] = [x]
-rewind (x:xs) = (last xs) : rewind([x] ++ take(length(xs) - 1) xs) 
+rewind (x:xs) = go [x] xs
+  where
+    go :: [a] -> [a] -> [a]
+    go x [] = x 
+    go result (x:xs) = go (x:result) xs
 
 
 
