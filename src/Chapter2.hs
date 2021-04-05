@@ -635,7 +635,7 @@ takeEven y = go True y
   where
     go :: Bool -> [a] -> [a]
     go _ [] = [] 
-    go even (x:xs) = if even then x : go (not even) xs else go (not even) xs
+    go isEven (x:xs) = if isEven then x : go (not isEven) xs else go (not isEven) xs
 
 {- |
 =🛡= Higher-order functions
@@ -742,7 +742,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate = concatMap (\ (x) -> (replicate x x) )
+smartReplicate = concatMap (\ x -> replicate x x )
 
 {- |
 =⚔️= Task 9
@@ -756,9 +756,7 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains ::  Int -> [[Int]] -> [[Int]]
-contains _ [] = []
-contains i list = filter (\x -> (filter (\y -> y == i) x) /= []) list
-
+contains i = filter (\xs -> elem i xs) 
 
 {- |
 =🛡= Eta-reduction
@@ -886,9 +884,7 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind [] = []
-rewind [x] = [x]
-rewind (x:xs) = go [x] xs
+rewind = go []
   where
     go :: [a] -> [a] -> [a]
     go x [] = x 
