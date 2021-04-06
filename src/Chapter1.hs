@@ -428,7 +428,7 @@ task is to specify the type of this function.
 >>> squareSum 3 4
 49
 -}
-squareSum :: Num a => a -> a -> a
+squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
 
 
@@ -449,7 +449,7 @@ Implement the function that takes an integer value and returns the next 'Int'.
   function body with the proper implementation.
 -}
 next :: Int -> Int
-next x = x+1
+next x = x + 1
 
 {- |
 After you've implemented the function (or even during the implementation), you
@@ -644,8 +644,8 @@ specifying complex expressions.
 sumLast2 :: Int -> Int
 sumLast2 n = x1 + x2
   where
-    x1 = abs n `rem` 100 `div` 10
-    x2 = abs n `rem` 10
+    x1 = abs n `mod` 100 `div` 10
+    x2 = abs n `mod` 10
 
 
 {- |

@@ -353,8 +353,8 @@ subList x y zs
   | y < 0 = []
   | null zs = []
   | x > y = []
-  | x == 0    = head zs : subList x (y-1) (tail zs)
-  | otherwise = subList (x-1) (y-1) (tail zs)
+  | x == 0    = take (y + 1) zs
+  | otherwise = subList (x - 1) (y - 1) (drop 1 zs)
 
 {- |
 =⚔️= Task 4
@@ -643,13 +643,13 @@ Write a function that takes elements of a list only in even positions.
 [2,3,4]
 -}
 takeEven :: [a] -> [a]
-takeEven = go 0
+takeEven = go True
   where
-     go :: Int -> [a] -> [a]
+     go :: Bool -> [a] -> [a]
      go _ [] = []
-     go acc (y:ys)
-      | even acc  = y : go (acc+1) ys
-      | otherwise = go (acc+1) ys 
+     go posE (y:ys)
+      | posE  = y : go (not posE) ys
+      | otherwise = go (not posE) ys 
 
 {- |
 =🛡= Higher-order functions
@@ -756,7 +756,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate xs = concat (map (\x -> replicate x x) xs)
+smartReplicate = concatMap (\x -> replicate x x)
 
 {- |
 =⚔️= Task 9
@@ -770,10 +770,7 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: Eq a => a -> [[a]] -> [[a]]
-contains _ [] = []
-contains x (y:ys)
-  | x `elem` y  = y : contains x ys
-  | otherwise   = contains x ys
+contains x = filter(x `elem`)
 
 
 {- |
@@ -878,7 +875,8 @@ rotate :: Int -> [a] -> [a]
 rotate n xs
   | null xs   = []
   | n < 0     = []
-  | otherwise = drop n (take (n+length xs) (cycle xs))
+  | otherwise = drop nr (take (nr + length xs) (cycle xs))
+      where nr = n `mod` length xs
 
 {- |
 =💣= Task 12*
@@ -895,8 +893,12 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind [] = []
-rewind (x:xs) = rewind xs ++ [x]
+rewind = go []
+  where
+    go :: [a] -> [a] -> [a]
+    go ys [] = ys
+    go ys (x:xs) = go (x : ys) xs
+
 
 
 {-
