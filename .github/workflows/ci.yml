@@ -24,7 +24,7 @@ jobs:
         ghc-version: ${{ matrix.ghc }}
         cabal-version: ${{ matrix.cabal }}
 
-    - uses: actions/cache@v2.1.4
+    - uses: actions/cache@v2.1.5
       name: Cache ~/.cabal/store
       with:
         path: ~/.cabal/store
@@ -50,7 +50,7 @@ jobs:
         ghc-version: ${{ matrix.ghc }}
         cabal-version: ${{ matrix.cabal }}
 
-    - uses: actions/cache@v2.1.4
+    - uses: actions/cache@v2.1.5
       name: Cache ~/.cabal/store
       with:
         path: ~/.cabal/store
@@ -85,7 +85,7 @@ jobs:
         ghc-version: ${{ matrix.ghc }}
         cabal-version: ${{ matrix.cabal }}
 
-    - uses: actions/cache@v2.1.4
+    - uses: actions/cache@v2.1.5
       name: Cache ~/.cabal/store
       with:
         path: ~/.cabal/store
@@ -120,7 +120,7 @@ jobs:
         ghc-version: ${{ matrix.ghc }}
         cabal-version: ${{ matrix.cabal }}
 
-    - uses: actions/cache@v2.1.4
+    - uses: actions/cache@v2.1.5
       name: Cache ~/.cabal/store
       with:
         path: ~/.cabal/store
@@ -146,7 +146,7 @@ jobs:
         ghc-version: ${{ matrix.ghc }}
         cabal-version: ${{ matrix.cabal }}
 
-    - uses: actions/cache@v2.1.4
+    - uses: actions/cache@v2.1.5
       name: Cache ~/.cabal/store
       with:
         path: ~/.cabal/store
