@@ -492,7 +492,8 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Integral a => a -> a
-lastDigit n = mod n 10
+lastDigit n | n < 0 = lastDigit $ abs n
+lastDigit n         = mod n 10
 
 
 {- |
@@ -557,12 +558,9 @@ Casual reminder about adding top-level type signatures for all functions :)
 -}
 
 mid :: Ord a => a -> a -> a -> a
-mid x y z | x > min' && x < max' = x
-          | y > min' && y < max' = y
-          | otherwise            = z
- where
-  min' = min (min x y) z
-  max' = max (max x y) z
+mid x y z | x >= min y z && x <= max y z = x
+          | y >= min x z && y <= max x z = y
+          | otherwise                    = z
 
 
 
@@ -645,6 +643,9 @@ specifying complex expressions.
 -}
 
 sumLast2 :: Integral a => a -> a
+sumLast2 0 = 0
+sumLast2 n | n < 0  = sumLast2 $ abs n
+           | n < 10 = n
 sumLast2 n = last1 + last2
  where
   last1 = mod n 10
