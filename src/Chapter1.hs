@@ -643,7 +643,6 @@ specifying complex expressions.
 -}
 
 sumLast2 :: Integral a => a -> a
-sumLast2 0 = 0
 sumLast2 n | n < 0  = sumLast2 $ abs n
            | n < 10 = n
 sumLast2 n = last1 + last2
@@ -671,10 +670,9 @@ aren't ready for this boss yet!
 -}
 
 firstDigit :: Integral a => a -> a
-firstDigit 0         = 0
-firstDigit n | n < 0 = firstDigit $ abs n
-firstDigit n | n < 10    = n
-             | otherwise = firstDigit withoutLastDigit
+firstDigit n | n < 0  = firstDigit $ abs n
+             | n < 10 = n
+firstDigit n = firstDigit withoutLastDigit
   where withoutLastDigit = div n 10
 
 
