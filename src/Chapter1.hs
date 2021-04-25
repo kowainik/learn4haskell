@@ -647,8 +647,7 @@ sumLast2 n | n < 0  = sumLast2 $ abs n
            | n < 10 = n
 sumLast2 n = last1 + last2
  where
-  last1 = mod n 10
-  last2 = div (mod n 100) 10
+  (last1, last2) = divMod (mod n 100) 10
 
 
 {- |
