@@ -492,8 +492,8 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Integral a => a -> a
-lastDigit n | n < 0 = lastDigit $ abs n
-lastDigit n         = mod n 10
+lastDigit n = mod absv 10
+  where absv = abs n
 
 
 {- |
