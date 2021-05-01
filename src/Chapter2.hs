@@ -763,8 +763,8 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate []       = []
-smartReplicate (x : xs) = replicate x x ++ smartReplicate xs
+smartReplicate = concatMap (\x -> replicate x x)
+
 {- |
 =⚔️= Task 9
 
