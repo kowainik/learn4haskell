@@ -18,7 +18,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: haskell/actions/setup@v1
+    - uses: haskell/actions/setup@v1.2.1
       name: Setup Haskell
       with:
         ghc-version: ${{ matrix.ghc }}
@@ -44,7 +44,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: haskell/actions/setup@v1
+    - uses: haskell/actions/setup@v1.2.1
       name: Setup Haskell
       with:
         ghc-version: ${{ matrix.ghc }}
@@ -79,7 +79,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: haskell/actions/setup@v1
+    - uses: haskell/actions/setup@v1.2.1
       name: Setup Haskell
       with:
         ghc-version: ${{ matrix.ghc }}
@@ -114,7 +114,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: haskell/actions/setup@v1
+    - uses: haskell/actions/setup@v1.2.1
       name: Setup Haskell
       with:
         ghc-version: ${{ matrix.ghc }}
@@ -140,7 +140,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: haskell/actions/setup@v1
+    - uses: haskell/actions/setup@v1.2.1
       name: Setup Haskell
       with:
         ghc-version: ${{ matrix.ghc }}
