@@ -670,10 +670,18 @@ aren't ready for this boss yet!
 -}
 
 firstDigit :: Int -> Int
-firstDigit 0 = 0
-firstDigit n =
-  let f = firstDigit (div n 10)
-  in n
+firstDigit n
+    | div n 10 == 0 = n
+firstDigit n = firstDigit (div n 10)
+
+-- firstDigit n =
+--   let la = firstDigit (div n 10)
+--   in n
+-- firstDigit n
+--     | firstDigit(div n 10) == 10  = div n 10
+--     | otherwise  = n
+
+
 
 {-
 You did it! Now it is time to open a pull request with your changes
