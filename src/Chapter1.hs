@@ -210,24 +210,19 @@ So, the output in this example means that 'False' has type 'Bool'.
 
 >>> :t True
 True :: Bool
-True :: Bool
 
 >>> :t 'a'
 'a' :: Char
-'a' :: Char
 
 >>> :t 42
-42 :: Int
 42 :: Num p => p
 
 A pair of boolean and char:
 >>> :t (True, 'x')
-True, 'x' :: Bool, Char
 (True, 'x') :: (Bool, Char)
 
 Boolean negation:
 >>> :t not
-not :: not Bool
 not :: Bool -> Bool
 
 Boolean 'and' operator:
