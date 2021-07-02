@@ -646,8 +646,9 @@ specifying complex expressions.
 
 sumLast2 :: Int -> Int
 sumLast2 n =
-  let firstN = div n 10
-      secondN = mod n 10
+  let lastNs = mod n 100
+      firstN = div lastNs 10
+      secondN = mod lastNs 10
   in firstN + secondN
 
 
