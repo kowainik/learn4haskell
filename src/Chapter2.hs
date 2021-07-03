@@ -336,9 +336,18 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList start end lst = if start >=0 && end > 0 then reduceList start end lst else []
+subList start end lst
+  | start == 0 && start == end = take 1 lst
+  | start == 0 && start /= end = lst
+  | start >= 0 && start < end = reduceList start end lst
+  | otherwise  = []
   where
-    reduceList x y lst = lst
+     reduceList x y lst2 =take ( y - x + 1) $ take y $ drop x lst2
+    -- reduceList x y lst2 =take x $ take y $ drop x lst2
+-- subList start end lst = if start >=0 && end >= 0 then reduceList start end lst else []
+--   where
+--     -- reduceList x y lst =  take (length - x)  $ drop x lst
+--     reduceList x y lst =  take (length(lst) - x) $ drop x lst
 
 {- |
 =⚔️= Task 4
