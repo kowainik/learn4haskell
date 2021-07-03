@@ -514,7 +514,17 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
-isThird42 = error "isThird42: Not implemented!"
+evalOperation :: Char -> Int -> Int -> Int
+evalOperation op x y = case op of
+    '+' -> x + y
+    '-' -> x - y
+    '*' -> x * y
+    '/' -> div x y
+    _  -> 0
+
+isThird42 :: [Int] -> Bool
+isThird42 (_: _ : 42 : _ ) =  True
+isThird42 _ = False
 
 
 {- |
