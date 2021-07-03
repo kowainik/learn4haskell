@@ -342,6 +342,7 @@ subList start end lst
   | start >= 0 && start < end = reduceList start end lst
   | otherwise  = []
   where
+     reduceList :: Int -> Int -> [a] -> [a]
      reduceList x y lst2 =take ( y - x + 1) $ take y $ drop x lst2
     -- reduceList x y lst2 =take x $ take y $ drop x lst2
 -- subList start end lst = if start >=0 && end >= 0 then reduceList start end lst else []
@@ -360,7 +361,8 @@ Implement a function that returns only the first half of a given list.
 "b"
 -}
 -- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
+firstHalf :: [a] -> [a]
+firstHalf l = take (length  l `div` 2) l
 
 
 {- |
