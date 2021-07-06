@@ -647,7 +647,22 @@ Write a function that takes elements of a list only in even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
-takeEven = error "takeEven: Not implemented!"
+takeEven :: [a] -> [a]
+takeEven l
+  | length l >= 2 = go 0 [] l
+  | length l == 1 = [head l]
+  | otherwise = []
+  where
+    go :: Int -> [b] -> [b] -> [b]
+    go _ acc [] = acc
+    go pos acc (x:xs) = if mod pos 2 == 0 then go (pos + 1) (acc ++ [x]) xs else go (pos + 1) acc xs
+-- takeEven l
+--   | length l >= 2 = go [] l
+--   | otherwise = []
+--   where
+--     go :: Integral a => [a] -> [a] -> [a]
+--     go acc [] = acc
+--     go acc (x:xs) = if (mod x 2) == 0 then go (acc ++ [x]) xs else go acc xs
 
 {- |
 =🛡= Higher-order functions
