@@ -152,7 +152,7 @@ Append two lists:
 
 Prepend an element at the beginning of a list:
 >>> :t (:)
-(:) :: a -> [a]  -> [a]
+(:) :: a -> [a] -> [a]
 
 Reverse a list:
 >>> :t reverse
@@ -923,7 +923,13 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind = error "rewind: Not Implemented!"
+rewind :: [a] -> [a]
+rewind lst = go [] lst
+  where
+    go :: [a] -> [a] -> [a]
+    go acc [] = acc
+    go acc (x:xs) = go (x:acc) xs
+
 
 
 {-
