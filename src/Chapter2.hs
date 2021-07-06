@@ -629,6 +629,8 @@ Implement a function that duplicates each element of the list
 
 -}
 duplicate :: [a] -> [a]
+-- duplicate (x:[]) = []
+-- duplicate (x:xs) =  duplicate ([] ++ acc ++ [x] ++ [x]) xs
 duplicate l = go [] l
   where
     go :: [a] -> [a] -> [a]
@@ -769,7 +771,10 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = error "smartReplicate: Not implemented!"
+smartReplicate l
+  | length l > 1 = concat $ map  (\x -> replicate x x) l
+  | length l == 1  && head l > 0 = l
+  | otherwise = []
 
 {- |
 =⚔️= Task 9
