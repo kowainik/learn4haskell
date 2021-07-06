@@ -829,14 +829,26 @@ nextInt = add 1
 Let's now try to eta-reduce some of the functions and ensure that we
 mastered the skill of eta-reducing.
 -}
+nextInt :: Int -> Int
+nextInt  = (+) 1
+
+-- divideTenBy :: Int -> Int
+-- divideTenBy n = div 10 n
+
 divideTenBy :: Int -> Int
-divideTenBy x = div 10 x
+divideTenBy = div 10
 
 -- TODO: type ;)
-listElementsLessThan x l = filter (< x) l
+
+--listElementsLessThan x l = filter (< x) l
+listElementsLessThan :: Int -> [Int] -> [Int]
+listElementsLessThan x  = filter (< x)
 
 -- Can you eta-reduce this one???
-pairMul xs ys = zipWith (*) xs ys
+
+-- pairMul xs ys = zipWith (*) xs ys
+pairMul :: Num a => [a] -> [a] -> [a]
+pairMul xs  = zipWith (*) xs
 
 {- |
 =🛡= Lazy evaluation
@@ -891,7 +903,11 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate = error "rotate: Not implemented!"
+rotate :: Int -> [Int] -> [Int]
+rotate n lst
+  | n >= 0 && length lst > 0 =  drop n $ take (length lst + n) $ cycle lst
+  | otherwise = []
+
 
 {- |
 =💣= Task 12*
