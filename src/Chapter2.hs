@@ -152,7 +152,7 @@ Append two lists:
 
 Prepend an element at the beginning of a list:
 >>> :t (:)
-(:) ::  a -> [a]  -> [a]
+(:) :: a -> [a]  -> [a]
 
 Reverse a list:
 >>> :t reverse
@@ -629,8 +629,11 @@ Implement a function that duplicates each element of the list
 
 -}
 duplicate :: [a] -> [a]
-duplicate = error "duplicate: Not implemented!"
-
+duplicate l = go [] l
+  where
+    go :: [a] -> [a] -> [a]
+    go acc [] = acc
+    go acc (x:xs) = go (acc ++ [x] ++ [x]) xs
 
 {- |
 =⚔️= Task 7
