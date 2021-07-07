@@ -438,6 +438,9 @@ fight (Knight kHp kAttk kGold) (Monster mHp mAttk mGold)
 tiredArthur :: Int -> Knight
 tiredArthur gold = arthur { knightGold = gold }
 
+tiredGoblin :: Monster
+tiredGoblin = goblin {monsterGold = 0}
+
 -- Recursive function where both knight and monster attack each other.
 -- fight ::  Knight -> Monster -> Int
 -- fight (Knight kHp kAttk kGold) (Monster mHp mAttk mGold)
@@ -445,6 +448,7 @@ tiredArthur gold = arthur { knightGold = gold }
 --   | kHp <= 0 && mHp > 0 = -1
 --   | mHp <= 0 && kHp > 0 = kGold + mGold
 --   | otherwise = 0
+
 {- |
 =🛡= Sum types
 
@@ -530,6 +534,13 @@ and provide more flexibility when working with data types.
 Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
+data MealType
+    = Breakfast
+    | Lunch
+    | Brunch
+    | MidnightSnack
+    | Snack
+    | Dinner
 
 {- |
 =⚔️= Task 4
@@ -550,6 +561,57 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
+
+-- data House = One | Two | Three | Four
+data House = NoOfResidents Int deriving (Show)
+
+data Organization = Church | Library deriving (Show)
+
+data City = City
+    {
+      house :: [House]
+    , organization :: Organization
+    , hasCastle :: Bool
+    , castleName :: String
+    , wall :: Int
+    }  deriving (Show)
+
+cebu :: City
+cebu = City
+    {
+      house = [NoOfResidents 1, NoOfResidents 3, NoOfResidents 3, NoOfResidents 3]
+    , organization = Church
+    , hasCastle = True
+    , castleName = "Citadel"
+    , wall = 4
+    }
+
+manila :: City
+manila = City
+    {
+      house = [NoOfResidents 2, NoOfResidents 3]
+    , organization = Library
+    , hasCastle = False
+    , castleName = ""
+    , wall = 0
+    }
+
+
+buildCastle :: City -> String -> City
+buildCastle (City house org hasCastle oldName wall) name = (City house org addHasCastle name wall)
+  where addHasCastle :: Bool
+        addHasCastle = if hasCastle == False  then not hasCastle else hasCastle
+
+buildHouse :: City -> Int -> City
+buildHouse (City house org hasCastle oldName wall) noOfResidents = (City (newHouse:house) org hasCastle oldName wall)
+  where newHouse :: House
+        newHouse = NoOfResidents noOfResidents
+
+buildWalls :: City -> Int -> City
+buildWalls (City house org hasCastle oldName wall) noOfWalls = if hasCastle == True && (countResidents 0 house) >= 10 then (City house org hasCastle oldName (wall + noOfWalls)) else (City house org hasCastle oldName wall)
+  where countResidents :: Int -> [House] -> Int
+        countResidents acc [] = acc
+        countResidents acc (NoOfResidents n:xs) = countResidents (acc + n) xs
 
 {-
 =🛡= Newtypes
