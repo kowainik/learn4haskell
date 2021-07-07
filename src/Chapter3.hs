@@ -392,6 +392,43 @@ after the fight. The battle has the following possible outcomes:
 
 -}
 
+data Knight = Knight
+    {
+      knightHealth :: Int
+    , knightAttack :: Int
+    , knightGold :: Int
+    } deriving (Show)
+
+data Monster = Monster
+    {
+      monsterHealth :: Int
+    , monsterAttack :: Int
+    , monsterGold :: Int
+    } deriving (Show)
+
+arthur :: Knight
+arthur = Knight
+      {
+        knightHealth = 100
+      , knightAttack = 12
+      , knightGold = 50
+      }
+
+goblin :: Monster
+goblin = Monster
+      {
+        monsterHealth = 200
+      , monsterAttack = 9
+      , monsterGold = 30
+      }
+
+
+fight ::  Knight -> Monster -> Int
+fight (Knight kHp kAttk kGold) (Monster mHp mAttk mGold)
+  | kHp >0 && mHp > 0 = fight (Knight (kHp-mAttk) kAttk kGold) (Monster (mHp - kAttk) mAttk mGold)
+  | kHp <= 0 && mHp > 0 = -1
+  | mHp <= 0 && kHp > 0 = kGold + mGold
+  | otherwise = 0
 {- |
 =🛡= Sum types
 
