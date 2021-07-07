@@ -344,6 +344,24 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = Book
+    {
+      bookName :: String
+    , bookAuthor :: String
+    , bookPrice :: Int
+    , bookYear :: String
+    } deriving (Show)
+
+
+lotr :: Book
+lotr = Book
+    {
+      bookName = "Lord of The Rings"
+    , bookAuthor = "J. R. R. Tolkien"
+    , bookYear = "1998"
+    , bookPrice = 2000
+    }
+
 {- |
 =⚔️= Task 2
 
