@@ -409,7 +409,7 @@ data Monster = Monster
 arthur :: Knight
 arthur = Knight
       {
-        knightHealth = 100
+        knightHealth = 300
       , knightAttack = 12
       , knightGold = 50
       }
@@ -423,12 +423,28 @@ goblin = Monster
       }
 
 
-fight ::  Knight -> Monster -> Int
+fight :: Knight -> Monster -> Int
 fight (Knight kHp kAttk kGold) (Monster mHp mAttk mGold)
-  | kHp >0 && mHp > 0 = fight (Knight (kHp-mAttk) kAttk kGold) (Monster (mHp - kAttk) mAttk mGold)
-  | kHp <= 0 && mHp > 0 = -1
-  | mHp <= 0 && kHp > 0 = kGold + mGold
+  | kHp > 0 && mHp > 0 = go 1 ((Knight kHp kAttk kGold),(Monster mHp mAttk mGold))
   | otherwise = 0
+    where go :: Int -> (Knight, Monster) -> Int
+          go round ((Knight kHp kAttk kGold),(Monster mHp mAttk mGold))
+            | mod round 2 == 1 && kHp > 0 = go (round + 1) ((Knight kHp kAttk kGold),(Monster (mHp-kAttk) mAttk mGold))
+            | mod round 2 == 0 && mHp > 0 = go (round + 1) ((Knight (kHp-mAttk) kAttk kGold),(Monster mHp mAttk mGold))
+            | kHp <= 0 && mHp > 0 = -1
+            | mHp <= 0 && kHp > 0 = kGold + mGold
+            | otherwise = 0
+
+tiredArthur :: Int -> Knight
+tiredArthur gold = arthur { knightGold = gold }
+
+-- Recursive function where both knight and monster attack each other.
+-- fight ::  Knight -> Monster -> Int
+-- fight (Knight kHp kAttk kGold) (Monster mHp mAttk mGold)
+--   | kHp >0 && mHp > 0 = fight (Knight (kHp-mAttk) kAttk kGold) (Monster (mHp - kAttk) mAttk mGold)
+--   | kHp <= 0 && mHp > 0 = -1
+--   | mHp <= 0 && kHp > 0 = kGold + mGold
+--   | otherwise = 0
 {- |
 =🛡= Sum types
 
