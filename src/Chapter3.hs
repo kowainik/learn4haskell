@@ -425,12 +425,12 @@ goblin = Monster
 
 fight :: Knight -> Monster -> Int
 fight (Knight kHp kAttk kGold) (Monster mHp mAttk mGold)
-  | kHp > 0 && mHp > 0 = go 1 ((Knight kHp kAttk kGold),(Monster mHp mAttk mGold))
+  | kHp > 0 && mHp > 0 = go 1 (Knight kHp kAttk kGold,Monster mHp mAttk mGold)
   | otherwise = 0
     where go :: Int -> (Knight, Monster) -> Int
-          go round ((Knight kHp kAttk kGold),(Monster mHp mAttk mGold))
-            | mod round 2 == 1 && kHp > 0 = go (round + 1) ((Knight kHp kAttk kGold),(Monster (mHp-kAttk) mAttk mGold))
-            | mod round 2 == 0 && mHp > 0 = go (round + 1) ((Knight (kHp-mAttk) kAttk kGold),(Monster mHp mAttk mGold))
+          go round (Knight kHp kAttk kGold,Monster mHp mAttk mGold)
+            | mod round 2 == 1 && kHp > 0 = go (round + 1) (Knight kHp kAttk kGold,Monster (mHp-kAttk) mAttk mGold)
+            | even round && mHp > 0 = go (round + 1) (Knight (kHp-mAttk) kAttk kGold,Monster mHp mAttk mGold)
             | kHp <= 0 && mHp > 0 = -1
             | mHp <= 0 && kHp > 0 = kGold + mGold
             | otherwise = 0
@@ -563,6 +563,7 @@ After defining the city, implement the following functions:
 -}
 
 -- data House = One | Two | Three | Four
+-- data One = 1 :: Int
 data House = NoOfResidents Int deriving (Show)
 
 data Organization = Church | Library deriving (Show)
@@ -608,10 +609,15 @@ buildHouse (City house org hasCastle oldName wall) noOfResidents = (City (newHou
         newHouse = NoOfResidents noOfResidents
 
 buildWalls :: City -> Int -> City
-buildWalls (City house org hasCastle oldName wall) noOfWalls = if hasCastle == True && (countResidents 0 house) >= 10 then (City house org hasCastle oldName (wall + noOfWalls)) else (City house org hasCastle oldName wall)
+-- buildWalls (City house org hasCastle oldName wall) noOfWalls = if hasCastle == True && (countResidents 0 house) >= 10 then (City house org hasCastle oldName (wall + noOfWalls)) else (City house org hasCastle oldName wall)
+--   where countResidents :: Int -> [House] -> Int
+--         countResidents totalCount [] = totalCount
+--         countResidents totalCount (NoOfResidents n:xs) = countResidents (totalCount + n) xs
+buildWalls (City house org hasCastle oldName wall) noOfWalls = if hasCastle == True then (City house org hasCastle oldName (wall + noOfWalls)) else (City house org hasCastle oldName wall)
   where countResidents :: Int -> [House] -> Int
-        countResidents acc [] = acc
-        countResidents acc (NoOfResidents n:xs) = countResidents (acc + n) xs
+        countResidents totalCount [] = totalCount
+        countResidents totalCount (NoOfResidents n:xs) = countResidents (totalCount + n) xs
+
 
 {-
 =🛡= Newtypes
