@@ -652,7 +652,7 @@ takeEven = go 0 []
   where
     go :: Int -> [b] -> [b] -> [b]
     go _ acc [] = acc
-    go index acc (x:xs2) = if even index then go (index + 1) (acc ++ [x]) xs2 else go (index + 1) acc xs2
+    go index acc (x:xs) = if even index then go (index + 1) (acc ++ [x]) xs else go (index + 1) acc xs
 
 
 -- takeEven l
