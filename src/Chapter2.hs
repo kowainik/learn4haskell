@@ -648,14 +648,15 @@ Write a function that takes elements of a list only in even positions.
 [2,3,4]
 -}
 takeEven :: [a] -> [a]
-takeEven l
-  | length l >= 2 = go 0 [] l
-  | length l == 1 = [head l]
+takeEven xs
+  | not (null xs) = go 0 [] xs
   | otherwise = []
   where
     go :: Int -> [b] -> [b] -> [b]
     go _ acc [] = acc
-    go pos acc (x:xs) = if mod pos 2 == 0 then go (pos + 1) (acc ++ [x]) xs else go (pos + 1) acc xs
+    go index acc (x:xs2) = if even index then go (index + 1) (acc ++ [x]) xs2 else go (index + 1) acc xs2
+
+
 -- takeEven l
 --   | length l >= 2 = go [] l
 --   | otherwise = []
