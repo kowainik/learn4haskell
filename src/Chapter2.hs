@@ -648,9 +648,7 @@ Write a function that takes elements of a list only in even positions.
 [2,3,4]
 -}
 takeEven :: [a] -> [a]
-takeEven xs
-  | not (null xs) = go 0 [] xs
-  | otherwise = []
+takeEven = go 0 []
   where
     go :: Int -> [b] -> [b] -> [b]
     go _ acc [] = acc
