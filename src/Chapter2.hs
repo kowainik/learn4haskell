@@ -337,13 +337,11 @@ ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
 subList start end lst
-  | start == 0 && start == end = take 1 lst
-  | start == 0 && start /= end = lst
-  | start >= 0 && start < end = reduceList start end lst
+  | start >= 0 && start <= end = reduceList start end lst
   | otherwise  = []
   where
      reduceList :: Int -> Int -> [a] -> [a]
-     reduceList x y lst2 =take ( y - x + 1) $ take y $ drop x lst2
+     reduceList x y lst2 =take ( y - x + 1) $ drop x lst2
     -- reduceList x y lst2 =take x $ take y $ drop x lst2
 -- subList start end lst = if start >=0 && end >= 0 then reduceList start end lst else []
 --   where
@@ -635,7 +633,7 @@ duplicate  = go []
   where
     go :: [a] -> [a] -> [a]
     go acc [] = acc
-    go acc (x:xs) = go (acc ++ [x] ++ [x]) xs
+    go acc (x:xs) = go (acc ++ [x,x]) xs
 
 {- |
 =⚔️= Task 7
@@ -657,7 +655,7 @@ takeEven l
   where
     go :: Int -> [b] -> [b] -> [b]
     go _ acc [] = acc
-    go pos acc (x:xs) = if even pos then go (pos + 1) (acc ++ [x]) xs else go (pos + 1) acc xs
+    go pos acc (x:xs) = if mod pos 2 == 0 then go (pos + 1) (acc ++ [x]) xs else go (pos + 1) acc xs
 -- takeEven l
 --   | length l >= 2 = go [] l
 --   | otherwise = []
@@ -772,11 +770,9 @@ value of the element itself
 -}
 smartReplicate :: [Int] -> [Int]
 smartReplicate l
-  | length l > 1 = concatMap (\x -> replicate x x) l
+  | length l > 1 = concat $ map  (\x -> replicate x x) l
   | length l == 1  && head l > 0 = l
   | otherwise = []
-
--- Previous solution before refact | length l > 1 = concat $ map  (\x -> replicate x x) l
 
 {- |
 =⚔️= Task 9
@@ -791,10 +787,9 @@ the list with only those lists that contain a passed element.
 -}
 contains :: Int -> [[Int]] -> [[Int]]
 contains n l
-  | not (null l) = filter (\x -> n `elem` x) l
+  | length l>=1 = filter (\x -> n `elem` x) l
   | otherwise = []
 
--- Before refact: length l>=1 = filter (\x -> n `elem` x) l
 
 {- |
 =🛡= Eta-reduction
@@ -851,7 +846,7 @@ listElementsLessThan x  = filter (< x)
 
 -- pairMul xs ys = zipWith (*) xs ys
 pairMul :: Num a => [a] -> [a] -> [a]
-pairMul = zipWith (*)
+pairMul xs  = zipWith (*) xs
 
 {- |
 =🛡= Lazy evaluation
@@ -908,10 +903,9 @@ list.
 -}
 rotate :: Int -> [Int] -> [Int]
 rotate n lst
-  | n >= 0 && not (null lst) =  drop n $ take (length lst + n) $ cycle lst
+  | n >= 0 && length lst > 0 =  drop n $ take (length lst + n) $ cycle lst
   | otherwise = []
 
--- Before refact: | n >= 0 && length lst > 0 =  drop n $ take (length lst + n) $ cycle lst
 
 {- |
 =💣= Task 12*
@@ -928,7 +922,7 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind = go []
+rewind lst = go [] lst
   where
     go :: [a] -> [a] -> [a]
     go acc [] = acc
