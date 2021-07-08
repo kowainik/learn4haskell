@@ -524,8 +524,9 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
--- My other solution --> closestToZero x y = min (abs x)(abs y)
 closestToZero x y = if abs x < abs y then x else y
+
+-- My other attempt but failed --> closestToZero x y = min (abs x)(abs y)
 
 {- |
 =⚔️= Task 7
@@ -580,8 +581,12 @@ False
 -}
 isVowel :: Char -> Bool
 isVowel c
-    | c == 'a' || c == 'e' || c == 'i' ||  c == 'o' || c== 'u' = True
-    | otherwise = False
+  | c `elem` ['a', 'e', 'i', 'o', 'u'] = True
+  | otherwise = False
+
+-- isVowel c
+--     | c == 'a' || c == 'e' || c == 'i' ||  c == 'o' || c== 'u' = True
+--     | otherwise = False
 
 
 {- |
