@@ -768,10 +768,13 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l
-  | length l > 1 = concat $ map  (\x -> replicate x x) l
-  | length l == 1  && head l > 0 = l
+smartReplicate xs
+  | length xs > 1 = concatMap (\x -> replicate x x) xs
   | otherwise = []
+
+-- smartReplicate l
+-- | length l > 1 = concat $ map  (\x -> replicate x x) l
+-- | otherwise = []
 
 {- |
 =⚔️= Task 9
@@ -785,10 +788,13 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: Int -> [[Int]] -> [[Int]]
-contains n l
-  | length l>=1 = filter (\x -> n `elem` x) l
+contains n xs
+  | not (null xs) = filter (\x -> n `elem` x) xs
   | otherwise = []
 
+-- contains n l
+-- | length l>=1 = filter (\x -> n `elem` x) l
+-- | otherwise = []
 
 {- |
 =🛡= Eta-reduction
@@ -845,7 +851,7 @@ listElementsLessThan x  = filter (< x)
 
 -- pairMul xs ys = zipWith (*) xs ys
 pairMul :: Num a => [a] -> [a] -> [a]
-pairMul xs  = zipWith (*) xs
+pairMul  = zipWith (*)
 
 {- |
 =🛡= Lazy evaluation
@@ -901,10 +907,13 @@ list.
 🕯 HINT: Use the 'cycle' function
 -}
 rotate :: Int -> [Int] -> [Int]
-rotate n lst
-  | n >= 0 && length lst > 0 =  drop n $ take (length lst + n) $ cycle lst
+rotate n xs
+  | n >= 0 && not (null xs) =  drop n $ take (length xs + n) $ cycle xs
   | otherwise = []
 
+-- rotate n xs
+--   | n >= 0 && length xs > 0 =  drop n $ take (length xs + n) $ cycle xs
+--   | otherwise = []
 
 {- |
 =💣= Task 12*
@@ -921,7 +930,7 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind lst = go [] lst
+rewind = go []
   where
     go :: [a] -> [a] -> [a]
     go acc [] = acc
