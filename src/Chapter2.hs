@@ -336,17 +336,17 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList start end lst
-  | start >= 0 && start <= end = reduceList start end lst
+subList start end xs
+  | start >= 0 && start <= end = reduceList start end xs
   | otherwise  = []
   where
      reduceList :: Int -> Int -> [a] -> [a]
-     reduceList x y lst2 =take ( y - x + 1) $ drop x lst2
-    -- reduceList x y lst2 =take x $ take y $ drop x lst2
--- subList start end lst = if start >=0 && end >= 0 then reduceList start end lst else []
+     reduceList x y xs2 =take ( y - x + 1) $ drop x xs2
+    -- reduceList x y xs2 =take x $ take y $ drop x xs2
+-- subList start end xs = if start >=0 && end >= 0 then reduceList start end xs else []
 --   where
---     -- reduceList x y lst =  take (length - x)  $ drop x lst
---     reduceList x y lst =  take (length(lst) - x) $ drop x lst
+--     -- reduceList x y xs =  take (length - x)  $ drop x xs
+--     reduceList x y xs =  take (length(xs) - x) $ drop x xs
 
 {- |
 =⚔️= Task 4
