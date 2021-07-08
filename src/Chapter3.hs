@@ -425,15 +425,30 @@ goblin = Monster
 
 fight :: Knight -> Monster -> Int
 fight (Knight kHp kAttk kGold) (Monster mHp mAttk mGold)
-  | kHp > 0 && mHp > 0 = go 1 (Knight kHp kAttk kGold,Monster mHp mAttk mGold)
+  | kHp > 0 && mHp > 0 = go 1 kHp mHp
   | otherwise = 0
-    where go :: Int -> (Knight, Monster) -> Int
-          go round (Knight kHp kAttk kGold,Monster mHp mAttk mGold)
-            | mod round 2 == 1 && kHp > 0 = go (round + 1) (Knight kHp kAttk kGold,Monster (mHp-kAttk) mAttk mGold)
-            | even round && mHp > 0 = go (round + 1) (Knight (kHp-mAttk) kAttk kGold,Monster mHp mAttk mGold)
-            | kHp <= 0 && mHp > 0 = -1
-            | mHp <= 0 && kHp > 0 = kGold + mGold
+    where go :: Int -> Int -> Int -> Int
+          go rounds kHp2  mHp2
+            | odd rounds && kHp2 > 0 = go (rounds + 1)  kHp2  (mHp2-kAttk)
+            | even rounds && mHp2 > 0 = go (rounds + 1)  (kHp2-mAttk)  mHp2
+            | kHp2 <= 0 && mHp2 > 0 = -1
+            | mHp2 <= 0 && kHp2 > 0 = kGold + mGold
             | otherwise = 0
+
+-- fight (Knight kHp kAttk kGold) (Monster mHp mAttk mGold)
+--   | kHp > 0 && mHp > 0 = go 1 (Knight kHp kAttk kGold,Monster mHp mAttk mGold)
+--   | otherwise = 0
+--     where go :: Int -> (Knight, Monster) -> Int
+--           go rounds (Knight kHp2 kAttk2 kGold2,Monster mHp2 mAttk2 mGold2)
+--             | odd rounds && kHp2 > 0 = go (rounds + 1) (Knight kHp2 kAttk2 kGold2,Monster (mHp2-kAttk2) mAttk2 mGold2)
+--             | even rounds && mHp2 > 0 = go (rounds + 1) (Knight (kHp2-mAttk2) kAttk2 kGold2,Monster mHp2 mAttk2 mGold2)
+--             | kHp2 <= 0 && mHp2 > 0 = -1
+--             | mHp2 <= 0 && kHp2 > 0 = kGold + mGold
+--             | otherwise = 0
+
+
+
+
 
 tiredArthur :: Int -> Knight
 tiredArthur gold = arthur { knightGold = gold }
