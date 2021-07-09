@@ -341,12 +341,7 @@ subList start end xs
   | otherwise  = []
   where
      reduceList :: Int -> Int -> [a] -> [a]
-     reduceList x y xs2 =take ( y - x + 1) $ drop x xs2
-    -- reduceList x y xs2 =take x $ take y $ drop x xs2
--- subList start end xs = if start >=0 && end >= 0 then reduceList start end xs else []
---   where
---     -- reduceList x y xs =  take (length - x)  $ drop x xs
---     reduceList x y xs =  take (length(xs) - x) $ drop x xs
+     reduceList x y xs2 = take ( y - x + 1) $ drop x xs2
 
 {- |
 =⚔️= Task 4
@@ -521,7 +516,7 @@ evalOperation op x y = case op of
     _  -> 0
 
 isThird42 :: [Int] -> Bool
-isThird42 (_: _ : 42 : _ ) =  True
+isThird42 (_: _ : 42 : _ ) = True
 isThird42 _ = False
 
 
@@ -627,13 +622,11 @@ Implement a function that duplicates each element of the list
 
 -}
 duplicate :: [a] -> [a]
--- duplicate (x:[]) = []
--- duplicate (x:xs) =  duplicate ([] ++ acc ++ [x] ++ [x]) xs
 duplicate  = go []
   where
     go :: [a] -> [a] -> [a]
-    go acc [] = acc
-    go acc (x:xs) = go (acc ++ [x,x]) xs
+    go acc [] = reverse acc
+    go acc (x:xs) = go (x:x:acc) xs
 
 {- |
 =⚔️= Task 7
@@ -651,17 +644,8 @@ takeEven :: [a] -> [a]
 takeEven = go 0 []
   where
     go :: Int -> [b] -> [b] -> [b]
-    go _ acc [] = acc
-    go index acc (x:xs) = if even index then go (index + 1) (acc ++ [x]) xs else go (index + 1) acc xs
-
-
--- takeEven l
---   | length l >= 2 = go [] l
---   | otherwise = []
---   where
---     go :: Integral a => [a] -> [a] -> [a]
---     go acc [] = acc
---     go acc (x:xs) = if (mod x 2) == 0 then go (acc ++ [x]) xs else go acc xs
+    go _ acc [] = reverse acc
+    go index acc (x:xs) = if even index then go (index + 1) (x:acc) xs else go (index + 1) acc xs
 
 {- |
 =🛡= Higher-order functions
@@ -768,9 +752,8 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate xs
-  | length xs > 1 = concatMap (\x -> replicate x x) xs
-  | otherwise = []
+smartReplicate = concatMap (\x -> replicate x x)
+
 
 -- smartReplicate l
 -- | length l > 1 = concat $ map  (\x -> replicate x x) l
@@ -788,13 +771,7 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: Int -> [[Int]] -> [[Int]]
-contains n xs
-  | not (null xs) = filter (\x -> n `elem` x) xs
-  | otherwise = []
-
--- contains n l
--- | length l>=1 = filter (\x -> n `elem` x) l
--- | otherwise = []
+contains n = filter (elem n)
 
 {- |
 =🛡= Eta-reduction
