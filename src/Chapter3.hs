@@ -899,6 +899,25 @@ parametrise data types in places where values can be of any general type.
 🕯 HINT: 'Maybe' that some standard types we mentioned above are useful for
   maybe-treasure ;)
 -}
+newtype Dragon power = Dragon power deriving Show
+data TreasureChest x = TreasureChest  Int x  deriving Show
+
+
+data Lair p x = Lair {
+ dragon ::  Dragon p
+, treasures :: Maybe [TreasureChest x]
+}  deriving Show
+
+redDragon :: Dragon [Char]
+redDragon = Dragon "fire breath"
+
+treasureChests :: [TreasureChest [Char]]
+treasureChests = [TreasureChest 20 "ring", TreasureChest 20 "boots"]
+
+wyvLair :: Lair [Char] [Char]
+wyvLair = Lair{dragon = redDragon, treasures= Just treasureChests}
+emptyLair :: Lair [Char] x
+emptyLair = Lair {dragon= redDragon, treasures = Nothing}
 
 {-
 =🛡= Typeclasses
