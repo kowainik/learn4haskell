@@ -52,7 +52,7 @@ provide more top-level type signatures, especially when learning Haskell.
 {-# LANGUAGE InstanceSigs #-}
 
 module Chapter3 where
-
+import Data.Maybe(isJust, fromJust)
 {-
 =🛡= Types in Haskell
 
@@ -417,8 +417,8 @@ arthur = Knight
 goblin :: Monster
 goblin = Monster
       {
-        monsterHealth = 200
-      , monsterAttack = 9
+        monsterHealth = 400
+      , monsterAttack = 12
       , monsterGold = 30
       }
 
@@ -435,34 +435,12 @@ fight (Knight kHp kAttk kGold) (Monster mHp mAttk mGold)
             | mHp2 <= 0 && kHp2 > 0 = kGold + mGold
             | otherwise = 0
 
--- fight (Knight kHp kAttk kGold) (Monster mHp mAttk mGold)
---   | kHp > 0 && mHp > 0 = go 1 (Knight kHp kAttk kGold,Monster mHp mAttk mGold)
---   | otherwise = 0
---     where go :: Int -> (Knight, Monster) -> Int
---           go rounds (Knight kHp2 kAttk2 kGold2,Monster mHp2 mAttk2 mGold2)
---             | odd rounds && kHp2 > 0 = go (rounds + 1) (Knight kHp2 kAttk2 kGold2,Monster (mHp2-kAttk2) mAttk2 mGold2)
---             | even rounds && mHp2 > 0 = go (rounds + 1) (Knight (kHp2-mAttk2) kAttk2 kGold2,Monster mHp2 mAttk2 mGold2)
---             | kHp2 <= 0 && mHp2 > 0 = -1
---             | mHp2 <= 0 && kHp2 > 0 = kGold + mGold
---             | otherwise = 0
 
+-- tiredArthur :: Int -> Knight
+-- tiredArthur gold = arthur { knightGold = gold }
 
-
-
-
-tiredArthur :: Int -> Knight
-tiredArthur gold = arthur { knightGold = gold }
-
-tiredGoblin :: Monster
-tiredGoblin = goblin {monsterGold = 0}
-
--- Recursive function where both knight and monster attack each other.
--- fight ::  Knight -> Monster -> Int
--- fight (Knight kHp kAttk kGold) (Monster mHp mAttk mGold)
---   | kHp >0 && mHp > 0 = fight (Knight (kHp-mAttk) kAttk kGold) (Monster (mHp - kAttk) mAttk mGold)
---   | kHp <= 0 && mHp > 0 = -1
---   | mHp <= 0 && kHp > 0 = kGold + mGold
---   | otherwise = 0
+-- tiredGoblin :: Monster
+-- tiredGoblin = goblin {monsterGold = 0}
 
 {- |
 =🛡= Sum types
@@ -577,61 +555,95 @@ After defining the city, implement the following functions:
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
 
--- data House = One | Two | Three | Four
--- data One = 1 :: Int
-data House = NoOfResidents Int deriving (Show)
 
-data Organization = Church | Library deriving (Show)
 
-data City = City
-    {
-      house :: [House]
-    , organization :: Organization
-    , hasCastle :: Bool
-    , castleName :: String
-    , wall :: Int
-    }  deriving (Show)
+newtype House =  House Word deriving (Eq, Show)
+
+data Establishment = Church | Library deriving Show
+
+data Castle = NoCastle | Castle String | CastleWithWalls String Int deriving Show
+
+data City = City{
+  establishment :: Establishment
+, houses :: [House]
+, castle :: Castle
+} deriving Show
+
 
 cebu :: City
-cebu = City
-    {
-      house = [NoOfResidents 1, NoOfResidents 3, NoOfResidents 3, NoOfResidents 3]
-    , organization = Church
-    , hasCastle = True
-    , castleName = "Citadel"
-    , wall = 4
-    }
-
-manila :: City
-manila = City
-    {
-      house = [NoOfResidents 2, NoOfResidents 3]
-    , organization = Library
-    , hasCastle = False
-    , castleName = ""
-    , wall = 0
-    }
+cebu = City{
+  establishment = Church
+, houses = [House 1, House 2]
+, castle = NoCastle
+}
 
 
-buildCastle :: City -> String -> City
-buildCastle (City house org hasCastle oldName wall) name = (City house org addHasCastle name wall)
-  where addHasCastle :: Bool
-        addHasCastle = if hasCastle == False  then not hasCastle else hasCastle
+mkHouse :: Word -> Maybe House
+mkHouse noOfPeople
+  | noOfPeople >0 && noOfPeople < 5 = Just (House noOfPeople)
+  | otherwise = Nothing
 
-buildHouse :: City -> Int -> City
-buildHouse (City house org hasCastle oldName wall) noOfResidents = (City (newHouse:house) org hasCastle oldName wall)
-  where newHouse :: House
-        newHouse = NoOfResidents noOfResidents
+buildHouse :: City -> Word ->  City
+buildHouse city noOfPeople
+  | isJust makeHouse = city{houses = fromJust makeHouse:cityHouses}
+  | otherwise = city
+    where makeHouse = mkHouse noOfPeople
+          cityHouses = houses city
 
-buildWalls :: City -> Int -> City
--- buildWalls (City house org hasCastle oldName wall) noOfWalls = if hasCastle == True && (countResidents 0 house) >= 10 then (City house org hasCastle oldName (wall + noOfWalls)) else (City house org hasCastle oldName wall)
+
+-- data House = NoOfResidents Int deriving (Show)
+
+-- data Organization = Church | Library deriving (Show)
+
+-- data City = City
+--     {
+--       house :: [House]
+--     , organization :: Organization
+--     , hasCastle :: Bool
+--     , castleName :: String
+--     , wall :: Int
+--     }  deriving (Show)
+
+-- cebu :: City
+-- cebu = City
+--     {
+--       house = [NoOfResidents 1, NoOfResidents 3, NoOfResidents 3, NoOfResidents 3]
+--     , organization = Church
+--     , hasCastle = True
+--     , castleName = "Citadel"
+--     , wall = 4
+--     }
+
+-- manila :: City
+-- manila = City
+--     {
+--       house = [NoOfResidents 2, NoOfResidents 3]
+--     , organization = Library
+--     , hasCastle = False
+--     , castleName = ""
+--     , wall = 0
+--     }
+
+
+-- buildCastle :: City -> String -> City
+-- buildCastle (City house org hasCastle oldName wall) name = (City house org addHasCastle name wall)
+--   where addHasCastle :: Bool
+--         addHasCastle = if hasCastle == False  then not hasCastle else hasCastle
+
+-- buildHouse :: City -> Int -> City
+-- buildHouse (City house org hasCastle oldName wall) noOfResidents = (City (newHouse:house) org hasCastle oldName wall)
+--   where newHouse :: House
+--         newHouse = NoOfResidents noOfResidents
+
+-- buildWalls :: City -> Int -> City
+-- -- buildWalls (City house org hasCastle oldName wall) noOfWalls = if hasCastle == True && (countResidents 0 house) >= 10 then (City house org hasCastle oldName (wall + noOfWalls)) else (City house org hasCastle oldName wall)
+-- --   where countResidents :: Int -> [House] -> Int
+-- --         countResidents totalCount [] = totalCount
+-- --         countResidents totalCount (NoOfResidents n:xs) = countResidents (totalCount + n) xs
+-- buildWalls (City house org hasCastle oldName wall) noOfWalls = if hasCastle == True then (City house org hasCastle oldName (wall + noOfWalls)) else (City house org hasCastle oldName wall)
 --   where countResidents :: Int -> [House] -> Int
 --         countResidents totalCount [] = totalCount
 --         countResidents totalCount (NoOfResidents n:xs) = countResidents (totalCount + n) xs
-buildWalls (City house org hasCastle oldName wall) noOfWalls = if hasCastle == True then (City house org hasCastle oldName (wall + noOfWalls)) else (City house org hasCastle oldName wall)
-  where countResidents :: Int -> [House] -> Int
-        countResidents totalCount [] = totalCount
-        countResidents totalCount (NoOfResidents n:xs) = countResidents (totalCount + n) xs
 
 
 {-
