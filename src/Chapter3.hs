@@ -561,7 +561,7 @@ newtype House =  House Word deriving (Eq, Show)
 
 data Establishment = Church | Library deriving Show
 
-data Castle = NoCastle | Castle String | CastleWithWalls String Int deriving Show
+data Castle = NoCastle | Castle String | CastleWithWalls String Int deriving (Eq, Show)
 
 data City = City{
   establishment :: Establishment
@@ -577,6 +577,12 @@ cebu = City{
 , castle = NoCastle
 }
 
+manila :: City
+manila = City{
+  establishment = Church
+, houses = [House 1, House 2]
+, castle = Castle "man"
+}
 
 mkHouse :: Word -> Maybe House
 mkHouse noOfPeople
@@ -590,60 +596,22 @@ buildHouse city noOfPeople
     where makeHouse = mkHouse noOfPeople
           cityHouses = houses city
 
+buildCastle :: City -> String -> City
+buildCastle city name =  city{castle = Castle name}
 
--- data House = NoOfResidents Int deriving (Show)
+totalNoOfPeople :: [House] -> Word
+totalNoOfPeople = foldr (\(House x) acc ->x + acc) 0
 
--- data Organization = Church | Library deriving (Show)
-
--- data City = City
---     {
---       house :: [House]
---     , organization :: Organization
---     , hasCastle :: Bool
---     , castleName :: String
---     , wall :: Int
---     }  deriving (Show)
-
--- cebu :: City
--- cebu = City
---     {
---       house = [NoOfResidents 1, NoOfResidents 3, NoOfResidents 3, NoOfResidents 3]
---     , organization = Church
---     , hasCastle = True
---     , castleName = "Citadel"
---     , wall = 4
---     }
-
--- manila :: City
--- manila = City
---     {
---       house = [NoOfResidents 2, NoOfResidents 3]
---     , organization = Library
---     , hasCastle = False
---     , castleName = ""
---     , wall = 0
---     }
-
-
--- buildCastle :: City -> String -> City
--- buildCastle (City house org hasCastle oldName wall) name = (City house org addHasCastle name wall)
---   where addHasCastle :: Bool
---         addHasCastle = if hasCastle == False  then not hasCastle else hasCastle
-
--- buildHouse :: City -> Int -> City
--- buildHouse (City house org hasCastle oldName wall) noOfResidents = (City (newHouse:house) org hasCastle oldName wall)
---   where newHouse :: House
---         newHouse = NoOfResidents noOfResidents
-
--- buildWalls :: City -> Int -> City
--- -- buildWalls (City house org hasCastle oldName wall) noOfWalls = if hasCastle == True && (countResidents 0 house) >= 10 then (City house org hasCastle oldName (wall + noOfWalls)) else (City house org hasCastle oldName wall)
--- --   where countResidents :: Int -> [House] -> Int
--- --         countResidents totalCount [] = totalCount
--- --         countResidents totalCount (NoOfResidents n:xs) = countResidents (totalCount + n) xs
--- buildWalls (City house org hasCastle oldName wall) noOfWalls = if hasCastle == True then (City house org hasCastle oldName (wall + noOfWalls)) else (City house org hasCastle oldName wall)
---   where countResidents :: Int -> [House] -> Int
---         countResidents totalCount [] = totalCount
---         countResidents totalCount (NoOfResidents n:xs) = countResidents (totalCount + n) xs
+buildWalls :: City -> Int -> City
+buildWalls city noOfWalls
+  | totalNoOfPeople (houses city) >= 10 = city{castle = CastleWithWalls getCastleName noOfWalls}
+  | castle city == NoCastle = city
+  | otherwise = city
+    where getCastleName =
+            case  castle city of
+              CastleWithWalls name _walls-> name
+              Castle name -> name
+              _ -> ""
 
 
 {-
