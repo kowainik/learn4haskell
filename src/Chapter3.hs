@@ -1153,6 +1153,28 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
+data WeekDay = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday deriving (Eq, Ord, Show)
+
+isWeekend :: WeekDay -> Bool
+isWeekend day = day == Saturday || day == Sunday
+
+nextDay :: WeekDay -> WeekDay
+nextDay day =
+  case day of
+    Monday -> Tuesday
+    Tuesday -> Wednesday
+    Wednesday -> Thursday
+    Thursday -> Friday
+    Friday -> Saturday
+    Saturday -> Sunday
+    Sunday -> Monday
+
+daysToParty :: WeekDay -> Int
+daysToParty day =  getFriday day 0
+  where getFriday :: WeekDay -> Int -> Int
+        getFriday Friday count = count
+        getFriday day' count = getFriday (nextDay day') count + 1
+
 {-
 =💣= Task 9*
 
