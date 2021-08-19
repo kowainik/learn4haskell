@@ -1237,6 +1237,26 @@ data MonsterFighter = MonsterFighter {
 , mActions :: [MonsterActions]
 }  deriving Show
 
+data Fighters = Duel KnightFighter KnightFighter | Raid MonsterFighter MonsterFighter | Fight MonsterFighter KnightFighter deriving Show
+
+class Actions a where
+  addAction :: a -> [a] -> [a]
+  getAction :: [a] -> Int -> a
+
+instance Actions KnightActions where
+  addAction :: KnightActions -> [KnightActions] -> [KnightActions]
+  addAction action actions = action : actions
+
+  getAction :: [KnightActions] -> Int -> KnightActions
+  getAction actions ind = actions !! ind
+
+instance Actions MonsterActions where
+  addAction ::MonsterActions -> [MonsterActions] -> [MonsterActions]
+  addAction action actions = action : actions
+
+  getAction :: [MonsterActions] -> Int -> MonsterActions
+  getAction actions ind = actions !! ind
+
 k1 :: KnightFighter
 k1 = KnightFighter (Health 100) (Attack 20) (Defense 10) [KnightAttack, DrinkHpPotion 20, CastDefenseUp 5 ]
 
@@ -1244,29 +1264,14 @@ k2 :: KnightFighter
 k2 = KnightFighter (Health 69) (Attack 20) (Defense 10) [KnightAttack]
 
 m1 :: MonsterFighter
-m1 = MonsterFighter (Health 200) (Attack 10) [MonsterAttack]
+m1 = MonsterFighter (Health 200) (Attack 10) []
 
-class Actions a where
-  addAction :: a -> b -> a
+class Battle a where
+  battle :: a -> a
 
-
--- instance Actions KnightFighter where
---   addAction ::KnightFighter -> KnightActions -> KnightFighter
---   addAction knight action = KnightFighter {kActions = action:knightActions}
---     where knightActions = kActions knight
-
--- class Fight a where
---   fightToDeath :: a -> a -> a
-
--- instance Fight KnightFighter where
---   fightToDeath :: KnightFighter -> KnightFighter -> KnightFighter
---   fightToDeath  f1 f2 = f2
-
--- instance Fight MonsterFighter where
---   fightToDeath :: (Fight a) => a -> b -> (a, b)
---   fightToDeath f1 f2 = fightToDeath f1 f2
-
-
+instance Battle Fighters where
+  battle :: Fighters -> Fighters
+  battle f = f
 
 
 
