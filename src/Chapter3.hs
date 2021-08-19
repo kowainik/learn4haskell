@@ -712,7 +712,9 @@ data Player = Player
     } deriving (Show)
 
 
+player1' :: Player
 player1' = Player (Health 10) (Armor 10) (Attack 10) (Dexterity 10) (Strength 10)
+player2' :: Player
 player2' = Player (Health 20) (Armor 20) (Attack 200) (Dexterity 20) (Strength 20)
 
 calculatePlayerDamage :: Attack -> Strength -> Damage
@@ -915,9 +917,9 @@ treasureChests :: [TreasureChest [Char]]
 treasureChests = [TreasureChest 20 "ring", TreasureChest 20 "boots"]
 
 wyvLair :: Lair [Char] [Char]
-wyvLair = Lair{dragon = redDragon, treasures= Just treasureChests}
+wyvLair = Lair{dragon = redDragon, treasures = Just treasureChests}
 emptyLair :: Lair [Char] x
-emptyLair = Lair {dragon= redDragon, treasures = Nothing}
+emptyLair = Lair {dragon = redDragon, treasures = Nothing}
 
 {-
 =🛡= Typeclasses
@@ -1086,6 +1088,12 @@ instance Append [a] where
   append :: [a] -> [a] -> [a]
   append xs xs' = xs ++ xs'
 
+instance (Append a) => Append (Maybe a) where
+  append :: Maybe  a -> Maybe a -> Maybe a
+  append (Just x) (Just y) = Just $ append x y
+  append Nothing _ = Nothing
+  append _ Nothing = Nothing
+
 
 addGold :: Gold -> Gold-> Gold
 addGold = append
@@ -1093,6 +1101,9 @@ addGold = append
 appendList :: [a] -> [a] -> [a]
 appendList = append
 
+
+appendMaybe :: (Append a) => Maybe a -> Maybe a -> Maybe a
+appendMaybe   = append
 {-
 =🛡= Standard Typeclasses and Deriving
 
@@ -1209,6 +1220,54 @@ properties using typeclasses, but they are different data types in the end.
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
+data KnightActions = KnightAttack | DrinkHpPotion Int | CastDefenseUp Int deriving Show
+
+data MonsterActions = MonsterAttack | RunAway deriving Show
+
+data KnightFighter = KnightFighter {
+  kHealth :: Health
+, kAttack :: Attack
+, kDefense :: Defense
+, kActions :: [KnightActions]
+} deriving Show
+
+data MonsterFighter = MonsterFighter {
+  mHealth :: Health
+, mAttack :: Attack
+, mActions :: [MonsterActions]
+}  deriving Show
+
+k1 :: KnightFighter
+k1 = KnightFighter (Health 100) (Attack 20) (Defense 10) [KnightAttack, DrinkHpPotion 20, CastDefenseUp 5 ]
+
+k2 :: KnightFighter
+k2 = KnightFighter (Health 69) (Attack 20) (Defense 10) [KnightAttack]
+
+m1 :: MonsterFighter
+m1 = MonsterFighter (Health 200) (Attack 10) [MonsterAttack]
+
+class Actions a where
+  addAction :: a -> b -> a
+
+
+-- instance Actions KnightFighter where
+--   addAction ::KnightFighter -> KnightActions -> KnightFighter
+--   addAction knight action = KnightFighter {kActions = action:knightActions}
+--     where knightActions = kActions knight
+
+-- class Fight a where
+--   fightToDeath :: a -> a -> a
+
+-- instance Fight KnightFighter where
+--   fightToDeath :: KnightFighter -> KnightFighter -> KnightFighter
+--   fightToDeath  f1 f2 = f2
+
+-- instance Fight MonsterFighter where
+--   fightToDeath :: (Fight a) => a -> b -> (a, b)
+--   fightToDeath f1 f2 = fightToDeath f1 f2
+
+
+
 
 
 {-
