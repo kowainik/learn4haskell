@@ -409,7 +409,7 @@ data Monster = Monster
 arthur :: Knight
 arthur = Knight
       {
-        knightHealth = 300
+        knightHealth = 400
       , knightAttack = 12
       , knightGold = 50
       }
@@ -417,16 +417,14 @@ arthur = Knight
 goblin :: Monster
 goblin = Monster
       {
-        monsterHealth = 400
+        monsterHealth = 410
       , monsterAttack = 12
       , monsterGold = 30
       }
 
 
 fight :: Knight -> Monster -> Int
-fight (Knight kHp kAttk kGold) (Monster mHp mAttk mGold)
-  | kHp > 0 && mHp > 0 = go 1 kHp mHp
-  | otherwise = 0
+fight (Knight kHp kAttk kGold) (Monster mHp mAttk mGold) = go 1 kHp mHp
     where go :: Int -> Int -> Int -> Int
           go rounds kHp2  mHp2
             | odd rounds && kHp2 > 0 = go (rounds + 1)  kHp2  (mHp2-kAttk)
@@ -701,7 +699,7 @@ newtype Armor = Armor Int  deriving (Show)
 newtype Dexterity = Dexterity Int  deriving (Show)
 newtype Damage = Damage Int  deriving (Show)
 newtype Defense = Defense Int  deriving (Show)
-newtype Health = Health Int  deriving (Show)
+newtype Health = Health Int  deriving (Ord,Eq,Show)
 
 data Player = Player
     { playerHealth    :: Health
@@ -1235,9 +1233,9 @@ data MonsterFighter = MonsterFighter {
   mHealth :: Health
 , mAttack :: Attack
 , mActions :: [MonsterActions]
-}  deriving Show
+}  deriving  Show
 
-data Fighters = Duel KnightFighter KnightFighter | Raid MonsterFighter MonsterFighter | Fight MonsterFighter KnightFighter deriving Show
+data Fighters =  KnightF KnightFighter | MonsterF MonsterFighter deriving Show
 
 class Actions a where
   addAction :: a -> [a] -> [a]
@@ -1257,22 +1255,47 @@ instance Actions MonsterActions where
   getAction :: [MonsterActions] -> Int -> MonsterActions
   getAction actions ind = actions !! ind
 
-k1 :: KnightFighter
-k1 = KnightFighter (Health 100) (Attack 20) (Defense 10) [KnightAttack, DrinkHpPotion 20, CastDefenseUp 5 ]
+-- k1 :: Fighters
+-- k1 = KnightFighter (Health 100) (Attack 20) (Defense 10) [KnightAttack, DrinkHpPotion 20, CastDefenseUp 5 ]
 
-k2 :: KnightFighter
-k2 = KnightFighter (Health 69) (Attack 20) (Defense 10) [KnightAttack]
+-- k2 :: Fighters
+-- k2 = KnightFighter (Health 69) (Attack 20) (Defense 10) [KnightAttack]
 
-m1 :: MonsterFighter
-m1 = MonsterFighter (Health 200) (Attack 10) []
+-- m1 :: Fighters
+-- m1 = MonsterFighter (Health 200) (Attack 10) []
+
+
+attack :: Attack -> Defense -> Health
+attack (Attack atk) (Defense def) = Health $ atk - def
+
 
 class Battle a where
-  battle :: a -> a
+  battle :: a -> a -> Fighters
+  -- attack :: a -> b -> Health
 
-instance Battle Fighters where
-  battle :: Fighters -> Fighters
-  battle f = f
 
+-- instance Battle KnightFighter where
+--   battle :: KnightFighter -> KnightFighter -> Fighters
+--   battle knight1@(KnightFighter hp1 attk1 def1 actions1) knight2@(KnightFighter hp2 attk2 def2 actions2) = turnBattle 1 knight1 knight2
+--     where turnBattle :: Int -> KnightFighter -> KnightFighter -> Fighters
+--           turnBattle rounds knight1' knight2'
+--             | odd rounds && kHealth knight1 > 0 = turnBattle (rounds + 1) knight1 (knight2{kHealth = attack attk1 def2})
+--             | even rounds && kHealth knight2 > 0 =
+-- -- instance Battle Fighters where
+-- --   battle :: Fighters -> Fighters -> Fighters
+-- --   battle (KnightF knight) (MonsterF monster) = go 1 kHp mHp
+-- --     where go :: Int -> Int -> Int -> Int
+-- --           go rounds kHp2  mHp2
+-- --             | odd rounds && kHp2 > 0 = go (rounds + 1)  kHp2  (mHp2-kAttk)
+-- --             | even rounds && mHp2 > 0 = go (rounds + 1)  (kHp2-mAttk)  mHp2
+-- --             | kHp2 <= 0 && mHp2 > 0 = -1
+-- --             | mHp2 <= 0 && kHp2 > 0 = kGold + mGold
+-- --             | otherwise = 0
+
+
+
+-- fightToDeath :: (Battle a) => a -> a -> Fighters
+-- fightToDeath = battle
 
 
 {-
