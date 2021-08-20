@@ -350,7 +350,7 @@ data Book = Book
     , bookAuthor :: String
     , bookPrice :: Int
     , bookYear :: String
-    } deriving (Show)
+    } deriving Show
 
 
 lotr :: Book
@@ -397,14 +397,14 @@ data Knight = Knight
       knightHealth :: Int
     , knightAttack :: Int
     , knightGold :: Int
-    } deriving (Show)
+    } deriving Show
 
 data Monster = Monster
     {
       monsterHealth :: Int
     , monsterAttack :: Int
     , monsterGold :: Int
-    } deriving (Show)
+    } deriving Show
 
 arthur :: Knight
 arthur = Knight
@@ -427,8 +427,8 @@ fight :: Knight -> Monster -> Int
 fight (Knight kHp kAttk kGold) (Monster mHp mAttk mGold) = go 1 kHp mHp
     where go :: Int -> Int -> Int -> Int
           go rounds kHp2  mHp2
-            | odd rounds && kHp2 > 0 = go (rounds + 1)  kHp2  (mHp2-kAttk)
-            | even rounds && mHp2 > 0 = go (rounds + 1)  (kHp2-mAttk)  mHp2
+            | odd rounds && kHp2 > 0 = go (rounds + 1)  kHp2  (mHp2 - kAttk)
+            | even rounds && mHp2 > 0 = go (rounds + 1)  (kHp2 - mAttk)  mHp2
             | kHp2 <= 0 && mHp2 > 0 = -1
             | mHp2 <= 0 && kHp2 > 0 = kGold + mGold
             | otherwise = 0
@@ -571,14 +571,14 @@ data City = City{
 cebu :: City
 cebu = City{
   establishment = Church
-, houses = [House 1, House 2]
+, houses = [House 1, House 2,House 4,House 4]
 , castle = NoCastle
 }
 
 manila :: City
 manila = City{
   establishment = Church
-, houses = [House 1, House 2]
+, houses = [House 1, House 2, House 4,House 4]
 , castle = Castle "man"
 }
 
@@ -598,12 +598,11 @@ buildCastle :: City -> String -> City
 buildCastle city name =  city{castle = Castle name}
 
 totalNoOfPeople :: [House] -> Word
-totalNoOfPeople = foldr (\(House x) acc ->x + acc) 0
+totalNoOfPeople = foldr (\(House x) acc -> x + acc) 0
 
 buildWalls :: City -> Int -> City
 buildWalls city noOfWalls
-  | totalNoOfPeople (houses city) >= 10 = city{castle = CastleWithWalls getCastleName noOfWalls}
-  | castle city == NoCastle = city
+  | castle city /= NoCastle && totalNoOfPeople (houses city) >= 10 = city{castle = CastleWithWalls getCastleName noOfWalls}
   | otherwise = city
     where getCastleName =
             case  castle city of
@@ -693,13 +692,13 @@ introducing extra newtypes.
     implementation of the "hitPlayer" function at all!
 -}
 
-newtype Attack = Attack Int  deriving (Show)
-newtype Strength = Strength Int  deriving (Show)
-newtype Armor = Armor Int  deriving (Show)
-newtype Dexterity = Dexterity Int  deriving (Show)
-newtype Damage = Damage Int  deriving (Show)
-newtype Defense = Defense Int  deriving (Show)
-newtype Health = Health Int  deriving (Ord,Eq,Show)
+newtype Attack = Attack Int  deriving Show
+newtype Strength = Strength Int  deriving Show
+newtype Armor = Armor Int  deriving Show
+newtype Dexterity = Dexterity Int  deriving Show
+newtype Damage = Damage Int  deriving Show
+newtype Defense = Defense Int  deriving Show
+newtype Health = Health Int  deriving (Ord, Eq, Show)
 
 data Player = Player
     { playerHealth    :: Health
@@ -1162,27 +1161,41 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
-data WeekDay = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday deriving (Eq, Ord, Show)
+-- data WeekDay = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday deriving (Eq, Ord, Show)
+-- Alternate data type for weekday
+data WeekDay = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday deriving (Eq, Ord, Enum, Show)
 
 isWeekend :: WeekDay -> Bool
 isWeekend day = day == Saturday || day == Sunday
 
+-- nextDay :: WeekDay -> WeekDay
+-- nextDay day =
+--   case day of
+--     Monday -> Tuesday
+--     Tuesday -> Wednesday
+--     Wednesday -> Thursday
+--     Thursday -> Friday
+--     Friday -> Saturday
+--     Saturday -> Sunday
+--     Sunday -> Monday
+
+-- daysToParty :: WeekDay -> Int
+-- daysToParty day =  getFriday day 0
+--   where getFriday :: WeekDay -> Int -> Int
+--         getFriday Friday count = count
+--         getFriday day' count = getFriday (nextDay day') count + 1
+
+-- Alternate solutions for next day and daysToParty
+
 nextDay :: WeekDay -> WeekDay
-nextDay day =
-  case day of
-    Monday -> Tuesday
-    Tuesday -> Wednesday
-    Wednesday -> Thursday
-    Thursday -> Friday
-    Friday -> Saturday
-    Saturday -> Sunday
-    Sunday -> Monday
+nextDay Sunday = Monday
+nextDay day = succ day
 
 daysToParty :: WeekDay -> Int
-daysToParty day =  getFriday day 0
-  where getFriday :: WeekDay -> Int -> Int
-        getFriday Friday count = count
-        getFriday day' count = getFriday (nextDay day') count + 1
+daysToParty day
+  | fromEnum day > fridayNum = (fromEnum Sunday - fromEnum day) + 5
+  | otherwise =  fridayNum - fromEnum day
+    where fridayNum = fromEnum Friday
 
 {-
 =💣= Task 9*
