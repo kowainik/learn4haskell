@@ -1283,7 +1283,7 @@ data Fighter = Fighter {
 , actions :: [Actions]
 } deriving Show
 
-data FighterKind = KnightFighter Fighter | MonsterFighter Fighter | None deriving Show
+data FighterKind = KnightFighter Fighter | MonsterFighter Fighter deriving Show
 
 
 k1 :: FighterKind
@@ -1296,21 +1296,20 @@ m1 :: FighterKind
 m1 = MonsterFighter (Fighter (Health 200) (Attack 10) Nothing [])
 
 class Battle a where
-  battle :: a -> a -> FighterKind
-  getHp :: a -> Health
+  battle :: a -> a -> Maybe FighterKind
   getFighter :: a -> Fighter
 
 
 instance Battle FighterKind where
-  battle :: FighterKind -> FighterKind -> FighterKind
+  battle :: FighterKind -> FighterKind -> Maybe FighterKind
   battle f1 f2 = turnBattle 1 (getFighter f1) (getFighter f2)
-    where turnBattle :: Int -> Fighter -> Fighter -> FighterKind
+    where turnBattle :: Int -> Fighter -> Fighter -> Maybe FighterKind
           turnBattle rounds f1' f2'
             | odd rounds && health f1' > Health 0 = turnBattle (rounds + 1) f1' (f2' {health = calculateHit (health f2') (attack f1') (getDef f2')})
             | even rounds && health f2' > Health 0 = turnBattle (rounds + 1) (f1' {health = calculateHit (health f1') (attack f2') (getDef f1')})  f2'
-            | health f1' <= Health 0 && health f2' > Health 0 = f1
-            | health f2' <= Health 0 && health f1' > Health 0 = f2
-            | otherwise = None
+            | health f1' <= Health 0 && health f2' > Health 0 = Just f2
+            | health f2' <= Health 0 && health f1' > Health 0 = Just f1
+            | otherwise = Nothing
 
           getDef :: Fighter -> Int
           getDef f =
@@ -1320,13 +1319,6 @@ instance Battle FighterKind where
 
           calculateHit :: Health -> Attack -> Int -> Health
           calculateHit (Health hp) (Attack attk) def = if def > attk then Health hp else  Health $ (hp-) $ attk - def
-
-
-
-
-
-  getHp (KnightFighter f) = health f
-  getHp (MonsterFighter f) = health f
 
 
   getFighter :: FighterKind -> Fighter
