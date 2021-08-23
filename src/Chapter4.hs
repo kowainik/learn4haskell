@@ -260,6 +260,8 @@ name.
 > QUESTION: Can you understand why the following implementation of the
   Functor instance for Maybe doesn't compile?
 
+  Answer: Because x is bounded to a. fmap should return of type b
+
 @
 instance Functor Maybe where
     fmap :: (a -> b) -> Maybe a -> Maybe b
@@ -293,7 +295,8 @@ values and apply them to the type level?
 -}
 instance Functor (Secret e) where
     fmap :: (a -> b) -> Secret e a -> Secret e b
-    fmap = error "fmap for Box: not implemented!"
+    fmap _ (Trap e) = Trap e
+    fmap f (Reward a) = Reward (f a)
 
 {- |
 =⚔️= Task 3
