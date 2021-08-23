@@ -1311,7 +1311,8 @@ instance Battle FighterKind where
   -- getAction f ind =  if ind == 0 then (actions . getFighter) f  !! 0 else
   --   where actions' = (actions . getFighter) f
 
-
+  -- TODO: Battle is already good without actions. Have to Fix bug that involves getting the actions tho :c
+  --  So if you wanna test battle without actions, just remove the getActions from the conditions below
   battle :: FighterKind -> FighterKind -> Maybe Fighter
   battle f1 f2 = turnBattle 1 (getDefAndHp f1') (getDefAndHp f2')
     where f1' = getFighter f1
