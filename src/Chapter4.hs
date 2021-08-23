@@ -308,7 +308,13 @@ typeclasses for standard data types.
 -}
 data List a
     = Empty
-    | Cons a (List a)
+    | Cons a (List a) deriving Show
+
+instance Functor List where
+  fmap :: (a -> b) -> List a -> List b
+  fmap f Empty = Empty
+  fmap f (Cons a a') = Cons (f a) (fmap f a')
+
 
 {- |
 =🛡= Applicative
