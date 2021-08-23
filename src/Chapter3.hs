@@ -1285,37 +1285,49 @@ data Fighter = Fighter {
 data FighterKind = KnightFighter Fighter | MonsterFighter Fighter deriving Show
 
 k1 :: FighterKind
-k1 = KnightFighter (Fighter (Health 10) (Attack 20) (Just (Defense 10)) [Hit,  CastDefenseUp 5, Hit])
+k1 = KnightFighter (Fighter (Health 120) (Attack 20) (Just (Defense 10)) [Hit,CastDefenseUp 5, DrinkHpPotion 20])
 
 k2 :: FighterKind
-k2 = KnightFighter (Fighter (Health 69) (Attack 20) (Just (Defense 10)) [Hit])
+k2 = KnightFighter (Fighter (Health 69) (Attack 20) (Just (Defense 10)) [Hit, CastDefenseUp 5, DrinkHpPotion 20])
 
 m1 :: FighterKind
-m1 = MonsterFighter (Fighter (Health 120) (Attack 515) Nothing [Hit])
+m1 = MonsterFighter (Fighter (Health 120) (Attack 20) Nothing [Hit])
 
 class Battle a where
   getAction :: a -> Int -> Action
-  battle :: a -> a -> Maybe FighterKind
+  battle :: a -> a -> Maybe Fighter
   getFighter :: a -> Fighter
 
 
 instance Battle FighterKind where
   getAction :: FighterKind -> Int -> Action
   getAction f ind = let actions' = (actions . getFighter) f
-                  in actions' !! rem (ind-1) (length actions')
+                        ind' = div (ind - 1) 2
+                    in actions' !! rem ind' (length actions')
 
-  battle :: FighterKind -> FighterKind -> Maybe FighterKind
-  battle f1 f2 = turnBattle 1 (getFighter f1) (getFighter f2)
-    where turnBattle :: Int -> Fighter -> Fighter -> Maybe FighterKind
-          turnBattle rounds f1' f2'
-            | odd rounds && health f1' > Health 0 && getAction f1 rounds == Hit = turnBattle (rounds + 1) f1' (f2' {health = calculateHit (health f2') (attack f1') (getDef f2')})
-            | even rounds && health f2' > Health 0 && getAction f2 rounds == Hit = turnBattle (rounds + 1) (f1' {health = calculateHit (health f1') (attack f2') (getDef f1')})  f2'
-            | health f1' <= Health 0 && health f2' > Health 0 = Just f2
-            | health f2' <= Health 0 && health f1' > Health 0 = Just f1
-            | odd rounds && getAction f1 rounds == CastDefenseUp 5 = turnBattle (rounds + 1) (f1' {defense = Just (Defense (getDef f1' + 5))}) f2'
-            | even rounds && getAction f2 rounds == CastDefenseUp 5  = turnBattle (rounds + 1) f1' (f2' {defense = Just (Defense (getDef f2' + 5))})
-            | getAction f1 rounds == RunAway = Just f2
-            | getAction f2 rounds == RunAway = Just f1
+
+  -- getAction f ind = let actions' = (actions . getFighter) f
+  --                 in  if ind == 0 then head actions' else actions' !! rem (ind-1) (length actions')
+  -- getAction f ind =  if ind == 0 then (actions . getFighter) f  !! 0 else
+  --   where actions' = (actions . getFighter) f
+
+
+  battle :: FighterKind -> FighterKind -> Maybe Fighter
+  battle f1 f2 = turnBattle 1 (getDefAndHp f1') (getDefAndHp f2')
+    where f1' = getFighter f1
+          f2'  = getFighter f2
+          turnBattle :: Int -> (Health,Int) -> (Health,Int) -> Maybe Fighter
+          turnBattle rounds  (Health hp1, def1) (Health hp2, def2)
+            | odd rounds && hp1 > 0 && getAction f1 rounds == Hit = turnBattle (rounds + 1) (Health hp1, def1) (calculateHit (health f2') (attack f1') def2)
+            | even rounds && hp2 > 0 && getAction f2 rounds == Hit = turnBattle (rounds + 1) (calculateHit (Health hp1) (attack f2') def1)  (Health hp2,def2)
+            | hp1 <= 0 && hp2 > 0 = Just f2' {health = Health hp2}
+            | hp2 <= 0 && hp1 > 0 = Just f1' {health = Health hp1}
+            | odd rounds && getAction f1 rounds == DrinkHpPotion 20 = turnBattle (rounds + 1) (Health (hp1 + 20), def1) (Health hp2, def2)
+            | even rounds && getAction f2 rounds == DrinkHpPotion 20  = turnBattle (rounds + 1) (Health hp1, def1) (Health (hp2 + 20), def2)
+            | odd rounds && getAction f1 rounds == CastDefenseUp 5 = turnBattle (rounds + 1) (Health hp1, def1 + 5) (Health hp2, def2)
+            | even rounds && getAction f2 rounds == CastDefenseUp 5  = turnBattle (rounds + 1) (Health hp1, def1) (Health hp2, def2 + 5)
+            | getAction f1 rounds == RunAway = Just f2'
+            | getAction f2 rounds == RunAway = Just f1'
             | otherwise = Nothing
 
           getDef :: Fighter -> Int
@@ -1324,9 +1336,15 @@ instance Battle FighterKind where
               Just (Defense def) -> def
               Nothing -> 0
 
-          calculateHit :: Health -> Attack -> Int -> Health
-          calculateHit (Health hp) (Attack attk) def = if def > attk then Health hp else  Health $ (hp-) $ attk - def
+          getDefAndHp :: Fighter -> (Health,Int)
+          getDefAndHp f = (health f, getDef f)
 
+          calculateHit :: Health -> Attack -> Int -> (Health, Int)
+          calculateHit (Health hp) (Attack attk) def = if def > attk then (Health hp, def) else  (Health $ (hp-) $ attk - def, def)
+
+
+--  | odd rounds && getAction f1 rounds == CastDefenseUp 5 = turnBattle (rounds + 1) (f1' {defense = Just (Defense (getDef f1' + 5))}) (Health hp2)
+--             | even rounds && getAction f2 rounds == CastDefenseUp 5  = turnBattle (rounds + 1) (Health hp1) (f2' {defense = Just (Defense (getDef f2' + 5))})
 
   getFighter :: FighterKind -> Fighter
   getFighter (KnightFighter f) = f
@@ -1336,7 +1354,8 @@ instance Battle FighterKind where
 calculateHit2 :: Health -> Attack -> Int -> Health
 calculateHit2 (Health hp) (Attack attk) def = if def > attk then Health hp else  Health $ (hp-) $ attk - def
 
-
+test :: FighterKind -> Fighter
+test (KnightFighter f) = f {health = Health 0}
 
 {-
 You did it! Now it is time to open pull request with your changes
