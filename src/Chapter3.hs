@@ -1164,7 +1164,7 @@ implement the following functions:
 
 -- data WeekDay = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday deriving (Eq, Ord, Show)
 -- Alternate data type for weekday
-data WeekDay = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday deriving (Eq, Enum, Show)
+data WeekDay = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday deriving (Bounded, Eq, Enum, Show)
 
 isWeekend :: WeekDay -> Bool
 isWeekend day = day == Saturday || day == Sunday
@@ -1189,8 +1189,9 @@ isWeekend day = day == Saturday || day == Sunday
 -- Alternate solutions for next day and daysToParty
 
 nextDay :: WeekDay -> WeekDay
-nextDay Sunday = Monday
-nextDay day = succ day
+nextDay day
+  | day == maxBound = minBound
+  | otherwise = succ day
 
 daysToParty :: WeekDay -> Int
 daysToParty day
@@ -1313,7 +1314,7 @@ instance Battle FighterKind where
             | health f2' <= Health 0 && health f1' > Health 0 = Just f1
             | odd rounds && getAction f1 rounds == CastDefenseUp 5 = turnBattle (rounds + 1) (f1' {defense = Just (Defense (getDef f1' + 5))}) f2'
             | even rounds && getAction f2 rounds == CastDefenseUp 5  = turnBattle (rounds + 1) f1' (f2' {defense = Just (Defense (getDef f2' + 5))})
-            |  getAction f1 rounds == RunAway = Just f2
+            | getAction f1 rounds == RunAway = Just f2
             | getAction f2 rounds == RunAway = Just f1
             | otherwise = Nothing
 
