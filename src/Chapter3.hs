@@ -588,10 +588,11 @@ mkHouse noOfPeople
   | otherwise = Nothing
 
 buildHouse :: City -> Word ->  City
-buildHouse city noOfPeople
-  | isJust makeHouse = city{houses = fromJust makeHouse:cityHouses}
-  | otherwise = city
-    where makeHouse = mkHouse noOfPeople
+buildHouse city noOfPeople =
+  case house of
+    Just h -> city{houses = h:cityHouses}
+    Nothing  -> city
+    where house = mkHouse noOfPeople
           cityHouses = houses city
 
 buildCastle :: City -> String -> City
@@ -1163,7 +1164,7 @@ implement the following functions:
 
 -- data WeekDay = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday deriving (Eq, Ord, Show)
 -- Alternate data type for weekday
-data WeekDay = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday deriving (Eq, Ord, Enum, Show)
+data WeekDay = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday deriving (Eq, Enum, Show)
 
 isWeekend :: WeekDay -> Bool
 isWeekend day = day == Saturday || day == Sunday
@@ -1231,60 +1232,107 @@ properties using typeclasses, but they are different data types in the end.
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
-data KnightActions = KnightAttack | DrinkHpPotion Int | CastDefenseUp Int deriving Show
 
-data MonsterActions = MonsterAttack | RunAway deriving Show
+-- data KnightActions = KnightAttack | DrinkHpPotion Int | CastDefenseUp Int deriving Show
 
-data KnightFighter = KnightFighter {
-  kHealth :: Health
-, kAttack :: Attack
-, kDefense :: Defense
-, kActions :: [KnightActions]
+-- data MonsterActions = MonsterAttack | RunAway deriving Show
+
+
+-- I comment these out to make a generic fighter data type
+-- data KnightFighter = KnightFighter {
+--   kHealth :: Health
+-- , kAttack :: Attack
+-- , kDefense :: Defense
+-- , kActions :: [KnightActions]
+-- } deriving Show
+
+-- data MonsterFighter = MonsterFighter {
+--   mHealth :: Health
+-- , mAttack :: Attack
+-- , mActions :: [MonsterActions]
+-- }  deriving  Show
+
+-- data Fighters =  KnightF KnightFighter | MonsterF MonsterFighter deriving Show
+
+
+
+-- class Actions a where
+--   addAction :: a -> [a] -> [a]
+--   getAction :: [a] -> Int -> a
+
+-- instance Actions KnightActions where
+--   addAction :: KnightActions -> [KnightActions] -> [KnightActions]
+--   addAction action actions = action : actions
+
+--   getAction :: [KnightActions] -> Int -> KnightActions
+--   getAction actions ind = actions !! ind
+
+-- instance Actions MonsterActions where
+--   addAction ::MonsterActions -> [MonsterActions] -> [MonsterActions]
+--   addAction action actions = action : actions
+
+--   getAction :: [MonsterActions] -> Int -> MonsterActions
+--   getAction actions ind = actions !! ind
+
+data Actions = Hit | DrinkHpPotion Int | CastDefenseUp Int | RunAway deriving Show
+
+data Fighter = Fighter {
+  health :: Health
+, attack :: Attack
+, defense :: Maybe Defense
+, actions :: [Actions]
 } deriving Show
 
-data MonsterFighter = MonsterFighter {
-  mHealth :: Health
-, mAttack :: Attack
-, mActions :: [MonsterActions]
-}  deriving  Show
-
-data Fighters =  KnightF KnightFighter | MonsterF MonsterFighter deriving Show
-
-class Actions a where
-  addAction :: a -> [a] -> [a]
-  getAction :: [a] -> Int -> a
-
-instance Actions KnightActions where
-  addAction :: KnightActions -> [KnightActions] -> [KnightActions]
-  addAction action actions = action : actions
-
-  getAction :: [KnightActions] -> Int -> KnightActions
-  getAction actions ind = actions !! ind
-
-instance Actions MonsterActions where
-  addAction ::MonsterActions -> [MonsterActions] -> [MonsterActions]
-  addAction action actions = action : actions
-
-  getAction :: [MonsterActions] -> Int -> MonsterActions
-  getAction actions ind = actions !! ind
-
--- k1 :: Fighters
--- k1 = KnightFighter (Health 100) (Attack 20) (Defense 10) [KnightAttack, DrinkHpPotion 20, CastDefenseUp 5 ]
-
--- k2 :: Fighters
--- k2 = KnightFighter (Health 69) (Attack 20) (Defense 10) [KnightAttack]
-
--- m1 :: Fighters
--- m1 = MonsterFighter (Health 200) (Attack 10) []
+data FighterKind = KnightFighter Fighter | MonsterFighter Fighter | None deriving Show
 
 
-attack :: Attack -> Defense -> Health
-attack (Attack atk) (Defense def) = Health $ atk - def
+k1 :: FighterKind
+k1 = KnightFighter (Fighter (Health 100) (Attack 20) (Just (Defense 10)) [Hit, DrinkHpPotion 20, CastDefenseUp 5])
 
+k2 :: FighterKind
+k2 = KnightFighter (Fighter (Health 69) (Attack 20) (Just (Defense 10)) [Hit])
+
+m1 :: FighterKind
+m1 = MonsterFighter (Fighter (Health 200) (Attack 10) Nothing [])
 
 class Battle a where
-  battle :: a -> a -> Fighters
-  -- attack :: a -> b -> Health
+  battle :: a -> a -> FighterKind
+  getHp :: a -> Health
+  getFighter :: a -> Fighter
+
+
+instance Battle FighterKind where
+  battle :: FighterKind -> FighterKind -> FighterKind
+  battle f1 f2 = turnBattle 1 (getFighter f1) (getFighter f2)
+    where turnBattle :: Int -> Fighter -> Fighter -> FighterKind
+          turnBattle rounds f1' f2'
+            | odd rounds && health f1' > Health 0 = turnBattle (rounds + 1) f1' (f2' {health = calculateHit (health f2') (attack f1') (getDef f2')})
+            | even rounds && health f2' > Health 0 = turnBattle (rounds + 1) (f1' {health = calculateHit (health f1') (attack f2') (getDef f1')})  f2'
+            | health f1' <= Health 0 && health f2' > Health 0 = f1
+            | health f2' <= Health 0 && health f1' > Health 0 = f2
+            | otherwise = None
+
+          getDef :: Fighter -> Int
+          getDef f =
+            case defense f of
+              Just (Defense def) -> def
+              Nothing -> 0
+
+          calculateHit :: Health -> Attack -> Int -> Health
+          calculateHit (Health hp) (Attack attk) def = if def > attk then Health hp else  Health $ (hp-) $ attk - def
+
+
+
+
+
+  getHp (KnightFighter f) = health f
+  getHp (MonsterFighter f) = health f
+
+
+  getFighter :: FighterKind -> Fighter
+  getFighter (KnightFighter f) = f
+  getFighter (MonsterFighter f) = f
+
 
 
 -- instance Battle KnightFighter where
