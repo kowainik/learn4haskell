@@ -1233,12 +1233,12 @@ Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
 
+-- I commented these out to make a generic fighter data type
+
 -- data KnightActions = KnightAttack | DrinkHpPotion Int | CastDefenseUp Int deriving Show
 
 -- data MonsterActions = MonsterAttack | RunAway deriving Show
 
-
--- I comment these out to make a generic fighter data type
 -- data KnightFighter = KnightFighter {
 --   kHealth :: Health
 -- , kAttack :: Attack
@@ -1253,8 +1253,6 @@ contestants, and write a function that decides the outcome of a fight!
 -- }  deriving  Show
 
 -- data Fighters =  KnightF KnightFighter | MonsterF MonsterFighter deriving Show
-
-
 
 -- class Actions a where
 --   addAction :: a -> [a] -> [a]
@@ -1274,41 +1272,49 @@ contestants, and write a function that decides the outcome of a fight!
 --   getAction :: [MonsterActions] -> Int -> MonsterActions
 --   getAction actions ind = actions !! ind
 
-data Actions = Hit | DrinkHpPotion Int | CastDefenseUp Int | RunAway deriving Show
+data Action = Hit | DrinkHpPotion Int | CastDefenseUp Int | RunAway deriving (Eq, Show)
 
 data Fighter = Fighter {
   health :: Health
 , attack :: Attack
 , defense :: Maybe Defense
-, actions :: [Actions]
+, actions :: [Action]
 } deriving Show
 
 data FighterKind = KnightFighter Fighter | MonsterFighter Fighter deriving Show
 
-
 k1 :: FighterKind
-k1 = KnightFighter (Fighter (Health 100) (Attack 20) (Just (Defense 10)) [Hit, DrinkHpPotion 20, CastDefenseUp 5])
+k1 = KnightFighter (Fighter (Health 10) (Attack 20) (Just (Defense 10)) [Hit,  CastDefenseUp 5, Hit])
 
 k2 :: FighterKind
 k2 = KnightFighter (Fighter (Health 69) (Attack 20) (Just (Defense 10)) [Hit])
 
 m1 :: FighterKind
-m1 = MonsterFighter (Fighter (Health 200) (Attack 10) Nothing [])
+m1 = MonsterFighter (Fighter (Health 120) (Attack 515) Nothing [Hit])
 
 class Battle a where
+  getAction :: a -> Int -> Action
   battle :: a -> a -> Maybe FighterKind
   getFighter :: a -> Fighter
 
 
 instance Battle FighterKind where
+  getAction :: FighterKind -> Int -> Action
+  getAction f ind = let actions' = (actions . getFighter) f
+                  in actions' !! rem (ind-1) (length actions')
+
   battle :: FighterKind -> FighterKind -> Maybe FighterKind
   battle f1 f2 = turnBattle 1 (getFighter f1) (getFighter f2)
     where turnBattle :: Int -> Fighter -> Fighter -> Maybe FighterKind
           turnBattle rounds f1' f2'
-            | odd rounds && health f1' > Health 0 = turnBattle (rounds + 1) f1' (f2' {health = calculateHit (health f2') (attack f1') (getDef f2')})
-            | even rounds && health f2' > Health 0 = turnBattle (rounds + 1) (f1' {health = calculateHit (health f1') (attack f2') (getDef f1')})  f2'
+            | odd rounds && health f1' > Health 0 && getAction f1 rounds == Hit = turnBattle (rounds + 1) f1' (f2' {health = calculateHit (health f2') (attack f1') (getDef f2')})
+            | even rounds && health f2' > Health 0 && getAction f2 rounds == Hit = turnBattle (rounds + 1) (f1' {health = calculateHit (health f1') (attack f2') (getDef f1')})  f2'
             | health f1' <= Health 0 && health f2' > Health 0 = Just f2
             | health f2' <= Health 0 && health f1' > Health 0 = Just f1
+            | odd rounds && getAction f1 rounds == CastDefenseUp 5 = turnBattle (rounds + 1) (f1' {defense = Just (Defense (getDef f1' + 5))}) f2'
+            | even rounds && getAction f2 rounds == CastDefenseUp 5  = turnBattle (rounds + 1) f1' (f2' {defense = Just (Defense (getDef f2' + 5))})
+            |  getAction f1 rounds == RunAway = Just f2
+            | getAction f2 rounds == RunAway = Just f1
             | otherwise = Nothing
 
           getDef :: Fighter -> Int
@@ -1326,29 +1332,9 @@ instance Battle FighterKind where
   getFighter (MonsterFighter f) = f
 
 
+calculateHit2 :: Health -> Attack -> Int -> Health
+calculateHit2 (Health hp) (Attack attk) def = if def > attk then Health hp else  Health $ (hp-) $ attk - def
 
--- instance Battle KnightFighter where
---   battle :: KnightFighter -> KnightFighter -> Fighters
---   battle knight1@(KnightFighter hp1 attk1 def1 actions1) knight2@(KnightFighter hp2 attk2 def2 actions2) = turnBattle 1 knight1 knight2
---     where turnBattle :: Int -> KnightFighter -> KnightFighter -> Fighters
---           turnBattle rounds knight1' knight2'
---             | odd rounds && kHealth knight1 > 0 = turnBattle (rounds + 1) knight1 (knight2{kHealth = attack attk1 def2})
---             | even rounds && kHealth knight2 > 0 =
--- -- instance Battle Fighters where
--- --   battle :: Fighters -> Fighters -> Fighters
--- --   battle (KnightF knight) (MonsterF monster) = go 1 kHp mHp
--- --     where go :: Int -> Int -> Int -> Int
--- --           go rounds kHp2  mHp2
--- --             | odd rounds && kHp2 > 0 = go (rounds + 1)  kHp2  (mHp2-kAttk)
--- --             | even rounds && mHp2 > 0 = go (rounds + 1)  (kHp2-mAttk)  mHp2
--- --             | kHp2 <= 0 && mHp2 > 0 = -1
--- --             | mHp2 <= 0 && kHp2 > 0 = kGold + mGold
--- --             | otherwise = 0
-
-
-
--- fightToDeath :: (Battle a) => a -> a -> Fighters
--- fightToDeath = battle
 
 
 {-
