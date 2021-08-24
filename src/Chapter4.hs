@@ -312,7 +312,7 @@ data List a
 
 instance Functor List where
   fmap :: (a -> b) -> List a -> List b
-  fmap f Empty = Empty
+  fmap _ Empty = Empty
   fmap f (Cons a a') = Cons (f a) (fmap f a')
 
 
@@ -481,11 +481,12 @@ Implement the Applicative instance for our 'Secret' data type from before.
 -}
 instance Applicative (Secret e) where
     pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+    pure  = Reward
+
 
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
-
+    Trap e  <*> _  = Trap e
+    Reward f <*> x = fmap f x
 {- |
 =⚔️= Task 5
 
@@ -498,7 +499,9 @@ Implement the 'Applicative' instance for our 'List' type.
   type.
 -}
 
-
+instance Applicative List where
+  pure :: a -> List a
+  pure a = Cons a Empty
 {- |
 =🛡= Monad
 
