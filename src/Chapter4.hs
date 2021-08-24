@@ -503,10 +503,15 @@ instance Applicative List where
   pure :: a -> List a
   pure a = Cons a Empty
 
+  -- (<*>) :: List (a -> b) -> List a -> List b
+  -- Empty <*> _  = Empty
+  -- _ <*> Empty = Empty
+  -- (Cons f fs) <*> as'@(Cons a as) = fmap f as'
   (<*>) :: List (a -> b) -> List a -> List b
   Empty <*> _  = Empty
   _ <*> Empty = Empty
   (Cons f fs) <*> as'@(Cons a as) = fmap f as'
+    -- where getF
 
 
 getF :: List (a -> b) -> List a -> List (List b)
@@ -515,13 +520,25 @@ getF (Cons f fs) ns = Cons (fmap f ns) (getF fs ns)
 
 
 -- getF' :: List (a -> b) -> List a -> List b
--- getF' Empty n= Empty
+-- getF' Empty n = Empty
 -- getF' (Cons f fs) ns =  (fmap f ns) (getF fs ns)
+
+insertCon :: (Num a) => List a -> a -> List a
+insertCon list n1 = go list n1 (Cons n1)
+  where go :: (Num a) => List a -> a -> (List a -> List a) -> List a
+        go Empty  _n'  acc = acc Empty
+        go (Cons c c') n'  acc = Cons c (go c' n' acc)
+
+insertCons :: (Num a) => List a -> List a -> List a
+insertCons list n1 = go list n1 n1
+  where go :: (Num a) => List a -> List a -> List a -> List a
+        go Empty  _n'  acc = acc
+        go (Cons c c') n'  acc = Cons c (go c' n' acc)
 
 
 -- Cons (Cons 4 (Cons 5 Empty)) (Cons (Cons 3 (Cons 6 Empty)) Empty)
 -- getF2 :: List (List b) -> List b
--- getF2 bs = bs
+-- getF2 (Cons bs Empty) = bs
  {- |
 =🛡= Monad
 
