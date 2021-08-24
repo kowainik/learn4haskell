@@ -502,7 +502,27 @@ Implement the 'Applicative' instance for our 'List' type.
 instance Applicative List where
   pure :: a -> List a
   pure a = Cons a Empty
-{- |
+
+  (<*>) :: List (a -> b) -> List a -> List b
+  Empty <*> _  = Empty
+  _ <*> Empty = Empty
+  (Cons f fs) <*> as'@(Cons a as) = fmap f as'
+
+
+getF :: List (a -> b) -> List a -> List (List b)
+getF Empty n= Empty
+getF (Cons f fs) ns = Cons (fmap f ns) (getF fs ns)
+
+
+-- getF' :: List (a -> b) -> List a -> List b
+-- getF' Empty n= Empty
+-- getF' (Cons f fs) ns =  (fmap f ns) (getF fs ns)
+
+
+-- Cons (Cons 4 (Cons 5 Empty)) (Cons (Cons 3 (Cons 6 Empty)) Empty)
+-- getF2 :: List (List b) -> List b
+-- getF2 bs = bs
+ {- |
 =🛡= Monad
 
 Now, the Monad Dragon. We've come that far not to give up. If we
