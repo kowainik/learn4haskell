@@ -503,43 +503,25 @@ instance Applicative List where
   pure :: a -> List a
   pure a = Cons a Empty
 
-  -- (<*>) :: List (a -> b) -> List a -> List b
-  -- Empty <*> _  = Empty
-  -- _ <*> Empty = Empty
-  -- (Cons f fs) <*> as'@(Cons a as) = fmap f as'
   (<*>) :: List (a -> b) -> List a -> List b
   Empty <*> _  = Empty
   _ <*> Empty = Empty
-  (Cons f fs) <*> as'@(Cons a as) = fmap f as'
-    -- where getF
+  fs@(Cons _ _) <*> as'@(Cons _ _) = getF fs as'
+    where getF :: List (a -> b) -> List a -> List b
+          getF Empty _n = Empty
+          getF (Cons f fs') ns =  insert (getF fs' ns)
+            where insert = concatList (fmap f ns)
 
 
-getF :: List (a -> b) -> List a -> List (List b)
-getF Empty n= Empty
-getF (Cons f fs) ns = Cons (fmap f ns) (getF fs ns)
+          --  For inserting list into a list. Similar to concat
+          concatList :: List a -> List a -> List a
+          concatList list n1 = go list n1 n1
+            where go :: List a -> List a -> List a -> List a
+                  go Empty  _n'  acc = acc
+                  go (Cons c c') n'  acc = Cons c (go c' n' acc)
 
 
--- getF' :: List (a -> b) -> List a -> List b
--- getF' Empty n = Empty
--- getF' (Cons f fs) ns =  (fmap f ns) (getF fs ns)
-
-insertCon :: (Num a) => List a -> a -> List a
-insertCon list n1 = go list n1 (Cons n1)
-  where go :: (Num a) => List a -> a -> (List a -> List a) -> List a
-        go Empty  _n'  acc = acc Empty
-        go (Cons c c') n'  acc = Cons c (go c' n' acc)
-
-insertCons :: (Num a) => List a -> List a -> List a
-insertCons list n1 = go list n1 n1
-  where go :: (Num a) => List a -> List a -> List a -> List a
-        go Empty  _n'  acc = acc
-        go (Cons c c') n'  acc = Cons c (go c' n' acc)
-
-
--- Cons (Cons 4 (Cons 5 Empty)) (Cons (Cons 3 (Cons 6 Empty)) Empty)
--- getF2 :: List (List b) -> List b
--- getF2 (Cons bs Empty) = bs
- {- |
+{- |
 =🛡= Monad
 
 Now, the Monad Dragon. We've come that far not to give up. If we
