@@ -504,13 +504,9 @@ instance Applicative List where
   pure a = Cons a Empty
 
   (<*>) :: List (a -> b) -> List a -> List b
-  Empty <*> _  = Empty
+  Empty <*> _ = Empty
   _ <*> Empty = Empty
-  fs@(Cons _ _) <*> as@(Cons _ _) = getF fs as
-    where -- I called fmap to apply f to all a's and get the next f and apply again. Then, I combine the two lists.
-          getF :: List (a -> b) -> List a -> List b
-          getF Empty _ = Empty
-          getF (Cons f fs') as' =  concatList (fmap f as') (getF fs' as')
+  (Cons f fs) <*> as = concatList (fmap f as) (fs <*> as)
 
 
 -- For inserting list into a list. Similar to concat
