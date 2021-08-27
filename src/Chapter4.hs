@@ -506,19 +506,17 @@ instance Applicative List where
   (<*>) :: List (a -> b) -> List a -> List b
   Empty <*> _  = Empty
   _ <*> Empty = Empty
-  fs@(Cons _ _) <*> as'@(Cons _ _) = getF fs as'
-    where getF :: List (a -> b) -> List a -> List b
-          getF Empty _n = Empty
-          getF (Cons f fs') ns =  insert (getF fs' ns)
-            where insert = concatList (fmap f ns)
+  fs@(Cons _ _) <*> as@(Cons _ _) = getF fs as
+    where -- I called fmap to apply f to all a's and get the next f and apply again. Then, I combine the two lists.
+          getF :: List (a -> b) -> List a -> List b
+          getF Empty _ = Empty
+          getF (Cons f fs') as' =  concatList (fmap f as') (getF fs' as')
 
 
-          --  For inserting list into a list. Similar to concat
-          concatList :: List a -> List a -> List a
-          concatList list n1 = go list n1 n1
-            where go :: List a -> List a -> List a -> List a
-                  go Empty  _n'  acc = acc
-                  go (Cons c c') n'  acc = Cons c (go c' n' acc)
+-- For inserting list into a list. Similar to concat
+concatList :: List a -> List a -> List a
+concatList Empty as'= as'
+concatList (Cons a as) as' = Cons a (concatList as as')
 
 
 {- |
