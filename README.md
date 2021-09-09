@@ -1,8 +1,8 @@
 # learn4haskell
 
-![Learn4Haskell](/images/HacktoberFest2020-Learn4Haskell-Banner.png)
+! [Learn4Haskell](/images/HacktoberFest2020-Learn4Haskell-Banner.png)
 
-🚨 __Important notice: This course continues BAU even after Hacktoberfest__ 🚨
+🚨 __Important notice: This course continues at BAU even after Hacktoberfest__ 🚨
 
 You can find the results of Hacktoberfest 2020 for [Learn4Haskell](https://github.com/kowainik/learn4haskell) in the following blog post:
 
@@ -10,7 +10,7 @@ You can find the results of Hacktoberfest 2020 for [Learn4Haskell](https://githu
 
 <hr>
 
-It's the time of the year when thousand pull requests are starting to float in
+It's the time of the year when a thousand pull requests are starting to float in.
 the air like a leaf on the wind 🍃
 
 It's Hacktoberfest! And we are happy to be part of this fantastic event.
@@ -48,7 +48,7 @@ And we're here to help!
 Learn4Haskell is a GitHub-located course that will get you into the Haskell
 Functional Programming world in just 4 Pull Requests.
 
-This course is organised as a coding project. So you can complete
+This course is organized as a coding project. So you can complete
 the course without needing to exit your editor.
 
 This works in the following way. When you decide to start the project, all you
@@ -59,11 +59,11 @@ Also, each chapter contains several exercises on everything that is
 explained by us. You can solve the tasks on your way and at the end open a PR to
 your fork with this chapter's solution and summon us (by shouting out our
 nicknames there). We would be happy to give you feedback on your progress,
-explain problematic concepts or just support you mentally!
+explain problematic concepts, or just support you mentally!
 
 Each chapter contains unique information and covers different topics. We suggest
 going through them in order. However, if you think that some of the chapters
-are already familiar to you, feel free to skip onto the next one.
+are already familiar to you, feel free to skip on to the next one.
 If you would like to talk to us, you can even rely on PRs for the chapter you
 have questions about.
 
@@ -80,11 +80,9 @@ Programming.
 Here is a more concrete plan of the mystical 4 Chapters we prepared for
 you. These are the highlights of each part.
 
-* __Chapter One__ – What is Haskell, what are its particularities, basic Haskell
-  syntax, functions, types, expressions.
+* __Chapter One__ – What is Haskell, what are its particularities, basic Haskell syntax, functions, types, expressions.
 * __Chapter Two__ – FP concepts in the language, immutability, pattern matching,
-  recursion, polymorphism, laziness, Higher-ordered functions, partial
-  applications, eta-reduction.
+  recursion, polymorphism, laziness, Higher-ordered functions, partial applications, eta-reduction.
 * __Chapter Three__ – Focus on Types. Type aliases, ADTs, Product types and
   Records, Sum types and Enumerations, Newtypes, Typeclasses.
 * __Chapter Four__ – Kinds. Three monsters of functional programming: Functor, Applicative,
@@ -97,16 +95,13 @@ We created the Learn4Haskell project in pursuit of the following goals:
 * Help others to learn Haskell
 * Give a beginner-friendly and self-consistent course with theory and practice
   in the same place
-* Explain Haskell topics before each task, but strive to be concise and useful
-  at the same time. It's a tough balance!
+* Explain Haskell topics before each task, but strive to be concise and useful at the same time. It's a tough balance!
 * Help people who want to participate in Hacktoberfest and Open-Source, but also
   want to learn new things during this process
 * Provide review and feedback on solutions, so people are never alone in this
   challenging yet exciting journey!
-* Give people who completed this course all the necessary understandings to
-  be able to work with basic projects that use standard features. We also intend
-  that you have a strong basis on what they should do to be able to continue their functional programming
-  studies.
+* Give people who completed this course all the necessary understandings to be able to work with basic projects that use standard features. We also intend
+  that you have a strong basis on what they should do to be able to continue their functional programming studies.
 
 ## Who can participate
 
@@ -114,7 +109,7 @@ Everyone!
 
 We welcome everyone and would be happy to assist you in this journey!
 
-The course is intended for people who don't know Haskell or know only language
+The course is intended for people who don't know Haskell or know the only language
 basics, though.
 
 If you are already an experienced Haskell developer and have come here for learning
@@ -132,7 +127,7 @@ Participation in this course would give you:
  * 4 Pull Requests required for Hacktoberfest completion
  * Basic knowledge of the most functional programming language
  * Understanding of the functional programming concepts that you would be able to use in your
-   day-to-day life afterwards
+   day-to-day life afterward
  * On-the-fly feedback and help from experienced Haskell developers and educators
  * Interesting challenges
  * Fun!
@@ -156,7 +151,7 @@ Starting to learn Haskell with Learn4Haskell is a piece of cake!
    would be on our way for the review.
 
  > Note, that you should open a PR for your fork of this repo, not this repo.
- > Everyone has their solutions to the included tasks, and they don't mix together
+ .  > everyone has their solutions to the included tasks, and they don't mix together
  > well in one repo 🙂
 
 > However, if you find some bugs or problems in this repo, you can
@@ -165,7 +160,7 @@ Starting to learn Haskell with Learn4Haskell is a piece of cake!
 Learn4Haskell has 4 chapters that you can walk through and submit 4 pull requests to
 complete the Hacktoberfest event (or just for knowledge and your enjoyment).
 
-So, you can start right now with forking. Following this we'll describe how you can
+So, you can start right now with forking. Following this, we'll describe how you can
 install all the necessary items to be able to run this course locally.
 
 ### Installing Haskell
@@ -180,7 +175,7 @@ refreshenv
 If you're on Linux or macOS, then the process is easy:
 
 1. Install [ghcup](https://www.haskell.org/ghcup/) and follow `ghcup`
-   instructions for successful installation (remember to restart your terminal afterwards to avoid an `unknown ghcup command` error on the next step).
+   instructions for successful installation (remember to restart your terminal afterward to avoid an `unknown ghcup command` error on the next step).
 2. Install the latest version of the Haskell compiler — GHC — and the
    [Cabal](https://www.haskell.org/cabal/) build tool. After you install
    `ghcup`, it is easy to install the rest with a few commands from your
@@ -204,11 +199,11 @@ The mentioned plugin would give you everything required to immediately start cod
 
 The course assumes that you install Haskell tooling (GHC and Cabal), edit code
 in the corresponding chapters, run GHCi (Haskell interpreter, explained in the
-course) from the root of this project and load your chapters to check your code.
+course) from the root of this project, and load your chapters to check your code.
 Don't worry, each chapter explains all the needed information!
 
 We also provide a Makefile with commands to test your solutions locally with the included
-prepared test-suite. We have also configured the CI using GitHub
+prepared test suite. We have also configured the CI using GitHub
 Actions on Learn4Haskell to check your answers at GitHub automatically!
 
 To run all tests for Chapter One:
@@ -229,8 +224,8 @@ Similar commands are provided for all chapters from One to Four.
 
 [Veronika (@vrom911)](https://vrom911.github.com/) and
 [Dmitrii (@chshersh)](https://kodimensional.dev/) are experienced Haskell developers.
-Together we drive this open source organisation —
-[Kowainik](https://kowainik.github.io/). We have a lot of open source projects
+Together we drive this open-source organization —
+[Kowainik](https://kowainik.github.io/). We have a lot of open-source projects
 and libraries in Haskell that are used in the Haskell community. We are also
 working on a lot of tutorials and guides in Haskell and mentoring people who are
 keen to learn Haskell as well. Moreover, Dmitrii has a few years of experience
@@ -245,7 +240,7 @@ for you or any others participating here!
 
 ## How can you help
 
-You can help us by supporting us on Ko-Fi or via GitHub sponsorship program:
+You can help us by supporting us on Ko-Fi or via the GitHub sponsorship program:
 
 * [Kowainik Ko-Fi](https://ko-fi.com/kowainik)
 * [Veronika Romashkina via GitHub](https://github.com/sponsors/vrom911)
