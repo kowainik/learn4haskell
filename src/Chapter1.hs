@@ -574,10 +574,7 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c
-        | c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' = True
-        | otherwise = False
-
+isVowel c = c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'
 
 {- |
 == Local variables and functions
@@ -644,10 +641,8 @@ specifying complex expressions.
 -}
 
 sumLast2 :: Int -> Int
-sumLast2 n =
-      let num = mod (abs n) 100
-          in div num 10 + mod num 10
-
+sumLast2 n = x + y  
+           where (x, y) = divMod (mod (abs n) 100) 10 
 
 {- |
 =💣= Task 10*
