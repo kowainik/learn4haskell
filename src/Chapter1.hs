@@ -210,9 +210,12 @@ So, the output in this example means that 'False' has type 'Bool'.
 > Try to guess first and then compare your expectations with GHCi output
 
 >>> :t True
-True :: Bool>>> :t 'a'
+True :: Bool
+>>> :t 'a'
+'a' :: Char
+
 >>> :t 42
-<42 :: Num p => p>
+42 :: Num p => p
 
 A pair of boolean and char:
 >>> :t (True, 'x')
@@ -314,7 +317,7 @@ False
 >>> 10 < 20 || 20 < 5
 True
 >>> 2 ^ 10  -- power
-False
+1024
 >>> not False
 True
 >>> div 20 3  -- integral division
@@ -479,8 +482,8 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit :: Int -> Int 
-lastDigit n = mod n 10
+lastDigit :: Int -> Int
+lastDigit n = mod (abs n) 10
 
 
 
@@ -547,7 +550,7 @@ Casual reminder about adding top-level type signatures for all functions :)
 -}
 
 mid :: Ord a => a -> a -> a -> a
-mid x y z 
+mid x y z
     | x > y && y > z || z > y && y > x = y
     | y > z && z > x || x > z && z > y = z
     | otherwise = x
@@ -564,14 +567,14 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel :: Char -> Bool 
-isVowel c 
-  | c == 'a' = True 
-  | c == 'e' = True 
-  | c == 'i' = True 
-  | c == 'o' = True 
-  | c == 'u' = True 
-  | otherwise = False 
+isVowel :: Char -> Bool
+isVowel c                   -- Implemented this way for readibility and pray the compiler can narrow it down 
+  | c == 'a' = True         -- to the better solution you gave me with the c == 'a' | c == 'e' ect...
+  | c == 'e' = True
+  | c == 'i' = True
+  | c == 'o' = True
+  | c == 'u' = True
+  | otherwise = False
 
 
 {- |
@@ -635,12 +638,12 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 sumLast2::Int -> Int
-sumLast2 n = last n + prelast n
+sumLast2 n = snd (lastforsumLast2 an )+ snd (lastforsumLast2 (fst (lastforsumLast2 an)))
   where
-    last::Int -> Int
-    last n = mod n 10
-    prelast::Int -> Int
-    prelast n = mod (div n 10) 10
+    lastforsumLast2::Int -> (Int,Int)
+    lastforsumLast2 n = divMod n 10
+    an = abs n
+  -- snd (divMod (fst (divMod n 10)) 10)
 
 
 {- |
@@ -660,12 +663,12 @@ Implement a function that returns the first digit of a given number.
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
-firstDigit::Int -> Int 
-firstDigit n 
-  | div n 10 == 0 = n
-  | otherwise = firstDigit (div n 10)
-  
-    
+firstDigit::Int -> Int
+firstDigit n
+  | div an 10 == 0 = an
+  | otherwise = firstDigit (div an 10)
+  where
+    an = abs n
 
 {-
 You did it! Now it is time to open a pull request with your changes
