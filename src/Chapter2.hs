@@ -187,43 +187,30 @@ to guess first, what you will see.
 
 >>> [10, 2] ++ [3, 1, 5]
 [10,2,3,1,5]
-
 >>> [] ++ [1, 4]  -- [] is an empty list
 [1,4]
-
 >>> 3 : [1, 2]
 [3,1,2]
-
 >>> 4 : 2 : [5, 10]  -- prepend multiple elements
 [4,2,5,10]
-
 >>> [1 .. 10]  -- list ranges
 [1,2,3,4,5,6,7,8,9,10]
-
 >>> [10 .. 1]
 []
-
 >>> [10, 9 .. 1]  -- backwards list with explicit step
 [10,9,8,7,6,5,4,3,2,1]
-
 >>> length [4, 10, 5]  -- list length
 3
-
 >>> replicate 5 True
 [True,True,True,True,True]
-
 >>> take 5 "Hello, World!"
 "Hello"
-
 >>> drop 5 "Hello, World!"
 ", World!"
-
 >>> zip "abc" [1, 2, 3]  -- convert two lists to a single list of pairs
 [('a',1),('b',2),('c',3)]
-
 >>> words "Hello   Haskell     World!"  -- split the string into the list of words
 ["Hello","Haskell","World!"]
-
 
 
 👩‍🔬 Haskell has a lot of syntax sugar. In the case with lists, any
@@ -334,7 +321,6 @@ Remember that each function returns a new list.
 
 >>> subList 3 5 [1 .. 10]
 [4,5,6]
-
 >>> subList 3 0 [True, False, False, True, False]
 []
 
@@ -361,7 +347,6 @@ Implement a function that returns only the first half of a given list.
 
 >>> firstHalf [3, 4, 1, 2]
 [3,4]
-
 >>> firstHalf "bca"
 "b"
 -}
@@ -369,7 +354,6 @@ Implement a function that returns only the first half of a given list.
 firstHalf :: [a] -> [a]
 firstHalf l | null l = []
             | otherwise = take (div (length l) 2) l
-
 
 {- |
 =🛡= Pattern matching
@@ -520,11 +504,9 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
- 
 isThird42 :: (Eq a, Num a) => [a] -> Bool
 isThird42 (_ : _ : z : _) = z == 42
 isThird42 _ = False
-
 
 {- |
 =🛡= Recursion
@@ -623,7 +605,6 @@ Implement a function that duplicates each element of the list
 
 >>> duplicate [3, 1, 2]
 [3,3,1,1,2,2]
-
 >>> duplicate "abac"
 "aabbaacc"
 
@@ -867,7 +848,6 @@ list.
 
 >>> rotate 1 [1,2,3,4]
 [2,3,4,1]
-
 >>> rotate 3 [1,2,3,4]
 [4,1,2,3]
 
