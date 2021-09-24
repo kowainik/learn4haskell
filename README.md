@@ -227,7 +227,7 @@ Similar commands are provided for all chapters from One to Four.
 
 ## Who we are
 
-[Veronika (@vrom911)](https://vrom911.github.com/) and
+[Veronika (@vrom911)](https://vrom911.github.io/) and
 [Dmitrii (@chshersh)](https://kodimensional.dev/) are experienced Haskell developers.
 Together we drive this open source organisation —
 [Kowainik](https://kowainik.github.io/). We have a lot of open source projects
