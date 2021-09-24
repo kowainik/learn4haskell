@@ -49,10 +49,10 @@ In this module, we enable the "InstanceSigs" feature that allows writing type
 signatures in places where you can't by default. We believe it's helpful to
 provide more top-level type signatures, especially when learning Haskell.
 -}
-{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE InstanceSigs, MultiParamTypeClasses #-}
 
 module Chapter3 where
-
+import Data.Maybe
 {-
 =🛡= Types in Haskell
 
@@ -344,6 +344,21 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = MkBook
+    { bookPublishYear   :: Int
+    , bookTitle         :: String
+    , bookAuthor        :: String
+    } deriving (Show)
+
+
+-- bible :: Book
+-- bible = MkBook
+--     { bookPublishYear = 0
+--     , bookTitle = "Bible"
+--     , bookAuthor = "Unknown"
+--     } 
+
+
 {- |
 =⚔️= Task 2
 
@@ -374,6 +389,46 @@ after the fight. The battle has the following possible outcomes:
 
 -}
 
+data Fighter = MkFighter
+    { fighterHealthPts    :: Int,
+      fighterAttackPts    :: Int,
+      fighterGold         :: Int
+    } deriving (Show)
+
+knight :: Fighter
+knight = MkFighter
+    { fighterHealthPts = 10,
+      fighterAttackPts = 2,
+      fighterGold = 5
+    }
+
+monster :: Fighter
+monster = MkFighter
+    { fighterHealthPts = 15,
+      fighterAttackPts = 1,
+      fighterGold = 11
+    }
+
+
+fight :: Fighter -> Fighter -> Int
+fight kn mn 
+    | fighterHealthPts kn < 1 = if fighterHealthPts mn < 1 then fighterGold kn else -1
+    | fighterHealthPts mn < 1 = (fighterGold kn) + (fighterGold mn)
+    | fighterAttackPts kn < 1 = if fighterAttackPts mn < 1 then fighterGold kn else -1
+    | fighterAttackPts mn < 1 = (fighterGold kn) + (fighterGold mn)
+    | otherwise = if knToDeathRounds kn mn >= mnToDeathRounds kn mn then (fighterGold kn) + (fighterGold mn) else -1
+    where 
+        knToDeathRounds :: Fighter -> Fighter -> Int
+        knToDeathRounds kn mn = if (fighterHealthPts kn) `rem` (fighterAttackPts mn) > 0 then (fighterHealthPts kn) `div` (fighterAttackPts mn) + 1 else (fighterHealthPts kn) `div` (fighterAttackPts mn)
+        mnToDeathRounds :: Fighter -> Fighter -> Int
+        mnToDeathRounds kn mn = if (fighterHealthPts mn) `rem` (fighterAttackPts kn) > 0 then (fighterHealthPts mn) `div` (fighterAttackPts kn) + 1 else (fighterHealthPts mn) `div` (fighterAttackPts kn) 
+
+    -- let mnHealthLeft = fighterHealthPts mn - fighterAttackPts kn
+    -- in if mnHealthLeft > 0 then 
+    --     let knHealthLeft = fighterHealthPts kn - fighterAttackPts mn
+    --     in if knHealthLeft > 0 then fight (kn { fighterHealthPts = knHealthLeft }) (mn { fighterHealthPts = mnHealthLeft }) else -1
+    --     else (fighterGold kn) + (fighterGold mn)
+           
 {- |
 =🛡= Sum types
 
@@ -460,6 +515,17 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data Meal
+    = Breakfast String
+    | Brunch String
+    | Snack String
+    | Lunch String
+    | TeaTime String
+    | Supper String
+    | Appetizer String
+    | MidnightSnack String
+    | Feast String
+
 {- |
 =⚔️= Task 4
 
@@ -479,6 +545,81 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
+
+data Person 
+    = Person 
+    deriving (Show)
+
+data House = House 
+    { houseResidents :: [Person]
+    } deriving (Show)
+
+data CityBuilding 
+    = Church 
+    | Library 
+    deriving (Show)
+
+data Castle = Castle
+    { castleName    :: String,
+      cityWalls     :: Int 
+    } deriving (Show)
+
+
+data MagicalCity = MagicalCity
+    { cityBuilding    :: CityBuilding,
+      houses          :: [House],
+      cityCastle      :: Maybe Castle
+    } deriving (Show)
+
+isChurch :: CityBuilding -> Bool
+isChurch (Church) = True
+isChurch _ = False 
+
+hasChurch :: MagicalCity -> Bool
+hasChurch mC = isChurch (cityBuilding mC)
+
+hasCastle :: MagicalCity -> Bool
+hasCastle mC = not (isNothing (cityCastle mC))
+
+wallCount :: Maybe Castle -> Int
+wallCount c
+    | not (isNothing c) = cityWalls (fromJust c)
+    | otherwise = 0
+
+cityWallsCount :: MagicalCity -> Int
+cityWallsCount mC = wallCount (cityCastle mC)
+
+cityResidentsCount :: MagicalCity -> Int
+cityResidentsCount mC = sum (map (\x -> length (houseResidents x)) (houses mC))
+
+testCity :: MagicalCity
+testCity = MagicalCity 
+    { cityBuilding = Church, 
+    houses = [ House { houseResidents = [Person, Person] }, House { houseResidents = [Person, Person] } ],
+    cityCastle = Just (Castle {castleName = "Magical Castle", cityWalls = 5}) 
+    }
+-- testCity = MagicalCity { cityBuilding = Church, houses = [ House { houseResidents = [Person, Person, Person, Person, Person, Person] }, House { houseResidents = [Person, Person, Person, Person, Person, Person] } ], cityCastle = Just (Castle {castleName = "Magical Castle", cityWalls = 5}) }
+-- testCity = MagicalCity { cityBuilding = Church, houses = [House [Person]], cityCastle = Nothing }
+
+buildCastle :: MagicalCity -> String -> MagicalCity
+buildCastle mC castleN = mC { cityCastle = newCastle mC castleN}
+    where
+      newCastle :: MagicalCity -> String -> Maybe Castle
+      newCastle mC castleN = if hasCastle mC then Just ((fromJust (cityCastle mC)) { castleName = castleN}) else Just (Castle {castleName = castleN, cityWalls = 0}) 
+
+buildHouse :: MagicalCity -> MagicalCity
+buildHouse mC =
+    let peopleNum = if hasCastle mC then if hasChurch mC then 4 else 3 else if hasChurch mC then 2 else 1
+    in mC {houses = House (replicate peopleNum Person) : houses mC}
+
+buildWalls :: MagicalCity -> MagicalCity
+buildWalls mC 
+    | not (hasCastle mC) = mC
+    | cityResidentsCount mC < 10 = mC
+    | otherwise = mC { cityCastle = Just (newCastle mC) }
+    where 
+      newCastle :: MagicalCity -> Castle
+      newCastle mC = (fromJust (cityCastle mC)) {cityWalls = (cityWallsCount mC) + 1} 
 
 {-
 =🛡= Newtypes
@@ -560,22 +701,50 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+newtype Attack = Attack
+    { attackPts :: Int
+    } deriving (Show)
+
+newtype Health = Health
+    { healthPts :: Int
+    } deriving (Show)
+
+newtype Armor = Armor
+    { armorPts :: Int
+    } deriving (Show)
+
+newtype Dexterity = Dexterity
+    { dexterityPts :: Int
+    } deriving (Show)
+
+newtype Strength = Strength
+    { strengthPts :: Int
+    } deriving (Show)
+
+newtype Damage = Damage
+    { damagePts :: Int
+    } deriving (Show)
+
+newtype Defense = Defense
+  { defensePts :: Int
+  } deriving (Show)   
+
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
-    }
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
+    } deriving (Show)
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+calculatePlayerDamage :: Attack -> Strength -> Damage
+calculatePlayerDamage attack strength = Damage ((attackPts attack) + (strengthPts strength))
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense armor dexterity = Defense ((armorPts armor) * (dexterityPts dexterity))
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit damage defense health = Health ((healthPts health) + (defensePts defense) - (damagePts damage))
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -592,7 +761,25 @@ hitPlayer player1 player2 =
             (playerHealth player1)
     in player1 { playerHealth = newHealth }
 
+-- playa1 :: Player
+-- playa1 = Player
+--     { playerHealth = Health 10
+--     , playerArmor = Armor 2
+--     , playerAttack = Attack 3
+--     , playerDexterity = Dexterity 4
+--     , playerStrength = Strength 5
+--     }
+
+-- playa2 :: Player
+-- playa2 = Player
+--     { playerHealth = Health 20
+--     , playerArmor = Armor 2
+--     , playerAttack = Attack 1
+--     , playerDexterity = Dexterity 4
+--     , playerStrength = Strength 5
+--     }
 {- |
+
 =🛡= Polymorphic data types
 
 Similar to functions, data types in Haskell can be __polymorphic__. This means
@@ -752,6 +939,20 @@ parametrise data types in places where values can be of any general type.
 🕯 HINT: 'Maybe' that some standard types we mentioned above are useful for
   maybe-treasure ;)
 -}
+data TreasureChest = TreasureChest String
+    deriving (Show)
+
+data Power a = Power a
+    deriving (Show)
+
+data Dragon x = Dragon
+    { dragonPower :: Power x
+    } deriving (Show)
+
+data DragonLair dPower = DragonLair
+    { dragon :: Dragon dPower,
+      treasureChest :: Maybe TreasureChest
+    } deriving (Show)
 
 {-
 =🛡= Typeclasses
@@ -907,9 +1108,27 @@ Implement instances of "Append" for the following types:
   ✧ *(Challenge): "Maybe" where append is appending of values inside "Just" constructors
 
 -}
+data Gold = Gold
+  { gold  :: Int
+  } deriving (Show)
+
 class Append a where
     append :: a -> a -> a
 
+instance Append Gold where
+    append :: Gold -> Gold -> Gold
+    append x y = Gold((gold x) + (gold y))
+
+instance Append [a] where
+    append :: [a] -> [a] -> [a]
+    append x y = concat [x, y]
+
+instance (Append a) => Append (Maybe a) where
+    append :: Maybe a -> Maybe a -> Maybe a
+    append (Just x) (Just y) = Just (append x y)
+    append Nothing (Just y) = Just y
+    append (Just x) Nothing = Just x
+    append Nothing Nothing = Nothing
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -970,7 +1189,30 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
+data DayOfWeek
+    = Monday 
+    | Tuesday 
+    | Wednesday 
+    | Thursday 
+    | Friday
+    | Saturday
+    | Sunday
+    deriving(Show, Enum, Bounded)
 
+isWeekend :: DayOfWeek -> Bool
+isWeekend (Saturday) = True
+isWeekend (Sunday) = True
+isWeekend (_) = False
+
+nextDay :: DayOfWeek -> DayOfWeek
+nextDay (Sunday) = Monday
+nextDay d = succ d
+
+daysToParty :: DayOfWeek -> Int
+daysToParty (Friday) = 0
+daysToParty d 
+    | (fromEnum d) < (fromEnum Friday) = (fromEnum Friday) - (fromEnum d)
+    | otherwise = (abs ((fromEnum Friday) - (fromEnum d))) + (fromEnum Friday)
 {-
 =💣= Task 9*
 
@@ -1005,6 +1247,143 @@ properties using typeclasses, but they are different data types in the end.
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
+
+newtype HealthPoints = HealthPoints
+    { healthPoints    :: Int
+    } deriving (Show)
+
+newtype DefencePoints = DefencePoints
+    { defencePoints   :: Int
+    } deriving (Show)    
+
+data KnightAttack
+    = KnightAttacking 
+    | Heal 
+    | IncreaseDefence 
+    deriving(Show, Enum, Bounded, Eq, Ord)
+
+data MonsterAttack
+    = MonsterAttacking
+    | RunAway 
+    deriving(Show, Enum, Bounded, Eq, Ord)
+
+data Knight = Knight 
+    { knightHealth           :: HealthPoints,
+      knightDefence          :: DefencePoints,
+      knightsAttackPower     :: Int,
+      knightsLastAttack      :: Maybe KnightAttack
+    } deriving(Show)
+
+testKnight :: Knight
+testKnight = Knight { knightHealth = HealthPoints { healthPoints = 9 }, knightDefence = DefencePoints { defencePoints = 3}, knightsAttackPower = 5, knightsLastAttack = Nothing}
+
+data Monster = Monster
+    { monsterHealth           :: HealthPoints,
+      monstersAttackPower     :: Int,
+      monstersLastAttack      :: Maybe MonsterAttack
+    } deriving(Show)
+
+testMonster :: Monster
+testMonster = Monster { monsterHealth = HealthPoints { healthPoints = 24 }, monstersAttackPower = 1, monstersLastAttack = Nothing}
+
+testMonster2 :: Monster
+testMonster2 = Monster { monsterHealth = HealthPoints { healthPoints = 15 }, monstersAttackPower = 13, monstersLastAttack = Nothing}
+
+data Warrior
+    = WarMonster { warMonster :: Monster }
+    | WarKnight  { warKnight :: Knight }
+    deriving(Show)
+
+class DoAttack a b where
+    doAttack :: a -> b -> (a, b)
+    
+instance DoAttack Knight Knight where
+    doAttack :: Knight -> Knight -> (Knight, Knight)
+    doAttack aK dK 
+        | isNothing (knightsLastAttack aK) || (knightsLastAttack aK) == Just IncreaseDefence 
+            = (aK { knightsLastAttack = Just KnightAttacking }, dK { knightHealth = HealthPoints { healthPoints = let curAtPts = defencePoints (knightDefence dK) - (knightsAttackPower aK) in if curAtPts > 0 then (getHealthNum dK) + curAtPts else getHealthNum dK}})
+        | (knightsLastAttack aK) == Just KnightAttacking 
+            = (aK { knightHealth = HealthPoints { healthPoints = (healthPoints (knightHealth aK)) + 1}, knightsLastAttack = Just Heal}, dK)
+        | otherwise = (aK { knightDefence = DefencePoints { defencePoints = (defencePoints (knightDefence aK)) + 1}, knightsLastAttack = Just IncreaseDefence}, dK)
+
+instance DoAttack Knight Monster where
+    doAttack :: Knight -> Monster -> (Knight, Monster)
+    doAttack aK dM 
+        | isNothing (knightsLastAttack aK) || (knightsLastAttack aK) == Just IncreaseDefence 
+            = (aK { knightsLastAttack = Just KnightAttacking }, dM { monsterHealth = HealthPoints { healthPoints = healthPoints (monsterHealth dM) - (knightsAttackPower aK)}})
+        | (knightsLastAttack aK) == Just KnightAttacking 
+            = (aK { knightHealth = HealthPoints { healthPoints = (healthPoints (knightHealth aK)) + 1}, knightsLastAttack = Just Heal}, dM)
+        | otherwise = (aK { knightDefence = DefencePoints { defencePoints = (defencePoints (knightDefence aK)) + 1}, knightsLastAttack = Just IncreaseDefence}, dM)
+
+instance DoAttack Monster Monster where
+    doAttack :: Monster -> Monster -> (Monster, Monster)
+    doAttack aM dM 
+        | isNothing (monstersLastAttack aM) || (monstersLastAttack aM) == Just RunAway 
+            = (aM { monstersLastAttack = Just MonsterAttacking }, dM { monsterHealth = HealthPoints { healthPoints = healthPoints (monsterHealth dM) - (monstersAttackPower aM)}})
+        | otherwise = (aM { monstersLastAttack = Just RunAway }, dM)
+
+instance DoAttack Monster Knight where
+    doAttack :: Monster -> Knight -> (Monster, Knight)
+    doAttack aM dK 
+        | isNothing (monstersLastAttack aM) || (monstersLastAttack aM) == Just RunAway 
+            = (aM { monstersLastAttack = Just MonsterAttacking }, dK { knightHealth = HealthPoints { healthPoints = let curAtPts = defencePoints (knightDefence dK) - (monstersAttackPower aM) in if curAtPts > 0 then (getHealthNum dK) + curAtPts else getHealthNum dK}})
+        | otherwise = (aM { monstersLastAttack = Just RunAway }, dK)
+
+class GetHealthNum a where
+    getHealthNum :: a -> Int
+
+instance GetHealthNum Knight where
+    getHealthNum :: Knight -> Int
+    getHealthNum k = healthPoints (knightHealth k) 
+
+instance GetHealthNum Monster where
+    getHealthNum :: Monster -> Int
+    getHealthNum m = healthPoints (monsterHealth m) 
+
+class IsDead a where 
+    isDead :: a -> Bool
+
+instance IsDead Knight where
+    isDead :: Knight -> Bool
+    isDead k = if (getHealthNum k) > 0 then False else True
+
+instance IsDead Monster where
+    isDead :: Monster -> Bool
+    isDead m = if (getHealthNum m) > 0 then False else True
+
+data BattleOutcome = BattleOutcome
+    { winner       :: Maybe Warrior,
+      totalRounds  :: Int
+    } deriving(Show)
+
+finalFight :: Warrior -> Warrior -> BattleOutcome
+finalFight w1 w2 = go 1 w1 w2
+    where 
+      go :: Int -> Warrior -> Warrior -> BattleOutcome
+      go n (WarMonster w1) (WarMonster w2) 
+          | monstersAttackPower w1 < 1 && monstersAttackPower w2 < 1 = BattleOutcome { winner = Nothing, totalRounds = n}
+          | isDead w1 = BattleOutcome { winner = Just (WarMonster { warMonster = w2 }), totalRounds = n}
+          | otherwise = let attackResult = doAttack w1 w2
+              in if isDead (snd attackResult) then BattleOutcome { winner = Just (WarMonster { warMonster = w1 }), totalRounds = n} else 
+                  let sndAttackResult = doAttack (snd attackResult) (fst attackResult) in go (n+1) WarMonster { warMonster = (snd sndAttackResult)} WarMonster { warMonster = (fst sndAttackResult)}
+      go n (WarMonster w1) (WarKnight w2) 
+          | isDead w1 = BattleOutcome { winner = Just (WarKnight { warKnight = w2 }), totalRounds = n}
+          | (defencePoints (knightDefence w2) - (monstersAttackPower w1)) > 0 && knightsAttackPower w2 < 1 = BattleOutcome { winner = Nothing, totalRounds = n}
+          | otherwise = let attackResult = doAttack w1 w2
+              in if isDead (snd attackResult) then BattleOutcome { winner = Just (WarMonster { warMonster = w1 }), totalRounds = n} else 
+                  let sndAttackResult = doAttack (snd attackResult) (fst attackResult) in go (n+1) WarMonster { warMonster = (snd sndAttackResult)} WarKnight { warKnight = (fst sndAttackResult)}
+      go n (WarKnight w1) (WarMonster w2)
+          | isDead w1 = BattleOutcome { winner = Just (WarMonster { warMonster = w2 }), totalRounds = n}
+          | (defencePoints (knightDefence w1) - (monstersAttackPower w2)) > 0 && knightsAttackPower w1 < 1 = BattleOutcome { winner = Nothing, totalRounds = n}
+          | otherwise = let attackResult = doAttack w1 w2
+              in if isDead (snd attackResult) then BattleOutcome { winner = Just (WarKnight { warKnight = w1 }), totalRounds = n} else 
+                  let sndAttackResult = doAttack (snd attackResult) (fst attackResult) in go (n+1) WarKnight { warKnight = (snd sndAttackResult)} WarMonster { warMonster = (fst sndAttackResult)}
+      go n (WarKnight w1) (WarKnight w2)
+          | isDead w1 = BattleOutcome { winner = Just (WarKnight { warKnight = w2 }), totalRounds = n}
+          | (defencePoints (knightDefence w1) - (knightsAttackPower w2)) > 0 && (defencePoints (knightDefence w2) - (knightsAttackPower w1)) > 0 = BattleOutcome { winner = Nothing, totalRounds = n}
+          | otherwise = let attackResult = doAttack w1 w2
+              in if isDead (snd attackResult) then BattleOutcome { winner = Just (WarKnight { warKnight = w1 }), totalRounds = n} else 
+                  let sndAttackResult = doAttack (snd attackResult) (fst attackResult) in go (n+1) WarKnight { warKnight = (snd sndAttackResult)} WarKnight { warKnight = (fst sndAttackResult)}
 
 
 {-

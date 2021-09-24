@@ -114,23 +114,25 @@ As always, try to guess the output first! And don't forget to insert
 the output in here:
 
 >>> :k Char
-
+Char :: *
 >>> :k Bool
 
 >>> :k [Int]
-
+[Int] :: *
 >>> :k []
-
+[] :: * -> *
 >>> :k (->)
-
+(->) :: * -> * -> *
 >>> :k Either
+Either :: * -> * -> *
 
 >>> data Trinity a b c = MkTrinity a b c
 >>> :k Trinity
+Trinity :: * -> * -> * -> *
 
 >>> data IntBox f = MkIntBox (f Int)
 >>> :k IntBox
-
+IntBox :: (* -> *) -> *
 -}
 
 {- |
@@ -259,7 +261,7 @@ name.
 
 > QUESTION: Can you understand why the following implementation of the
   Functor instance for Maybe doesn't compile?
-
+Needs to check for nothing 
 @
 instance Functor Maybe where
     fmap :: (a -> b) -> Maybe a -> Maybe b
@@ -293,7 +295,8 @@ values and apply them to the type level?
 -}
 instance Functor (Secret e) where
     fmap :: (a -> b) -> Secret e a -> Secret e b
-    fmap = error "fmap for Box: not implemented!"
+    fmap _ (Trap e) = Trap e
+    fmap f (Reward a) = Reward (f a)
 
 {- |
 =⚔️= Task 3
@@ -306,6 +309,13 @@ typeclasses for standard data types.
 data List a
     = Empty
     | Cons a (List a)
+    deriving (Show, Eq)
+
+instance Functor List where
+    fmap :: (a -> b) -> List a -> List b
+    fmap _ Empty = Empty
+    fmap f (Cons a c) = Cons (f a) (fmap f c)
+     
 
 {- |
 =🛡= Applicative
@@ -472,11 +482,12 @@ Implement the Applicative instance for our 'Secret' data type from before.
 -}
 instance Applicative (Secret e) where
     pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+    pure = Reward
 
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
-
+    Trap e <*> _ = Trap e
+    Reward f <*> x = fmap f x
+    
 {- |
 =⚔️= Task 5
 
@@ -488,6 +499,20 @@ Implement the 'Applicative' instance for our 'List' type.
   may also need to implement a few useful helper functions for our List
   type.
 -}
+
+instance Applicative List where
+    pure :: a -> List a
+    pure a = Cons a (Empty)
+
+    (<*>) :: List (a -> b) -> List a -> List b
+    Empty <*> _ = Empty
+    _ <*> Empty = Empty
+    Cons f a <*> c = joinLists (fmap f c) (a <*> c)
+
+joinLists :: List a -> List a -> List a
+joinLists Empty c = c
+joinLists (Cons a b) c = Cons a (joinLists b c)
+
 
 
 {- |
@@ -600,7 +625,8 @@ Implement the 'Monad' instance for our 'Secret' type.
 -}
 instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+    Trap e >>= _ = Trap e
+    Reward x >>= f = f x
 
 {- |
 =⚔️= Task 7
@@ -610,7 +636,10 @@ Implement the 'Monad' instance for our lists.
 🕯 HINT: You probably will need to implement a helper function (or
   maybe a few) to flatten lists of lists to a single list.
 -}
-
+instance Monad List where
+    (>>=) :: List a -> (a -> List b) -> List b
+    Empty >>= _ = Empty
+    Cons a c >>= f = joinLists (f a) (c >>= f)
 
 {- |
 =💣= Task 8*: Before the Final Boss
@@ -629,7 +658,7 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM y z = y >>= \x -> if x then z else pure False
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
@@ -673,8 +702,27 @@ Specifically,
  ❃ Implement the function to convert Tree to list
 -}
 
+data BinaryTree a
+  = EmptyNode
+  | Node a (BinaryTree a) (BinaryTree a)
+  deriving(Show) 
+
+instance Functor BinaryTree where 
+    fmap :: (a -> b) -> BinaryTree a -> BinaryTree b
+    fmap _ EmptyNode = EmptyNode
+    fmap f (Node a b c) = Node (f a) (fmap f b) (fmap f c)
+
+reverseTree :: BinaryTree a -> BinaryTree a
+reverseTree EmptyNode = EmptyNode
+reverseTree (Node a b c) = Node a (reverseTree c) (reverseTree b)
+
+treeToList :: BinaryTree a -> List a
+treeToList EmptyNode = Empty
+treeToList (Node a b c) = Cons a (joinLists (treeToList b) (treeToList c))
+
 
 {-
+
 You did it! Now it is time to open pull request with your changes
 and summon @vrom911 and @chshersh for the review!
 -}
