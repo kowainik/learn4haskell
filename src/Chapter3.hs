@@ -372,6 +372,8 @@ after the fight. The battle has the following possible outcomes:
  ⊛ Neither the knight nor the monster wins. On such an occasion, the knight
    doesn't earn any money and keeps what they had before.
 
+♫ NOTE: In this task, you need to implement only a single round of the fight.
+
 -}
 
 {- |
