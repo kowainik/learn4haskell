@@ -1,6 +1,6 @@
 # learn4haskell
 
-![Learn4Haskell](/images/HacktoberFest2020-Learn4Haskell-Banner.png)
+![Learn4Haskell](/images/HacktoberFest2021-Learn4Haskell-Banner.png)
 
 🚨 __Important notice: This course continues BAU even after Hacktoberfest__ 🚨
 
