@@ -57,7 +57,7 @@ work with different data types and values. If you want to bring some
 additional types and functions in scope, you need to import them
 manually.
 
-For example, to import the list sorting function, you need to write:
+For example, to import the lis sorting function, you need to write:
 
 @
 import Data.List (sort)
