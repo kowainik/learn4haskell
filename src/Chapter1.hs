@@ -302,7 +302,6 @@ expressions in GHCi
 
 >>> 10 - 15
 -5
-
 >>> 10 - (-5)  -- negative constants require ()
 15
 >>> (3 + 5) < 10
@@ -497,7 +496,6 @@ Implement a function, that takes two numbers and returns the one closer to zero:
 
 'if-then-else' is a language construct for an expression that returns only one
 branch depending on the checked condition. For example:
-
 >>> if even 10 then 0 else 1
 0
 
