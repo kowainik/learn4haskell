@@ -25,6 +25,10 @@ cabal.project.local
 # Stack
 .stack-work/
 stack.yaml.lock
+# Nix
+default.nix
+nix/
+shell.nix
 
 ### IDE/support
 # Vim
@@ -53,3 +57,4 @@ TAGS
 
 # other
 .DS_Store
+.envrc
