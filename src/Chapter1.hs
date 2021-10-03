@@ -491,7 +491,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int
-lastDigit n = mod n 10
+lastDigit n = mod (abs n) 10
 
 
 {- |
@@ -648,8 +648,9 @@ specifying complex expressions.
 
 sumLast2 :: Int -> Int
 sumLast2 n = 
-  let last_digit = mod n 10
-      penultimate_digit = mod (div n 10) 10
+  let abs_n = abs n
+      last_digit = mod abs_n 10
+      penultimate_digit = mod (div abs_n 10) 10
   in last_digit + penultimate_digit
 
 
