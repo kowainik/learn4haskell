@@ -676,13 +676,7 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int 
-firstDigit n =
-    let digs = toInt (logBase 10 n)
-        first = toInt (div n (10 ^ digs))
-    in first
-    where 
-        toInt :: Float -> Int
-        toInt = round
+firstDigit n 
 
 --firstDigit n = error "firstDigit: Not implemented!"
 
