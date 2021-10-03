@@ -674,10 +674,11 @@ aren't ready for this boss yet!
 
 firstDigit :: Int -> Int
 firstDigit n = 
-  let divided_n = div n 10
+  let abs_n = abs n
+      divided_n = div abs_n 10
   in
-    if divided_n == 0 then mod n 10
-    else firstDigit (div n 10)
+    if divided_n == 0 then mod abs_n 10
+    else firstDigit (div abs_n 10)
 
 {-
 You did it! Now it is time to open a pull request with your changes
