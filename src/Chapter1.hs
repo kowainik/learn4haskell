@@ -560,12 +560,14 @@ tripleApply f x y = f (f x y)
 
 mid :: Int -> Int -> Int -> Int
 mid x y z
-  | tripleApply min x y z == x && tripleApply max x y z == z = y
-  | tripleApply min x y z == z && tripleApply max x y x == x = y
-  | tripleApply min x y z == y && tripleApply max x y z == z = x
-  | tripleApply min x y z == z && tripleApply max x y z == y = x
-  | tripleApply min x y z == x && tripleApply max x y z == y = z
-  | otherwise  = z
+  | minOf3 == x && maxOf3 == z = y
+  | minOf3 == z && maxOf3 == x = y
+  | minOf3 == y && maxOf3 == z = x
+  | minOf3 == z && maxOf3 == y = x
+  | otherwise = z
+    where
+      maxOf3 = tripleApply max x y z
+      minOf3 = tripleApply min x y z
 
 {- |
 =⚔️= Task 8
