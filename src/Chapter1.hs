@@ -648,7 +648,7 @@ specifying complex expressions.
 sumLast2 :: Int -> Int
 sumLast2 n =
   let units = lastDigit n
-      tens = lastDigit (div n 10)
+      tens = lastDigit (div (abs n) 10)
       in units + tens
 
 
