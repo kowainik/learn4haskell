@@ -136,42 +136,51 @@ functions in GHCi and insert the corresponding resulting output below:
 
 List of booleans:
 >>> :t [True, False]
+[True, False] :: [Bool]
 
 
 String is a list of characters:
 >>> :t "some string"
-
+"some string" :: [Char]
 
 Empty list:
 >>> :t []
+[] :: [a]
 
 
 Append two lists:
 >>> :t (++)
+(++) :: [a] -> [a] -> [a]
 
 
 Prepend an element at the beginning of a list:
 >>> :t (:)
+(:) :: a -> [a] -> [a]
 
 
 Reverse a list:
 >>> :t reverse
+reverse :: [a] -> [a]
 
 
 Take first N elements of a list:
 >>> :t take
+take :: Int -> [a] -> [a]
 
 
 Create a list from N same elements:
 >>> :t replicate
+replicate :: Int -> a -> [a]
 
 
 Split a string by line breaks:
 >>> :t lines
+lines :: String -> [String]
 
 
 Join a list of strings with line breaks:
 >>> :t unlines
+unlines :: [String] -> String
 
 
 -}
@@ -185,32 +194,56 @@ list expressions in REPL.
 Evaluate the following expressions in GHCi and insert the answers. Try
 to guess first, what you will see.
 
->>> [10, 2] ++ [3, 1, 5]
+>>> [10, 2] ++ [3, 1, 5]      --Expectation: [10, 2, 3, 1, 5]
+[10,2,3,1,5]
 
->>> [] ++ [1, 4]  -- [] is an empty list
 
->>> 3 : [1, 2]
+>>> [] ++ [1, 4]  -- [] is an empty list     --Expectation: [1, 4]
+[1,4]
 
->>> 4 : 2 : [5, 10]  -- prepend multiple elements
 
->>> [1 .. 10]  -- list ranges
+>>> 3 : [1, 2]     --Expectation: [3, 1, 2]
+[3,1,2]
 
->>> [10 .. 1]
 
->>> [10, 9 .. 1]  -- backwards list with explicit step
+>>> 4 : 2 : [5, 10]  -- prepend multiple elements     --Expectation: [4, 2, 5, 10]
+[4,2,5,10]
 
->>> length [4, 10, 5]  -- list length
 
->>> replicate 5 True
+>>> [1 .. 10]  -- list ranges      --Expectation: None
+[1,2,3,4,5,6,7,8,9,10]
 
->>> take 5 "Hello, World!"
 
->>> drop 5 "Hello, World!"
+>>> [10 .. 1]                      --Expectation: None
+[]
 
->>> zip "abc" [1, 2, 3]  -- convert two lists to a single list of pairs
 
->>> words "Hello   Haskell     World!"  -- split the string into the list of words
+>>> [10, 9 .. 1]  -- backwards list with explicit step   --Expectation: Create a list from 10 to 1??
+[10,9,8,7,6,5,4,3,2,1]
 
+
+>>> length [4, 10, 5]  -- list length         --Expectation: returns the list length, this case 3
+3
+
+
+>>> replicate 5 True   --Expectation: Creats a list of length 5 initialized with bool value True
+[True,True,True,True,True]
+
+
+>>> take 5 "Hello, World!"   --Expectation: Creats a list of first five elements from the string [H, e, l, l, o]
+"Hello"
+
+
+>>> drop 5 "Hello, World!"   --Expectation: No Idea
+", World!"
+
+
+>>> zip "abc" [1, 2, 3]  -- convert two lists to a single list of pairs  --Expectation: might create a list of pairs of each corresponding ith element from each list.
+[('a',1),('b',2),('c',3)]
+
+
+>>> words "Hello   Haskell     World!"  -- split the string into the list of words   --Expectation: [Hello, Haskell, World!]
+["Hello","Haskell","World!"]
 
 
 👩‍🔬 Haskell has a lot of syntax sugar. In the case with lists, any
@@ -336,7 +369,12 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList = error "subList: Not implemented!"
+subList i e arr
+    | i < 0 || e < 0 || e < i = []
+    | otherwise =
+      let 
+        removeLastPart = take e arr
+      in drop (i-1) removeLastPart
 
 {- |
 =⚔️= Task 4
@@ -348,8 +386,9 @@ Implement a function that returns only the first half of a given list.
 >>> firstHalf "bca"
 "b"
 -}
--- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
+
+firstHalf :: [a] -> [a]
+firstHalf l = take (div (length l) 2) l
 
 
 {- |
@@ -501,7 +540,10 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
-isThird42 = error "isThird42: Not implemented!"
+
+isThird42 :: [a] -> Bool
+isThird42 (_ : _ : _ : _) = True   -- According my knowledge the solution is (_:_:42:_) = True, but this gives me an error "No instance for (Eq a) arising from the literal ‘42’"
+isThird42 _ = False
 
 
 {- |
@@ -535,6 +577,7 @@ For example, we can patch the previous function to count the number of
 steps we need to take in order to reduce the number to zero.
 
 🤔 Blitz question: can you guess what this number represents?
+Ans: Yes, the number represents the relation log base 2 of N.
 
 @
 divToZero :: Int -> Int
@@ -606,7 +649,8 @@ Implement a function that duplicates each element of the list
 
 -}
 duplicate :: [a] -> [a]
-duplicate = error "duplicate: Not implemented!"
+duplicate [] = []
+duplicate (x:xs) = x : x : duplicate xs
 
 
 {- |
@@ -621,7 +665,12 @@ Write a function that takes elements of a list only in even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
-takeEven = error "takeEven: Not implemented!"
+
+takeEven :: [Int] -> [Int]
+takeEven [] = []
+takeEven [a] = [a]
+takeEven [a, b] = [a]
+takeEven (a:b:cs) = a : takeEven cs
 
 {- |
 =🛡= Higher-order functions
@@ -728,7 +777,8 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = error "smartReplicate: Not implemented!"
+smartReplicate [] = []
+smartReplicate (x:xs) = replicate x x ++ smartReplicate xs
 
 {- |
 =⚔️= Task 9
@@ -741,8 +791,9 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains = error "contains: Not implemented!"
 
+contains :: Int -> [[Int]] -> [[Int]]
+contains x = filter (\list -> x `elem` list)
 
 {- |
 =🛡= Eta-reduction
@@ -781,13 +832,14 @@ Let's now try to eta-reduce some of the functions and ensure that we
 mastered the skill of eta-reducing.
 -}
 divideTenBy :: Int -> Int
-divideTenBy x = div 10 x
+divideTenBy = div 10
 
 -- TODO: type ;)
-listElementsLessThan x l = filter (< x) l
+listElementsLessThan :: Int -> [Int] -> [Int]
+listElementsLessThan x = filter (< x)
 
 -- Can you eta-reduce this one???
-pairMul xs ys = zipWith (*) xs ys
+pairMul  = zipWith (*) 
 
 {- |
 =🛡= Lazy evaluation
@@ -842,7 +894,9 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate = error "rotate: Not implemented!"
+rotate :: Int -> [Int] -> [Int]
+rotate x list = take (length list) (drop x (cycle list))
+
 
 {- |
 =💣= Task 12*
@@ -858,7 +912,10 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind = error "rewind: Not Implemented!"
+
+rewind :: [Int] -> [Int]
+rewind [] = []
+rewind (x:xs) = rewind xs ++ (x : [])
 
 
 {-
