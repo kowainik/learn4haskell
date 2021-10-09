@@ -203,10 +203,10 @@ The mentioned plugin would give you everything required to immediately start cod
 ### Gitpod
 
 [Gitpod](https://www.gitpod.io/) is a VSCode-based Web IDE.
-With it, you can get a Haskell Environment out-of-the-box.
+With it, you can get a Haskell environment out-of-the-box.
 It's free to use up to 50 hours per month.
 
-Just prepend `gitpod.io#` to your repo URL and you are ready to GO.
+Just prepend `gitpod.io#` to your repo URL and you are ready to go.
 
 ### How to develop
 
