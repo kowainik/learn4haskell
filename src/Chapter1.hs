@@ -573,13 +573,17 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c
-    | c == 'a' || c == 'A' = True
-    | c == 'e' || c == 'E' = True
-    | c == 'i' || c == 'I' = True
-    | c == 'o' || c == 'O' = True
-    | c == 'u' || c == 'U' = True
-    | otherwise            = False
+isVowel c = 
+       c == 'a' 
+    || c == 'A'
+    || c == 'e' 
+    || c == 'E'
+    || c == 'i' 
+    || c == 'I'
+    || c == 'O'
+    || c == 'o'
+    || c == 'u' 
+    || c == 'U'
 
 
 {- |
@@ -668,11 +672,13 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit :: Integral t => t -> t
-firstDigit n
-    | n `div` 10 == 0 = n
-    | otherwise = firstDigit (n `div` 10)
-
+firstDigit :: Int -> Int
+firstDigit x
+    | x < 0     = go $ negate x
+    | otherwise = go x
+    where go n  = case n `div` 10 of
+                      0 -> n
+                      _ -> go $ n `div` 10
 
 {-
 You did it! Now it is time to open a pull request with your changes
