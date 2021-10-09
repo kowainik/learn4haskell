@@ -674,11 +674,9 @@ aren't ready for this boss yet!
 
 firstDigit :: Int -> Int
 firstDigit x
-    | x < 0     = go $ negate x
-    | otherwise = go x
-    where go n  = case n `div` 10 of
-                      0 -> n
-                      _ -> go $ n `div` 10
+    | x' `div` 10 == 0 = x'
+    | otherwise = firstDigit $ x' `div` 10
+    where x' = abs x
 
 {-
 You did it! Now it is time to open a pull request with your changes
