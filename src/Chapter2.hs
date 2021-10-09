@@ -72,7 +72,7 @@ type) definition.
 
 When working with lists, the most practical module will be "Data.List":
 
-   * http://hackage.haskell.org/package/base-4.14.0.0/docs/Data-List.html
+   * https://hackage.haskell.org/package/base-4.14.0.0/docs/Data-List.html
 -}
 
 
