@@ -200,6 +200,14 @@ If you don't have any IDE preferences, we recommend installing
 [Haskell plugin](https://marketplace.visualstudio.com/items?itemName=haskell.haskell).
 The mentioned plugin would give you everything required to immediately start coding with Haskell.
 
+### Gitpod
+
+[Gitpod](https://www.gitpod.io/) is a VSCode-based Web IDE.
+With it, you can get a Haskell Environment out-of-the-box.
+It's free to use up to 50 hours per month.
+
+Just prepend `gitpod.io#` to your repo URL and you are ready to GO.
+
 ### How to develop
 
 The course assumes that you install Haskell tooling (GHC and Cabal), edit code
