@@ -353,7 +353,7 @@ ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
 subList x y z
-  | x < y = take (y-x) . drop x $ z
+  | x < y = take (y-x + 1) . drop x $ z
   | x >= y = []
   | x < 0 || y <0 = []
 
