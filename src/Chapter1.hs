@@ -209,31 +209,31 @@ So, the output in this example means that 'False' has type 'Bool'.
 > Try to guess first and then compare your expectations with GHCi output
 
 >>> :t True
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+True :: Bool
 >>> :t 'a'
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+'a' :: Char
 >>> :t 42
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+42 :: Num p => p
 
 A pair of boolean and char:
 >>> :t (True, 'x')
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(True, 'x') :: (Bool, Char)
 
 Boolean negation:
 >>> :t not
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+not :: Bool -> Bool
 
 Boolean 'and' operator:
 >>> :t (&&)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(&&) :: Bool -> Bool -> Bool
 
 Addition of two numbers:
 >>> :t (+)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(+) :: Num a => a -> a -> a
 
 Maximum of two values:
 >>> :t max
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+max :: Ord a => a -> a -> a
 
 You might not understand each type at this moment, but don't worry! You've only
 started your Haskell journey. Types will become your friends soon.
@@ -301,43 +301,43 @@ expressions in GHCi
   functions and operators first. Remember this from the previous task? ;)
 
 >>> 1 + 2
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+3
 
 >>> 10 - 15
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+-5
 
 >>> 10 - (-5)  -- negative constants require ()
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+15
 
 >>> (3 + 5) < 10
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+True
 
 >>> True && False
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+False
 
 >>> 10 < 20 || 20 < 5
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+True
 
 >>> 2 ^ 10  -- power
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+1024
 
 >>> not False
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+True
 
 >>> div 20 3  -- integral division
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+6
 
 >>> mod 20 3  -- integral division remainder
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+2
 
 >>> max 4 10
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+10
 
 >>> min 5 (max 1 2)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+2
 
 >>> max (min 1 10) (min 5 7)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+5
 
 Because Haskell is a __statically-typed__ language, you see an error each time
 you try to mix values of different types in situations where you are not
@@ -393,7 +393,7 @@ The body of the function can be as big as you want. However, don't forget about
 the indentation rules when your body exceeds the definition line.
 
 The same function body can be written on a separate line, minding the
-indentation.
+indentation. 
 
 @
 roundSubtract x y =
@@ -429,6 +429,7 @@ task is to specify the type of this function.
 49
 -}
 
+squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
 
 
@@ -448,10 +449,11 @@ Implement the function that takes an integer value and returns the next 'Int'.
   every type ｡.☆.*｡. No need to worry much about "error" here, just replace the
   function body with the proper implementation.
 -}
-next :: Int -> Int
-next x = error "next: not implemented!"
 
-{- |
+next :: Int -> Int
+next x = (+) x 1
+
+{- | 
 After you've implemented the function (or even during the implementation), you
 can run it in GHCi with your input. To do so, first, you need to load the module
 with the function using the ":l" (short for ":load") command.
@@ -490,7 +492,9 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit n = error "lastDigit: Not implemented!"
+
+lastDigit :: Int -> Int
+lastDigit n = mod (abs n) 10
 
 
 {- |
@@ -519,10 +523,14 @@ branches because it is an expression and it must always return some value.
 👩‍🔬 Due to lazy evaluation in Haskell, only the expression from the branch
   satisfying the check will be returned and, therefore, evaluated.
 -}
+
 closestToZero :: Int -> Int -> Int
-closestToZero x y = error "closestToZero: not implemented!"
-
-
+closestToZero x y = 
+  if ((abs x) <= (abs y))
+    then x
+  else y
+                        
+                    
 {- |
 =⚔️= Task 7
 Write a function that returns the middle number among three given numbers.
@@ -554,7 +562,11 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 
-mid x y z = error "mid: not implemented!"
+mid :: Int -> Int -> Int -> Int
+mid x y z
+  | y <= x && x <= z || z <= x && x <= y = x
+  | x <= y && y <= z || z <= y && y <= x = y
+  | otherwise = z
 
 {- |
 =⚔️= Task 8
@@ -566,10 +578,18 @@ Implement a function that checks whether a given character is a vowel.
 >>> isVowel 'a'
 True
 >>> isVowel 'x'
-False
+False 
 -}
-isVowel c = error "isVowel: not implemented!"
 
+isVowel :: Char -> Bool
+isVowel c
+  | c == 'a' = True
+  | c == 'e' = True
+  | c == 'i' = True
+  | c == 'o' = True
+  | c == 'u' = True
+  | c == 'y' = True
+  | otherwise = False
 
 {- |
 == Local variables and functions
@@ -585,7 +605,7 @@ Here goes an example:
 half :: Int -> Int
 half n = let halfN = div n 2 in halfN
 @
-
+ 
 ♫ NOTE: __let-in__ is also an expression! You can't just define variables; you
   also need to return some expression that may use defined variables.
 
@@ -632,9 +652,18 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 
-sumLast2 n = error "sumLast2: Not implemented!"
+sumLast2 :: Int -> Int
+sumLast2 n = lastDigit n + lastDigit (secondLastDigit n)
+  where
+    lastDigit :: Int -> Int
+    lastDigit n = (mod m 10)
+      where 
+        m = abs n
 
-
+    secondLastDigit :: Int -> Int
+    secondLastDigit n = lastDigit (div m 10)
+      where
+        m = abs n
 {- |
 =💣= Task 10*
 
@@ -648,14 +677,19 @@ Implement a function that returns the first digit of a given number.
 2
 >>> firstDigit 5623
 5
-
+ 
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit n = error "firstDigit: Not implemented!"
-
-
+firstDigit :: Int -> Int
+firstDigit n 
+  | m < 10 = m
+  | otherwise = firstDigit (rmLastDigit m)
+    where
+      rmLastDigit :: Int -> Int
+      rmLastDigit n = (div n 10)
+      m = abs n
 {-
 You did it! Now it is time to open a pull request with your changes
 and summon @vrom911 and @chshersh for the review!
