@@ -310,7 +310,7 @@ expressions in GHCi
 15
 
 >>> (3 + 5) < 10
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+True
 
 >>> True && False
 False
@@ -492,7 +492,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int
-lastDigit n =  mod n 10
+lastDigit n =  mod (abs n) 10
 
 
 {- |
@@ -558,12 +558,12 @@ Casual reminder about adding top-level type signatures for all functions :)
 
 mid :: Int -> Int -> Int -> Int
 mid x y z
-    | x > y && y > z = y
-    | x > z && z > y = z
-    | y > x && x > z = x
-    | y > z && z > x = z
-    | z > x && x > y = x
-    | z > y && y > x = y
+    | x >= y && y >= z = y
+    | x >= z && z >= y = z
+    | y >= x && x >= z = x
+    | y >= z && z >= x = z
+    | z >= x && x >= y = x
+    | z >= y && y >= x = y
     | otherwise =  error "Not exist"
 
 {- |
@@ -645,8 +645,9 @@ specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
 sumLast2 n =
-    let a = mod n 10
-        b = div n 10
+    let n' = abs n
+        a = mod n' 10
+        b = div n' 10
         c = mod b 10
     in a + c
 
@@ -669,7 +670,7 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
-firstDigit = read . (:[]) . head . show
+firstDigit = read . (:[]) . head . show . abs
 
 
 {-
