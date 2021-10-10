@@ -156,6 +156,7 @@ command in GHCi (short for ":type").
 For example:
 >>> :t False
 False :: Bool
+
 "::" in Haskell indicates that the type of the expression before, would be
 specified after these symbols.
 So, the output in this example means that 'False' has type 'Bool'.
@@ -168,21 +169,27 @@ True :: Bool
 'a' :: Char
 >>> :t 42
 42 :: Num p => p
+
 A pair of boolean and char:
 >>> :t (True, 'x')
 (True, 'x') :: (Bool, Char)
+
 Boolean negation:
 >>> :t not
 not :: Bool -> Bool
+
 Boolean 'and' operator:
 >>> :t (&&)
 (&&) :: Bool -> Bool -> Bool
+
 Addition of two numbers:
 >>> :t (+)
 (+) :: Num a => a -> a -> a
+
 Maximum of two values:
 >>> :t max
 max :: Ord a => a -> a -> a
+
 You might not understand each type at this moment, but don't worry! You've only
 started your Haskell journey. Types will become your friends soon.
 Primitive types in Haskell include 'Int', 'Bool', 'Double', 'Char' and many
@@ -220,6 +227,7 @@ ghci> 1 + 2
 ♫ NOTE: in reality, the type of the + operator is the following:
 >>> :t (+)
 (+) :: Num a => a -> a -> a
+
 > It may look scary to you, but we will cover all this 'Num' and "=>" later. For
   now, you can think of this as a polymorphic function — in this case, the
   operator, that can work with any numeric type, including 'Ints, 'Doubles,
@@ -259,6 +267,7 @@ True
 2
 >>> max (min 1 10) (min 5 7)
 5
+
 Because Haskell is a __statically-typed__ language, you see an error each time
 you try to mix values of different types in situations where you are not
 supposed to. Try evaluating the following expressions to see errors:
@@ -341,6 +350,7 @@ Implement the function that takes an integer value and returns the next 'Int'.
 11
 >>> next (-4)
 -3
+
 ♫ NOTE: The current function body is defined using a special function called
   "error". Don't panic, it is not broken. 'error' is like a placeholder, that
   evaluates to an exception if you try evaluating it. And it also magically fits
@@ -371,6 +381,7 @@ change it and want to check your changes.
 Implement a function that returns the last digit of a given number.
 >>> lastDigit 42
 2
+
 🕯 HINT: use the `mod` function
 ♫ NOTE: You can discover possible functions to use via Hoogle:
     https://hoogle.haskell.org/
@@ -392,12 +403,14 @@ Implement a function, that takes two numbers and returns the one closer to zero:
 5
 >>> closestToZero (-7) 3
 3
+
 🕯 HINT: You can use the 'abs' function and the __if-then-else__ Haskell syntax
   for this task.
 'if-then-else' is a language construct for an expression that returns only one
 branch depending on the checked condition. For example:
 >>> if even 10 then 0 else 1
 0
+
 The 'if-then-else' constructs must always have both __then__ and __else__
 branches because it is an expression and it must always return some value.
 👩‍🔬 Due to lazy evaluation in Haskell, only the expression from the branch
@@ -414,6 +427,7 @@ closestToZero x y = if abs x < abs y
 Write a function that returns the middle number among three given numbers.
 >>> mid 3 1 2
 2
+
 🕯 HINT: When checking multiple conditions, it is more convenient to use the
   language construct called "guards" instead of multiple nested 'if-then-else'
   expressions. The syntax of guards is the following:
@@ -498,6 +512,7 @@ Implement a function that returns the sum of the last two digits of a number.
 7
 >>> sumLast2 1
 1
+
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
@@ -521,6 +536,7 @@ Implement a function that returns the first digit of a given number.
 2
 >>> firstDigit 5623
 5
+
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
