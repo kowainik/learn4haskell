@@ -522,7 +522,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = if (abs x) < (abs y) then x else y
+closestToZero x y = if abs x < abs y then x else y
 
 
 {- |
@@ -558,13 +558,13 @@ Casual reminder about adding top-level type signatures for all functions :)
 
 mid :: Int -> Int -> Int -> Int
 mid x y z
-    | x > y > z = y
-    | x > z > y = z
-    | y > x > z = x
-    | y > z > x = z
-    | z > x > y = x
-    | z > y > x = y
-    | error "Not exist"
+    | x > y && y > z = y
+    | x > z && z > y = z
+    | y > x && x > z = x
+    | y > z && z > x = z
+    | z > x && x > y = x
+    | z > y && y > x = y
+    | otherwise =  error "Not exist"
 
 {- |
 =⚔️= Task 8
@@ -578,6 +578,7 @@ True
 >>> isVowel 'x'
 False
 -}
+
 isVowel :: Char -> Bool
 isVowel = flip elem "aeiou"
 
@@ -642,7 +643,7 @@ Implement a function that returns the sum of the last two digits of a number.
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
-
+sumLast2 :: Int -> Int
 sumLast2 n =
     let a = mod n 10
         b = div n 10
