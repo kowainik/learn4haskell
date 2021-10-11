@@ -207,6 +207,7 @@ With it, you can get a Haskell environment out-of-the-box.
 It's free to use up to 50 hours per month.
 
 Just prepend `gitpod.io#` to your repo URL and you are ready to go.
+It will take some time to initialize the workspace for the first time it opens.
 
 ### How to develop
 
