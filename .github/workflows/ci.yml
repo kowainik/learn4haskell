@@ -5,6 +5,7 @@ on:
     types: [synchronize, opened, reopened]
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
