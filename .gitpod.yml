@@ -28,6 +28,7 @@ tasks:
       ln -s /workspace/.cabal ~
     init: | 
       cabal update
+      make build
 
 vscode:
   extensions:
