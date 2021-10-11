@@ -1127,6 +1127,77 @@ Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
 
+class Fighting a where
+    fight' :: a -> a -> a
+    actions :: a -> [Actions]
+    checkHealth :: a -> FighterHealth
+    damageOpponent :: a -> a -> a
+    isDefeated :: a -> Bool
+    isWinnerOver :: a -> a -> Bool
+    drinkCoffee :: a -> a
+    shieldUp :: a -> a
+
+newtype FighterHealth = Health' Double deriving (Show, Eq)
+newtype FighterAttack = Attack' Double deriving (Show, Eq)
+newtype FighterDefense = Defense' Double deriving (Show, Eq)
+newtype SpellMultiplier = SpellMultiplier Double deriving (Show, Eq)
+
+data Actions = AttackEnemy | DrinkCoffee | CastVeilOfIgnorance deriving (Show, Enum, Eq)
+
+data Fighter = Knight' { kName :: Name, kHealth :: FighterHealth, kAttack :: FighterAttack, kDefense :: FighterDefense, kSpellFactor :: SpellMultiplier }
+             | Dragon' { dName :: Name, dHealth :: FighterHealth, dAttack :: FighterAttack }
+             deriving (Show, Eq)
+
+instance Fighting Fighter where
+  fight' :: Fighter -> Fighter -> Fighter
+  fight' a b = go a b (actions a) (actions b)
+    where
+      go p1 p2 [] actionsB = go p1 p2 (actions a) actionsB -- tried to use cycle above - unsuccessfully
+      go p1 p2 actionsA actionsB
+        | p2 `isWinnerOver` p1 = p2
+        | head actionsA == AttackEnemy = go (damageOpponent p1 p2) p1 actionsB remActionsA
+        | head actionsA == DrinkCoffee = go p2 (drinkCoffee p1) actionsB remActionsA
+        | head actionsA == CastVeilOfIgnorance = go p2 (shieldUp p1) actionsB remActionsA
+        | otherwise = error "oops"
+        where
+          remActionsA = tail actionsA
+
+  actions :: Fighter -> [Actions]
+  actions Knight' {} = [AttackEnemy, DrinkCoffee, CastVeilOfIgnorance]
+  actions Dragon' {} = [AttackEnemy]
+
+  checkHealth :: Fighter -> FighterHealth
+  checkHealth (Knight' _ h _ _ _) = h
+  checkHealth (Dragon' _ h _)     = h
+
+  isDefeated :: Fighter -> Bool
+  isDefeated f = health <= 0
+    where
+      (Health' health) = checkHealth f
+
+  isWinnerOver :: Fighter -> Fighter -> Bool
+  isWinnerOver p1 p2 = isDefeated p2
+
+  damageOpponent :: Fighter -> Fighter -> Fighter
+  damageOpponent (Knight' _ _ (Attack' att) _ _) d@(Dragon' _ (Health' h) _) = d { dHealth = Health' $ h - att }
+  damageOpponent (Dragon' _ _ (Attack' att)) k@(Knight' _ (Health' h) _ (Defense' def) _) = k { kHealth = Health' $ h - (if damage < 0 then 0 else damage) }
+    where
+      damage = att - def
+  damageOpponent (Dragon' _ _ (Attack' att)) d@(Dragon' _ (Health' h) _) = d { dHealth = Health' $ h - att }
+  damageOpponent (Knight' _ _ (Attack' att) _ _) k@(Knight' _ (Health' h) _ _ _) = k { kHealth = Health' $ h - att } -- knight battles, should the occur, are essentially bare knuckle fights with some coffee breaks and useless chanting in between the brawling
+
+  drinkCoffee :: Fighter -> Fighter
+  drinkCoffee k@(Knight' _ (Health' h) _ _ _) = k { kHealth = Health' $ h + 10 }
+  drinkCoffee _ = error "This fighter does not drink coffee."
+
+  shieldUp :: Fighter -> Fighter
+  shieldUp k@(Knight' _ _ _ (Defense' def) (SpellMultiplier sp)) = k { kDefense = Defense' $ def * sp }
+  shieldUp _ = error "This fighter is systematically disadvantaged and cannot increase their defenses."
+
+arthur = Knight' "Lance" (Health' 100) (Attack' 100) (Defense' 100) (SpellMultiplier 1.01)
+weakenedTohru = Dragon' "Tohru" (Health' 10000) (Attack' 222)
+-- fight' arthur weakenedTohru
+-- fight' weakenedTohru arthur
 
 {-
 You did it! Now it is time to open pull request with your changes
