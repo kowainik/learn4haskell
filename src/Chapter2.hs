@@ -142,42 +142,66 @@ List of booleans:
 String is a list of characters:
 >>> :t "some string"
 "some string" :: [Char]
+<<<<<<< HEAD
 
+=======
+>>>>>>> 77a0b12 (complete chpater 2)
 
 Empty list:
 >>> :t []
 [] :: [a]
+<<<<<<< HEAD
 
+=======
+>>>>>>> 77a0b12 (complete chpater 2)
 
 Append two lists:
 >>> :t (++)
 (++) :: [a] -> [a] -> [a]
+<<<<<<< HEAD
 
+=======
+>>>>>>> 77a0b12 (complete chpater 2)
 
 Prepend an element at the beginning of a list:
 >>> :t (:)
 (:) :: a -> [a] -> [a]
+<<<<<<< HEAD
 
+=======
+>>>>>>> 77a0b12 (complete chpater 2)
 
 Reverse a list:
 >>> :t reverse
 reverse :: [a] -> [a]
+<<<<<<< HEAD
 
+=======
+>>>>>>> 77a0b12 (complete chpater 2)
 
 Take first N elements of a list:
 >>> :t take
 take :: Int -> [a] -> [a]
+<<<<<<< HEAD
 
+=======
+>>>>>>> 77a0b12 (complete chpater 2)
 
 Create list from N same elements:
 >>> :t replicate
 replicate :: Int -> a -> [a]
+<<<<<<< HEAD
 
+=======
+>>>>>>> 77a0b12 (complete chpater 2)
 
 Split a string by line breaks:
 >>> :t lines
 lines :: String -> [String]
+<<<<<<< HEAD
 
+=======
+>>>>>>> 77a0b12 (complete chpater 2)
 
 Join a list of strings with line breaks:
 >>> :t unlines
@@ -196,6 +220,7 @@ to guess first, what you will see.
 
 >>> [10, 2] ++ [3, 1, 5]
 [10,2,3,1,5]
+<<<<<<< HEAD
 >>> [] ++ [1, 4]  -- [] is an empty list
 [1,4]
 >>> 3 : [1, 2]
@@ -220,6 +245,45 @@ to guess first, what you will see.
 [('a',1),('b',2),('c',3)]
 >>> words "Hello   Haskell     World!"  -- split the string into the list of words
 ["Hello","Haskell","World!"]
+=======
+
+>>> [] ++ [1, 4]  -- [] is an empty list
+[1,4]
+
+>>> 3 : [1, 2]
+[3,1,2]
+
+>>> 4 : 2 : [5, 10]  -- prepend multiple elements
+[4,2,5,10]
+
+>>> [1 .. 10]  -- list ranges
+[1,2,3,4,5,6,7,8,9,10]
+
+>>> [10 .. 1]
+[]
+
+>>> [10, 9 .. 1]  -- backwards list with explicit step
+[10,9,8,7,6,5,4,3,2,1]
+
+>>> length [4, 10, 5]  -- list length
+3
+
+>>> replicate 5 True
+[True,True,True,True,True]
+
+>>> take 5 "Hello, World!"
+"Hello"
+
+>>> drop 5 "Hello, World!"
+", World!"
+
+>>> zip "abc" [1, 2, 3]  -- convert two lists to a single list of pairs
+[('a',1),('b',2),('c',3)]
+
+>>> words "Hello   Haskell     World!"  -- split the string into the list of words
+["Hello","Haskell","World!"]
+
+>>>>>>> 77a0b12 (complete chpater 2)
 
 
 👩‍🔬 Haskell has a lot of syntax sugar. In the case with lists, any
@@ -345,9 +409,15 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
+<<<<<<< HEAD
 subList from to l
     | from < 0 || to < 0 || to < from = []
     | otherwise = take (to - from + 1) (drop from l)
+=======
+subList a b lst =
+  if a < 0 || b < 0 || a > b then []
+  else take (b - a + 1) $ drop a lst
+>>>>>>> 77a0b12 (complete chpater 2)
 
 {- |
 =⚔️= Task 4
@@ -359,10 +429,17 @@ Implement a function that returns only the first half of a given list.
 >>> firstHalf "bca"
 "b"
 -}
+<<<<<<< HEAD
 firstHalf :: [a] -> [a]
 firstHalf l =
     let halfLen = div (length l) 2
     in take halfLen l
+=======
+-- PUT THE FUNCTION TYPE IN HERE
+firstHalf :: [a] -> [a]
+firstHalf l = 
+  take ((length l) `div` 2) l
+>>>>>>> 77a0b12 (complete chpater 2)
 
 
 {- |
@@ -513,9 +590,16 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
+<<<<<<< HEAD
 isThird42 :: [Int] -> Bool
 isThird42 (_ : _ : 42 : _) = True
 isThird42 _ = False
+=======
+isThird42 :: (Eq a, Num a) => [a] -> Bool
+isThird42 (_ : _ : 42 : _) = True
+isThird42 _ = False
+  
+>>>>>>> 77a0b12 (complete chpater 2)
 
 
 {- |
@@ -639,7 +723,11 @@ Write a function that takes elements of a list only on even positions.
 takeEven :: [a] -> [a]
 takeEven [] = []
 takeEven [x] = [x]
+<<<<<<< HEAD
 takeEven (x : _ : xs) = x : takeEven xs
+=======
+takeEven (x:_:xs) = x : takeEven xs
+>>>>>>> 77a0b12 (complete chpater 2)
 
 {- |
 =🛡= Higher-order functions
@@ -746,7 +834,12 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
+<<<<<<< HEAD
 smartReplicate = concatMap (\x -> replicate x x)
+=======
+smartReplicate [] = []
+smartReplicate (x:xs) = replicate x x ++ smartReplicate xs
+>>>>>>> 77a0b12 (complete chpater 2)
 
 {- |
 =⚔️= Task 9
@@ -759,8 +852,13 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
+<<<<<<< HEAD
 contains :: Int -> [[Int]] -> [[Int]]
 contains x = filter (elem x)
+=======
+contains :: (Foldable t, Eq a) => a -> [t a] -> [t a]
+contains n lst = filter (\x -> elem n x) lst
+>>>>>>> 77a0b12 (complete chpater 2)
 
 
 {- |
@@ -802,12 +900,20 @@ mastered the skill of eta-reducing.
 divideTenBy :: Int -> Int
 divideTenBy = div 10
 
+<<<<<<< HEAD
 -- TODO: type ;)
 listElementsLessThan :: Int -> [Int] -> [Int]
 listElementsLessThan x = filter (< x)
 
 -- Can you eta-reduce this one???
 pairMul :: [Int] -> [Int] -> [Int]
+=======
+listElementsLessThan :: Ord a => a -> [a] -> [a]
+listElementsLessThan x = filter (< x)
+
+-- Can you eta-reduce this one???
+pairMul :: [Integer] -> [Integer] -> [Integer]
+>>>>>>> 77a0b12 (complete chpater 2)
 pairMul = zipWith (*)
 
 {- |
@@ -864,12 +970,18 @@ list.
 🕯 HINT: Use the 'cycle' function
 -}
 rotate :: Int -> [a] -> [a]
+<<<<<<< HEAD
 rotate n l
     | n < 0 = []
     | null l = []
     | otherwise =
         let len = length l
         in take len (drop (mod n len) (cycle l))
+=======
+rotate n lst = 
+  if n < 0 then []
+  else take (length lst) $ drop n $ cycle lst
+>>>>>>> 77a0b12 (complete chpater 2)
 
 {- |
 =💣= Task 12*
@@ -886,11 +998,20 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
+<<<<<<< HEAD
 rewind = go []
   where
     go :: [a] -> [a] -> [a]
     go res [] = res
     go res (x:xs) = go (x : res) xs
+=======
+rewind lst = 
+  go [] lst
+  where
+    go acc [] = acc
+    go acc (x:xs) =
+      go (x:acc) xs
+>>>>>>> 77a0b12 (complete chpater 2)
 
 
 {-
