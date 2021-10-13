@@ -513,7 +513,7 @@ instance Applicative List where
     (<*>) (Cons f fs) xs = fmap f xs `append` (fs <*> xs)
       where
         append Empty as = as
-        append (Cons x xs) ys = Cons x (xs `append` ys)
+        append (Cons a as) bs = Cons a (as `append` bs)
 
 {- |
 =🛡= Monad
@@ -642,7 +642,7 @@ instance Monad List where
     -- Cons x xs >>= f = fmap f (x <*> xs)
     Cons x xs >>= f = f x `append` (xs >>= f)
       where
-        append Empty as = as
+        append Empty _ = Empty
         append (Cons a as) bs = Cons a (as `append` bs)
 
 
@@ -663,7 +663,12 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+-- andM x y = (&&) <$> x <*> y -- nope
+-- also nope:
+andM x y = do
+  a <- x
+  b <- y
+  pure (a && b)
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
