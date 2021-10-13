@@ -487,10 +487,11 @@ Implement the Applicative instance for our 'Secret' data type from before.
 -}
 instance Applicative (Secret e) where
     pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+    pure = Reward
 
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
+    (<*>) (Trap e) _ = Trap e
+    (<*>) (Reward f) x = fmap f x
 
 {- |
 =⚔️= Task 5
@@ -503,7 +504,16 @@ Implement the 'Applicative' instance for our 'List' type.
   may also need to implement a few useful helper functions for our List
   type.
 -}
+instance Applicative List where
+    pure :: a -> List a
+    pure a = Cons a Empty
 
+    (<*>) :: List (a -> b) -> List a -> List b
+    (<*>) Empty _ = Empty
+    (<*>) (Cons f fs) xs = fmap f xs `append` (fs <*> xs)
+      where
+        append Empty as = as
+        append (Cons x xs) ys = Cons x (xs `append` ys)
 
 {- |
 =🛡= Monad
@@ -615,7 +625,8 @@ Implement the 'Monad' instance for our 'Secret' type.
 -}
 instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+    (>>=) (Trap e) _ = Trap e
+    Reward a >>= f = f a
 
 {- |
 =⚔️= Task 7
@@ -625,6 +636,14 @@ Implement the 'Monad' instance for our lists.
 🕯 HINT: You probably will need to implement a helper function (or
   maybe a few) to flatten lists of lists to a single list.
 -}
+instance Monad List where
+    (>>=) :: List a -> (a -> List b) -> List b
+    Empty >>= _ = Empty
+    -- Cons x xs >>= f = fmap f (x <*> xs)
+    Cons x xs >>= f = f x `append` (xs >>= f)
+      where
+        append Empty as = as
+        append (Cons a as) bs = Cons a (as `append` bs)
 
 
 {- |
