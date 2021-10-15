@@ -344,6 +344,14 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = MkBook
+    { title         :: String
+    , author        :: String
+    , isbn          :: String
+    , publisher     :: String
+    , numberOfPages :: Int
+    } deriving (Show)
+
 {- |
 =⚔️= Task 2
 
@@ -375,6 +383,22 @@ after the fight. The battle has the following possible outcomes:
 ♫ NOTE: In this task, you need to implement only a single round of the fight.
 
 -}
+
+type Health = Int
+type Attack = Int
+type Gold = Int
+
+data Knight = MkKnight { knightHealth :: Health, knightAttack :: Attack, knightGold :: Gold  } deriving (Show)
+data Monster = MkMonster { monsterHealth :: Health, monsterAttack :: Attack, monsterGold :: Gold  } deriving (Show)
+
+fight :: Monster -> Knight -> Gold
+fight m k
+  | knightHealthPoints > monsterHealthPoints = (knightGold k) + (monsterGold m)
+  | knightHealthPoints == monsterHealthPoints = knightGold k
+  | otherwise = -1
+  where
+      knightHealthPoints = knightHealth k
+      monsterHealthPoints = (monsterHealth m) - (knightAttack k)
 
 {- |
 =🛡= Sum types
@@ -462,6 +486,8 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data Meal = BreakFast | Brunch | Lunch | Tea | Supper | Dinner
+
 {- |
 =⚔️= Task 4
 
@@ -481,6 +507,56 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
+
+type Castle = String
+type Wall = Int
+data MainBuilding = Church | Library deriving (Show)
+data House = One | Two | Three | Four deriving (Show)
+
+data MagicalCity
+  = SimpleCity SimpleCity
+  | CastleCity CastleCity
+  deriving (Show)
+
+data SimpleCity = MkSimpleCity {
+  simpleCityMainBuilding :: MainBuilding,
+  simpleCityHouses :: [House]
+} deriving (Show)
+
+data CastleCity = MkCastleCity {
+  castle :: Castle,
+  walls :: Wall,
+  castleCityMainBuilding :: MainBuilding,
+  castleCityHouses :: [House]
+} deriving (Show)
+
+buildCastle :: MagicalCity -> Castle -> MagicalCity
+buildCastle city castle = case city of
+  SimpleCity city -> CastleCity $ MkCastleCity castle 0 (simpleCityMainBuilding city) (simpleCityHouses city)
+  CastleCity city -> CastleCity $ city { castle = castle }
+
+buildHouse :: MagicalCity -> House -> MagicalCity
+buildHouse city p = case city of
+  SimpleCity city -> SimpleCity $ city { simpleCityHouses = (simpleCityHouses city) ++ [p] }
+  CastleCity city -> CastleCity $ city { castleCityHouses = (castleCityHouses city) ++ [p] }
+
+buildWall :: MagicalCity -> MagicalCity
+buildWall city = case city of
+  SimpleCity city -> SimpleCity $ city
+  CastleCity city -> CastleCity $ if (peopleInHouses (castleCityHouses city)) >= 10
+    then city { walls = (walls city) + 1 }
+    else city
+
+peopleInHouses :: [House] -> Int
+peopleInHouses [] = 0
+peopleInHouses (x: xs) = (houseToInt x) + (peopleInHouses xs)
+
+houseToInt :: House -> Int
+houseToInt h = case h of
+  One -> 1
+  Two -> 2
+  Three -> 3
+  Four -> 4
 
 {-
 =🛡= Newtypes
@@ -562,22 +638,30 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+newtype PlayerHealth    = PlayerHealth    Int
+newtype PlayerArmor     = PlayerArmor     Int
+newtype PlayerAttack    = PlayerAttack    Int
+newtype PlayerDexterity = PlayerDexterity Int
+newtype PlayerStrength  = PlayerStrength  Int
+newtype PlayerDamage    = PlayerDamage    Int
+newtype PlayerDefense   = PlayerDefense   Int
+
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: PlayerHealth
+    , playerArmor     :: PlayerArmor
+    , playerAttack    :: PlayerAttack
+    , playerDexterity :: PlayerDexterity
+    , playerStrength  :: PlayerStrength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+calculatePlayerDamage :: PlayerAttack -> PlayerStrength -> PlayerDamage
+calculatePlayerDamage (PlayerAttack attack) (PlayerStrength strength) = PlayerDamage (attack + strength)
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDefense :: PlayerArmor -> PlayerDexterity -> PlayerDefense
+calculatePlayerDefense (PlayerArmor armor) (PlayerDexterity dexterity) = PlayerDefense (armor * dexterity)
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerHit :: PlayerDamage -> PlayerDefense -> PlayerHealth -> PlayerHealth
+calculatePlayerHit (PlayerDamage damage) (PlayerDefense defense) (PlayerHealth health) = PlayerHealth (health + defense - damage)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -755,6 +839,16 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
+data TreasureChest x = TreasureChest
+    { treasureChestGold :: Int
+    , treasureChestLoot :: x
+    }
+
+data DragonLair power chestLoot = MkDragonLair
+    { chest         :: Maybe (TreasureChest chestLoot)
+    , magicalPower  :: power
+    }
+
 {-
 =🛡= Typeclasses
 
@@ -909,9 +1003,24 @@ Implement instances of "Append" for the following types:
   ✧ *(Challenge): "Maybe" where append is appending of values inside "Just" constructors
 
 -}
-class Append a where
+class (Show a) => Append a where
     append :: a -> a -> a
 
+newtype Gold' = Gold' Int deriving (Show)
+
+instance Append Gold' where
+  append :: Gold' -> Gold' -> Gold'
+  append (Gold' a) (Gold' b) = Gold' (a + b)
+
+instance (Show a) => Append [a] where
+  append :: [a] -> [a] -> [a]
+  append a b = a ++ b
+
+instance (Append a, Show a) => Append (Maybe a) where
+  append :: Maybe a -> Maybe a -> Maybe a
+  append _ Nothing = Nothing
+  append Nothing _ = Nothing
+  append (Just x) (Just y) = Just (append x y)
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -973,6 +1082,27 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
+data DaysOfWeek =
+  Monday
+  | Tuesday
+  | Wednesday
+  | Thrusday
+  | Friday
+  | Saturday
+  | Sunday deriving (Show, Enum, Eq, Ord)
+
+isWeekend :: DaysOfWeek -> Bool
+isWeekend = (>=Saturday)
+
+nextDay :: DaysOfWeek -> DaysOfWeek
+nextDay = succ
+
+daysToParty :: DaysOfWeek -> Int
+daysToParty d
+  | d == Saturday = 6
+  | d == Sunday = 5
+  | otherwise = (fromEnum Friday) - (fromEnum d)
+
 {-
 =💣= Task 9*
 
@@ -985,20 +1115,20 @@ types, typeclasses and instances, describing the world, and write polymorphic
 functions using custom types and typeclasses.
 
 The task:
-When two fighters engage in a battle (knight fights the monster, duel of
+When two T9fighters engage in a battle (knight fights the monster, duel of
 knights, monsters fighting for a lair, etc.), both of them can perform different
-actions. They do their activities in turns, i.e. one fighter goes first, then
+actions. They do their activities in turns, i.e. one T9fighter goes first, then
 the other goes second, then the first again, and so on, until one of them wins.
 
 Both knight and monster have a sequence of actions they can do. A knight can
 attack, drink a health potion, cast a spell to increase their defence. A monster
-can only attack or run away. Each fighter starts with some list of actions they
+can only attack or run away. Each T9fighter starts with some list of actions they
 can do, performs them in sequence one after another, and when the sequence ends,
 the process starts from the beginning.
 
 Monsters have only health and attack, while knights also have a defence. So when
 knights are attacked, their health is decreased less, if they have more defence.
-The fight ends when the health of one fighter becomes zero or less.
+The fight ends when the health of one T9fighter becomes zero or less.
 
 As you can see, both monster and knight have similar characteristics, but they
 also have some differences. So it is possible to describe their common
@@ -1008,6 +1138,145 @@ Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
 
+newtype T9Health = T9Health Int deriving (Show)
+newtype T9Defense = T9Defense Int deriving (Show)
+newtype T9Attack = T9Attack Int deriving (Show)
+
+data T9KnightAction = KnightAttack | DrinkPotion T9Health | Spell T9Defense deriving (Show)
+data T9MonsterAction = MonsterAttack | RunAway deriving (Show)
+
+data T9Knight = T9Knight {
+    khealth   :: T9Health
+  , kdefense  :: T9Defense
+  , kattack   :: T9Attack
+  , kactions  :: [T9KnightAction]
+} deriving (Show)
+
+data T9Monster = T9Monster {
+    mhealth   :: T9Health
+  , mattack   :: T9Attack
+  , mactions  :: [T9MonsterAction]
+} deriving (Show)
+
+class T9Fighter a where
+  attackPoints :: a -> Int
+  healthPoints :: a -> Int
+  damage :: T9Attack -> a -> a
+  actionCount :: a -> Int
+  runAction :: a -> (a , T9Attack)
+
+instance T9Fighter T9Knight where
+  attackPoints :: T9Knight -> Int
+  attackPoints (T9Knight _ _ (T9Attack a) _) = a
+
+  healthPoints :: T9Knight -> Int
+  healthPoints (T9Knight (T9Health h) _ _ _) = h
+
+  actionCount :: T9Knight -> Int
+  actionCount k = length $ kactions k
+
+  damage :: T9Attack -> T9Knight -> T9Knight
+  damage (T9Attack points) k = k { khealth = T9Health newHealth }
+    where currentHealthPoints = healthValue (khealth k)
+          newHealth = currentHealthPoints - points
+
+  runAction :: T9Knight -> (T9Knight, T9Attack)
+  runAction knight = case action knight of
+    Nothing -> (newKnight, T9Attack 0)
+    Just KnightAttack -> (newKnight, kattack knight)
+    Just (DrinkPotion (T9Health h)) -> (newKnight { khealth = T9Health $ healthValue (khealth newKnight) + h } , T9Attack 0)
+    Just (Spell (T9Defense d)) -> (newKnight { kdefense = T9Defense $ defenseValue (kdefense newKnight) + d }, T9Attack 0)
+    where action :: T9Knight -> Maybe T9KnightAction
+          action (T9Knight _ _ _ actions) = if null actions then Nothing else Just (head actions)
+          newKnight :: T9Knight
+          newKnight = knight { kactions = nextActions knight}
+          nextActions :: T9Knight -> [T9KnightAction]
+          nextActions (T9Knight _ _ _ actions) = drop 1 actions
+
+instance T9Fighter T9Monster where
+  attackPoints :: T9Monster -> Int
+  attackPoints (T9Monster _ (T9Attack a) _) = a
+
+  healthPoints :: T9Monster -> Int
+  healthPoints (T9Monster (T9Health h) _ _) = h
+
+  actionCount :: T9Monster -> Int
+  actionCount k = length $ mactions k
+
+  damage :: T9Attack -> T9Monster -> T9Monster
+  damage (T9Attack points) k = k { mhealth = T9Health newHealth }
+    where currentHealthPoints = healthValue (mhealth k)
+          newHealth = currentHealthPoints - points
+
+  runAction :: T9Monster -> (T9Monster, T9Attack)
+  runAction monster = case action monster of
+    Nothing -> (newMonster, T9Attack 0)
+    Just MonsterAttack -> (newMonster, mattack monster)
+    Just RunAway -> (newMonster, T9Attack 0)
+    where action :: T9Monster -> Maybe T9MonsterAction
+          action (T9Monster _ _ actions) = if null actions then Nothing else Just (head actions)
+          newMonster :: T9Monster
+          newMonster = monster { mactions = nextActions monster}
+          nextActions :: T9Monster -> [T9MonsterAction]
+          nextActions (T9Monster _ _ actions) = drop 1 actions
+
+-- Main function
+battle :: (T9Fighter first, T9Fighter second) => first -> second -> Maybe (Either first second)
+battle attacker opponent
+  | actionCount attacker == 0 && actionCount opponent == 0 = Nothing
+  | healthPoints damagedOpponent <= 0 = Just $ Left newAttacker
+  | healthPoints newAttacker <= 0 = Just $ Right damagedOpponent
+  | healthPoints damagedAttacker <= 0 = Just $ Right newOpponent
+  | healthPoints newOpponent <= 0 = Just $ Left damagedAttacker
+  | otherwise = battle damagedAttacker newOpponent
+  where firstTurn = runAction attacker
+        newAttacker = fst firstTurn
+        damagedOpponent = damage (snd firstTurn) opponent
+        secondTurn = runAction damagedOpponent
+        newOpponent = fst secondTurn
+        damagedAttacker = damage (snd secondTurn) newAttacker
+
+-- Helpers
+healthValue :: T9Health -> Int
+healthValue (T9Health a) = a
+
+attackValue :: T9Attack -> Int
+attackValue (T9Attack a) = a
+
+defenseValue :: T9Defense -> Int
+defenseValue (T9Defense a) = a
+
+actionsCount :: T9Knight -> Int
+actionsCount (T9Knight _ _ _ actions) = length actions
+
+{-
+Testing Setup ::
+
+🛡 Tie (Nothing result)
+attacker = T9Knight (T9Health 100) (T9Defense 0) (T9Attack 50) [KnightAttack]
+opponent = T9Monster (T9Health 100) (T9Attack 50) [MonsterAttack]
+battle attacker opponent
+# Nothing
+
+🛡 Win Knight
+attacker = T9Knight (T9Health 1000) (T9Defense 0) (T9Attack 50) [DrinkPotion (T9Health 11), KnightAttack]
+opponent = T9Monster (T9Health 10) (T9Attack 50) [MonsterAttack]
+battle attacker opponent
+# Just (Left (T9Knight {khealth = T9Health 961, kdefense = T9Defense 0, kattack = T9Attack 50, kactions = []}))
+
+🛡 Win Monster
+attacker = T9Knight (T9Health 100) (T9Defense 0) (T9Attack 50) [KnightAttack]
+opponent = T9Monster (T9Health 1000) (T9Attack 150) [MonsterAttack]
+battle attacker opponent
+# Just (Right (T9Monster {mhealth = T9Health 950, mattack = T9Attack 150, mactions = []}))
+
+🛡 Multiple actions, Win Knight
+attacker = T9Knight (T9Health 100) (T9Defense 0) (T9Attack 99) [KnightAttack, KnightAttack, KnightAttack]
+opponent = T9Monster (T9Health 200) (T9Attack 1) [MonsterAttack, MonsterAttack]
+battle attacker opponent
+# Just (Left (T9Knight {khealth = T9Health 98, kdefense = T9Defense 0, kattack = T9Attack 99, kactions = []}))
+
+-}
 
 {-
 You did it! Now it is time to open pull request with your changes
