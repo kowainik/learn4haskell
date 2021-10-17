@@ -209,31 +209,31 @@ So, the output in this example means that 'False' has type 'Bool'.
 > Try to guess first and then compare your expectations with GHCi output
 
 >>> :t True
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+True :: Bool
 >>> :t 'a'
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+'a' :: Char
 >>> :t 42
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+42 :: Num p => p
 
 A pair of boolean and char:
 >>> :t (True, 'x')
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(True, 'x') :: (Bool, Char)
 
 Boolean negation:
 >>> :t not
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+not :: Bool -> Bool
 
 Boolean 'and' operator:
 >>> :t (&&)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(&&) :: Bool -> Bool -> Bool
 
 Addition of two numbers:
 >>> :t (+)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(+) :: Num a => a -> a -> a
 
 Maximum of two values:
 >>> :t max
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+max :: Ord a => a -> a -> a
 
 You might not understand each type at this moment, but don't worry! You've only
 started your Haskell journey. Types will become your friends soon.
@@ -301,43 +301,43 @@ expressions in GHCi
   functions and operators first. Remember this from the previous task? ;)
 
 >>> 1 + 2
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(1 + 2) :: Num a => a
 
 >>> 10 - 15
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(10 - 15) :: Num a => a 
 
 >>> 10 - (-5)  -- negative constants require ()
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(10 - (-5)) :: Num a => a
 
 >>> (3 + 5) < 10
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+((3 + 5) < 10) :: Bool
 
 >>> True && False
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(True && False) :: Bool
 
 >>> 10 < 20 || 20 < 5
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(10 < 20 || 20 < 5) :: Bool
 
 >>> 2 ^ 10  -- power
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+(2 ^ 10) :: Num a => a
 
 >>> not False
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+not False :: Bool
 
 >>> div 20 3  -- integral division
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+div 20 3 :: Integral a => a
 
 >>> mod 20 3  -- integral division remainder
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+mod 20 3 :: Integral a => a
 
 >>> max 4 10
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+max 4 10 :: (Ord a, Num a) => a
 
 >>> min 5 (max 1 2)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+min 5 (max 1 2) :: (Ord a, Num a) => a
 
 >>> max (min 1 10) (min 5 7)
-<INSERT THE RESULT INSTEAD OF THE TEXT>
+max (min 1 10) (min 5 7) :: (Ord a, Num a) => a
 
 Because Haskell is a __statically-typed__ language, you see an error each time
 you try to mix values of different types in situations where you are not
