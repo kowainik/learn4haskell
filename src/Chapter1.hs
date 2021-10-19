@@ -428,7 +428,7 @@ task is to specify the type of this function.
 >>> squareSum 3 4
 49
 -}
-
+squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
 
 
@@ -449,7 +449,7 @@ Implement the function that takes an integer value and returns the next 'Int'.
   function body with the proper implementation.
 -}
 next :: Int -> Int
-next x = error "next: not implemented!"
+next x = x + 1
 
 {- |
 After you've implemented the function (or even during the implementation), you
@@ -490,7 +490,8 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit n = error "lastDigit: Not implemented!"
+lastDigit :: Int -> Int
+lastDigit n = mod (abs n) 10
 
 
 {- |
@@ -520,7 +521,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = error "closestToZero: not implemented!"
+closestToZero x y = if (abs x > abs y) then y else x
 
 
 {- |
@@ -553,8 +554,12 @@ value after "=" where the condition is true.
 
 Casual reminder about adding top-level type signatures for all functions :)
 -}
-
-mid x y z = error "mid: not implemented!"
+mid :: Int -> Int -> Int -> Int
+mid x y z
+    | x >= y && x >= z && y >= z = y
+    | x >= y && x >= z && y <= z = z
+    | x <= y && x <= z && z <= y = z
+    | otherwise                  = x
 
 {- |
 =⚔️= Task 8
@@ -568,7 +573,14 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel c = error "isVowel: not implemented!"
+isVowel :: Char -> Bool
+isVowel c
+    | c == 'a' = True
+    | c == 'e' = True
+    | c == 'i' = True
+    | c == 'o' = True
+    | c == 'u' = True
+    | otherwise = False
 
 
 {- |
@@ -631,9 +643,8 @@ Implement a function that returns the sum of the last two digits of a number.
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
-
-sumLast2 n = error "sumLast2: Not implemented!"
-
+sumLast2 :: Int -> Int
+sumLast2 n = ((mod (abs n) 100) `div` 10) + (mod (abs n) 10)
 
 {- |
 =💣= Task 10*
@@ -652,8 +663,8 @@ Implement a function that returns the first digit of a given number.
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
-
-firstDigit n = error "firstDigit: Not implemented!"
+firstDigit :: Int -> Int
+firstDigit n = if (abs n) < 10 then n else firstDigit ((abs n) `div` 10)
 
 
 {-
