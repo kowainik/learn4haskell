@@ -491,7 +491,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int
-lastDigit n = mod n 10
+lastDigit n = mod (abs n) 10
 
 
 {- |
@@ -573,9 +573,12 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c
-  | c == 'a' || c == 'i' || c == 'u' || c == 'e' || c == 'o' = True
-  | otherwise = False
+isVowel c =
+        c == 'a' || c == 'A'
+    ||  c == 'i' || c == 'I'
+    ||  c == 'u' || c == 'U'
+    ||  c == 'e' || c == 'E'
+    ||  c == 'o' || c == 'O'
 
 
 {- |
@@ -641,8 +644,8 @@ specifying complex expressions.
 sumLast2 :: Int -> Int
 sumLast2 n = last1 + last2
   where
-    last1 = mod n 10
-    last2 = div (mod n 100) 10
+    modulo100 = mod (abs n) 100
+    (last2, last1) = divMod modulo100 10
 
 
 {- |
