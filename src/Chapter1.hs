@@ -429,6 +429,7 @@ task is to specify the type of this function.
 49
 -}
 
+squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
 
 
@@ -449,7 +450,7 @@ Implement the function that takes an integer value and returns the next 'Int'.
   function body with the proper implementation.
 -}
 next :: Int -> Int
-next x = error "next: not implemented!"
+next x = x + 1 
 
 {- |
 After you've implemented the function (or even during the implementation), you
@@ -490,7 +491,8 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit n = error "lastDigit: Not implemented!"
+lastDigit :: Integer -> Integer
+lastDigit n = n `mod` 10 
 
 
 {- |
@@ -520,11 +522,10 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = error "closestToZero: not implemented!"
-
+closestToZero x y = if abs(x) < abs(y) then x else y
 
 {- |
-=⚔️= Task 7
+⚔️= Task 7
 Write a function that returns the middle number among three given numbers.
 
 >>> mid 3 1 2
@@ -554,7 +555,14 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 
-mid x y z = error "mid: not implemented!"
+mid :: Int -> Int -> Int -> Int
+mid x y z 
+    | x > y && x < z = x
+    | x > z && x < y = x
+    | y > x && y < z = y
+    | y > z && y < x = y
+    | z > x && z < y = z
+    | z > y && z < x = z
 
 {- |
 =⚔️= Task 8
@@ -568,8 +576,14 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel c = error "isVowel: not implemented!"
-
+isVowel :: Char -> Bool
+isVowel c 
+    | c == 'a' = True
+    | c == 'e' = True
+    | c == 'i' = True
+    | c == 'o' = True
+    | c == 'u' = True
+    | otherwise = False
 
 {- |
 == Local variables and functions
@@ -632,9 +646,17 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 
-sumLast2 n = error "sumLast2: Not implemented!"
+sumLast2 :: Int -> Int
+sumLast2 n  
+    | if n > 9 = sumTens n 
+    | otherwise = n 
+  where
+    sumTens :: Int -> Int
+    sumTens n = makeSum (floor(n * 0.1)) (n % 10) 
 
-
+    makeSum :: Int -> Int -> Int
+    makeSum x y = x + y
+    
 {- |
 =💣= Task 10*
 
