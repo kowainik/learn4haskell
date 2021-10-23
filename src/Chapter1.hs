@@ -673,6 +673,7 @@ aren't ready for this boss yet!
 firstDigit :: Int -> Int 
 firstDigit n 
     | n > 0 && n < 10 = n
+    | n < 0           = firstDigit (n * (-1))
     | otherwise       = removeLastDigit 
     where removeLastDigit = firstDigit (n `div` 10) 
 
