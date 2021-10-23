@@ -647,16 +647,11 @@ specifying complex expressions.
 -}
 
 sumLast2 :: Int -> Int
-sumLast2 n  
-    | if n > 9 = sumTens n 
-    | otherwise = n 
+sumLast2 n = last + penultimate  
   where
-    sumTens :: Int -> Int
-    sumTens n = makeSum (floor(n * 0.1)) (n % 10) 
-
-    makeSum :: Int -> Int -> Int
-    makeSum x y = x + y
-    
+    getLast     = mod n 100
+    last        = mod getLast 10  
+    penultimate = div getLast 10
 {- |
 =💣= Task 10*
 
@@ -675,7 +670,11 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit n = error "firstDigit: Not implemented!"
+firstDigit :: Int -> Int 
+firstDigit n 
+    | n > 0 && n < 10 = n
+    | otherwise       = removeLastDigit 
+    where removeLastDigit = firstDigit (n `div` 10) 
 
 
 {-
