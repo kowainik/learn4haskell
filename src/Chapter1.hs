@@ -301,43 +301,43 @@ expressions in GHCi
   functions and operators first. Remember this from the previous task? ;)
 
 >>> 1 + 2
-(1 + 2) :: Num a => a
+3
 
 >>> 10 - 15
-(10 - 15) :: Num a => a 
+-5
 
 >>> 10 - (-5)  -- negative constants require ()
-(10 - (-5)) :: Num a => a
+15
 
 >>> (3 + 5) < 10
-((3 + 5) < 10) :: Bool
+True
 
 >>> True && False
-(True && False) :: Bool
+False
 
 >>> 10 < 20 || 20 < 5
-(10 < 20 || 20 < 5) :: Bool
+True
 
 >>> 2 ^ 10  -- power
-(2 ^ 10) :: Num a => a
+1024
 
 >>> not False
-not False :: Bool
+True
 
 >>> div 20 3  -- integral division
-div 20 3 :: Integral a => a
+6
 
 >>> mod 20 3  -- integral division remainder
-mod 20 3 :: Integral a => a
+2
 
 >>> max 4 10
-max 4 10 :: (Ord a, Num a) => a
+10
 
 >>> min 5 (max 1 2)
-min 5 (max 1 2) :: (Ord a, Num a) => a
+2
 
 >>> max (min 1 10) (min 5 7)
-max (min 1 10) (min 5 7) :: (Ord a, Num a) => a
+5
 
 Because Haskell is a __statically-typed__ language, you see an error each time
 you try to mix values of different types in situations where you are not
