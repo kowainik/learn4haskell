@@ -645,11 +645,11 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
-sumLast2 n = lastDigit + secondLastDigit
+sumLast2 n = lastDigitResult + secondLastDigit
     where
+        lastDigitResult = lastDigit n
         lastTwoDigits = mod (abs n) 100
-        lastDigit = mod (abs n) 10
-        secondLastDigit = div (lastTwoDigits - lastDigit) 10
+        secondLastDigit = div (lastTwoDigits - lastDigitResult) 10
 
 
 {- |
