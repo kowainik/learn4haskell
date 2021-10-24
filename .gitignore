@@ -53,3 +53,4 @@ TAGS
 
 # other
 .DS_Store
+.env
