@@ -521,7 +521,14 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = error "closestToZero: not implemented!"
+closestToZero x y = min (abs x) (abs y)
+
+-- alternate implementation using if-then-else
+closestToZero' :: Int -> Int -> Int
+closestToZero' x y = if ((abs x) - (abs y) < 0) then
+    x
+  else
+    y
 
 
 {- |
