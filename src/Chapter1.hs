@@ -650,9 +650,11 @@ Implement a function that returns the sum of the last two digits of a number.
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
-
-sumLast2 n = error "sumLast2: Not implemented!"
-
+sumLast2 :: Integral a => a -> a
+sumLast2 n = let onesDigit = n `mod` 10
+                 tensDigit = (n `mod ` 100) `div` 10
+             in
+                 onesDigit + tensDigit
 
 {- |
 =💣= Task 10*
