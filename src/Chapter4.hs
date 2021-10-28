@@ -400,7 +400,7 @@ instance Applicative Maybe where
     pure :: a -> Maybe a
     pure = Just
 
-    (<*>) :: Just (a -> b) -> Just a -> Just b
+    (<*>) :: Maybe (a -> b) -> Maybe a -> Maybe b
     Nothing <*> _ = Nothing
     Just f <*> x = fmap f x
 @
