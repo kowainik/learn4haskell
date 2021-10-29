@@ -763,7 +763,7 @@ the list with only those lists that contain a passed element.
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
 contains :: (Eq a) => a -> [[a]] -> [[a]]
-contains x = filter (\y -> x `elem` y) 
+contains x = filter (elem x) 
 
 
 {- |
@@ -805,7 +805,7 @@ mastered the skill of eta-reducing.
 divideTenBy :: Int -> Int
 divideTenBy = div 10
 
-listElementsLessThan :: (Ord a) => a -> [a] -> [a]
+listElementsLessThan :: (Num a, Ord a) => a -> [a] -> [a]
 listElementsLessThan x = filter (< x)
 
 -- Can you eta-reduce this one???
@@ -867,7 +867,7 @@ list.
 -}
 rotate :: Int -> [a] -> [a]
 rotate n _ | n < 0 = []
-rotate n xs        = take (length xs) (drop n $ cycle xs)
+rotate n xs        = take (length xs) (drop (n `mod` length xs) $ cycle xs)
 
 {- |
 =💣= Task 12*
@@ -884,8 +884,11 @@ and reverses it.
   cheating!
 -}
 rewind :: [a] -> [a]
-rewind []     = []
-rewind (x:xs) = rewind xs ++ [x]
+rewind [] = []
+rewind l  = go l []
+    where 
+      go [] acc     = acc
+      go (x:xs) acc = go xs (x:acc)
 
 {-
 You did it! Now it is time to open pull request with your changes
