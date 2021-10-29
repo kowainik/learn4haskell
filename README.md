@@ -208,7 +208,7 @@ It's free to use up to 50 hours per month.
 
 Just prepend `gitpod.io#` to your repo URL and you are ready to go.
 It will take some time to initialize the workspace for the first time it opens.
-It only keeps changes under `/workspace`.
+It only keeps changes under `/workspace`, and it will be deleted after a period of inactivity unless it's pinned.
 
 ### How to develop
 
