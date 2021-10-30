@@ -364,7 +364,7 @@ Implement a function that returns only the first half of a given list.
 -}
 -- PUT THE FUNCTION TYPE IN HERE
 firstHalf :: [a] -> [a]
-firstHalf l = take ((length l) `div` 2) l
+firstHalf l = take (length l `div` 2) l
 
 
 {- |
