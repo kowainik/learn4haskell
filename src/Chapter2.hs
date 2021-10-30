@@ -350,7 +350,7 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList start end l = drop start $ take (end+1) l
+subList start end l = drop start $ take (end + 1) l
 
 {- |
 =⚔️= Task 4
