@@ -140,7 +140,7 @@ List of booleans:
 
 String is a list of characters:
 >>> :t "some string"
-"some string" :: String
+"some string" :: [Char]
 
 Empty list:
 >>> :t []
@@ -168,7 +168,7 @@ replicate :: Int -> a -> [a]
 
 Split a string by line breaks:
 >>> :t lines
-line :: String -> [String]
+lines :: String -> [String]
 
 Join a list of strings with line breaks:
 >>> :t unlines
@@ -337,10 +337,8 @@ ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
 subList x y a 
-    | x < 0 || y < 0 = []
-    | x < y = take ((y - x)+ 1) (drop x a)
-    | x > y = take ((x - y)+ 1) (drop y a)
-    | otherwise = []
+    | x < 0 || y < 0 || x > y = []
+    | otherwise = take ((y - x)+ 1) (drop x a)
 {- |
 =⚔️= Task 4
 
@@ -790,7 +788,7 @@ Let's now try to eta-reduce some of the functions and ensure that we
 mastered the skill of eta-reducing.
 -}
 divideTenBy :: Int -> Int
-divideTenBy x = div 10
+divideTenBy = div 10
 
 -- TODO: type ;)
 listElementsLessThan :: Int -> [Int] -> [Int]
