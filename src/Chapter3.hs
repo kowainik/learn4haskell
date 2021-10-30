@@ -1,3 +1,6 @@
+{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {- 👋 Welcome to Chapter Three of our journey, Courageous Knight!
 
 Glad to see you back for more challenges. You fought great for the glory of the
@@ -52,7 +55,7 @@ provide more top-level type signatures, especially when learning Haskell.
 {-# LANGUAGE InstanceSigs #-}
 
 module Chapter3 where
-
+import Control.Applicative ((<|>))
 {-
 =🛡= Types in Haskell
 
@@ -344,6 +347,14 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book
+  = Book
+    { title :: String
+    ,  author :: String
+    , pages :: Integer
+    , contents :: [[String]]
+    }
+
 {- |
 =⚔️= Task 2
 
@@ -375,6 +386,26 @@ after the fight. The battle has the following possible outcomes:
 ♫ NOTE: In this task, you need to implement only a single round of the fight.
 
 -}
+
+-- data Knight
+--   = Knight
+--     { kHP :: Int
+--     , kAtt :: Int
+--     , kGld :: Int
+--     }
+
+-- data Monster
+--   = Monster
+--     { mHP :: Int
+--     , mAtt :: Int
+--     , mGld :: Int
+--     }
+
+-- fightStep :: Knight -> Monster -> Int
+-- fightStep Knight{..} Monster{..}
+--   | mHP - kAtt <= 0 = kGld + mGld
+--   | kHP - mAtt <= 0 = (-1)
+--   | otherwise = kGld
 
 {- |
 =🛡= Sum types
@@ -462,6 +493,8 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data MealType = Breakfast | Morgenfast | Dopoludniafast | Hommikfast
+
 {- |
 =⚔️= Task 4
 
@@ -481,6 +514,40 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
+
+data House = KorobkaIzPodHolodilnika | StudiaNaParnase | Appartamenty | KvartiraOtBabushki
+data Place = Church | Library
+
+data City
+  = Castle String Place [House]
+  | CastleWalls String Place [House]
+  | Sosnovka Place [House]
+
+buildCastle :: City -> String -> City
+buildCastle (Castle _ p hs) n = Castle n p hs
+buildCastle (CastleWalls _ p hs) n = CastleWalls n p hs
+buildCastle (Sosnovka p hs) n = Castle n p hs
+
+buildHouse :: City -> House -> City
+buildHouse (Castle n p hs) h = Castle n p (h:hs)
+buildHouse (CastleWalls n p hs) h = CastleWalls n p (h:hs)
+buildHouse (Sosnovka p hs) h = Sosnovka p (h:hs)
+
+buildWalls :: City -> Either String City
+buildWalls (Castle n p hs) = if population hs < 10
+  then Left "Not enough people"
+  else Right (CastleWalls n p hs)
+buildWalls (CastleWalls n p hs) = if population hs < 10
+  then Left "Not enough people"
+  else Right (CastleWalls n p hs)
+buildWalls (Sosnovka p hs) = Left "cant build walls w/o castle"
+
+population :: [House] -> Int
+population [] = 0
+population (KorobkaIzPodHolodilnika:hs) = 1 + population hs
+population (StudiaNaParnase:hs) = 2 + population hs
+population (Appartamenty:hs) = 3 + population hs
+population (KvartiraOtBabushki:hs) = 4 + population hs
 
 {-
 =🛡= Newtypes
@@ -562,22 +629,33 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+
+
+newtype ARM = ARM Int
+newtype STR = STR Int
+newtype DEX = DEX Int
+
+newtype HP = HP Int
+newtype ATT = ATT Int
+newtype DMG = DMG Int
+newtype DEF = DEF Int
+
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: HP
+    , playerArmor     :: ARM
+    , playerAttack    :: ATT
+    , playerDexterity :: DEX
+    , playerStrength  :: STR
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+calculatePlayerDamage :: ATT -> STR -> DMG
+calculatePlayerDamage (ATT attack) (STR strength) = DMG $ attack + strength
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDefense :: ARM -> DEX -> DEF
+calculatePlayerDefense (ARM armor) (DEX dexterity) = DEF $ armor * dexterity
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerHit :: DMG -> DEF -> HP -> HP
+calculatePlayerHit (DMG damage) (DEF defense) (HP health) = HP $ health + defense - damage
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -755,6 +833,12 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
+data Dragon p = Dragon {sleeping :: Bool, power :: p}
+
+data Chest l = Chest {gold :: Int, loot :: l}
+
+data Lair p l = Lair {dragon :: Dragon p, chest :: Maybe (Chest l)}
+
 {-
 =🛡= Typeclasses
 
@@ -909,9 +993,20 @@ Implement instances of "Append" for the following types:
   ✧ *(Challenge): "Maybe" where append is appending of values inside "Just" constructors
 
 -}
+
+newtype Gold = Gold Int
+
 class Append a where
     append :: a -> a -> a
 
+instance Append Gold where
+  append (Gold x) (Gold y) = Gold $ x + y
+
+instance Append [a] where
+  append = (++)
+
+instance (Append a) => Append (Maybe a) where
+  append l r = append <$> l <*> r <|> l <|> r
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -972,6 +1067,19 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
+data Weekday = Mon | Tuey | Wed | Thu | Fri | Sat | Sun deriving (Eq, Show, Enum, Bounded)
+
+daysToParty :: Weekday -> Int
+daysToParty d = succ $ (fromEnum Fri - fromEnum d + 6) `mod` 7
+
+isWeekend :: Weekday -> Bool
+isWeekend Sat = True
+isWeekend Sun = True
+isWeekend _ = False
+
+nextDay :: Weekday -> Weekday
+nextDay Sun = Mon
+nextDay d = succ d
 
 {-
 =💣= Task 9*
@@ -1008,6 +1116,78 @@ Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
 
+
+data Knight = Knight {kHP  :: Int, kDef :: Int, kDmg :: Int} deriving Show
+data Monster = Monster {mHP :: Int, mDmg :: Int} deriving Show
+data Action = Hits | DrinksPotionInFrontOf | ShieldingUpAgainst | TryingToRunFrom deriving Show
+
+class Creature c where
+  hp :: c -> Int
+  dmg :: c -> Int
+  hit :: Creature d => d -> c -> c
+  heal :: c -> Int -> c
+  def :: c -> Int -> c
+  actions :: c -> [Action]
+
+instance Creature Monster where
+  hp = mHP
+  dmg = mDmg
+  hit a Monster{..} = Monster (mHP - dmg a) mDmg
+  heal = const
+  def = const
+  actions _ = cycle [Hits, TryingToRunFrom]
+
+instance Creature Knight where
+  hp = kHP
+  dmg = kDmg
+  hit a Knight{..} = Knight (kHP - max 1 (dmg a - kDef)) kDef kDmg
+  heal Knight{..} i = Knight (kHP + i) kDef kDmg
+  def Knight{..} i = Knight kHP (kDef + i) kDmg
+  actions _ = cycle [Hits, DrinksPotionInFrontOf, ShieldingUpAgainst]
+
+data GameState f s
+  = GameState
+    { f :: f
+    , s :: s
+    , t :: Int
+    }
+
+step :: (Creature f, Creature s) => GameState f s -> Action -> GameState f s
+step GameState{..} a
+  | even t = let (f', s') = action a f s in GameState f' s' (t + 1)
+  | odd t = let (s', f') = action a s f in GameState f' s' (t + 1)
+
+action :: (Creature f, Creature s) => Action -> f -> s -> (f, s)
+action Hits = attack
+action DrinksPotionInFrontOf = drink
+action ShieldingUpAgainst = boostDef
+action TryingToRunFrom = run
+
+attack :: (Creature f, Creature s) => f -> s -> (f, s)
+attack f s = (f, f `hit` s)
+
+drink :: (Creature f, Creature s) => f -> s -> (f, s)
+drink f s = (f `heal` 1, s)
+
+boostDef :: (Creature f, Creature s) => f -> s -> (f, s)
+boostDef f s = (f `def` 1, s)
+
+run :: (Creature f, Creature s) => f -> s -> (f, s)
+run f s = (f, s)
+
+fight :: (Creature f, Show f, Show s, Creature s) => f -> s -> String
+fight a b = let
+    initialState = GameState a b 0
+    script = merge (actions a) (actions b)
+  in go initialState script where
+
+    merge [] ys = ys
+    merge (x:xs) ys = x:merge ys xs
+
+    go state@GameState{..} script
+      | hp f <= 0 = "second fighter: " <> show s <> " wins!"
+      | hp s <= 0 = "first fighter: " <> show f <> " wins!"
+      | otherwise = let state' = step state (head script) in go state' (tail script)
 
 {-
 You did it! Now it is time to open pull request with your changes
