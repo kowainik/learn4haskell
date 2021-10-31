@@ -511,9 +511,6 @@ instance Applicative List where
     (<*>) :: List (a -> b) -> List a -> List b
     (<*>) Empty _ = Empty
     (<*>) (Cons f fs) xs = fmap f xs `append` (fs <*> xs)
-      where
-        append Empty as = as
-        append (Cons a as) bs = Cons a (as `append` bs)
 
 {- |
 =🛡= Monad
@@ -636,15 +633,16 @@ Implement the 'Monad' instance for our lists.
 🕯 HINT: You probably will need to implement a helper function (or
   maybe a few) to flatten lists of lists to a single list.
 -}
+
+append :: List a -> b -> List a
+append Empty _ = Empty
+append (Cons a as) bs = Cons a (as `append` bs)
+
 instance Monad List where
     (>>=) :: List a -> (a -> List b) -> List b
     Empty >>= _ = Empty
     -- Cons x xs >>= f = fmap f (x <*> xs)
     Cons x xs >>= f = f x `append` (xs >>= f)
-      where
-        append Empty _ = Empty
-        append (Cons a as) bs = Cons a (as `append` bs)
-
 
 {- |
 =💣= Task 8*: Before the Final Boss
@@ -663,12 +661,11 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
--- andM x y = (&&) <$> x <*> y -- nope
--- also nope:
 andM x y = do
   a <- x
-  b <- y
-  pure (a && b)
+  if a
+     then y
+     else pure a
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
