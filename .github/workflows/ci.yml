@@ -5,6 +5,7 @@ on:
     types: [synchronize, opened, reopened]
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -16,15 +17,15 @@ jobs:
         ghc: ["8.10.4"]
 
     steps:
-    - uses: actions/checkout@v2.3.5
+    - uses: actions/checkout@v2
 
-    - uses: haskell/actions/setup@v1.2.6
+    - uses: haskell/actions/setup@v1
       name: Setup Haskell
       with:
         ghc-version: ${{ matrix.ghc }}
         cabal-version: ${{ matrix.cabal }}
 
-    - uses: actions/cache@v2.1.6
+    - uses: actions/cache@v2
       name: Cache ~/.cabal/store
       with:
         path: ~/.cabal/store
@@ -42,15 +43,15 @@ jobs:
         cabal: ["3.2"]
         ghc: ["8.10.4"]
     steps:
-    - uses: actions/checkout@v2.3.5
+    - uses: actions/checkout@v2
 
-    - uses: haskell/actions/setup@v1.2.6
+    - uses: haskell/actions/setup@v1
       name: Setup Haskell
       with:
         ghc-version: ${{ matrix.ghc }}
         cabal-version: ${{ matrix.cabal }}
 
-    - uses: actions/cache@v2.1.6
+    - uses: actions/cache@v2
       name: Cache ~/.cabal/store
       with:
         path: ~/.cabal/store
@@ -77,15 +78,15 @@ jobs:
         cabal: ["3.2"]
         ghc: ["8.10.4"]
     steps:
-    - uses: actions/checkout@v2.3.5
+    - uses: actions/checkout@v2
 
-    - uses: haskell/actions/setup@v1.2.6
+    - uses: haskell/actions/setup@v1
       name: Setup Haskell
       with:
         ghc-version: ${{ matrix.ghc }}
         cabal-version: ${{ matrix.cabal }}
 
-    - uses: actions/cache@v2.1.6
+    - uses: actions/cache@v2
       name: Cache ~/.cabal/store
       with:
         path: ~/.cabal/store
@@ -112,15 +113,15 @@ jobs:
         cabal: ["3.2"]
         ghc: ["8.10.4"]
     steps:
-    - uses: actions/checkout@v2.3.5
+    - uses: actions/checkout@v2
 
-    - uses: haskell/actions/setup@v1.2.6
+    - uses: haskell/actions/setup@v1
       name: Setup Haskell
       with:
         ghc-version: ${{ matrix.ghc }}
         cabal-version: ${{ matrix.cabal }}
 
-    - uses: actions/cache@v2.1.6
+    - uses: actions/cache@v2
       name: Cache ~/.cabal/store
       with:
         path: ~/.cabal/store
@@ -138,15 +139,15 @@ jobs:
         cabal: ["3.2"]
         ghc: ["8.10.4"]
     steps:
-    - uses: actions/checkout@v2.3.5
+    - uses: actions/checkout@v2
 
-    - uses: haskell/actions/setup@v1.2.6
+    - uses: haskell/actions/setup@v1
       name: Setup Haskell
       with:
         ghc-version: ${{ matrix.ghc }}
         cabal-version: ${{ matrix.cabal }}
 
-    - uses: actions/cache@v2.1.6
+    - uses: actions/cache@v2
       name: Cache ~/.cabal/store
       with:
         path: ~/.cabal/store
