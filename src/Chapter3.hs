@@ -1081,7 +1081,9 @@ isWeekend Sunday   = True
 isWeekend _        = False
 
 nextDay :: Weekday -> Weekday
-nextDay = succ
+nextDay Sunday    = Monday
+nextDay x         = succ x
+
 
 daysToParty :: Weekday -> Int
 daysToParty Friday    = 0 -- or 7?
