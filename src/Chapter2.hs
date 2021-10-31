@@ -652,8 +652,7 @@ Write a function that takes elements of a list only in even positions.
 takeEven :: [a] -> [a]
 takeEven [] = []
 takeEven [x] = [x]
-takeEven [x, y] = [x]
-takeEven (x:y:xs) = x : takeEven xs
+takeEven (x:_:xs) = x : takeEven xs
 
 {- |
 =🛡= Higher-order functions
@@ -760,7 +759,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = concat . map (\x -> replicate x x) $ l
+smartReplicate = concatMap (\x -> replicate x x)
 
 {- |
 =⚔️= Task 9
@@ -773,7 +772,7 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains :: (Eq a, Num a) => a -> [[a]] -> [[a]]
+contains :: (Eq a) => a -> [[a]] -> [[a]]
 contains n = filter (elem n)
 
 
@@ -821,7 +820,7 @@ listElementsLessThan x = filter (< x)
 
 -- Can you eta-reduce this one???
 pairMul :: (Num a) => [a] -> [a] -> [a]
-pairMul xs = zipWith (*) xs
+pairMul = zipWith (*)
 
 
 {- |

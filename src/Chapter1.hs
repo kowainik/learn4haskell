@@ -574,7 +574,18 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel = flip elem "aeiouAEIOU"
+-- isVowel = flip elem "aeiouAEIOU"
+isVowel 'a' = True
+isVowel 'e' = True
+isVowel 'i' = True
+isVowel 'o' = True
+isVowel 'u' = True
+isVowel 'A' = True
+isVowel 'E' = True
+isVowel 'I' = True
+isVowel 'O' = True
+isVowel 'U' = True
+isVowel _   = False
 
 
 {- |
