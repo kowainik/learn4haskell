@@ -201,7 +201,9 @@ If you don't have any IDE preferences, we recommend installing
 The mentioned plugin would give you everything required to immediately start coding with Haskell.
 
 ### Gitpod
+
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/kowainik/learn4haskell)
+
 [Gitpod](https://www.gitpod.io/) is a VSCode-based Web IDE.
 With it, you can get a Haskell environment out-of-the-box.
 It's free to use up to 50 hours per month.
