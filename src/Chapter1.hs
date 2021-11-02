@@ -209,31 +209,31 @@ So, the output in this example means that 'False' has type 'Bool'.
 > Try to guess first and then compare your expectations with GHCi output
 
 >>> :t True
-True :: Bool
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 >>> :t 'a'
-'a' :: Char
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 >>> :t 42
-42 :: Num p => p
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 A pair of boolean and char:
 >>> :t (True, 'x')
-(True, 'x') :: (Bool, Char)
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 Boolean negation:
 >>> :t not
-not :: Bool -> Bool
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 Boolean 'and' operator:
 >>> :t (&&)
-(&&) :: Bool -> Bool -> Bool
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 Addition of two numbers:
 >>> :t (+)
-(+) :: Num a => a -> a -> a
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 Maximum of two values:
 >>> :t max
-max :: Ord a => a -> a -> a
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 You might not understand each type at this moment, but don't worry! You've only
 started your Haskell journey. Types will become your friends soon.
@@ -301,43 +301,43 @@ expressions in GHCi
   functions and operators first. Remember this from the previous task? ;)
 
 >>> 1 + 2
-3
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> 10 - 15
--5
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> 10 - (-5)  -- negative constants require ()
-15
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> (3 + 5) < 10
-True
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> True && False
-False
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> 10 < 20 || 20 < 5
-True
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> 2 ^ 10  -- power
-1024
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> not False
-True
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> div 20 3  -- integral division
-6
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> mod 20 3  -- integral division remainder
-2
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> max 4 10
-10
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> min 5 (max 1 2)
-2
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 >>> max (min 1 10) (min 5 7)
-5
+<INSERT THE RESULT INSTEAD OF THE TEXT>
 
 Because Haskell is a __statically-typed__ language, you see an error each time
 you try to mix values of different types in situations where you are not
@@ -429,8 +429,8 @@ task is to specify the type of this function.
 49
 -}
 
-squareSum :: (Num a) => a -> a -> a
 squareSum x y = (x + y) * (x + y)
+
 
 {- |
 =⚔️= Task 4
@@ -449,7 +449,8 @@ Implement the function that takes an integer value and returns the next 'Int'.
   function body with the proper implementation.
 -}
 next :: Int -> Int
-next x = x + 1
+next x = error "next: not implemented!"
+
 {- |
 After you've implemented the function (or even during the implementation), you
 can run it in GHCi with your input. To do so, first, you need to load the module
@@ -489,8 +490,8 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit :: Integral a => a -> a
-lastDigit n = abs n `mod` 10
+lastDigit n = error "lastDigit: Not implemented!"
+
 
 {- |
 =⚔️= Task 6
@@ -519,10 +520,8 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y 
-  | abs x < abs y = x
-  | abs y < abs x = y
-  | otherwise = x 
+closestToZero x y = error "closestToZero: not implemented!"
+
 
 {- |
 =⚔️= Task 7
@@ -554,11 +553,8 @@ value after "=" where the condition is true.
 
 Casual reminder about adding top-level type signatures for all functions :)
 -}
-mid :: Ord a => a -> a -> a -> a
-mid x y z
-  | (x <= y && y <= z) || (x >= y && y >= z) = y
-  | (y <= x && x <= z) || (y >= x && x >= z) = x
-  | otherwise = z
+
+mid x y z = error "mid: not implemented!"
 
 {- |
 =⚔️= Task 8
@@ -572,8 +568,8 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel :: Char -> Bool
-isVowel x = x `elem` ['a','e','i','o','u','A','E','I','O','U']
+isVowel c = error "isVowel: not implemented!"
+
 
 {- |
 == Local variables and functions
@@ -636,11 +632,8 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 
-sumLast2 :: Integral a => a -> a
-sumLast2 n = digit10s n + digit1s n
-  where
-    digit10s p = (abs p `div` 10) `mod` 10
-    digit1s p = abs  p `mod` 10
+sumLast2 n = error "sumLast2: Not implemented!"
+
 
 {- |
 =💣= Task 10*
@@ -660,10 +653,8 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit :: Integral a => a -> a
-firstDigit n
-  | abs n < 10 = abs n
-  | otherwise = firstDigit(div (abs n) 10)
+firstDigit n = error "firstDigit: Not implemented!"
+
 
 {-
 You did it! Now it is time to open a pull request with your changes
