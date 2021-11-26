@@ -609,13 +609,13 @@ half n = let halfN = div n 2 in halfN
 The syntax for defining multiple variables requires to care about indentation
 more, but there is nothing special in it as well:
 
-@
+@ -}
 halfAndTwice :: Int -> (Int, Int)
 halfAndTwice n =
     let halfN = div n 2
         twiceN = n * 2
     in (halfN, twiceN)
-@
+{-}
 
 In addition to let-in (or sometimes even alternatively to let-in) you can use
 the __where__ construct to define local variables and functions.
@@ -648,8 +648,14 @@ Implement a function that returns the sum of the last two digits of a number.
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
-
---sumLast2 n = error "sumLast2: Not implemented!"
+sumLast2 :: Int -> (Int)
+sumLast2 n  =
+    let lastN = (n `mod` 10)
+        previousN 
+          | n < 100 = (n `div` 10)
+          | n < 1000 = ((n `mod` 100) `mod` 10)
+          | otherwise = 999999
+    in (lastN + previousN)
 
 
 {- |
