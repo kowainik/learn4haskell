@@ -649,13 +649,14 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 sumLast2 :: Int -> (Int)
-sumLast2 n  =
+sumLast2 n  
+  | n < 1000 =
     let lastN = (n `mod` 10)
         previousN 
           | n < 100 = (n `div` 10)
-          | n < 1000 = ((n `mod` 100) `mod` 10)
-          | otherwise = 999999
+          | n < 1000 = ((n `mod` 100) `div` 10)
     in (lastN + previousN)
+  | otherwise = error "Number is out of range. Choose a number smaller than 1000"
 
 
 {- |
@@ -675,9 +676,13 @@ Implement a function that returns the first digit of a given number.
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
-
---firstDigit n = error "firstDigit: Not implemented!"
-
+firstDigit :: Int -> Int
+firstDigit n 
+  | n < 100 = n `div` 10
+  | n < 1000 = n `div` 100
+  | n < 10000 = n `div` 1000
+  | n < 100000 = n `div` 10000
+  | otherwise = error "Nummber is out of range. Chosse a number smallet than 100000"
 
 {-
 You did it! Now it is time to open a pull request with your changes
