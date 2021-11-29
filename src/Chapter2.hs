@@ -342,6 +342,13 @@ subList x y l
   | y < x = []
   | otherwise = take (y - x + 1) (drop x l)
 
+subList2 :: Int -> Int -> [a] -> [a]
+subList2 x y l
+  | x < 0 = [] 
+  | y < 0 = []
+  | y < x = []
+  | otherwise = drop x (take y l)
+
 {- |
 =⚔️= Task 4
 
@@ -352,8 +359,12 @@ Implement a function that returns only the first half of a given list.
 >>> firstHalf "bca"
 "b"
 -}
--- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
+firstHalf :: [a] -> [a]
+firstHalf l 
+  | length l < 4 = take 1 l
+  | otherwise= take(( length l) `div` 2) l
+  
+
 
 
 {- |
