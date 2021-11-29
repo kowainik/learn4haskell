@@ -336,18 +336,11 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList x y [list] = 
-   let yList = take y [list]
-   in yList
-{- } | x < 0 = []
+subList x y l 
+  | x < 0 = []
   | y < 0 = []
   | y < x = []
-  | otherwise = 
-      let yList = take (y+1) [a]
-          xList = drop x [yList]
-      in xList -}
-testList :: Int -> Int -> [a]
-
+  | otherwise = take (y - x + 1) (drop x l)
 
 {- |
 =⚔️= Task 4
