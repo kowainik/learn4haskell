@@ -493,7 +493,7 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 lastDigit :: Int -> Int
-lastDigit n = n `mod` 10
+lastDigit n = abs(n) `mod` 10
  
 {- |
 =⚔️= Task 6
@@ -522,7 +522,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = if abs (x) == abs(y) then error "values are the same, please choose separate values!" 
+closestToZero x y = if abs (x) == abs(y) then y 
   else if abs (x) > abs (y) then y else x
 -- How could I implemnt another
 
@@ -558,12 +558,9 @@ Casual reminder about adding top-level type signatures for all functions :)
 -}
 mid :: Int -> Int -> Int -> Int
 mid x y z
-  | x < y && x > z = x
-  | y < x && y > z = y
-  | x < z && x > y = x
-  | z < y && z > x = z
-  | y < z && y > x = y
-  | z < x && z > y = z
+  | x < y && x > z || x < z && x > y = x
+  | y < x && y > z || y < z && y > x = y
+  | otherwise = z
 
 {- |
 =⚔️= Task 8
@@ -578,13 +575,12 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c 
-  | c == 'a' = True
-  | c == 'e' = True
-  | c == 'i' = True
-  | c == 'o' = True
-  | c == 'u' = True
-  | otherwise = False
+isVowel c =
+        c == 'a' || c == 'A'
+    ||  c == 'e' || c == 'E'
+    ||  c == 'i' || c == 'I'
+    ||  c == 'o' || c == 'O' 
+    ||  c == 'u' || c == 'U'
   
 
 
@@ -649,14 +645,11 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 sumLast2 :: Int -> (Int)
-sumLast2 n  
-  | n < 1000 =
-    let lastN = (n `mod` 10)
-        previousN 
-          | n < 100 = (n `div` 10)
-          | n < 1000 = ((n `mod` 100) `div` 10)
-    in (lastN + previousN)
-  | otherwise = error "Number is out of range. Choose a number smaller than 1000"
+sumLast2 n  = 
+    let last2 = mod (abs(n)) 100
+        (second, last) = divMod last2 10
+    in (second + last)
+ 
 
 
 {- |
