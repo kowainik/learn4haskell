@@ -229,7 +229,7 @@ Boolean 'and' operator:
 
 Addition of two numbers:
 >>> :t (+)
-(+) :: Num a => a -> a-> a
+(+) :: Num a => a -> a -> a
 
 Maximum of two values:
 >>> :t max
@@ -491,7 +491,7 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit n = if n<10 then n else lastDigit (n `mod` 10)
+lastDigit n = mod (abs n) 10
 
 
 {- |
@@ -521,7 +521,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = if (abs x)<(abs y) then x else y
+closestToZero x y = if (abs x < abs y) then x else y
 
 
 {- |
@@ -642,8 +642,7 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 
-sumLast2 n = if n<10 then n else (if n<100 then (div n 10)+(mod n 10) else sumLast2 (mod n 100))
-
+sumLast2 n = if (abs n)<10 then (abs n) else (if (abs n)<100 then (div (abs n) 10)+(mod (abs n) 10) else sumLast2 (mod (abs n) 100))
 
 {- |
 =💣= Task 10*
