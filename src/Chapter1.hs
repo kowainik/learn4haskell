@@ -662,7 +662,7 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit n = if n<10 then n else firstDigit (div n 10)
+firstDigit n = if (abs n)<10 then (abs n) else firstDigit (div (abs n) 10)
 
 
 {-
