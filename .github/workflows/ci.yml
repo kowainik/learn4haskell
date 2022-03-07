@@ -17,7 +17,7 @@ jobs:
         ghc: ["8.10.4"]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - uses: haskell/actions/setup@v1
       name: Setup Haskell
@@ -43,7 +43,7 @@ jobs:
         cabal: ["3.2"]
         ghc: ["8.10.4"]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - uses: haskell/actions/setup@v1
       name: Setup Haskell
@@ -78,7 +78,7 @@ jobs:
         cabal: ["3.2"]
         ghc: ["8.10.4"]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - uses: haskell/actions/setup@v1
       name: Setup Haskell
@@ -113,7 +113,7 @@ jobs:
         cabal: ["3.2"]
         ghc: ["8.10.4"]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - uses: haskell/actions/setup@v1
       name: Setup Haskell
@@ -139,7 +139,7 @@ jobs:
         cabal: ["3.2"]
         ghc: ["8.10.4"]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - uses: haskell/actions/setup@v1
       name: Setup Haskell
