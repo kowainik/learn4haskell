@@ -70,7 +70,6 @@ Each Haskell module starts with the "module <MODULE_NAME> where" line.
 Modules should have the same name as the corresponding file with
 the `.hs` extension.
 -}
-{-# OPTIONS_GHC -Wno-unused-matches #-}
 module Chapter1 where
 
 {- |
@@ -207,7 +206,7 @@ So, the output in this example means that 'False' has type 'Bool'.
 (ﾉ◕ヮ◕)ﾉ Your first task! Use GHCi to discover the types of the following
   expressions and functions:
 
-> Try to first and then compare your expectations with GHCi output
+> Try to guess first and then compare your expectations with GHCi output
 
 >>> :t True
 True :: Bool
@@ -297,7 +296,7 @@ ghci> :t +d (+)
 Get ready for the next task, brave programmer! Evaluate the following
 expressions in GHCi
 
-> As in the previous task, try to first and then compare your expectations
+> As in the previous task, try to guess first and then compare your expectations
   with the GHCi output.
 
 🕯 HINT: if you are curious, it might be interesting to explore the types of
@@ -490,7 +489,7 @@ Implement a function that returns the last digit of a given number.
 
   Hoogle lets you search Haskell functions either by name or by type. You can
   enter the type you expect a function to have, and Hoogle will output relevant
-  results. Or you can try to the function name, search for it and check
+  results. Or you can try to guess the function name, search for it and check
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
