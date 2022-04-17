@@ -344,6 +344,14 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = Book {
+  bookID :: String,
+  bookName :: String,
+  bookAuthor :: String,
+  bookTimeStamp :: Int,
+  bookContent :: [String]
+}
+
 {- |
 =⚔️= Task 2
 
@@ -375,6 +383,27 @@ after the fight. The battle has the following possible outcomes:
 ♫ NOTE: In this task, you need to implement only a single round of the fight.
 
 -}
+
+-- NOTE: Had to name this different since last task have similar class names
+data KnightT2 = KnightT2 {
+  knightT2Health :: Int,
+  knightT2Attack :: Int,
+  knightT2Gold :: Int
+}
+
+data MonsterT2 = MonsterT2 {
+  monsterT2Health :: Int,
+  monsterT2Attack :: Int,
+  monsterT2Gold :: Int
+}
+
+fightT2 :: KnightT2 -> MonsterT2 -> Int
+fightT2 knightT2 monsterT2
+  | monsterT2Health monsterT2 - knightT2Attack knightT2 <= 0 =
+    knightT2Gold knightT2 + monsterT2Gold monsterT2
+  | knightT2Health knightT2 - monsterT2Attack monsterT2 > 0 = knightT2Gold knightT2
+  | otherwise = -1
+
 
 {- |
 =🛡= Sum types
@@ -462,6 +491,17 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data MealType
+  = BreakFast
+  | Lunch
+  | Brunch
+  | Snack
+  | Dinner
+  | Dine
+  | Eating
+
+-- God im bad at english :(
+
 {- |
 =⚔️= Task 4
 
@@ -480,6 +520,79 @@ After defining the city, implement the following functions:
  ✦ buildWalls — build walls in the city. But since building walls is a
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city in total.
+-}
+
+-- Type Decls
+newtype Castle = Castle {
+    name :: String
+  } deriving Show
+data Wall = Wall  deriving Show
+data Study = Church | Library deriving Show
+newtype House = House {
+    people :: Int
+  } deriving Show
+
+data City
+  = CastleCity { castle :: Castle, wall :: Maybe Wall, study :: Study, houses :: [House]}
+  | NonCastleCity { study :: Study, houses :: [House]}
+  deriving Show
+
+-- Defaults Cities
+minCity :: Study -> City
+minCity studyBuilding = NonCastleCity studyBuilding []
+
+baseCastleCity :: String -> Study -> City
+baseCastleCity castleName studyBuilding =
+  CastleCity (Castle castleName) Nothing studyBuilding []
+
+baseCityWithWall :: String -> Study -> City
+baseCityWithWall castleName studyBuilding =
+  CastleCity (Castle castleName) (Just Wall) studyBuilding []
+
+-- City Functions
+buildCastle :: City -> String -> City
+buildCastle (CastleCity _ w s h) castleName = CastleCity (Castle castleName) w s h
+buildCastle (NonCastleCity s h) castleName = CastleCity (Castle castleName) Nothing s h
+
+buildWalls :: City -> City
+buildWalls (CastleCity c _ s h) = CastleCity c (Just Wall) s h
+buildWalls noCastleCity = noCastleCity
+
+buildHouse :: City -> Int -> City
+buildHouse city resident =
+  if resident <= 4 then
+    city { houses = houses city ++ [House resident]}
+  else city
+
+
+-- Test runs
+
+{-
+>>> minC = minCity Church
+>>> baseC = baseCastleCity "castle" Library
+>>> baseWC = baseCityWithWall "walledCastle" Church
+
+>>> castle (buildCastle minC "smallCastle")
+Castle {name = "smallCastle"}
+>>> buildWalls minC
+NonCastleCity {study = Church, houses = []}
+>>> houses (buildHouse minC 3)
+[House {people = 3}]
+
+>>> castle (buildCastle baseC "mediumCastle")
+Castle {name = "mediumCastle"}
+>>> wall (buildWalls baseC)
+Just Wall
+>>> houses (buildHouse baseC 5)
+[]
+
+>>> castle (buildCastle baseWC "largeCastle")
+Castle {name = "largeCastle"}
+>>> wall (buildWalls baseWC)
+Just Wall
+>>> houses (buildHouse (buildHouse baseWC 2) 3)
+[House {people = 2},House {people = 3}]
+
 -}
 
 {-
@@ -562,22 +675,37 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+
+newtype Health = Health Int deriving Show
+newtype Armor = Armor Int deriving Show
+newtype Attack = Attack Int deriving Show
+newtype Dexterity = Dexterity Int deriving Show
+newtype Strength = Strength Int deriving Show
+newtype Damage = Damage Int deriving Show
+newtype Defense = Defense Int deriving Show
+
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+calculatePlayerDamage :: Attack -> Strength -> Damage
+calculatePlayerDamage
+  (Attack attack) (Strength strength)
+  = Damage(attack + strength)
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense
+  (Armor armor) (Dexterity dexterity)
+  = Defense (armor * dexterity)
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit
+  (Damage damage) (Defense defense) (Health health)
+  = Health (health + defense - damage)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -593,6 +721,27 @@ hitPlayer player1 player2 =
             defense
             (playerHealth player1)
     in player1 { playerHealth = newHealth }
+
+{- Test
+>>> p1 = Player (Health 100) (Armor 20) (Attack 40) (Dexterity 1) (Strength 20)
+>>> p2 = Player (Health 70) (Armor 10) (Attack 80) (Dexterity 5) (Strength 40)
+>>> calculatePlayerDamage (playerAttack p2) (playerStrength p2)
+Damage 120
+>>> calculatePlayerDefense (playerArmor p1) (playerDexterity p1)
+Defense 20
+>>> p1_after = hitPlayer p1 p2
+>>> playerHealth p1_after
+Health 0
+
+
+>>> calculatePlayerDamage (playerAttack p1) (playerStrength p1)
+Damage 60
+>>> calculatePlayerDefense (playerArmor p2) (playerDexterity p2)
+Defense 50
+>>> p2_after = hitPlayer p2 p1
+>>> playerHealth p2_after
+Health 60
+-}
 
 {- |
 =🛡= Polymorphic data types
@@ -755,6 +904,33 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
+-- newtype Treasure x = Treasure x
+data Chest x = Chest {
+  chestGold :: Int,
+  chestTreasure :: x
+} deriving Show
+data Dragon x = Dragon {
+  dragonName :: String,
+  dragonPower :: x
+} deriving Show
+data Lair x y = Lair {
+  lairTreasure :: Maybe (Chest x),
+  lairDragon :: Dragon y
+} deriving Show
+
+{- Tests
+>>> dragon = Dragon "Produde" "FirePower"
+>>> chest = Chest 10000 "Diamond"
+>>> Lair Nothing dragon
+Lair {lairTreasure = Nothing, lairDragon = Dragon {dragonName = "Produde", dragonPower = "FirePower"}}
+
+>>> Lair (Just chest) dragon
+Lair {lairTreasure = Just (Chest {chestGold = 10000, chestTreasure = "Diamond"}), lairDragon = Dragon {dragonName = "Produde", dragonPower = "FirePower"}}
+
+-}
+
+
+-- TODO: CONTINUE
 {-
 =🛡= Typeclasses
 
@@ -912,6 +1088,55 @@ Implement instances of "Append" for the following types:
 class Append a where
     append :: a -> a -> a
 
+newtype Gold a = Gold a deriving Show
+instance (Num a) => Append (Gold a) where
+  append :: Gold a ->Gold a -> Gold a
+  append (Gold x) (Gold y) = Gold(x + y)
+
+
+instance Append [a] where
+  append :: [a] -> [a] -> [a]
+  append lst1 lst2 = lst1 ++ lst2
+
+instance (Append a) => Append (Maybe a) where
+  append :: Maybe a -> Maybe a -> Maybe a
+  append Nothing _ = Nothing
+  append maybeVariable Nothing = maybeVariable
+  append (Just x) (Just y) = Just (append x y)
+
+-- instance (Append a) => Show (Append (Maybe a)) where
+{- Tests
+
+>>> append (Gold 1) (Gold 2)
+Gold 3
+
+>>> append (Gold 1.2) (Gold 3.5)
+Gold 4.7
+
+>>> append [1] [1,2]
+[1,1,2]
+
+>>> append "going" " out"
+"going out"
+
+>>> append (Nothing :: Maybe [Integer]) Nothing
+Nothing
+
+>>> append Nothing (Nothing :: Maybe String)
+Nothing
+
+>>> append Nothing (Just "123")
+Nothing
+
+>>> append Nothing (Just [])
+Nothing
+
+>>> append (Just []) Nothing
+Just []
+
+>>> append (Just "doing") (Just " back")
+Just "doing back"
+-}
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -973,6 +1198,24 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
+data DayOfWeek = Monday |Tuesday |Wednesday |Thursday |Friday |Saturday |Sunday
+  deriving (Show, Enum, Bounded, Eq)
+
+
+isWeekend :: DayOfWeek -> Bool
+isWeekend Sunday = True
+isWeekend Saturday = True
+isWeekend _ = False
+
+nextDay :: DayOfWeek -> DayOfWeek
+nextDay day
+  | day == (maxBound::DayOfWeek) = minBound::DayOfWeek
+  | otherwise = succ day
+
+daysToParty :: DayOfWeek -> Int
+daysToParty Friday = 0
+daysToParty day = 1 + daysToParty (nextDay day)
+
 {-
 =💣= Task 9*
 
@@ -1006,6 +1249,137 @@ properties using typeclasses, but they are different data types in the end.
 
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
+-}
+
+-- DataTypes
+data Knight = Knight {
+  knightAttack :: Attack,
+  knightDefense :: Defense,
+  knightHealth :: Health
+} deriving Show
+data Monster = Monster {
+  monsterAttack :: Attack,
+  monsterHealth :: Health
+} deriving Show
+
+-- Creature Class
+class Creature a where
+  creatureName :: a -> String
+instance Creature Knight where
+  creatureName _ = "Knight"
+instance Creature Monster where
+  creatureName _ = "Monster"
+
+
+-- Fighter Class
+class Fighter a where
+  fighterHitPoints :: a -> Health -- HitPoint is health + extra defenses
+  fighterHealthInt :: a -> Int
+  fighterDamage :: a -> Attack
+  setRemainingHealth ::a -> Health -> a
+  alive :: a -> Bool
+
+  -- fighterHitPointsInt :: a -> Int
+  -- fighterHitPointsInt fighter = health
+  --   where (Health health) = fighterHitPoints fighter
+
+  takeDamage :: a -> Attack -> a
+  takeDamage fighter (Attack damage) =
+      setRemainingHealth fighter (Health (health - damage))
+    where
+      (Health health) = fighterHitPoints fighter
+  fight :: Fighter b => a -> b -> b
+  fight f1 f2 = f2_after
+    where
+      f1_damage = fighterDamage f1
+      f2_after = takeDamage f2 f1_damage
+
+
+
+instance Fighter Knight where
+  fighterHealthInt knight = health where (Health health) = knightHealth knight
+  fighterHitPoints
+    (Knight _ (Defense d) (Health h)) = Health (d + h)
+  fighterDamage = knightAttack
+  setRemainingHealth knight health = knight { knightHealth = health}
+  alive knight = h > 0 where (Health h) = knightHealth knight
+instance Fighter Monster where
+  fighterHealthInt monster = health where (Health health) = monsterHealth monster
+  fighterHitPoints = monsterHealth
+  fighterDamage = monsterAttack
+  setRemainingHealth monster health = monster { monsterHealth = health}
+  alive monster = h > 0 where (Health h) = monsterHealth monster
+
+-- Functions
+type FighterRecord = (String, Int)
+data FightRecord = FightRecord {
+  attacker :: FighterRecord,
+  defender :: FighterRecord,
+  defenderAfter :: FighterRecord,
+  ended :: Bool
+} deriving Show
+
+
+makeFighterRecord :: (Fighter a, Creature a) => a -> FighterRecord
+makeFighterRecord fighter =
+  (creatureName fighter, fighterHealthInt fighter)
+
+matchRecorder :: (Fighter a, Creature a, Fighter b, Creature b)
+  => a ->  b -> [FightRecord] -> [FightRecord]
+matchRecorder f1 f2 previousRecords =
+    if is_alive
+      then
+        matchRecorder f2_after f1 new_records
+      else
+        new_records
+  where
+    f2_after = fight f1 f2
+    is_alive = alive f2_after
+    record = FightRecord {
+      attacker=makeFighterRecord f1,
+      defender=makeFighterRecord f2,
+      defenderAfter=makeFighterRecord f2_after,
+      ended = not is_alive
+    }
+    new_records = previousRecords ++ [record]
+
+showMatchRecords :: [FightRecord] -> IO ()
+showMatchRecords [] = do return ()
+showMatchRecords (x : xs) = do
+    printRecord x
+    showMatchRecords xs
+
+
+
+printRecord :: FightRecord -> IO()
+printRecord record = do
+  print "-------------------------"
+  print (".. Attacker: " ++ show (attacker record) ++ ".. Defender: " ++ show (defender record))
+  print (" DefenderAfter: " ++ show (defenderAfter record))
+  if ended record then do
+    print ("Ended!, winner is " ++ fst (attacker record))
+  else return ()
+
+k1 :: Knight
+k1 = Knight (Attack 30) (Defense 20) (Health 150)
+k2 :: Knight
+k2 = Knight (Attack 50) (Defense 20) (Health 200)
+m1 :: Monster
+m1 = Monster (Attack 40) (Health 100)
+m2 :: Monster
+m2 = Monster (Attack 60) (Health 300)
+
+{- Tests
+>>> matchRecorder k1 m1 []
+[FightRecord {attacker = ("Knight",150), defender = ("Monster",100), defenderAfter = ("Monster",70), ended = False},FightRecord {attacker = ("Monster",70), defender = ("Knight",150), defenderAfter = ("Knight",130), ended = False},FightRecord {attacker = ("Knight",130), defender = ("Monster",70), defenderAfter = ("Monster",40), ended = False},FightRecord {attacker = ("Monster",40), defender = ("Knight",130), defenderAfter = ("Knight",110), ended = False},FightRecord {attacker = ("Knight",110), defender = ("Monster",40), defenderAfter = ("Monster",10), ended = False},FightRecord {attacker = ("Monster",10), defender = ("Knight",110), defenderAfter = ("Knight",90), ended = False},FightRecord {attacker = ("Knight",90), defender = ("Monster",10), defenderAfter = ("Monster",-20), ended = True}]
+>>> matchRecorder k2 m2 []
+[FightRecord {attacker = ("Knight",200), defender = ("Monster",300), defenderAfter = ("Monster",250), ended = False},FightRecord {attacker = ("Monster",250), defender = ("Knight",200), defenderAfter = ("Knight",160), ended = False},FightRecord {attacker = ("Knight",160), defender = ("Monster",250), defenderAfter = ("Monster",200), ended = False},FightRecord {attacker = ("Monster",200), defender = ("Knight",160), defenderAfter = ("Knight",120), ended = False},FightRecord {attacker = ("Knight",120), defender = ("Monster",200), defenderAfter = ("Monster",150), ended = False},FightRecord {attacker = ("Monster",150), defender = ("Knight",120), defenderAfter = ("Knight",80), ended = False},FightRecord {attacker = ("Knight",80), defender = ("Monster",150), defenderAfter = ("Monster",100), ended = False},FightRecord {attacker = ("Monster",100), defender = ("Knight",80), defenderAfter = ("Knight",40), ended = False},FightRecord {attacker = ("Knight",40), defender = ("Monster",100), defenderAfter = ("Monster",50), ended = False},FightRecord {attacker = ("Monster",50), defender = ("Knight",40), defenderAfter = ("Knight",0), ended = True}]
+>>> matchRecorder k1 k2 []
+[FightRecord {attacker = ("Knight",150), defender = ("Knight",200), defenderAfter = ("Knight",190), ended = False},FightRecord {attacker = ("Knight",190), defender = ("Knight",150), defenderAfter = ("Knight",120), ended = False},FightRecord {attacker = ("Knight",120), defender = ("Knight",190), defenderAfter = ("Knight",180), ended = False},FightRecord {attacker = ("Knight",180), defender = ("Knight",120), defenderAfter = ("Knight",90), ended = False},FightRecord {attacker = ("Knight",90), defender = ("Knight",180), defenderAfter = ("Knight",170), ended = False},FightRecord {attacker = ("Knight",170), defender = ("Knight",90), defenderAfter = ("Knight",60), ended = False},FightRecord {attacker = ("Knight",60), defender = ("Knight",170), defenderAfter = ("Knight",160), ended = False},FightRecord {attacker = ("Knight",160), defender = ("Knight",60), defenderAfter = ("Knight",30), ended = False},FightRecord {attacker = ("Knight",30), defender = ("Knight",160), defenderAfter = ("Knight",150), ended = False},FightRecord {attacker = ("Knight",150), defender = ("Knight",30), defenderAfter = ("Knight",0), ended = True}]
+>>> matchRecorder m1 m2 []
+[FightRecord {attacker = ("Monster",100), defender = ("Monster",300), defenderAfter = ("Monster",260), ended = False},FightRecord {attacker = ("Monster",260), defender = ("Monster",100), defenderAfter = ("Monster",40), ended = False},FightRecord {attacker = ("Monster",40), defender = ("Monster",260), defenderAfter = ("Monster",220), ended = False},FightRecord {attacker = ("Monster",220), defender = ("Monster",40), defenderAfter = ("Monster",-20), ended = True}]
+
+NOTE: use showMatchRecords to see the fight better!
 -}
 
 
