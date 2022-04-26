@@ -343,7 +343,14 @@ Define the Book product data type. You can take inspiration from our description
 of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
-
+data Book = Book
+  { name    :: String
+  , author  :: String
+  , genre   :: String
+  , rating  :: Float -- 4.5 or 3.1 .. (But how to limit this to one decimal point?)
+  , pages   :: Int
+  }
+  deriving (Show)
 {- |
 =⚔️= Task 2
 
@@ -373,6 +380,51 @@ after the fight. The battle has the following possible outcomes:
    doesn't earn any money and keeps what they had before.
 
 -}
+ --Knight
+
+data Knight = Knight
+  { knight_health :: Int  -- Question : But is there a way to keep same field name for two different product data type???
+  , knight_attack :: Int
+  , knight_gold   :: Int
+  }
+  deriving (Show)
+
+--Monster
+data Monster = Monster
+  { monster_health :: Int
+  , monster_attack :: Int
+  , monster_gold   :: Int
+  }
+  deriving (Show)
+
+fight :: Monster -> Knight -> Int
+fight (Monster mH mA mG) (Knight kH kA kG) = simulateKnightAttack (Monster mH mA mG) (Knight kH kA kG)
+  where 
+    simulateKnightAttack (Monster mH mA mG) (Knight kH kA kG) =
+      if mH-kA > 0
+        then simulateMonsterAttack (Monster (mH - kA) mA mG) (Knight kH kA kG)
+        else mG + kG
+    simulateMonsterAttack (Monster mH mA mG) (Knight kH kA kG) =
+      if kH - mA > 0
+        then simulateKnightAttack (Monster mH mA mG) (Knight (kH-mA) kA kG)
+        else -1
+
+veronica :: Monster --Sorry XD, just kidding you are my Haskell Angel
+veronica = Monster
+  { monster_health = 100
+  , monster_attack = 10
+  , monster_gold   = 1000
+  }
+
+myself :: Knight
+myself = Knight
+  { knight_health = 50
+  , knight_attack = 20
+  , knight_gold   = 100
+  }
+
+showFight :: IO()
+showFight = print $ fight veronica myself
 
 {- |
 =🛡= Sum types
@@ -460,6 +512,15 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+type Food = String
+type Water = String
+
+data MealTypes = Breakfast [Food] | Brunch [Food] | Lunch [Food] | Snacks [Food] | Supper [Food] | OnlyWater Water | HungryAsHell
+  deriving (Show)
+
+breakfast :: MealTypes
+breakfast = Breakfast ["Dosa" , "bread"]
+
 {- |
 =⚔️= Task 4
 
@@ -479,6 +540,81 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city totally.
 -}
+
+data MagicalCity = MagicalCity
+  { castle          ::  Castle
+  , wall            ::  Bool
+  , publicBuildings ::  PublicBuildings
+  , house           ::  [House]  
+  }
+  deriving (Show)
+
+data Castle = Castle String | NoCastle
+  deriving (Show , Eq)
+
+data PublicBuildings = Library | Church
+  deriving (Show)
+
+data House = House { number_of_people :: Count }
+  deriving (Show)
+
+data Count = One | Two | Three | Four
+  deriving (Show , Eq)
+
+
+buildCastle :: String -> MagicalCity -> MagicalCity
+buildCastle newName (MagicalCity castle wall building houses) = 
+  MagicalCity 
+    { castle = Castle newName 
+    , wall = True 
+    , publicBuildings = building 
+    , house = houses
+    } 
+
+buildHouse :: Count -> MagicalCity -> MagicalCity
+buildHouse count (MagicalCity castle wall building houses) =
+  MagicalCity 
+    { castle = castle 
+    , wall = not $ castle == NoCastle 
+    , publicBuildings = building 
+    , house = House {number_of_people = count} : houses
+    }
+
+buildWalls :: MagicalCity -> MagicalCity
+buildWalls (MagicalCity castle wall building houses) = 
+  MagicalCity
+    { castle = castle 
+    , wall = castle /= NoCastle && isthereTenPeople houses >= 10
+    , publicBuildings = building 
+    , house = houses
+    }
+    where
+      isthereTenPeople :: [House] -> Int
+      isthereTenPeople [] = 0
+      isthereTenPeople ((House number_of_people) : xs)  = 
+        case number_of_people of
+          One   -> 1 + isthereTenPeople xs
+          Two   -> 2 + isthereTenPeople xs
+          Three -> 3 + isthereTenPeople xs
+          Four  -> 4 + isthereTenPeople xs
+
+
+
+el_dorado :: MagicalCity
+el_dorado = MagicalCity
+  { castle          =  NoCastle
+  , wall            =  False
+  , publicBuildings =  Library
+  , house           =  [House {number_of_people = One}]  
+  }
+
+changeCity :: IO()
+changeCity = print $ buildWalls $ buildHouse Four $ buildCastle "Fortress" el_dorado
+
+{- OUTPUT
+ghci> changeCity 
+MagicalCity {castle = Castle "Fortress", wall = False, publicBuildings = Library, house = [House {number_of_people = Four},House {number_of_people = One}]}
+}
 
 {-
 =🛡= Newtypes
@@ -559,23 +695,32 @@ introducing extra newtypes.
 
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
--}
+-} -}
+
+newtype Health    = Health Int
+newtype Armor     = Armor Int
+newtype Attack    = Attack Int
+newtype Dexterity = Dexterity Int
+newtype Strength  = Strength Int
+newtype Damage    = Damage Int
+newtype Defense   = Defense Int
+
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+calculatePlayerDamage :: Attack -> Strength -> Damage
+calculatePlayerDamage (Attack attack) (Strength strength) = Damage (attack + strength)
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense (Armor armor) (Dexterity dexterity) = Defense (armor * dexterity)
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit (Damage damage) (Defense defense) (Health health) = Health (health + defense - damage)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
