@@ -449,7 +449,7 @@ Implement the function that takes an integer value and returns the next 'Int'.
   function body with the proper implementation.
 -}
 next :: Int -> Int
-next x = x+1
+next x = x+2
 
 {- |
 After you've implemented the function (or even during the implementation), you
@@ -574,10 +574,15 @@ True
 False
 -}
 
+-- isVowel :: Char -> Bool
+-- isVowel c
+--     | c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U' = True
+--     | otherwise = False 
+
 isVowel :: Char -> Bool
 isVowel c
-    | c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U' = True
-    | otherwise = False 
+    | elem c ['A','E','I','O','U','a','e','i','o','u'] = True
+    | otherwise = False
 
 {- |
 == Local variables and functions
