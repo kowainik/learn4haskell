@@ -897,6 +897,29 @@ parametrise data types in places where values can be of any general type.
 🕯 HINT: 'Maybe' that some standard types we mentioned above are useful for
   maybe-treasure ;)
 -}
+data Lair a x = Lair
+  { dragon :: Dragon a
+  , treasure :: TreasureChest x
+  }
+  deriving (Show)
+
+data Dragon magicPower = Dragon magicPower
+  deriving (Show)
+
+data TreasureChest x =  TreasureChest
+  { treasureChestGold :: Int
+  , treasureChestLoot :: x
+  } | Empty
+  deriving (Show)
+
+goldBox :: TreasureChest a
+goldBox = Empty
+
+jakeAmericanDragon :: a ->  Dragon a
+jakeAmericanDragon a = Dragon a
+
+getLair :: Dragon a -> TreasureChest x -> Lair a x
+getLair dragon chest = Lair { dragon = dragon , treasure = chest}
 
 {-
 =🛡= Typeclasses
@@ -1052,9 +1075,37 @@ Implement instances of "Append" for the following types:
   ✧ *(Challenge): "Maybe" where append is appending of values inside "Just" constructors
 
 -}
+
 class Append a where
     append :: a -> a -> a
 
+newtype Gold = Gold Int
+  deriving (Show)
+
+instance Append Int where
+  append :: Int -> Int -> Int
+  append a b = a + b
+
+instance Append Gold where
+  append :: Gold -> Gold -> Gold
+  append (Gold a) (Gold b) = Gold (a + b)
+
+instance (Append a) => Append [a] where
+  append :: [a] -> [a] -> [a]
+  append a b = a ++ b 
+
+instance (Append a) => Append (Maybe a) where
+  append :: Maybe a -> Maybe a -> Maybe a
+  append (Just a) (Just b) = Just (append a b)
+  append (Just a) _ = Just a
+  append _ (Just b) = Just b
+  append _ _ = Nothing
+
+appendMaybe :: Append a => Maybe a -> Maybe a -> Maybe a
+appendMaybe a b = append a b
+
+a = Just (Gold (5  :: Int))
+b = Just (Gold (10 :: Int))
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -1115,6 +1166,36 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
+data Days = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday
+  deriving (Show, Eq, Ord) --can define Enum here but writing own instance since Saturday = 0
+
+instance Enum Days where
+  toEnum :: Int -> Days
+  toEnum 0 = Saturday
+  toEnum 1 = Sunday
+  toEnum 2 = Monday
+  toEnum 3 = Tuesday
+  toEnum 4 = Wednesday
+  toEnum 5 = Thursday
+  toEnum 6 = Friday
+  
+  fromEnum :: Days -> Int
+  fromEnum Saturday   = 0
+  fromEnum Sunday     = 1
+  fromEnum Monday     = 2
+  fromEnum Tuesday    = 3
+  fromEnum Wednesday  = 4
+  fromEnum Thursday   = 5
+  fromEnum Friday     = 6
+
+isWeekend :: Days -> Bool
+isWeekend days = days == Saturday || days == Sunday
+
+nextDay :: Days -> Days
+nextDay day = toEnum $ ((fromEnum day) + 1) `mod` 7
+
+daysToParty :: Days -> Int
+daysToParty day = 6 - fromEnum day
 
 {-
 =💣= Task 9*
@@ -1151,6 +1232,68 @@ Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
 
+class CommonProperties a b where
+  knightAttack  :: a -> b -> b
+  monsterAttack :: a -> b -> a
+
+data KnightOperations = Knight_Attack | Health_Portion Int| Spell Int
+  deriving (Show , Eq)
+
+data MonsterOperations = Monster_Attack | Run_Away
+  deriving (Show , Eq)
+
+data KnightP = KnightP
+  { kHealth  :: Int
+  , kAttack  :: Int
+  , kDefence :: Int
+  }
+  deriving (Show , Eq)
+
+data MonsterP = MonsterP
+  { mHealth  :: Int
+  , mAttack  :: Int
+  }
+  deriving (Show , Eq)
+
+instance CommonProperties KnightP MonsterP where
+  knightAttack :: KnightP -> MonsterP -> MonsterP
+  knightAttack (KnightP _ kA _ ) (MonsterP mH mA) = MonsterP (mH - kA) mA
+
+  monsterAttack :: KnightP -> MonsterP -> KnightP
+  monsterAttack (KnightP kH kA kD ) (MonsterP _ mA) = KnightP (kH + kD - mA) kA kD
+
+knightAction :: KnightP -> MonsterP -> KnightOperations -> Either KnightP MonsterP
+knightAction (KnightP kH kA kD ) (MonsterP mH mA) k =
+  case k of
+    Knight_Attack     -> Right $ knightAttack (KnightP kH kA kD ) (MonsterP mH mA)
+    Health_Portion h  -> Left $ KnightP (kH + h) kA kD
+    Spell s           -> Left $ KnightP kH kA (kD + s)
+
+monsterAction :: KnightP -> MonsterP -> MonsterOperations -> KnightP
+monsterAction (KnightP kH kA kD ) (MonsterP mH mA) m =
+  case m of
+    Monster_Attack -> monsterAttack (KnightP kH kA kD ) (MonsterP mH mA)
+    Run_Away       -> KnightP kH kA kD
+
+fightS :: KnightP -> MonsterP -> [KnightOperations] -> [MonsterOperations] -> Either KnightP MonsterP
+fightS (KnightP kH kA kD ) (MonsterP mH mA) (k : []) (m : []) =
+  Left $ case knightAction (KnightP kH kA kD ) (MonsterP mH mA) k of
+    Left (KnightP health attack defence) -> monsterAction (KnightP health attack defence) (MonsterP mH mA) m
+    Right (MonsterP health attack)       -> monsterAction (KnightP kH kA kD) (MonsterP health attack) m
+--No Idea on how to implement this fight, can you give a example please?
+
+william :: KnightP
+william = KnightP
+  { kHealth  = 100
+  , kAttack  = 15
+  , kDefence = 1
+  }
+
+demon :: MonsterP
+demon = MonsterP
+  { mHealth  = 1000
+  , mAttack  = 100
+  }
 
 {-
 You did it! Now it is time to open pull request with your changes
