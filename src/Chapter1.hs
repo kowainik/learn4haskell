@@ -269,7 +269,7 @@ form (operator goes __after__ the first argument), while ordinary functions are
 what-called __prefix__ form (the name goes first, before all arguments).
 
 ghci> :t add
-Add :: Int -> Int -> Int
+add :: Int -> Int -> Int
 ghci> :t (+)
 (+) :: Int -> Int -> Int
 ghci> add 1 2
