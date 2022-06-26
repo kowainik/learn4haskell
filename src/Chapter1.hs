@@ -656,7 +656,7 @@ sumLast2 n = lastN  n + secondN n
   lastN:: Int -> Int 
   lastN num = lastDigit num
   secondN:: Int -> Int 
-  secondN num = lastN (num `div` 10) 
+  secondN num = lastDigit (abs num `div` 10) 
 
 
 {- |
