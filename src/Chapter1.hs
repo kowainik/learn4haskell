@@ -213,7 +213,7 @@ True :: Bool
 >>> :t 'a'
 'a' :: Char
 >>> :t 42
-42 :: Num p => P
+42 :: Num p => p
 
 A pair of boolean and char:
 >>> :t (True, 'x')
@@ -304,7 +304,7 @@ expressions in GHCi
 3
 
 >>> 10 - 15
--15
+-5
 
 >>> 10 - (-5)  -- negative constants require ()
 15
