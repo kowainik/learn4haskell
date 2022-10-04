@@ -71,7 +71,7 @@ Modules should have the same name as the corresponding file with
 the `.hs` extension.
 -}
 module Chapter1 where
-
+import Data.Char (toLower)
 {- |
 In Haskell, we have __expressions__. Expressions can be represented by some
 primitive values (numbers: 1, 100; characters: 'a', 'z'; booleans: True, False;
