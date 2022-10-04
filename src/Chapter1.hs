@@ -576,8 +576,6 @@ True
 False
 -}
 
-import Data.Char (toLower)
-
 isVowel :: Char -> Bool
 isVowel c | (toLower c) `elem` vowels = True
           | otherwise = False
