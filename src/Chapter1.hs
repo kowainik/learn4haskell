@@ -521,10 +521,16 @@ branches because it is an expression and it must always return some value.
 👩‍🔬 Due to lazy evaluation in Haskell, only the expression from the branch
   satisfying the check will be returned and, therefore, evaluated.
 -}
-closestToZero :: Integral a => a -> a -> a
-closestToZero x y | x > y = y
-                  | x < y = x
 
+closestToZero :: Integral a => a -> a -> a
+closestToZero x y 
+  | x == 0 || y == 0 = 0
+  | x == y    = x
+  | x' > y'   = y
+  | x' < y'   = x
+  | x' == y'  = if x > y then x else y
+  where x' = abs (x - 0)
+        y' = abs (y - 0)
 
 {- |
 =⚔️= Task 7
