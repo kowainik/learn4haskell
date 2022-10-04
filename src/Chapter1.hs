@@ -310,7 +310,7 @@ expressions in GHCi
 15
 
 >>> (3 + 5) < 10
-true
+True
 
 >>> True && False
 False
