@@ -186,32 +186,43 @@ Evaluate the following expressions in GHCi and insert the answers. Try
 to guess first, what you will see.
 
 >>> [10, 2] ++ [3, 1, 5]
+[10, 2, 3, 1, 5]
 
 >>> [] ++ [1, 4]  -- [] is an empty list
+[1, 4]
 
 >>> 3 : [1, 2]
+[3, 1, 2]
 
 >>> 4 : 2 : [5, 10]  -- prepend multiple elements
+[4, 2, 5, 10]
 
 >>> [1 .. 10]  -- list ranges
+[1,2,3,4,5,6,7,8,9,10]
 
 >>> [10 .. 1]
+[]
 
 >>> [10, 9 .. 1]  -- backwards list with explicit step
+[10,9,8,7,6,5,4,3,2,1]
 
 >>> length [4, 10, 5]  -- list length
+3
 
 >>> replicate 5 True
+[True,True,True,True,True]
 
 >>> take 5 "Hello, World!"
+"Hello"
 
 >>> drop 5 "Hello, World!"
+", World!"
 
 >>> zip "abc" [1, 2, 3]  -- convert two lists to a single list of pairs
+[('a', 1), ('b', 2), ('c', 3)]
 
 >>> words "Hello   Haskell     World!"  -- split the string into the list of words
-
-
+["Hello","Haskell","World!"]
 
 👩‍🔬 Haskell has a lot of syntax sugar. In the case with lists, any
   list literal like "[3, 1, 2]" is syntax sugar for prepending elements
@@ -336,7 +347,7 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList = error "subList: Not implemented!"
+subList a b xs = drop a . take b $ xs 
 
 {- |
 =⚔️= Task 4
@@ -348,9 +359,10 @@ Implement a function that returns only the first half of a given list.
 >>> firstHalf "bca"
 "b"
 -}
--- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
 
+firstHalf :: [a] -> [a]
+firstHalf l = take len l
+  where len = (length l) `div` 2
 
 {- |
 =🛡= Pattern matching
@@ -501,7 +513,10 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
-isThird42 = error "isThird42: Not implemented!"
+
+isThird42 :: Integral a => [a] -> Bool
+isThird42 (_ : x : _) = x == 42
+isThird42 _ = False
 
 
 {- |
@@ -605,9 +620,10 @@ Implement a function that duplicates each element of the list
 "aabbaacc"
 
 -}
-duplicate :: [a] -> [a]
-duplicate = error "duplicate: Not implemented!"
+-- Couldn't figure out how to do it with a pattern match? Not sure if this is right
 
+duplicate :: [a] -> [a]
+duplicate = concatMap (replicate 2)
 
 {- |
 =⚔️= Task 7
@@ -621,7 +637,11 @@ Write a function that takes elements of a list only in even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
-takeEven = error "takeEven: Not implemented!"
+
+takeEven (x : y ) = x : go y
+   where go (y:x) = takeEven x
+         go []    = []
+takeEven    []    = []
 
 {- |
 =🛡= Higher-order functions
@@ -727,8 +747,9 @@ value of the element itself
 
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
+
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = error "smartReplicate: Not implemented!"
+smartReplicate l = map (\x -> replicate x x) l
 
 {- |
 =⚔️= Task 9
@@ -741,7 +762,8 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains = error "contains: Not implemented!"
+contains :: Integral a => a -> [[a]] -> [[a]]
+contains n xs = filter (\ys -> n `elem` ys) xs
 
 
 {- |
@@ -780,14 +802,16 @@ nextInt = add 1
 Let's now try to eta-reduce some of the functions and ensure that we
 mastered the skill of eta-reducing.
 -}
-divideTenBy :: Int -> Int
-divideTenBy x = div 10 x
 
--- TODO: type ;)
-listElementsLessThan x l = filter (< x) l
+divideTenBy :: Int -> Int
+divideTenBy = div 10
+
+listElementsLessThan :: (Num a, Ord a) => a -> [a] -> [a]
+listElementsLessThan x = filter (< x)
 
 -- Can you eta-reduce this one???
-pairMul xs ys = zipWith (*) xs ys
+pairMul :: Num a => [a] -> [a] -> [a]
+pairMul xs = (zipWith (*) xs)
 
 {- |
 =🛡= Lazy evaluation
@@ -842,7 +866,9 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate = error "rotate: Not implemented!"
+rotate n xs = if (n /= (abs n)) then
+  [] 
+  else take (length xs) $ drop n $ (cycle xs)
 
 {- |
 =💣= Task 12*
@@ -858,8 +884,10 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind = error "rewind: Not Implemented!"
 
+rewind :: [a] -> [a]
+rewind (x:xs) = rewind xs ++ [x]
+rewind [] = []
 
 {-
 You did it! Now it is time to open pull request with your changes
