@@ -492,8 +492,7 @@ Implement a function that returns the last digit of a given number.
 -}
 
 lastDigit :: Integral a => a -> a
-lastDigit n | n > 0 = mod n 10
-            | n < 0 = mod n (-10)
+lastDigit n = mod ( abs n ) 10
 
 {- |
 =⚔️= Task 6
@@ -523,14 +522,7 @@ branches because it is an expression and it must always return some value.
 -}
 
 closestToZero :: Integral a => a -> a -> a
-closestToZero x y 
-  | x == 0 || y == 0 = 0
-  | x == y    = x
-  | x' > y'   = y
-  | x' < y'   = x
-  | x' == y'  = if x > y then x else y
-  where x' = abs (x - 0)
-        y' = abs (y - 0)
+closestToZero x y =  if abs x < abs y then x else y
 
 {- |
 =⚔️= Task 7
@@ -564,9 +556,9 @@ Casual reminder about adding top-level type signatures for all functions :)
 -}
 
 mid :: Integral a => a -> a -> a -> a
-mid x y z | n == x = max y z
-          | n == y = max x z
-          | n == z = max x y
+mid x y z | n == x    = max y z
+          | n == y    = max x z
+          | otherwise = max x y
   where n = max x (max y z)
 
 {- |
@@ -583,9 +575,12 @@ False
 -}
 
 isVowel :: Char -> Bool
-isVowel c | (toLower c) `elem` vowels = True
-          | otherwise = False
-  where vowels = ['a', 'e', 'i', 'o', 'u']
+isVowel c = (toLower c) `elem` vowels = True
+  where vowels = "aeiou"
+  
+-- or ✨
+isVowel' c | 'a' || 'e' || 'i' || 'o' || 'u' = True
+ | otherwise = False
 
 {- |
 == Local variables and functions
