@@ -140,7 +140,7 @@ List of booleans:
 
 String is a list of characters:
 >>> :t "some string"
-"some string" :: String
+"some string" :: [Char]
 
 Empty list:
 >>> :t []
