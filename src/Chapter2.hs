@@ -160,7 +160,7 @@ reverse :: [a] -> [a]
 
 Take first N elements of a list:
 >>> :t take
-ake :: Int -> [a] -> [a]
+take :: Int -> [a] -> [a]
 
 Create a list from N same elements:
 >>> :t replicate
