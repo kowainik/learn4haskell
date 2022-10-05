@@ -347,7 +347,8 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList a b xs = drop a . take (b + 1) $ xs 
+subList a b xs = if a < b then [] else
+ drop a . take (b + 1) $ xs 
 
 {- |
 =⚔️= Task 4
