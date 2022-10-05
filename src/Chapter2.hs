@@ -347,7 +347,7 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList a b xs = drop a . take b $ xs 
+subList a b xs = drop a . take (b + 1) $ xs 
 
 {- |
 =⚔️= Task 4
@@ -515,7 +515,7 @@ False
 -}
 
 isThird42 :: Integral a => [a] -> Bool
-isThird42 (_ : x : _) = x == 42
+isThird42 (_ : _ : x : _) = x == 42
 isThird42 _ = False
 
 
