@@ -644,8 +644,7 @@ specifying complex expressions.
 -}
 sumLast2 :: Int->Int
 sumLast2 n = 
-    let last = mod n 10
-        x = div n 10
+    let (x,last) = divMod (abs n) 10
         last2 = mod x 10
     in (last+last2)
 
