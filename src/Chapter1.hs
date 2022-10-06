@@ -449,7 +449,7 @@ Implement the function that takes an integer value and returns the next 'Int'.
   function body with the proper implementation.
 -}
 next :: Integer->Integer
-next x = (x + 1)
+next x = x + 1
 
 {- |
 After you've implemented the function (or even during the implementation), you
