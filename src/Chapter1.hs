@@ -490,7 +490,7 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 lastDigit :: Int -> Int
-lastDigit n = mod n 10
+lastDigit n = abs n `mod` 10
 
 
 {- |
@@ -555,8 +555,8 @@ Casual reminder about adding top-level type signatures for all functions :)
 -}
 mid :: Int -> Int -> Int -> Int
 mid x y z 
-  | x > y && x < z || x > z && x < y = x
-  | y > x && y < z || y > z && y < x = y
+  | x >= y && x <= z || x >= z && x <= y = x
+  | y >= x && y <= z || y >= z && y <= x = y
   | otherwise = z
 {- |
 =⚔️= Task 8
@@ -645,8 +645,8 @@ specifying complex expressions.
 sumLast2 :: Int -> Int
 sumLast2 n = a + mod b 10
   where 
-    a = mod n 10
-    b = div (n - a) 10
+    a = abs n `mod` 10
+    b = div (abs n - a) 10
 
 
 {- |
