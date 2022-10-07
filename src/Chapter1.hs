@@ -428,7 +428,7 @@ task is to specify the type of this function.
 >>> squareSum 3 4
 49
 -}
-squareSum :: Int->Int->Int
+squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
 
 
@@ -449,7 +449,7 @@ Implement the function that takes an integer value and returns the next 'Int'.
   function body with the proper implementation.
 -}
 next :: Integer->Integer
-next x = (x + 1)
+next x = x + 1
 
 {- |
 After you've implemented the function (or even during the implementation), you
@@ -490,7 +490,7 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 lastDigit :: Int->Int
-lastDigit n = mod n 10
+lastDigit n = mod (abs n) 10
 
 
 
@@ -644,8 +644,7 @@ specifying complex expressions.
 -}
 sumLast2 :: Int->Int
 sumLast2 n = 
-    let last = mod n 10
-        x = div n 10
+    let (x,last) = divMod (abs n) 10
         last2 = mod x 10
     in (last+last2)
 
