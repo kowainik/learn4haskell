@@ -646,7 +646,7 @@ sumLast2 :: Int -> Int
 sumLast2 n = a + mod b 10
   where 
     a = abs n `mod` 10
-    b = div (abs n - a) 10
+    b = div (abs n) 10
 
 
 {- |
@@ -669,9 +669,10 @@ aren't ready for this boss yet!
 
 firstDigit :: Int -> Int
 firstDigit n 
+  | n < 0 = firstDigit (abs n)
   | n < 10 = n
   | n >= 10 = firstDigit m
-  where m = div (n - mod n 10) 10
+  where m = div n 10
 
 
 {-
