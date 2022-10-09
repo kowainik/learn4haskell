@@ -631,7 +631,7 @@ Write a function that takes elements of a list only in even positions.
 -}
 takeEven :: [Int] -> [Int]
 takeEven [] =[]
-takeEven(x:xs) = if mod x 2 == 0 then [x] ++ takeEven xs else [] ++ takeEven xs
+takeEven(x:xs) = if mod x 2 == 0 then x : takeEven xs else takeEven xs
 
 {- |
 =🛡= Higher-order functions
