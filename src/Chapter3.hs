@@ -343,6 +343,13 @@ Define the Book product data type. You can take inspiration from our description
 of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
+data Book = MkBook
+    {
+      bookName :: String
+      , bookAuthor :: String
+      , bookIsbn :: Int
+      , bookPublisher :: String
+    }
 
 {- |
 =⚔️= Task 2
@@ -375,6 +382,42 @@ after the fight. The battle has the following possible outcomes:
 ♫ NOTE: In this task, you need to implement only a single round of the fight.
 
 -}
+data Knight = MkKnight{
+    knightName :: String
+    , knightHealth :: Int
+    , knightAttack :: Int
+    , knightGold :: Int
+}deriving(Show)
+
+data Monster = MkMonster{
+    monsterName :: String,
+    monsterHealth :: Int,
+    monsterAttack :: Int,
+    monsterGold :: Int
+}deriving(Show)
+
+jonSnow :: Knight
+jonSnow = MkKnight{
+  knightName = "Jon Snow"
+  , knightAttack = 10
+  , knightHealth = 100
+  , knightGold = 20
+}
+nightKing :: Monster
+nightKing = MkMonster{
+  monsterName = "Night King",
+  monsterAttack = 20,
+  monsterHealth = 100,
+  monsterGold = 20
+}
+fight :: Knight -> Monster -> Int
+fight k m = let (x,y) = divMod (monsterHealth m) (knightAttack k)
+                ka = if y==0 then x else x+1
+                (w,z) = divMod (knightHealth k) (monsterAttack m)
+                ma = if z == 0 then w else w+1
+                out = if ka < ma +1 then (knightGold k + monsterGold m) else if ka == ma + 1 then knightGold k else -1
+            in out
+
 
 {- |
 =🛡= Sum types
