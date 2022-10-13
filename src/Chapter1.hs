@@ -647,6 +647,7 @@ Implement a function that returns the sum of the last two digits of a number.
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
+
 sumLast2 :: Int -> Int
 sumLast2 n = modDigits n
   where
