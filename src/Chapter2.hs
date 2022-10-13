@@ -823,7 +823,7 @@ divideTenBy = div 10
 listElementsLessThan x = filter (< x)
 
 -- Can you eta-reduce this one???
-pairMul xs = zipWith (*) xs 
+pairMul x = zipWith (*) x
 
 {- |
 =🛡= Lazy evaluation
