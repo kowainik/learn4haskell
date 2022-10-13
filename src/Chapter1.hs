@@ -494,7 +494,7 @@ Implement a function that returns the last digit of a given number.
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 
 lastDigit :: Int -> Int
-lastDigit n = mod n 10
+lastDigit n = mod (abs n) 10
 
 
 {- |
@@ -563,7 +563,7 @@ mid :: Int -> Int -> Int -> Int
 mid x y z 
   | (x > y && x < z) || (x < y && x > z) = x
   | (y > x && y < z) || (y < x && y > z) = y
-  | (z > y && z < x) || (z < y && z > x) = z
+  | otherwise = z
 
 {- |
 =⚔️= Task 8
@@ -676,8 +676,6 @@ Implement a function that returns the first digit of a given number.
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
-
-firstDigit n = error "firstDigit: Not implemented!"
 
 
 {-
