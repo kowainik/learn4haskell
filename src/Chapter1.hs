@@ -676,7 +676,7 @@ Implement a function that returns the first digit of a given number.
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
-
+firstDigit :: Int -> Int
 firstDigit n = error "firstDigit: Not implemented!"
 {-
 You did it! Now it is time to open a pull request with your changes
