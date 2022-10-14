@@ -492,7 +492,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Integral a => a -> a
-lastDigit n = (mod (abs(n)) 10)
+lastDigit n = mod (abs n) 10
 {- |
 =⚔️= Task 6
 
@@ -521,7 +521,7 @@ branches because it is an expression and it must always return some value.
 -}
 closestToZero :: Int -> Int -> Int
 --closestToZero x y = min (abs(x)) (abs(y))
-closestToZero x y = if (abs(x)) < (abs(y)) 
+closestToZero x y = if abs x < abs y 
                      then x
                       else y
 
@@ -562,9 +562,9 @@ mid x y z
   | xx < yy && yy < zz = y
   | yy < xx && xx < zz = x 
   | otherwise = z
-  where xx = (abs(x))
-        yy = (abs(y))
-        zz = (abs(z))
+  where xx = abs x
+        yy = abs y
+        zz = abs z
 
 {- |
 =⚔️= Task 8
@@ -680,7 +680,7 @@ firstDigit :: Int -> Int
 firstDigit n 
             | x < 10 = x
             | otherwise = firstDigit x
-            where x = div (abs(n)) 10
+            where x = div (abs n) 10
 
 
 {-
