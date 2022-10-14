@@ -72,7 +72,7 @@ the `.hs` extension.
 -}
 module Chapter1 where
 
-import Data.List
+import Data.List (sort)
 {- |
 In Haskell, we have __expressions__. Expressions can be represented by some
 primitive values (numbers: 1, 100; characters: 'a', 'z'; booleans: True, False;
@@ -214,7 +214,7 @@ True :: Bool
 >>> :t 'a'
 'a' :: Char
 >>> :t 42
-42 :: Num a => a
+42 :: Num p => p
 
 A pair of boolean and char:
 >>> :t (True, 'x')
