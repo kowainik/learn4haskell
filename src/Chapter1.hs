@@ -680,7 +680,7 @@ firstDigit :: Int -> Int
 firstDigit n 
             | x < 10 = x
             | otherwise = firstDigit x
-            where x = div n 10 
+            where x = div (abs(n)) 10
 
 
 {-
