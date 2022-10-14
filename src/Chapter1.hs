@@ -492,9 +492,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Integral a => a -> a
-lastDigit n = (mod n 10)
-
-
+lastDigit n = (mod (abs(n)) 10)
 {- |
 =⚔️= Task 6
 
@@ -561,9 +559,12 @@ Casual reminder about adding top-level type signatures for all functions :)
 
 mid :: Integral a => a -> a -> a -> a
 mid x y z 
-  | x < y && y < z = y
-  | y < x && x < z = x 
+  | xx < yy && yy < zz = y
+  | yy < xx && xx < zz = x 
   | otherwise = z
+  where xx = (abs(x))
+        yy = (abs(y))
+        zz = (abs(z))
 
 {- |
 =⚔️= Task 8
@@ -650,7 +651,7 @@ specifying complex expressions.
 -}
 
 sumLast2 :: Int -> Int
-sumLast2 n = let a = mod n 100
+sumLast2 n = let a = mod (abs(n)) 100
                  b = mod a 10
                  c = div a 10
               in 
