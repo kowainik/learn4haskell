@@ -72,6 +72,7 @@ the `.hs` extension.
 -}
 module Chapter1 where
 
+import Data.List
 {- |
 In Haskell, we have __expressions__. Expressions can be represented by some
 primitive values (numbers: 1, 100; characters: 'a', 'z'; booleans: True, False;
@@ -209,7 +210,7 @@ So, the output in this example means that 'False' has type 'Bool'.
 > Try to guess first and then compare your expectations with GHCi output
 
 >>> :t True
-False :: Bool
+True :: Bool
 >>> :t 'a'
 'a' :: Char
 >>> :t 42
@@ -523,7 +524,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = error "closestToZero: not implemented!"
+closestToZero x y = min (abs x) (abs y)
 
 
 {- |
@@ -556,8 +557,8 @@ value after "=" where the condition is true.
 
 Casual reminder about adding top-level type signatures for all functions :)
 -}
-
-mid x y z = error "mid: not implemented!"
+mid :: Int -> Int -> Int -> Int
+mid x y z = head (tail(sort[x,y,z]))
 
 {- |
 =⚔️= Task 8
@@ -571,7 +572,10 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel c = error "isVowel: not implemented!"
+isVowel :: Char -> Bool
+isVowel c
+    | elem c ['a', 'e', 'i', 'o', 'u'] = True
+    | otherwise = False
 
 
 {- |
@@ -634,8 +638,11 @@ Implement a function that returns the sum of the last two digits of a number.
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
-
-sumLast2 n = error "sumLast2: Not implemented!"
+sumLast2 :: Int -> Int
+sumLast2 n = 
+    let digit1 = mod n 10
+        digit2 = mod (div n 10) 10
+    in digit1 + digit2
 
 
 {- |
@@ -656,7 +663,10 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit n = error "firstDigit: Not implemented!"
+firstDigit :: Int -> Int
+firstDigit n
+    | abs n < 10 = n
+    | otherwise = firstDigit (div n 10)
 
 
 {-
