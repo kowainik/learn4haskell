@@ -522,7 +522,10 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = min (abs(x)) (abs(y))
+--closestToZero x y = min (abs(x)) (abs(y))
+closestToZero x y = if (abs(x)) < (abs(y)) 
+                     then x
+                      else y
 
 
 {- |
@@ -556,7 +559,11 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 
-mid x y z = error "mid: not implemented!"
+mid :: Integral a => a -> a -> a -> a
+mid x y z 
+  | x < y && y < z = y
+  | y < x && x < z = x 
+  | otherwise = z
 
 {- |
 =⚔️= Task 8
@@ -570,7 +577,15 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel c = error "isVowel: not implemented!"
+isVowel :: Char -> Bool
+isVowel c
+  | c == 'a' = True 
+  | c == 'e' = True 
+  | c == 'i' = True 
+  | c == 'o' = True 
+  | c == 'u' = True 
+  | otherwise = False 
+
 
 
 {- |
@@ -634,7 +649,12 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 
-sumLast2 n = error "sumLast2: Not implemented!"
+sumLast2 :: Int -> Int
+sumLast2 n = let a = mod n 100
+                 b = mod a 10
+                 c = div a 10
+              in 
+                c + b
 
 
 {- |
@@ -655,7 +675,11 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit n = error "firstDigit: Not implemented!"
+firstDigit :: Int -> Int
+firstDigit n 
+            | x < 10 = x
+            | otherwise = firstDigit x
+            where x = div n 10 
 
 
 {-
