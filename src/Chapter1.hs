@@ -650,11 +650,15 @@ specifying complex expressions.
 -}
 
 sumLast2 :: Int -> Int
-sumLast2 n = let a = mod (abs(n)) 100
-                 b = mod a 10
-                 c = div a 10
-              in 
-                c + b
+-- sumLast2 n = let a = mod (abs n) 100
+--                  b = mod a 10
+--                  c = div a 10
+--               in 
+--                 c + b
+sumLast2 n = x + y 
+          where a = abs n
+                (_, b) = divMod a 100
+                (x, y) = divMod b 10
 
 
 {- |
