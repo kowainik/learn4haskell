@@ -39,6 +39,7 @@ Now, if you are ready, bring it on!
 -}
 
 module Chapter2 where
+import GHC.IO.Device (IODevice(dup))
 
 {-
 =🛡= Imports
@@ -624,7 +625,8 @@ Implement a function that duplicates each element of the list
 
 -}
 duplicate :: [a] -> [a]
-duplicate = error "duplicate: Not implemented!"
+duplicate [] = []
+duplicate (x:xs) = x:x:duplicate xs
 
 
 {- |
