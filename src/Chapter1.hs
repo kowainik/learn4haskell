@@ -678,9 +678,11 @@ aren't ready for this boss yet!
 
 firstDigit :: Int -> Int
 firstDigit n 
+            | y < 10 = y
             | x < 10 = x
             | otherwise = firstDigit x
-            where x = div (abs n) 10
+            where y = abs n
+                  x = div y 10
 
 
 {-
