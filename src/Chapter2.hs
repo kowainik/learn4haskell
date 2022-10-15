@@ -349,7 +349,9 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList = error "subList: Not implemented!"
+subList start stop  list
+    | start < 0 || stop < 0 || stop < start = []
+    | otherwise = drop start (take (stop+1) list)
 
 {- |
 =⚔️= Task 4
@@ -362,9 +364,10 @@ Implement a function that returns only the first half of a given list.
 "b"
 -}
 -- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
-
-
+firstHalf :: [a] -> [a]
+firstHalf l =
+  let wantedLen = div (length l) 2
+  in take wantedLen l
 {- |
 =🛡= Pattern matching
 
