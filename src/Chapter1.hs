@@ -558,12 +558,14 @@ Casual reminder about adding top-level type signatures for all functions :)
 
 mid :: Integral a => a -> a -> a -> a
 mid x y z 
-  | xx < yy && yy < zz = y
-  | yy < xx && xx < zz = x 
+  | x < y && x > z = x
+  | x < z && x > y = x
+  | y < x && y > z = y 
+  | y < z && y > x = y 
+  | x == y = x
+  | y == z = y
+  | x == z = z
   | otherwise = z
-  where xx = abs x
-        yy = abs y
-        zz = abs z
 
 {- |
 =⚔️= Task 8
