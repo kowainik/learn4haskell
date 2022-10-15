@@ -71,6 +71,7 @@ Modules should have the same name as the corresponding file with
 the `.hs` extension.
 -}
 module Chapter1 where
+import Data.List
 
 {- |
 In Haskell, we have __expressions__. Expressions can be represented by some
@@ -556,16 +557,10 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 
+
+
 mid :: Integral a => a -> a -> a -> a
-mid x y z 
-  | x < y && x > z = x
-  | x < z && x > y = x
-  | y < x && y > z = y 
-  | y < z && y > x = y 
-  | x == y = x
-  | y == z = y
-  | x == z = z
-  | otherwise = z
+mid x y z = (sort [x, y, z]) !! 1
 
 {- |
 =⚔️= Task 8
