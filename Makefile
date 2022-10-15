@@ -49,3 +49,6 @@ test-chapter4-basic:
 .PHONY: test-all
 test-all:
 	cabal test all --enable-tests --test-show-details=direct
+
+ghcup-list:
+	ghcup list -c set
