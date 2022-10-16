@@ -39,6 +39,7 @@ Now, if you are ready, bring it on!
 -}
 
 module Chapter2 where
+import GHC.IO.Device (IODevice(isTerminal))
 
 {-
 =🛡= Imports
@@ -513,7 +514,9 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
-isThird42 = error "isThird42: Not implemented!"
+isThird42 :: [Int] -> Bool
+isThird42 (_:_:42:_) = True 
+isThird42 _ = False
 
 
 {- |
