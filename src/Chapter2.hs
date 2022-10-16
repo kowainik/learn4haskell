@@ -40,6 +40,7 @@ Now, if you are ready, bring it on!
 
 module Chapter2 where
 import GHC.IO.Device (IODevice(isTerminal))
+import Data.Bits (Bits(xor))
 
 {-
 =🛡= Imports
@@ -637,7 +638,15 @@ Write a function that takes elements of a list only in even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
-takeEven = error "takeEven: Not implemented!"
+
+takeEven :: [Int] -> [Int]
+takeEven l = reverse (go [] l)
+  where 
+      go :: [Int] -> [Int] -> [Int]
+      go acc [] = acc 
+      go acc [x] = x : acc
+      go acc (x:_:xs) = go (x : acc) xs
+  
 
 {- |
 =🛡= Higher-order functions
