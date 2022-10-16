@@ -164,7 +164,7 @@ reverse :: [a] -> [a]
 
 Take first N elements of a list:
 >>> :t take
-ake :: Int -> [a] -> [a]
+take :: Int -> [a] -> [a]
 
 Create a list from N same elements:
 >>> :t replicate
@@ -336,6 +336,7 @@ of a list between two given positions inclusive (starting from zero).
 Remember that each function returns a new list.
 
 >>> subList 3 5 [1 .. 10]
+[4,5,6]
 
 ♫ NOTE: When implementing, think about various corner cases. You
   should return an empty list when given numbers that are negative.
@@ -348,9 +349,10 @@ from it!
 
 ghci> :l src/Chapter2.hs
 -}
-subList :: Int -> Int -> [x] -> [x]
+subList :: Num x => Int -> Int -> [x] -> [x]
 subList a b l 
-  | a > 0 && b > 0 = take(b-a + 1) (drop a l)
+  | a == b = [0]
+  | a >= 0 && b > 0 = take(b-a + 1) (drop a l)
   | otherwise = []
 
 {- |
@@ -875,7 +877,7 @@ list.
 rotate :: Int -> [Int] -> [Int]
 rotate 0 l = l
 rotate _ [] = []
-rotate y (x:xs) = if y > length xs + 1 then x : xs else rotate (y - 1) (reverse (x : reverse xs))
+rotate y (x:xs) = if y < 0 then [] else rotate (y - 1) (reverse (x : reverse xs))
 
 {- |
 =💣= Task 12*
