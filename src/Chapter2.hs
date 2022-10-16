@@ -639,10 +639,10 @@ Write a function that takes elements of a list only in even positions.
 [2,3,4]
 -}
 
-takeEven :: [Int] -> [Int]
+takeEven :: [a] -> [a]
 takeEven l = reverse (go [] l)
   where 
-      go :: [Int] -> [Int] -> [Int]
+      go :: [a] -> [a] -> [a]
       go acc [] = acc 
       go acc [x] = x : acc
       go acc (x:_:xs) = go (x : acc) xs
@@ -753,7 +753,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = error "smartReplicate: Not implemented!"
+smartReplicate = concatMap (\ x -> replicate x x)
 
 {- |
 =⚔️= Task 9
