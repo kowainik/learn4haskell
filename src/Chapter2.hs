@@ -41,6 +41,7 @@ Now, if you are ready, bring it on!
 module Chapter2 where
 import GHC.IO.Device (IODevice(isTerminal))
 import Data.Bits (Bits(xor))
+import Control.Concurrent (yield)
 
 {-
 =🛡= Imports
@@ -890,7 +891,11 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind = error "rewind: Not Implemented!"
+rewind :: [a] -> [a]
+rewind x = go [] x
+  where go :: [b] -> [b] -> [b]
+        go acc [] = acc
+        go acc (x:xs) = go (x : acc) xs
 
 
 {-
