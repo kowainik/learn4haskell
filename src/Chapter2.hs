@@ -360,8 +360,8 @@ Implement a function that returns only the first half of a given list.
 >>> firstHalf "bca"
 "b"
 -}
--- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
+firstHalf :: [x] -> [x]
+firstHalf l = take (div (length l) 2) l
 
 
 {- |
