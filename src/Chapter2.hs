@@ -641,7 +641,10 @@ Write a function that takes elements of a list only in even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
-takeEven = error "takeEven: Not implemented!"
+takeEven :: [Int]-> [Int]
+takeEven [] = []
+takeEven (x:y:xs) = x : takeEven xs
+takeEven (x:xs) = x : takeEven xs
 
 {- |
 =🛡= Higher-order functions
