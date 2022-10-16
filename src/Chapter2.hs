@@ -871,7 +871,10 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate = error "rotate: Not implemented!"
+rotate :: Int -> [Int] -> [Int]
+rotate 0 l = l
+rotate _ [] = []
+rotate y (x:xs) = if y > length xs + 1 then x : xs else rotate (y - 1) (reverse (x : reverse xs))
 
 {- |
 =💣= Task 12*
