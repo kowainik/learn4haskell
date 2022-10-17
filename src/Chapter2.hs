@@ -868,7 +868,10 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate = error "rotate: Not implemented!"
+rotate :: Int -> [Int] -> [Int]
+rotate n list 
+    | n < 0 = []
+    | otherwise =  take (length list) (drop n (cycle list))
 
 {- |
 =💣= Task 12*
