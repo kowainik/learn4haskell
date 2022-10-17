@@ -418,7 +418,7 @@ proclaim :: Int -> String
 proclaim x 
   | x == 0 = "Uh oh, it was a draw"
   | x == -1 = "Monster's tooooo gooood"
-  | otherwise = "Monster dies. Knight has been awarded " ++ show x ++ " Gold coins!!!!" 
+  | otherwise = "Monster dies. Knight is rich. Has " ++ show x ++ " Gold coins!!!!" 
 
 --example, proclaim (fight (fire (Knight 100 5 20 0) (Monster 100 5 20 0)))
 
