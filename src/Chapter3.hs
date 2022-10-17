@@ -52,6 +52,7 @@ provide more top-level type signatures, especially when learning Haskell.
 {-# LANGUAGE InstanceSigs #-}
 
 module Chapter3 where
+import Control.Concurrent (yield)
 
 {-
 =🛡= Types in Haskell
@@ -348,7 +349,7 @@ data Book = Book {
     bookName :: String,
     bookPages :: Int,
     bookAuthor :: String
-  } 
+  } deriving (Show) 
 
 {- |
 =⚔️= Task 2
@@ -381,6 +382,47 @@ after the fight. The battle has the following possible outcomes:
 ♫ NOTE: In this task, you need to implement only a single round of the fight.
 
 -}
+
+data Knight = Knight {
+  knightHealth :: Int,
+  knightAttack :: Int,
+  knightGold :: Int,
+  knightFire :: Int -- number of times knight has fired
+} deriving (Show)
+
+data Monster = Monster {
+  monsterHealth :: Int,
+  monsterAttack :: Int,
+  monsterGold :: Int,
+  monsterFire :: Int -- number of times monster has fired
+} deriving (Show)
+
+score :: Int -> Int -> Int
+score x y 
+  | x > y = x - y 
+  | otherwise = 0
+
+fire :: Knight -> Monster -> (Knight, Monster)
+fire kn (Monster 0 ma mg mf) = (kn, Monster 0 ma mg mf) -- monster is defeated, health 0
+fire (Knight 0 ka kg kf) mn = (Knight 0 ka kg kf, mn) -- knight is defeated, health 0
+fire (Knight kh ka kg kf) (Monster mh ma mg mf)  -- take turns to fire
+  | kf == mf = fire (Knight kh ka kg (kf + 1)) (Monster (score mh ka) ma mg mf) --knight fires
+  | otherwise = fire (Knight (score kh ma) ka kg kf) (Monster mh ma mg (mf + 1)) -- monster fires
+
+fight :: (Knight, Monster) -> Int
+fight (Knight _ _ kg _, Monster 0 _ mg _) = kg + mg
+fight (Knight 0 _ _ _, Monster {}) = -1
+fight (Knight _ _ kg _, Monster {}) = kg
+
+proclaim :: Int -> String
+proclaim x 
+  | x == 0 = "Uh oh, it was a draw"
+  | x == -1 = "Monster's tooooo gooood"
+  | otherwise = "Monster dies. Knight has been awarded " ++ show x ++ " Gold coins!!!!" 
+
+--example, proclaim (fight (fire (Knight 100 5 20 0) (Monster 100 5 20 0)))
+
+
 
 {- |
 =🛡= Sum types
