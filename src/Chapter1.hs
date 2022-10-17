@@ -641,9 +641,11 @@ Implement a function that returns the sum of the last two digits of a number.
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
-
-sumLast2 n = error "sumLast2: Not implemented!"
-
+sumLast2 :: Int -> Int
+sumLast2 n = 
+  let (remaining, last1) = divMod (abs n) 10
+      last2 = mod remaining 10
+  in (last1 + last2)
 
 {- |
 =💣= Task 10*
