@@ -541,6 +541,29 @@ After defining the city, implement the following functions:
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
 
+data ChurchLibrary
+  = Church
+  | Library 
+
+data House = House
+
+data City = City {
+  castle :: String,
+  wall :: Bool,
+  churchOrLibrary :: ChurchLibrary, 
+  houses :: [House]
+  }
+
+buildCastle :: City -> City
+buildCastle (City _ wal chlib hou) = City "People's Castle" wal chlib hou
+
+buildHouse :: City -> City 
+buildHouse (City cas wal chlib hou) = City cas wal chlib (House : hou)
+
+buildWalls :: City -> City 
+buildWalls (City cas wal chlib hou) = if cas /= "" && length hou >= 10 then City cas True chlib hou else City cas wal chlib hou
+
+
 {-
 =🛡= Newtypes
 
@@ -622,21 +645,29 @@ introducing extra newtypes.
     implementation of the "hitPlayer" function at all!
 -}
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+newtype Health = Health Int 
+newtype Armor = Armor Int
+newtype Attack = Attack Int 
+newtype Dexterity = Dexterity Int
+newtype Strength = Strength Int 
+newtype Damage = Damage Int 
+newtype Defense = Defense Int
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDamage :: Attack -> Strength -> Damage
+calculatePlayerDamage (Attack attack) (Strength strength) = Damage (attack + strength)
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense (Armor armor) (Dexterity dexterity) = Defense (armor * dexterity)
+
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit (Damage damage) (Defense defense) (Health health) = Health (health + defense - damage)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
