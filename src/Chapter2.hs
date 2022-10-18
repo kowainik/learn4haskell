@@ -30,7 +30,7 @@ As usual, the explanations are in the Haskell comments of this
 module. We are leaving a number of tasks on our path. Your goal is to
 solve them all and make the tests for Chapter Two green.
 
-After finishing the PR, you can choose to summon us, @vrom911 and @chshersh,
+After finishing the PR, you can choose to summon me, @vrom911,
 to look at your solution in order to give some advice on your
 code. This is optional; however, you can ask us for review only if you
 want some feedback on your solutions.
@@ -863,5 +863,5 @@ rewind = error "rewind: Not Implemented!"
 
 {-
 You did it! Now it is time to open pull request with your changes
-and summon @vrom911 and @chshersh for the review!
+and summon @vrom911 for the review!
 -}
