@@ -52,6 +52,7 @@ provide more top-level type signatures, especially when learning Haskell.
 {-# LANGUAGE InstanceSigs #-}
 
 module Chapter3 where
+import Control.Concurrent (yield)
 
 {-
 =🛡= Types in Haskell
@@ -344,6 +345,12 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = Book {
+    bookName :: String,
+    bookPages :: Int,
+    bookAuthor :: String
+  } deriving (Show) 
+
 {- |
 =⚔️= Task 2
 
@@ -375,6 +382,47 @@ after the fight. The battle has the following possible outcomes:
 ♫ NOTE: In this task, you need to implement only a single round of the fight.
 
 -}
+
+data Knight = Knight {
+  knightHealth :: Int,
+  knightAttack :: Int,
+  knightGold :: Int,
+  knightFire :: Int -- number of times knight has fired
+} deriving (Show)
+
+data Monster = Monster {
+  monsterHealth :: Int,
+  monsterAttack :: Int,
+  monsterGold :: Int,
+  monsterFire :: Int -- number of times monster has fired
+} deriving (Show)
+
+score :: Int -> Int -> Int
+score x y 
+  | x > y = x - y 
+  | otherwise = 0
+
+fire :: Knight -> Monster -> (Knight, Monster)
+fire kn (Monster 0 ma mg mf) = (kn, Monster 0 ma mg mf) -- monster is defeated, health 0
+fire (Knight 0 ka kg kf) mn = (Knight 0 ka kg kf, mn) -- knight is defeated, health 0
+fire (Knight kh ka kg kf) (Monster mh ma mg mf)  -- take turns to fire
+  | kf == mf = fire (Knight kh ka kg (kf + 1)) (Monster (score mh ka) ma mg mf) --knight fires
+  | otherwise = fire (Knight (score kh ma) ka kg kf) (Monster mh ma mg (mf + 1)) -- monster fires
+
+fight :: (Knight, Monster) -> Int
+fight (Knight _ _ kg _, Monster 0 _ mg _) = kg + mg -- monster loses
+fight (Knight 0 _ _ _, Monster {}) = -1 -- knight loses
+fight (Knight _ _ kg _, Monster {}) = kg -- draw
+
+proclaim :: Int -> String
+proclaim x 
+  | x == 0 = "Uh oh, it was a draw"
+  | x == -1 = "Monster's tooooo gooood"
+  | otherwise = "Monster dies. Knight is rich. Has " ++ show x ++ " Gold coins!!!!" 
+
+--example, proclaim (fight (fire (Knight 100 5 20 0) (Monster 100 5 20 0)))
+
+
 
 {- |
 =🛡= Sum types
@@ -462,6 +510,17 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data Eggs
+  = Scrambled
+  | Omelette
+  | Poached
+
+data Breakfast
+  = Eggs
+  | Spinach
+  | Sausages
+  | Ham
+
 {- |
 =⚔️= Task 4
 
@@ -481,6 +540,29 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
+
+data ChurchLibrary
+  = Church
+  | Library 
+
+data House = House
+
+data City = City {
+  castle :: String,
+  wall :: Bool,
+  churchOrLibrary :: ChurchLibrary, 
+  houses :: [House]
+  }
+
+buildCastle :: City -> City
+buildCastle (City _ wal chlib hou) = City "People's Castle" wal chlib hou
+
+buildHouse :: City -> City 
+buildHouse (City cas wal chlib hou) = City cas wal chlib (House : hou)
+
+buildWalls :: City -> City 
+buildWalls (City cas wal chlib hou) = if cas /= "" && length hou >= 10 then City cas True chlib hou else City cas wal chlib hou
+
 
 {-
 =🛡= Newtypes
@@ -563,21 +645,29 @@ introducing extra newtypes.
     implementation of the "hitPlayer" function at all!
 -}
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+newtype Health = Health Int 
+newtype Armor = Armor Int
+newtype Attack = Attack Int 
+newtype Dexterity = Dexterity Int
+newtype Strength = Strength Int 
+newtype Damage = Damage Int 
+newtype Defense = Defense Int
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDamage :: Attack -> Strength -> Damage
+calculatePlayerDamage (Attack attack) (Strength strength) = Damage (attack + strength)
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense (Armor armor) (Dexterity dexterity) = Defense (armor * dexterity)
+
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit (Damage damage) (Defense defense) (Health health) = Health (health + defense - damage)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -754,7 +844,15 @@ parametrise data types in places where values can be of any general type.
 🕯 HINT: 'Maybe' that some standard types we mentioned above are useful for
   maybe-treasure ;)
 -}
+data Dragon a = Dragon { 
+  name :: String,
+  magicalPower :: a
+  }
 
+data Lair a b = Lair {
+  dragon :: Dragon a,
+  treasure_chest :: Maybe b
+}
 {-
 =🛡= Typeclasses
 
