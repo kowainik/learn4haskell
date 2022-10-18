@@ -410,9 +410,9 @@ fire (Knight kh ka kg kf) (Monster mh ma mg mf)  -- take turns to fire
   | otherwise = fire (Knight (score kh ma) ka kg kf) (Monster mh ma mg (mf + 1)) -- monster fires
 
 fight :: (Knight, Monster) -> Int
-fight (Knight _ _ kg _, Monster 0 _ mg _) = kg + mg
-fight (Knight 0 _ _ _, Monster {}) = -1
-fight (Knight _ _ kg _, Monster {}) = kg
+fight (Knight _ _ kg _, Monster 0 _ mg _) = kg + mg -- monster loses
+fight (Knight 0 _ _ _, Monster {}) = -1 -- knight loses
+fight (Knight _ _ kg _, Monster {}) = kg -- draw
 
 proclaim :: Int -> String
 proclaim x 
