@@ -39,7 +39,7 @@ Now, if you are ready, bring it on!
 -}
 
 module Chapter2 where
-import GHC.IO.Device (IODevice(dup))
+-- import GHC.IO.Device (IODevice(dup))
 
 {-
 =🛡= Imports
@@ -643,7 +643,7 @@ Write a function that takes elements of a list only in even positions.
 -}
 takeEven :: [Int]-> [Int]
 takeEven [] = []
-takeEven (x:y:xs) = x : takeEven xs
+takeEven (x:_:xs) = x : takeEven xs
 takeEven (x:xs) = x : takeEven xs
 
 {- |
@@ -813,6 +813,7 @@ listElementsLessThan :: Int -> [Int] -> [Int]
 listElementsLessThan x = filter (< x) 
 
 -- Can you eta-reduce this one???
+pairMul :: [Int] -> [Int] -> [Int]
 pairMul = zipWith (*) 
 
 {- |
