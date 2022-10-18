@@ -152,7 +152,7 @@ Starting to learn Haskell with Learn4Haskell is a piece of cake!
 6. After you finish the first chapter (or any other chapter, or even if you are
    stuck in the middle), open
    [Pull Request](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request)
-   __to your fork__ with the solution and mention @vrom911 and @chshersh and we
+   __to your fork__ with the solution and mention @vrom911 and I
    would be on our way for the review.
 
  > Note, that you should open a PR for your fork of this repo, not this repo.
@@ -187,8 +187,8 @@ If you're on Linux or macOS, then the process is easy:
    terminal
 
     ```shell
-    ghcup install ghc 8.10.4
-    ghcup set ghc 8.10.4
+    ghcup install ghc 9.2.4
+    ghcup set ghc 9.2.4
     ghcup install cabal 3.2.0.0
     ```
 3. Run `cabal update` to fetch the latest info about Haskell packages.
@@ -239,14 +239,11 @@ Similar commands are provided for all chapters from One to Four.
 
 ## Who we are
 
-[Veronika (@vrom911)](https://vrom911.github.io/) and
-[Dmitrii (@chshersh)](https://kodimensional.dev/) are experienced Haskell developers.
-Together we drive this open source organisation —
+I am [Veronika (@vrom911)](https://vrom911.github.io/) and I drive this open source organisation —
 [Kowainik](https://kowainik.github.io/). We have a lot of open source projects
 and libraries in Haskell that are used in the Haskell community. We are also
 working on a lot of tutorials and guides in Haskell and mentoring people who are
-keen to learn Haskell as well. Moreover, Dmitrii has a few years of experience
-teaching Haskell courses in the university to CS students.
+keen to learn Haskell as well.
 
 We are passionate about Functional Programming and Haskell in particular. But at
 the same time, we understand how difficult it can be to get into all these
@@ -261,7 +258,6 @@ You can help us by supporting us on Ko-Fi or via GitHub sponsorship program:
 
 * [Kowainik Ko-Fi](https://ko-fi.com/kowainik)
 * [Veronika Romashkina via GitHub](https://github.com/sponsors/vrom911)
-* [Dmitrii Kovanikov via GitHub](https://github.com/sponsors/chshersh)
 
 
 We also appreciate any feedback on our course a lot! You can submit your

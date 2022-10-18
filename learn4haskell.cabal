@@ -11,18 +11,20 @@ license:             MPL-2.0
 license-file:        LICENSE
 author:              Veronika Romashkina, Dmitrii Kovanikov
 maintainer:          Kowainik <xrom.xkov@gmail.com>
-copyright:           2020 Kowainik
+copyright:           2020-2022 Kowainik
 build-type:          Simple
 extra-doc-files:     README.md
                      CHANGELOG.md
 tested-with:         GHC == 8.10.4
+                     GHC == 9.0.2
+                     GHC == 9.2.4
 
 source-repository head
   type:                git
   location:            https://github.com/kowainik/learn4haskell.git
 
 common common-options
-  build-depends:       base ^>= 4.14.0.0
+  build-depends:       base >= 4.14.0.0 && < 4.17
 
   ghc-options:         -Wall
                        -Wcompat
@@ -36,13 +38,18 @@ common common-options
     ghc-options:       -Wpartial-fields
   if impl(ghc >= 8.10)
     ghc-options:       -Wunused-packages
+  if impl(ghc >= 9.0)
+    ghc-options:       -Winvalid-haddock
+  if impl(ghc >= 9.2)
+    ghc-options:       -Woperator-whitespace
+                       -Wredundant-bang-patterns
 
   default-language:    Haskell2010
 
 common common-doctest
   import:              common-options
   hs-source-dirs:      test
-  build-depends:       doctest ^>= 0.17
+  build-depends:       doctest >= 0.17 && < 0.21
   ghc-options:         -threaded
 
 library
@@ -63,7 +70,7 @@ test-suite learn4haskell-test
                        Test.Chapter3
                        Test.Chapter4
   build-depends:       learn4haskell
-                     , hspec ^>= 2.7.4
+                     , hspec >= 2.7.4 && < 2.11
                      , hspec-hedgehog
                      , hedgehog  >= 1.0.2 && < 2
   ghc-options:         -threaded
