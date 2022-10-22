@@ -29,10 +29,9 @@ As usual, the explanations are in the Haskell comments of this
 module. We are leaving a number of tasks on our path. Your goal is to
 solve them all.
 
-After finishing the PR, you can choose to summon us, @vrom911 and
-@chshersh, to look at your solution in order to give some advice on
-your code. This is optional; however, you can ask us for review only
-if you want some feedback on your solutions.
+After finishing the PR, you can choose to summon me, @vrom911, to look at your
+solution in order to give some advice on your code. This is optional; however,
+you can ask us for review only if you want some feedback on your solutions.
 
 Perfect. Let's crush this!
 -}
@@ -657,7 +656,6 @@ We also have a Ko-fi page, if you want to buy us a coffee after a long road.
 
 You can also support creators of this course and your proud mentors on GitHub:
   ✧ https://github.com/sponsors/vrom911
-  ✧ https://github.com/sponsors/chshersh
 
 Now, for the dessert, it is time to test your skills on the final boss!
 Your task now will be to implement a Binary Tree data structure and
@@ -676,5 +674,5 @@ Specifically,
 
 {-
 You did it! Now it is time to open pull request with your changes
-and summon @vrom911 and @chshersh for the review!
+and summon @vrom911 for the review!
 -}
