@@ -53,6 +53,9 @@ provide more top-level type signatures, especially when learning Haskell.
 
 module Chapter3 where
 import Control.Concurrent (yield)
+import Data.Bits (Bits(xor))
+import Data.List
+import qualified Data.Maybe
 
 {-
 =🛡= Types in Haskell
@@ -1092,6 +1095,31 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
+
+data DayOfWeek = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday deriving (Eq, Enum, Show)
+
+isWeekend :: DayOfWeek -> Bool 
+-- isWeekend n = case n of
+--   x | x `elem` [Saturday, Sunday] -> True 
+--   _ -> False
+isWeekend x 
+  | x == Saturday = True
+  | x == Sunday = True 
+  | otherwise = False
+
+nextDay :: DayOfWeek -> DayOfWeek
+nextDay x
+  | x == Sunday = Monday 
+  | otherwise = succ x
+
+daysToParty :: DayOfWeek -> Int
+daysToParty x = let e = elemIndex x ls
+                    ls = enumFrom (toEnum 0) 
+                    n = Data.Maybe.fromMaybe 0 e
+                    -- n = case e of 
+                    --   Just y -> y 
+                    --   Nothing -> 0
+  in if n <= 4 then 4 - n else 7 - (n - 4)
 
 {-
 =💣= Task 9*
