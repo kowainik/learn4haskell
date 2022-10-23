@@ -52,8 +52,6 @@ provide more top-level type signatures, especially when learning Haskell.
 {-# LANGUAGE InstanceSigs #-}
 
 module Chapter3 where
-import Control.Concurrent (yield)
-import Data.Bits (Bits(xor))
 import Data.List
 import qualified Data.Maybe
 
@@ -1156,6 +1154,65 @@ Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
 
+newtype AttackTsk9 = AttackTsk9 Int
+newtype HealthTsk9 = HealthTsk9 Int
+newtype DefenceTsk9 = DefenceTsk9 Int
+
+data KnightTsk9 = KnightTsk9 {
+  kntHealth :: HealthTsk9,
+  kntAttack :: AttackTsk9,
+  kntDefence :: DefenceTsk9
+}
+
+data MonsterTsk9 = MonsterTsk9 {
+  mnstHealth :: HealthTsk9,
+  mnstAttack :: AttackTsk9
+}
+
+scoreTsk9 :: Int -> Int -> Int
+scoreTsk9 x y 
+  | x > y = x - y 
+  | otherwise = 0
+
+fireTsk9 :: KnightTsk9 -> MonsterTsk9 -> (KnightTsk9, MonsterTsk9)
+fireTsk9 kn (MonsterTsk9 0 ma) = (kn, MonsterTsk9 0 ma) -- monster is defeated, health 0
+fireTsk9 (KnightTsk9 0 ka kd) mn = (KnightTsk9 0 ka kd, mn) -- knight is defeated, health 0
+fireTsk9 (KnightTsk9 kh ka kd) (MonsterTsk9 mh ma)  -- take turns to fire
+  | kf == mf = fireTsk9 (KnightTsk9 kh ka kg (kf + 1)) (MonsterTsk9 (score mh ka) ma mg mf) --knight fires
+  | otherwise = fireTsk9 (KnightTsk9 (score kh ma) ka kg kf) (MonsterTsk9 mh ma mg (mf + 1)) -- monster fires
+
+fightTsk9 :: (KnightTsk9, MonsterTsk9) -> Int
+fightTsk9 (KnightTsk9 _ _ kg _, MonsterTsk9 0 _ mg _) = kg + mg -- monster loses
+fightTsk9 (KnightTsk9 0 _ _ _, MonsterTsk9 {}) = -1 -- knight loses
+fightTsk9 (KnightTsk9 _ _ kg _, MonsterTsk9 {}) = kg -- draw
+
+proclaimTsk9 :: Int -> String
+proclaimTsk9 x 
+  | x == 0 = "Uh oh, it was a draw"
+  | x == -1 = "Monster's tooooo gooood"
+  | otherwise = "Monster dies. Knight is rich. Has " ++ show x ++ " Gold coins!!!!" 
+  --TODO task incomplete
+
+makeMove = do 
+  putStrLn "Attack(A), Cast a spell to defend(D), Drink a health portion(H):"
+  mv <- getLine
+  case mv of 
+    "A" -> "TODO attacked"
+    "D" -> "TODO defended"
+    "H" -> "TODO health potion"
+    _ -> "TODO invalid action"
+
+keepFighting = do
+  -- do action 
+  -- display status 
+  makeMove
+
+startFight = do 
+  putStrln "Who is it that wants to fight Monster Gorba?"
+  knt <- getLine
+  print "Welcome, " ++ knt ++ " Let's fight!!"
+  makeMove
+    
 
 {-
 You did it! Now it is time to open pull request with your changes
