@@ -1174,17 +1174,17 @@ scoreTsk9 x y
   | x > y = x - y 
   | otherwise = 0
 
-fireTsk9 :: KnightTsk9 -> MonsterTsk9 -> (KnightTsk9, MonsterTsk9)
-fireTsk9 kn (MonsterTsk9 0 ma) = (kn, MonsterTsk9 0 ma) -- monster is defeated, health 0
-fireTsk9 (KnightTsk9 0 ka kd) mn = (KnightTsk9 0 ka kd, mn) -- knight is defeated, health 0
-fireTsk9 (KnightTsk9 kh ka kd) (MonsterTsk9 mh ma)  -- take turns to fire
-  | kf == mf = fireTsk9 (KnightTsk9 kh ka kg (kf + 1)) (MonsterTsk9 (score mh ka) ma mg mf) --knight fires
-  | otherwise = fireTsk9 (KnightTsk9 (score kh ma) ka kg kf) (MonsterTsk9 mh ma mg (mf + 1)) -- monster fires
+-- fireTsk9 :: KnightTsk9 -> MonsterTsk9 -> (KnightTsk9, MonsterTsk9)
+-- fireTsk9 kn (MonsterTsk9 0 ma) = (kn, MonsterTsk9 0 ma) -- monster is defeated, health 0
+-- fireTsk9 (KnightTsk9 0 ka kd) mn = (KnightTsk9 0 ka kd, mn) -- knight is defeated, health 0
+-- fireTsk9 (KnightTsk9 kh ka kd) (MonsterTsk9 mh ma)  -- take turns to fire
+--   | kf == mf = fireTsk9 (KnightTsk9 kh ka kg (kf + 1)) (MonsterTsk9 (score mh ka) ma mg mf) --knight fires
+--   | otherwise = fireTsk9 (KnightTsk9 (score kh ma) ka kg kf) (MonsterTsk9 mh ma mg (mf + 1)) -- monster fires
 
-fightTsk9 :: (KnightTsk9, MonsterTsk9) -> Int
-fightTsk9 (KnightTsk9 _ _ kg _, MonsterTsk9 0 _ mg _) = kg + mg -- monster loses
-fightTsk9 (KnightTsk9 0 _ _ _, MonsterTsk9 {}) = -1 -- knight loses
-fightTsk9 (KnightTsk9 _ _ kg _, MonsterTsk9 {}) = kg -- draw
+-- fightTsk9 :: (KnightTsk9, MonsterTsk9) -> Int
+-- fightTsk9 (KnightTsk9 _ _ kd , MonsterTsk9 0 _) = kg + mg -- monster loses
+-- fightTsk9 (KnightTsk9 0 _ _ , MonsterTsk9 {}) = -1 -- knight loses
+-- fightTsk9 (KnightTsk9 _ _ kd , MonsterTsk9 {}) = kg -- draw
 
 proclaimTsk9 :: Int -> String
 proclaimTsk9 x 
@@ -1193,25 +1193,30 @@ proclaimTsk9 x
   | otherwise = "Monster dies. Knight is rich. Has " ++ show x ++ " Gold coins!!!!" 
   --TODO task incomplete
 
-makeMove = do 
+makeMove :: KnightTsk9 -> MonsterTsk9 -> IO b
+makeMove knt mns = do 
   putStrLn "Attack(A), Cast a spell to defend(D), Drink a health portion(H):"
   mv <- getLine
   case mv of 
-    "A" -> "TODO attacked"
-    "D" -> "TODO defended"
-    "H" -> "TODO health potion"
-    _ -> "TODO invalid action"
+    "A" -> print "TODO attacked"
+    "D" -> print "TODO defended"
+    "H" -> print "TODO health potion"
+    _ -> print "TODO invalid action"
+  makeMove knt mns
 
-keepFighting = do
-  -- do action 
-  -- display status 
-  makeMove
+-- keepFighting = do
 
+--   -- do action 
+--   -- display status 
+--   makeMove
+
+startFight :: IO b
 startFight = do 
-  putStrln "Who is it that wants to fight Monster Gorba?"
+  putStrLn "Who is it that wants to fight Monster Gorba?"
   knt <- getLine
-  print "Welcome, " ++ knt ++ " Let's fight!!"
-  makeMove
+  print ("Welcome, " ++ knt ++ ". Let's fight Gorba!!")
+  makeMove KnightTsk9 {kntHealth = HealthTsk9 100, kntAttack = AttackTsk9 20, kntDefence = DefenceTsk9 10} MonsterTsk9 {mnstHealth = HealthTsk9 100, mnstAttack = AttackTsk9 20}
+
     
 
 {-
