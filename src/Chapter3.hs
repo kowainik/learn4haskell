@@ -1157,6 +1157,7 @@ contestants, and write a function that decides the outcome of a fight!
 newtype AttackTsk9 = AttackTsk9 Int deriving (Show)
 newtype HealthTsk9 = HealthTsk9 Int deriving (Show)
 newtype DefenceTsk9 = DefenceTsk9 Int deriving (Show)
+newtype KnightName = KnightName String deriving (Show)
 
 data KnightTsk9 = KnightTsk9 {
   kntHealth :: HealthTsk9,
@@ -1182,12 +1183,14 @@ fightTsk9 (KnightTsk9 {} , MonsterTsk9 (HealthTsk9 0) _  ) = 1 -- monster loses
 fightTsk9 (KnightTsk9 (HealthTsk9 0) _ _ , MonsterTsk9 {}) = -1 -- knight loses
 fightTsk9 _ = 0 -- draw
 
-proclaimOrDoTsk9 :: (KnightTsk9, MonsterTsk9) -> IO ()
-proclaimOrDoTsk9 mat = do 
+proclaimOrDoTsk9 :: KnightName -> (KnightTsk9, MonsterTsk9) -> IO ()
+proclaimOrDoTsk9 k mat = do 
+                        print "Monster attacks"
                         print mat
+                        putStr "\n"
                         let res = fightTsk9 mat
                         if res == 0 
-                          then makeMove mat
+                          then makeMove k mat
                           else if res == (-1) 
                             then print "Monster wins"
                             else print "Knight wins"
@@ -1205,39 +1208,46 @@ drinkHealthTsk9 :: (KnightTsk9, MonsterTsk9) -> (KnightTsk9, MonsterTsk9)
 drinkHealthTsk9  (KnightTsk9 (HealthTsk9 kh) ka kd, MonsterTsk9 mh ma) = (KnightTsk9 (HealthTsk9 (kh + 20)) ka  kd, MonsterTsk9 mh ma)
 
 
-makeMove :: (KnightTsk9, MonsterTsk9) -> IO ()
-makeMove (knt, mns) = do 
-  putStrLn "Attack(A), Cast spell to increase defence(D), Drink health portion(H):"
+makeMove :: KnightName -> (KnightTsk9, MonsterTsk9) -> IO ()
+makeMove (KnightName k) (knt, mns) = do 
+  putStrLn "Attack(a), Cast spell to increase defence(d), Drink health potion(h):"
   mv <- getLine
   case mv of 
     "a" -> do
+            print (k ++ " attacks")
             let at = knightAttackTsk9 (knt, mns)
+            print at
             let mat = monsterAttackTsk9 at
-            proclaimOrDoTsk9 mat
+            proclaimOrDoTsk9 (KnightName k) mat
 
     "d" -> do
+            print (k ++ " casts spell. Defence is increased")
             let df = increaseDefenceTsk9 (knt, mns)
             print df 
-            print "Knight's defence just went up by 100."
+            print (k ++  "'s defence just went up by 100.")
             let mat = monsterAttackTsk9 df
-            proclaimOrDoTsk9 mat
+            proclaimOrDoTsk9 (KnightName k) mat
     "h" -> do
+            print (k ++ "Knight drinks health potion.")
             let hd = drinkHealthTsk9 (knt, mns)
             print hd 
-            print "Knight's health just went up by 20."
+            print (k ++ "Knight's health just went up by 20.")
             let mat = monsterAttackTsk9 hd
-            proclaimOrDoTsk9 mat
-    _ -> print "invalid action, good bye"
+            proclaimOrDoTsk9 (KnightName k) mat
+    "X" -> print "Goodbye"
+    _ -> print "invalid action, Try again. Press X to exit"
 
 startFight :: IO ()
 startFight = do 
-  putStrLn "Who is it that wants to fight Monster Gorba?"
+  putStrLn "Who is it that wants to fight Monster Rakshas?"
   knt <- getLine
-  print ("Welcome, " ++ knt ++ ". Let's fight Gorba!!")
-  makeMove (KnightTsk9 {kntHealth = HealthTsk9 100, kntAttack = AttackTsk9 20, kntDefence = DefenceTsk9 10},
-   MonsterTsk9 {mnstHealth = HealthTsk9 100, mnstAttack = AttackTsk9 60})
+  print ("Welcome, " ++ knt ++ ". Let's fight Rakshas!!")
+  let start = (KnightTsk9 {kntHealth = HealthTsk9 100, kntAttack = AttackTsk9 20, kntDefence = DefenceTsk9 10}, MonsterTsk9 {mnstHealth = HealthTsk9 100, mnstAttack = AttackTsk9 60})
+  print start
+  makeMove (KnightName knt) start
 
-    
+-- to play the game,
+-- startFight 
 
 {-
 You did it! Now it is time to open pull request with your changes
