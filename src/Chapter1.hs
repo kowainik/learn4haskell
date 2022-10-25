@@ -555,7 +555,8 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 
-mid x y z = error "mid: not implemented!"
+mid :: Int -> Int -> Int -> Int
+mid x y z = x + y + z - min x (min y z) - max x (max y z)
 
 {- |
 =⚔️= Task 8
