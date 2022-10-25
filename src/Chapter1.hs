@@ -644,8 +644,9 @@ specifying complex expressions.
 sumLast2 :: Int -> Int
 sumLast2 n = numLast + num2ndLast
     where
-        numLast = mod (abs n) 10
-        num2ndLast = mod (div (abs n) 10) 10
+        numLast = mod m 10
+        num2ndLast = mod (div m 10) 10
+        m = abs n
 
 
 
@@ -667,7 +668,10 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit n = error "firstDigit: Not implemented!"
+firstDigit :: Int -> Int
+firstDigit n = if div m 10 == 0 then m else firstDigit(div m 10)
+    where
+        m = abs n
 
 
 {-
