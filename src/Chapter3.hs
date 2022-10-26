@@ -1178,10 +1178,12 @@ scoreTsk9 (HealthTsk9 x) (AttackTsk9 y)
 defendTsk9 :: HealthTsk9 -> DefenceTsk9 -> HealthTsk9
 defendTsk9 (HealthTsk9 x) (DefenceTsk9 y) = HealthTsk9 (x + y) 
 
-fightTsk9 :: (KnightTsk9, MonsterTsk9) -> Int
-fightTsk9 (KnightTsk9 {} , MonsterTsk9 (HealthTsk9 0) _  ) = 1 -- monster loses
-fightTsk9 (KnightTsk9 (HealthTsk9 0) _ _ , MonsterTsk9 {}) = -1 -- knight loses
-fightTsk9 _ = 0 -- draw
+
+data Result = Draw | Lose | Win
+fightTsk9 :: (KnightTsk9, MonsterTsk9) -> Result
+fightTsk9 (KnightTsk9 {} , MonsterTsk9 (HealthTsk9 0) _  ) = Win -- Knight wins
+fightTsk9 (KnightTsk9 (HealthTsk9 0) _ _ , MonsterTsk9 {}) = Lose -- knight loses
+fightTsk9 _ = Draw
 
 proclaimOrDoTsk9 :: KnightName -> (KnightTsk9, MonsterTsk9) -> IO ()
 proclaimOrDoTsk9 k mat = do 
@@ -1189,11 +1191,10 @@ proclaimOrDoTsk9 k mat = do
                         print mat
                         putStr "\n"
                         let res = fightTsk9 mat
-                        if res == 0 
-                          then makeMove k mat
-                          else if res == (-1) 
-                            then print "Monster wins"
-                            else print "Knight wins"
+                        case res of 
+                          Draw -> makeMove k mat 
+                          Lose -> print "Monster wins"
+                          Win -> print "Knight wins"
 
 knightAttackTsk9 :: (KnightTsk9, MonsterTsk9) -> (KnightTsk9, MonsterTsk9)
 knightAttackTsk9 (KnightTsk9 kh ka kd, MonsterTsk9 mh ma) = (KnightTsk9 kh ka kd, MonsterTsk9 (scoreTsk9 mh ka) ma)
