@@ -669,7 +669,7 @@ aren't ready for this boss yet!
 -}
 
 firstDigit :: Int -> Int
-firstDigit n = if div m 10 == 0 then m else firstDigit(div m 10)
+firstDigit n = if div m 10 == 0 then m else firstDigit (div m 10)
     where
         m = abs n
 
