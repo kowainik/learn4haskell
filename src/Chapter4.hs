@@ -41,6 +41,7 @@ Perfect. Let's crush this!
 {-# LANGUAGE InstanceSigs    #-}
 
 module Chapter4 where
+import Data.Char
 
 {- |
 =🛡= Kinds
@@ -487,12 +488,14 @@ Implement the Applicative instance for our 'Secret' data type from before.
 -}
 instance Applicative (Secret e) where
     pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+    pure = Reward
 
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
+    (<*>) (Trap c) _= Trap c
+    (<*>) _ (Trap c) = Trap c
+    (<*>) (Reward f) (Reward c) = Reward (f c)
 
-{- |
+{- | 
 =⚔️= Task 5
 
 Implement the 'Applicative' instance for our 'List' type.
@@ -613,9 +616,17 @@ concepts in the end.
 
 Implement the 'Monad' instance for our 'Secret' type.
 -}
-instance Monad (Secret e) where
+upper :: Char -> Secret e Char
+upper x = Reward (Data.Char.toUpper x)
+
+multiplyBy5 :: Int -> Secret e Int 
+multiplyBy5 x = Reward (x * 5)
+
+
+instance Monad (Secret e ) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+    (>>=) (Trap c) _ = Trap c 
+    (>>=) (Reward c) f = f c
 
 {- |
 =⚔️= Task 7
