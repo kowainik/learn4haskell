@@ -507,6 +507,14 @@ Implement the 'Applicative' instance for our 'List' type.
   type.
 -}
 
+instance Applicative List where
+  pure :: a -> List a
+  pure  c = Cons c Empty
+  (<*>) :: List (a -> b) -> List a -> List b 
+  (<*>)  _ Empty = Empty
+  (<*>) Empty _ = Empty
+  (<*>)  (Cons g _) (Cons c d)  = Cons (g c) ((<*>) (Cons g Empty) d)
+
 
 {- |
 =🛡= Monad
@@ -654,8 +662,23 @@ Can you implement a monad version of AND, polymorphic over any monad?
 
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
+
+
+-- this would fail in Just Flase - Nothing case
+-- andM :: (Monad m) => m Bool -> m Bool -> m Bool
+-- andM n c = do 
+--             x <- n 
+--             y <- c 
+--             pure (x && y)
+
+checkBool :: (Monad m) => m Bool -> Bool-> m Bool 
+checkBool x True = x
+checkBool _ False = pure False
+
+
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM n c = n >>= checkBool c
+
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
