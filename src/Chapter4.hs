@@ -664,7 +664,7 @@ Can you implement a monad version of AND, polymorphic over any monad?
 -}
 
 
--- this would fail in Just Flase - Nothing case
+-- this would fail in Just False - Nothing case
 -- andM :: (Monad m) => m Bool -> m Bool -> m Bool
 -- andM n c = do 
 --             x <- n 
@@ -679,6 +679,16 @@ checkBool _ False = pure False
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
 andM n c = n >>= checkBool c
 
+boolInt :: (Monad m) => Bool -> m Int 
+boolInt True = pure 1
+boolInt False = pure 0
+
+intString :: (Monad m) => Int -> m [Char]
+intString 0 = pure "fail"
+intString _ = pure "passes"
+
+typeM :: (Monad m) => m Bool -> m [Char]
+typeM  b = b >>= boolInt >>= intString
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
@@ -722,6 +732,19 @@ Specifically,
  ❃ Implement the function to convert Tree to list
 -}
 
+data Node a b = Leaf a | Node b
+
+data BinTree a b = BinTree (Node a b) (Node a b)
+
+instance Functor (BinTree e) where
+  fmap :: (a -> b) -> BinTree e a -> BinTree e b
+  fmap todo
+
+
+-- instance Functor (Secret e) where
+--     fmap :: (a -> b) -> Secret e a -> Secret e b
+--     fmap _ (Trap g) = Trap g
+--     fmap f (Reward c) = Reward (f c)
 
 {-
 You did it! Now it is time to open pull request with your changes
