@@ -732,19 +732,50 @@ Specifically,
  ❃ Implement the function to convert Tree to list
 -}
 
-data Node a b = Leaf a | Node b
+data Node a = Leaf | Node a deriving (Show)
 
-data BinTree a b = BinTree (Node a b) (Node a b)
+data BinTree a = BinTree (Node a ) (BinTree a ) (BinTree a ) | TreeLeaf deriving (Show)
 
-instance Functor (BinTree e) where
-  fmap :: (a -> b) -> BinTree e a -> BinTree e b
-  fmap todo
+instance Functor BinTree where
+  fmap :: (a -> b) -> BinTree a -> BinTree b
+  fmap _ TreeLeaf  = TreeLeaf
+  fmap g (BinTree Leaf x y)  = BinTree Leaf (fmap g x) (fmap g y)
+  fmap g (BinTree (Node  d) x y) =  BinTree (Node (g d)) (fmap g x) (fmap g y)
+  
+
+instance Applicative BinTree where 
+  pure :: a -> BinTree a 
+  pure x = BinTree (Node x) TreeLeaf TreeLeaf
+  (<*>) :: BinTree (a -> b) -> BinTree a -> BinTree b
+  (<*>) _ TreeLeaf = TreeLeaf
+  (<*>) TreeLeaf _ = TreeLeaf
+  (<*>) (BinTree Leaf _ _) _ = TreeLeaf
+  (<*>) (BinTree (Node g) _ _) (BinTree Leaf x y) = BinTree Leaf (fmap g x) (fmap g y)
+  (<*>) (BinTree (Node g) _ _) (BinTree (Node d) x y) = BinTree (Node (g d)) (fmap g x) (fmap g y)
 
 
--- instance Functor (Secret e) where
---     fmap :: (a -> b) -> Secret e a -> Secret e b
---     fmap _ (Trap g) = Trap g
---     fmap f (Reward c) = Reward (f c)
+instance Monad BinTree where 
+  (>>=) :: BinTree a -> (a -> BinTree b) -> BinTree b 
+  (>>=) TreeLeaf _ = TreeLeaf 
+  (>>=) (BinTree Leaf x y ) g = BinTree Leaf (x >>= g)  (y >>= g)
+  (>>=) (BinTree (Node c) _ _ ) g = g c
+  
+reverseTree :: BinTree a -> BinTree a
+reverseTree TreeLeaf = TreeLeaf
+reverseTree (BinTree c x y) = BinTree c (reverseTree y) (reverseTree x)
+
+
+
+treeToList :: BinTree a -> [a]
+treeToList TreeLeaf  =  []
+treeToList  (BinTree Leaf x y ) = treeToList x ++ treeToList y
+treeToList  (BinTree (Node c) x y ) = c : treeToList x ++ treeToList y
+
+-- example
+-- treeToList (BinTree (Node 4) (BinTree (Node 5) (BinTree (Node 6) TreeLeaf TreeLeaf) TreeLeaf) (BinTree (Node 10) TreeLeaf TreeLeaf))
+-- [4,5,6,10]
+-- treeToList (BinTree (Node "Mary") (BinTree (Node "had") (BinTree (Node "a") TreeLeaf TreeLeaf) TreeLeaf) (BinTree (Node " lamb") TreeLeaf TreeLeaf))
+-- ["Mary","had","a"," lamb"]
 
 {-
 You did it! Now it is time to open pull request with your changes
