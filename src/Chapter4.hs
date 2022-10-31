@@ -755,6 +755,8 @@ instance Applicative BinTree where
 
 
 instance Monad BinTree where 
+  return :: a -> BinTree a 
+  return = pure
   (>>=) :: BinTree a -> (a -> BinTree b) -> BinTree b 
   (>>=) TreeLeaf _ = TreeLeaf 
   (>>=) (BinTree Leaf x y ) g = BinTree Leaf (x >>= g)  (y >>= g)
