@@ -490,7 +490,8 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit n = error "lastDigit: Not implemented!"
+lastDigit :: Int -> Int
+lastDigit n = mod n 10
 
 
 {- |
@@ -520,7 +521,7 @@ branches because it is an expression and it must always return some value.
   satisfying the check will be returned and, therefore, evaluated.
 -}
 closestToZero :: Int -> Int -> Int
-closestToZero x y = error "closestToZero: not implemented!"
+closestToZero x y = if abs x < abs y then x else y
 
 
 {- |
@@ -553,8 +554,14 @@ value after "=" where the condition is true.
 
 Casual reminder about adding top-level type signatures for all functions :)
 -}
-
-mid x y z = error "mid: not implemented!"
+mid :: Int -> Int -> Int -> Int
+mid x y z
+    | x < y && x < z && z < y = z
+    | x < y && x < z && y < z = y
+    | z < x && z < y && x < y = x
+    | z < x && z < y && y < x = y
+    | y < x && y < z && x < z = x
+    | otherwise = z
 
 {- |
 =⚔️= Task 8
@@ -568,7 +575,14 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel c = error "isVowel: not implemented!"
+isVowel :: Char -> Bool
+isVowel c
+    | c == 'a' = True
+    | c == 'e' = True
+    | c == 'i' = True
+    | c == 'o' = True
+    | c == 'u' = True
+    | otherwise = False
 
 
 {- |
