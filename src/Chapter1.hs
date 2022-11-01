@@ -428,7 +428,7 @@ task is to specify the type of this function.
 >>> squareSum 3 4
 49
 -}
-
+squareSum :: Int a => a -> a -> a
 squareSum x y = (x + y) * (x + y)
 
 
