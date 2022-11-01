@@ -646,7 +646,14 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 
-sumLast2 n = error "sumLast2: Not implemented!"
+sumLast2 :: Int -> Int
+sumLast2 n = mod10 (div10 n) + mod10 n
+    where
+        div10 :: Int -> Int
+        div10 x = div x 10
+
+        mod10 :: Int -> Int
+        mod10 x = mod x 10
 
 
 {- |
@@ -667,7 +674,10 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit n = error "firstDigit: Not implemented!"
+firstDigit :: Int -> Int
+firstDigit n = if n < 10
+    then n
+    else firstDigit (n `div` 10)
 
 
 {-
