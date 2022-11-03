@@ -881,7 +881,9 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate = error "rotate: Not implemented!"
+rotate :: Int -> [Int] -> [Int]
+rotate _ [] = []
+rotate n arr = drop n $ take ((length arr) + n) $ cycle arr
 
 {- |
 =💣= Task 12*
@@ -897,7 +899,9 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind = error "rewind: Not Implemented!"
+rewind :: [Int] -> [Int]
+rewind [] = []
+rewind (x:xs) = (rewind xs) ++ [x]
 
 
 {-
