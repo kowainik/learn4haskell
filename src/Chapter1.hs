@@ -556,7 +556,6 @@ Casual reminder about adding top-level type signatures for all functions :)
 -}
 mid :: Int -> Int -> Int -> Int
 mid x y z
-    | x < y && x < z && z < y = z
     | x < y && x < z && y < z = y
     | z < x && z < y && x < y = x
     | z < x && z < y && y < x = y
@@ -650,10 +649,10 @@ sumLast2 :: Int -> Int
 sumLast2 n = mod10 (div10 n) + mod10 n
     where
         div10 :: Int -> Int
-        div10 x = div x 10
+        div10 x = div (abs x) 10
 
         mod10 :: Int -> Int
-        mod10 x = mod x 10
+        mod10 x = mod (abs x) 10
 
 
 {- |
@@ -675,9 +674,9 @@ aren't ready for this boss yet!
 -}
 
 firstDigit :: Int -> Int
-firstDigit n = if n < 10
-    then n
-    else firstDigit (n `div` 10)
+firstDigit n = if abs n < 10
+    then abs n
+    else firstDigit (abs n `div` 10)
 
 
 {-

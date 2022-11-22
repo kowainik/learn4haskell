@@ -349,8 +349,8 @@ ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
 subList _ _ [] = []
-subList x 0 y = []
-subList x y b = take (y-x+1) $ drop x b
+subList _ 0 _ = []
+subList x y b = take (y - x + 1) $ drop x b
 
 {- |
 =⚔️= Task 4
@@ -520,7 +520,9 @@ False
 -}
 isThird42 :: (Eq a, Num a) => [a] -> Bool
 isThird42 [] = False
-isThird42 ( _ : _ : x : xs ) = if x == 42 then True else False
+isThird42 [_] = False
+isThird42 [_, _] = False
+isThird42 ( _ : _ : x : _ ) = x == 42
 
 
 {- |
@@ -641,15 +643,27 @@ Write a function that takes elements of a list only in even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
+-- takeEven :: [a] -> [a]
+-- takeEven [] = []
+-- takeEven (x:xs) = recursiveEven 0 (x : xs)
+--     where
+--         recursiveEven :: Int -> [a] -> [a]
+--         recursiveEven _ [] = []
+--         recursiveEven c (x:xs) = if mod c 2 == 0
+--             then x : recursiveEven (c + 1) xs
+--             else recursiveEven (c + 1) xs
 takeEven :: [a] -> [a]
-takeEven [] =[]
-takeEven (x:xs) = recursiveEven 0 (x : xs)
-    where
-        recursiveEven :: Int -> [a] -> [a]
-        recursiveEven _ [] = []
-        recursiveEven c (x:xs) = if mod c 2 == 0
-            then x : recursiveEven (c+1) xs
-            else recursiveEven (c+1) xs
+takeEven [] = []
+takeEven [_] = []
+takeEven ( x : _ : xs ) = [x] ++ takeEven xs
+
+-- isThird42 :: (Eq a, Num a) => [a] -> Bool
+-- isThird42 [] = False
+-- isThird42 [_] = False
+-- isThird42 [_, _] = False
+-- isThird42 ( _ : _ : x : _ ) = if x == 42 then True else False
+
+
 
 {- |
 =🛡= Higher-order functions
@@ -774,11 +788,11 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains :: Int -> [[Int]] -> [Int]
+contains :: Int -> [[Int]] -> [[Int]]
 contains _ [] = []
 contains _ [[]] = []
 contains b (x:xs) = if (elem b x) == True
-    then x ++ contains b xs
+    then [x] ++ contains b xs
     else contains b xs
 
 {- |
@@ -899,7 +913,7 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind :: [Int] -> [Int]
+rewind :: [a] -> [a]
 rewind [] = []
 rewind (x:xs) = (rewind xs) ++ [x]
 
