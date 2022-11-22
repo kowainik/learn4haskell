@@ -161,7 +161,7 @@ reverse :: [a] -> [a]
 
 Take first N elements of a list:
 >>> :t take
-
+take :: Int -> [a] -> [a]
 
 Create a list from N same elements:
 >>> :t replicate
