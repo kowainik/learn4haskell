@@ -349,8 +349,11 @@ ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
 subList _ _ [] = []
+subList 0 0 b = take 1 b
 subList _ 0 _ = []
-subList x y b = take (y - x + 1) $ drop x b
+subList x y b = if x >= 0
+  then take (y - x + 1) $ drop x b
+  else []
 
 {- |
 =⚔️= Task 4
@@ -654,15 +657,8 @@ Write a function that takes elements of a list only in even positions.
 --             else recursiveEven (c + 1) xs
 takeEven :: [a] -> [a]
 takeEven [] = []
-takeEven [_] = []
+takeEven [x] = [x]
 takeEven ( x : _ : xs ) = [x] ++ takeEven xs
-
--- isThird42 :: (Eq a, Num a) => [a] -> Bool
--- isThird42 [] = False
--- isThird42 [_] = False
--- isThird42 [_, _] = False
--- isThird42 ( _ : _ : x : _ ) = if x == 42 then True else False
-
 
 
 {- |
