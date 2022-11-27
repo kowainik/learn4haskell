@@ -344,6 +344,26 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = MkBook
+    { bookName  :: String
+    , bookCover :: String
+    , bookAuthor :: String
+    , bookLanguage :: String
+    , bookPages :: Int
+    , bookRating :: Int
+    } deriving (Show)
+
+{-
+livrinho = MkBook
+    { bookName = "meu livro"
+    , bookCover = "wow"
+    , bookAuthor = "Adriano Waltrick"
+    , bookLanguage = "Portuguese"
+    , bookPages = 100
+    , bookRating = 10
+    }
+-}
+
 {- |
 =⚔️= Task 2
 
