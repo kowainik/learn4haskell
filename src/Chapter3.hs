@@ -51,7 +51,9 @@ provide more top-level type signatures, especially when learning Haskell.
 -}
 {-# LANGUAGE InstanceSigs #-}
 
-module Chapter3 where
+-- Adriano comentou isso
+-- module Chapter3 where
+-- import Distribution.PackageDescription (Library)
 
 {-
 =🛡= Types in Haskell
@@ -396,6 +398,40 @@ after the fight. The battle has the following possible outcomes:
 
 -}
 
+data Knight = MkKnight
+    { health  :: Int
+    , attack :: Int
+    , gold :: Int
+    } deriving (Show)
+
+
+data Monster = MkMonster
+    { mHealth  :: Int
+    , mAttack :: Int
+    , mGold :: Int
+    } deriving (Show)
+
+fighter1 :: Knight
+fighter1 = MkKnight
+    { health = 100
+    , attack = 10
+    , gold = 0
+    }
+
+dragon1 :: Monster
+dragon1 = MkMonster
+    { mHealth = 10
+    , mAttack = 10
+    , mGold = 10
+    }
+
+fight :: Monster -> Knight -> Int
+fight monster knight
+    | mHealth monster <= 0 = gold knight + mGold monster
+    | health knight <= 0 = -1
+    | otherwise = fight (MkMonster (mHealth monster - attack knight) (mAttack monster) (mGold monster)) (MkKnight (health knight - mAttack monster) (attack knight) (gold knight))
+
+
 {- |
 =🛡= Sum types
 
@@ -482,6 +518,14 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data MealType
+    = Nescau
+    | PaoComLeite
+    | BolachaSalgada
+    | BolachaDoce
+    | Biscoito
+    | Brigadeiro
+
 {- |
 =⚔️= Task 4
 
@@ -501,6 +545,49 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
+
+data Castle = MkCastle
+    { castleName :: String
+    } deriving (Show)
+
+data Wall = MkWall
+    { size :: Int
+    } deriving (Show)
+
+data ChurchData = MkChurch
+    { churchName :: String
+    } deriving (Show)
+
+data LibraryData = MkLibrary
+    { libraryName :: String
+    } deriving (Show)
+
+data ChurchOrLibrary
+    = Church ChurchData
+    | Library LibraryData
+    deriving (Show)
+
+data House = MkHouse
+    { people :: Int
+    } deriving (Show)
+
+data City = MkCity
+    { castle :: Castle
+    , wall :: Wall
+    , churchOrLibrary :: ChurchOrLibrary
+    , houses :: [House]
+    } deriving (Show)
+
+
+igreja1 :: ChurchOrLibrary
+igreja1 = Church (MkChurch "Igreja1")
+
+buildCastle :: City -> String -> City
+buildCastle city name = MkCity (MkCastle name)
+    (MkWall 10)
+    igreja1
+    [MkHouse 1, MkHouse 2, MkHouse 3, MkHouse 4]
+
 
 {-
 =🛡= Newtypes
