@@ -677,8 +677,11 @@ data Player = Player
     , playerStrength  :: Int
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+newtype PlayerAttack = MkPlayerAttack Int
+newtype PlayerStrength = MkPlayerStrength Int
+
+calculatePlayerDamage :: PlayerAttack -> PlayerStrength -> Int
+calculatePlayerDamage (MkPlayerAttack a) (MkPlayerStrength s) = a + s
 
 calculatePlayerDefense :: Int -> Int -> Int
 calculatePlayerDefense armor dexterity = armor * dexterity
@@ -690,8 +693,8 @@ calculatePlayerHit damage defense health = health + defense - damage
 hitPlayer :: Player -> Player -> Player
 hitPlayer player1 player2 =
     let damage = calculatePlayerDamage
-            (playerAttack player2)
-            (playerStrength player2)
+            (MkPlayerAttack (playerAttack player2))
+            (MkPlayerStrength (playerStrength player2))
         defense = calculatePlayerDefense
             (playerArmor player1)
             (playerDexterity player1)
