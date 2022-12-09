@@ -364,6 +364,8 @@ livrinho = MkBook
     , bookPages = 100
     , bookRating = 10
     }
+
+livrinho = MkBook { bookName = "meu livro", bookCover = "wow", bookAuthor = "Adriano Waltrick", bookLanguage = "Portuguese", bookPages = 100, bookRating = 10}
 -}
 
 {- |
@@ -523,6 +525,7 @@ data MealType
     | PaoComLeite
     | BolachaSalgada
     | BolachaDoce
+    | BolachaRecheada
     | Biscoito
     | Brigadeiro
 
@@ -548,7 +551,7 @@ After defining the city, implement the following functions:
 
 data Castle = MkCastle
     { castleName :: String
-    } deriving (Show)
+    } deriving (Eq, Show)
 
 data Wall = MkWall
     { size :: Int
@@ -567,27 +570,70 @@ data ChurchOrLibrary
     | Library LibraryData
     deriving (Show)
 
+data PeopleInsideHouse
+    = None
+    | One
+    | Two
+    | Three
+    | Four
+    deriving (Show, Eq, Ord, Enum)
+
 data House = MkHouse
-    { people :: Int
+    { people :: PeopleInsideHouse
     } deriving (Show)
 
 data City = MkCity
-    { castle :: Castle
-    , wall :: Wall
-    , churchOrLibrary :: ChurchOrLibrary
+    { castle :: Maybe Castle
+    , wall :: Maybe Wall
+    , churchOrLibrary :: Maybe ChurchOrLibrary
     , houses :: [House]
     } deriving (Show)
-
 
 igreja1 :: ChurchOrLibrary
 igreja1 = Church (MkChurch "Igreja1")
 
 buildCastle :: City -> String -> City
-buildCastle city name = MkCity (MkCastle name)
-    (MkWall 10)
-    igreja1
-    [MkHouse 1, MkHouse 2, MkHouse 3, MkHouse 4]
+buildCastle (MkCity xcastle xwall xchurchOrLibrary xhouses) name =
+    if xcastle == Nothing then MkCity (Just (MkCastle name)) Nothing Nothing []
+    else MkCity (Just (MkCastle name)) xwall xchurchOrLibrary xhouses
 
+brasilCastle :: Castle
+brasilCastle = MkCastle "Brasil Castle"
+
+argentinaCastle :: Castle
+argentinaCastle = MkCastle "Argentina Castle"
+
+saoPaulo :: City
+saoPaulo = (MkCity (Just brasilCastle) (Just (MkWall 3)) (Just igreja1) [(MkHouse One)])
+
+novoCastelo :: City
+novoCastelo = buildCastle saoPaulo "Novo Nome"
+
+buildHouse :: City -> PeopleInsideHouse -> City
+buildHouse (MkCity xcastle xwall xchurchOrLibrary xhouses) p =
+    MkCity xcastle xwall xchurchOrLibrary (xhouses ++ [(MkHouse p)])
+
+{- buildHouse saoPaulo Two -}
+
+{-
+✦ buildWalls — build walls in the city. But since building walls is a
+   complicated task, walls can be built only if the city has a castle
+   and at least 10 living __people__ inside in all houses of the city in total.
+-}
+
+countPeoples :: City -> Int
+countPeoples (MkCity xcastle xwall xchurchOrLibrary []) = 0
+countPeoples (MkCity xcastle xwall xchurchOrLibrary ((MkHouse p):xs)) =
+    (fromEnum p) + (countPeoples (MkCity xcastle xwall xchurchOrLibrary xs))
+
+countPeoplesArray :: [House] -> Int
+countPeoplesArray [] = 0
+countPeoplesArray ((MkHouse p):xs) = (fromEnum p) + countPeoplesArray xs
+
+buildWalls :: City -> Int -> Maybe City
+buildWalls (MkCity xcastle (Just (MkWall iwall)) xchurchOrLibrary xhouses) nwalls =
+    if xcastle == Nothing || (countPeoplesArray xhouses) < 10 then Nothing
+    else Just (MkCity xcastle (Just (MkWall (nwalls + iwall))) xchurchOrLibrary xhouses)
 
 {-
 =🛡= Newtypes
