@@ -925,3 +925,4 @@ rewind l = head rotateOneLess : rewind (tail rotateOneLess)
 You did it! Now it is time to open pull request with your changes
 and summon @vrom911 for the review!
 -}
+
