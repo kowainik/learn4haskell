@@ -654,6 +654,12 @@ sumLast2 n = mod10 (div10 n) + mod10 n
         mod10 :: Int -> Int
         mod10 x = mod (abs x) 10
 
+sumLast2' :: (Integral a, Num a) => a -> a
+sumLast2' n = mdiv10 + mod1
+  where
+    mdiv10 = mod c 10
+    mod1 = d
+    (c, d) = divMod (abs n) 10
 
 {- |
 =💣= Task 10*

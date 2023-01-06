@@ -281,7 +281,6 @@ data Secret e a
     | Reward a
     deriving (Show, Eq)
 
-
 {- |
 Functor works with types that have kind `* -> *` but our 'Secret' has
 kind `* -> * -> *`. What should we do? Don't worry. We can partially
@@ -291,8 +290,10 @@ we can reuse already known concepts (e.g. partial application) from
 values and apply them to the type level?
 -}
 instance Functor (Secret e) where
-    fmap :: (a -> b) -> Secret e a -> Secret e b
-    fmap = error "fmap for Box: not implemented!"
+  fmap :: (a -> b) -> Secret e a -> Secret e b
+  fmap _ (Trap e) = Trap e
+  fmap f (Reward a) = Reward (f a)
+-- fmap (++"teste2") a
 
 {- |
 =⚔️= Task 3
@@ -469,12 +470,12 @@ Applicatives can be found in many applications:
 
 Implement the Applicative instance for our 'Secret' data type from before.
 -}
-instance Applicative (Secret e) where
-    pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+-- instance Applicative (Secret e) where
+--     pure :: a -> Secret e a
+--     pure = error "pure Secret: Not implemented!"
 
-    (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
+--     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
+--     (<*>) = error "(<*>) Secret: Not implemented!"
 
 {- |
 =⚔️= Task 5
@@ -597,9 +598,9 @@ concepts in the end.
 
 Implement the 'Monad' instance for our 'Secret' type.
 -}
-instance Monad (Secret e) where
-    (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+-- instance Monad (Secret e) where
+--     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
+--     (>>=) = error "bind Secret: Not implemented!"
 
 {- |
 =⚔️= Task 7
