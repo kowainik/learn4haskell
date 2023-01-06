@@ -891,7 +891,7 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate :: Int -> [Int] -> [Int]
+rotate :: Int -> [a] -> [a]
 rotate _ [] = []
 rotate n arr = drop n $ take ((length arr) + n) $ cycle arr
 
@@ -909,10 +909,16 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
+rewind' :: [a] -> [a]
+rewind' [] = []
+rewind' (x:xs) = (rewind' xs) ++ [x]
+
+
 rewind :: [a] -> [a]
 rewind [] = []
-rewind (x:xs) = (rewind xs) ++ [x]
-
+rewind arr = head pegaproximo : rewind (tail pegaproximo)
+  where
+    pegaproximo = rotate (length arr - 1) arr
 
 {-
 You did it! Now it is time to open pull request with your changes
