@@ -1096,6 +1096,13 @@ instance Append GoldData where
     append :: GoldData -> GoldData -> GoldData
     append loot1 loot2 = MkGold (totalGold loot1 + totalGold loot2)
 
+newtype Gold = Gold Int
+  deriving (Show)
+
+instance Append Gold where
+  append :: Gold -> Gold -> Gold
+  append (Gold a) (Gold b) = Gold (a + b)
+
 data List a
     = Empty
     | Cons a (List a)
@@ -1108,6 +1115,25 @@ instance Append (List b) where
     append (Cons valor1 Empty) (Cons valor2 Empty) = Cons valor1 (Cons valor2 Empty)
     append (Cons valor1 lista1) (Cons valor2 Empty) = Cons valor1 (Cons valor2 lista1)
     append (Cons valor1 lista1) (Cons valor2 lista2) = append (Cons valor1 (Cons valor2 lista1)) lista2
+
+instance Append Int where
+  append :: Int -> Int -> Int
+  append a b = a + b
+
+instance (Append a) => Append [a] where
+  append :: [a] -> [a] -> [a]
+  append arr1 arr2 = arr1 ++ arr2
+
+-- instance Append String where
+--   append :: a -> a -> a
+--   append arr1 arr2 = arr1 ++ arr2
+
+instance (Append a) => Append (Maybe a) where
+    append :: Maybe a -> Maybe a -> Maybe a
+    append Nothing Nothing = Nothing
+    append container1 Nothing = container1
+    append Nothing container1 = container1
+    append (Just s1) (Just s2) = Just (append s1 s2)
 
 
 
@@ -1170,6 +1196,56 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
+
+
+data DiasDaSemana
+    = Segunda -- 0
+    | Terca
+    | Quarta
+    | Quinta
+    | Sexta -- 4
+    | Sabado
+    | Domingo
+    deriving (Show, Eq, Ord)
+
+isWeekend :: DiasDaSemana -> Bool
+isWeekend a
+    | a == Sabado = True
+    | a == Domingo = True
+    | otherwise = False
+
+nextDay :: DiasDaSemana -> DiasDaSemana
+nextDay Domingo = Segunda
+nextDay a = toEnum ((fromEnum a) + 1)
+
+daysToParty :: DiasDaSemana -> Int
+daysToParty Sexta = 0
+daysToParty Sabado = 2 + daysToParty Segunda
+daysToParty Domingo = 1 + daysToParty Segunda
+-- o /= Sexta é um lambda infix -- cria a lista de a até sexta, separa num array e conta qntos tem
+daysToParty a = length $ takeWhile ( /= Sexta) [a .. Sexta]
+
+instance Enum DiasDaSemana where
+  toEnum :: Int -> DiasDaSemana
+  toEnum 0 = Segunda
+  toEnum 1 = Terca
+  toEnum 2 = Quarta
+  toEnum 3 = Quinta
+  toEnum 4 = Sexta
+  toEnum 5 = Sabado
+  toEnum 6 = Domingo
+
+  fromEnum :: DiasDaSemana -> Int
+  fromEnum Segunda  = 0
+  fromEnum Terca    = 1
+  fromEnum Quarta   = 2
+  fromEnum Quinta   = 3
+  fromEnum Sexta    = 4
+  fromEnum Sabado   = 5
+  fromEnum Domingo  = 6
+
+daysToPartyInstance :: DiasDaSemana -> Int
+daysToPartyInstance day = fromEnum (Sexta :: DiasDaSemana) - fromEnum day
 
 {-
 =💣= Task 9*
