@@ -51,8 +51,8 @@ provide more top-level type signatures, especially when learning Haskell.
 -}
 {-# LANGUAGE InstanceSigs #-}
 
--- Adriano comentou isso
--- module Chapter3 where
+module Chapter3 where
+-- import LearnHaskell (TreasureChest(TreasureChest))
 -- import Distribution.PackageDescription (Library)
 
 {-
@@ -622,7 +622,7 @@ buildHouse (MkCity xcastle xwall xchurchOrLibrary xhouses) p =
 -}
 
 countPeoples :: City -> Int
-countPeoples (MkCity xcastle xwall xchurchOrLibrary []) = 0
+countPeoples (MkCity _ _ _ []) = 0
 countPeoples (MkCity xcastle xwall xchurchOrLibrary ((MkHouse p):xs)) =
     (fromEnum p) + (countPeoples (MkCity xcastle xwall xchurchOrLibrary xs))
 
@@ -631,8 +631,12 @@ countPeoplesArray [] = 0
 countPeoplesArray ((MkHouse p):xs) = (fromEnum p) + countPeoplesArray xs
 
 buildWalls :: City -> Int -> Maybe City
+buildWalls (MkCity (Just (MkCastle _)) Nothing (Just _) []) _ = Nothing
+buildWalls (MkCity Nothing Nothing Nothing []) _ = Nothing
+buildWalls (MkCity Nothing _ _ []) _ = Nothing
+buildWalls (MkCity (Just _) Nothing Nothing []) _ = Nothing
 buildWalls (MkCity xcastle (Just (MkWall iwall)) xchurchOrLibrary xhouses) nwalls =
-    if xcastle == Nothing || (countPeoplesArray xhouses) < 10 then Nothing
+    if countPeoplesArray xhouses < 10 then Nothing
     else Just (MkCity xcastle (Just (MkWall (nwalls + iwall))) xchurchOrLibrary xhouses)
 
 {-
@@ -733,7 +737,7 @@ calculatePlayerDefense :: Int -> Int -> Int
 calculatePlayerDefense armor dexterity = armor * dexterity
 
 calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerHit damage defense health1 = health1 + defense - damage
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -911,6 +915,22 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
+data DragonData = MkDragon
+    { magicPower :: Int
+    } deriving (Show)
+
+data TreasureChestData a = MkTreasureChest
+    { goldOnChest :: a
+    } deriving (Show)
+
+data DragonLairData a = MkDragonLair
+    { dragon :: Maybe DragonData,
+    treasureChest :: Maybe (TreasureChestData a)
+    } deriving (Show)
+
+
+
+
 {-
 =🛡= Typeclasses
 
@@ -1067,6 +1087,28 @@ Implement instances of "Append" for the following types:
 -}
 class Append a where
     append :: a -> a -> a
+
+data GoldData = MkGold
+    { totalGold :: Int
+    } deriving (Eq, Show)
+
+instance Append GoldData where
+    append :: GoldData -> GoldData -> GoldData
+    append loot1 loot2 = MkGold (totalGold loot1 + totalGold loot2)
+
+data List a
+    = Empty
+    | Cons a (List a)
+    deriving (Eq, Show)
+
+instance Append (List b) where
+    append :: List a -> List a -> List a
+    append list1 Empty = list1
+    append Empty list1 = list1
+    append (Cons valor1 Empty) (Cons valor2 Empty) = Cons valor1 (Cons valor2 Empty)
+    append (Cons valor1 lista1) (Cons valor2 Empty) = Cons valor1 (Cons valor2 lista1)
+    append (Cons valor1 lista1) (Cons valor2 lista2) = append (Cons valor1 (Cons valor2 lista1)) lista2
+
 
 
 {-
