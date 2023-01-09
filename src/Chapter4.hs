@@ -40,6 +40,7 @@ Perfect. Let's crush this!
 {-# LANGUAGE InstanceSigs    #-}
 
 module Chapter4 where
+import System.Win32 (xBUTTON1)
 
 {- |
 =🛡= Kinds
@@ -267,6 +268,9 @@ instance Functor Maybe where
 @
 -}
 
+Qualquer função aplicada a x não faz sentido pois temos que acessar o que está dentro de x
+Alem disso Functor Maybe já existe.
+
 {- |
 =⚔️= Task 2
 
@@ -306,6 +310,8 @@ typeclasses for standard data types.
 data List a
     = Empty
     | Cons a (List a)
+
+  fazer
 
 {- |
 =🛡= Applicative

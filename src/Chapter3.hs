@@ -1281,6 +1281,38 @@ properties using typeclasses, but they are different data types in the end.
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
+{-
+
+1) A knight can attack, drink a health potion, cast a spell to increase their defence.
+while knights also have a defence.
+
+2) A monster can only attack or run away. Monsters have only health and attack
+
+3) They do their activities in turns, i.e. one fighter goes first, then
+the other goes second, then the first again, and so on, until one of them wins.
+
+4) Both knight and monster have a sequence of actions they can do
+
+5) each fighter starts with some list of actions they can do
+
+6) The fight ends when the health of one fighter becomes zero or less.
+-}
+
+data Actions = Attack | DrinkToCure | CastDef | RunAway
+    deriving (Show, Eq, Ord)
+
+data NewKnight = MkNewKnight
+    { newKHealth  :: Int
+    , newKDefense :: Int
+    , newFAtions :: [Actions]
+    } deriving (Show)
+
+data NewMonster = MkNewMonster { newMoHealth :: Int, newMAtions :: [Actions] }
+    deriving (Show)
+
+
+francisco = (MkNewKnight 10, 0, [CastDef, Attack, Attack, DrinkToCure])
+lizzard = (MkNewMonster 5, [Attack, Attack, Attack])
 
 
 {-
