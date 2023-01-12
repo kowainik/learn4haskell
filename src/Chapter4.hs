@@ -40,7 +40,7 @@ Perfect. Let's crush this!
 {-# LANGUAGE InstanceSigs    #-}
 
 module Chapter4 where
-import System.Win32 (xBUTTON1)
+-- import System.Win32 (xBUTTON1)
 
 {- |
 =🛡= Kinds
@@ -268,8 +268,21 @@ instance Functor Maybe where
 @
 -}
 
-Qualquer função aplicada a x não faz sentido pois temos que acessar o que está dentro de x
-Alem disso Functor Maybe já existe.
+{-
+  -- response:
+  Any function applied to x doesn't make sense as we have to access what's inside x (a) and transform to b (a -> b)
+  And Functor Maybe already exists.
+-}
+
+-- data Maybe2 e
+--     = Just2 e
+--     | Nothing2
+
+-- instance Functor Maybe2 where
+--     fmap :: (a -> b) -> Maybe2 a -> Maybe2 b
+--     fmap f (Just2 a) = Just2 (f a)
+--     fmap _ x = x
+
 
 {- |
 =⚔️= Task 2
@@ -294,10 +307,9 @@ we can reuse already known concepts (e.g. partial application) from
 values and apply them to the type level?
 -}
 instance Functor (Secret e) where
-  fmap :: (a -> b) -> Secret e a -> Secret e b
-  fmap _ (Trap e) = Trap e
-  fmap f (Reward a) = Reward (f a)
--- fmap (++"teste2") a
+    fmap :: (a -> b) -> Secret e a -> Secret e b
+    fmap _ (Trap e) = Trap e
+    fmap f (Reward a) = Reward (f a)
 
 {- |
 =⚔️= Task 3
@@ -310,8 +322,20 @@ typeclasses for standard data types.
 data List a
     = Empty
     | Cons a (List a)
+    deriving (Show)
 
-  fazer
+instance Functor List where
+    fmap :: (a -> b) -> List a -> List b
+    fmap _ Empty = Empty
+    fmap f (Cons a (blist)) = Cons (f a) (fmap f blist)
+
+
+list1 = Empty
+list2 = Cons 10 (Cons 20 Empty)
+list3 = Cons 10 (Cons 20 (Cons 30 Empty))
+
+-- fmap (+10) list3
+-- Cons 20 (Cons 30 (Cons 40 Empty))
 
 {- |
 =🛡= Applicative
