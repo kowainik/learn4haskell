@@ -52,6 +52,7 @@ provide more top-level type signatures, especially when learning Haskell.
 {-# LANGUAGE InstanceSigs #-}
 
 module Chapter3 where
+import Data.Either
 -- import LearnHaskell (TreasureChest(TreasureChest))
 -- import Distribution.PackageDescription (Library)
 
@@ -1301,18 +1302,73 @@ the other goes second, then the first again, and so on, until one of them wins.
 data Actions = Attack | DrinkToCure | CastDef | RunAway
     deriving (Show, Eq, Ord)
 
+data ActionChange = Hero | Antagonist
+    deriving (Show, Eq, Ord)
+
 data NewKnight = MkNewKnight
     { newKHealth  :: Int
     , newKDefense :: Int
-    , newFAtions :: [Actions]
     } deriving (Show)
 
-data NewMonster = MkNewMonster { newMoHealth :: Int, newMAtions :: [Actions] }
+data NewMonster = MkNewMonster { newMoHealth :: Int }
     deriving (Show)
 
+class Luta a where
+    toAttack :: a -> a
 
-francisco = (MkNewKnight 10, 0, [CastDef, Attack, Attack, DrinkToCure])
-lizzard = (MkNewMonster 5, [Attack, Attack, Attack])
+instance Luta NewMonster where
+    toAttack :: NewMonster -> NewMonster
+    toAttack (MkNewMonster mhealth) = MkNewMonster (mhealth - 1)
+
+instance Luta NewKnight where
+    toAttack :: NewKnight -> NewKnight
+    toAttack (MkNewKnight khealth kdef) = if kdef > 0
+        then MkNewKnight (khealth) (kdef -1)
+        else MkNewKnight (khealth - 1) kdef
+
+-- todo retornar o either auqi nao ficou legal
+parseActionKnight :: NewKnight -> Actions -> NewKnight
+parseActionKnight (MkNewKnight khealth kdef) action
+    | action == DrinkToCure     = (MkNewKnight (khealth + 1) kdef)
+    | action == CastDef         = (MkNewKnight khealth (kdef + 1))
+    | otherwise                 = (MkNewKnight khealth kdef)
+
+parseActionMonster :: NewMonster -> Actions -> NewMonster
+parseActionMonster (MkNewMonster khealth) action
+    | action == RunAway = (MkNewMonster 0)
+    | otherwise         = (MkNewMonster khealth)
+
+rotate :: Int -> [a] -> [a]
+rotate _ [] = []
+rotate n arr = drop n $ take ((length arr) + n) $ cycle arr
+
+
+francisco = (MkNewKnight 13 2)
+lizzard = (MkNewMonster 5)
+
+tank = (MkNewKnight 100 2)
+stronger = (MkNewMonster 13)
+
+actionOrder = [Hero, Antagonist]
+kaction = [Attack, DrinkToCure, CastDef]
+maction = [Attack, Attack, Attack, Attack, Attack, Attack, Attack, Attack, Attack, Attack, RunAway]
+
+figthToDeath :: NewKnight -> NewMonster -> [Actions] -> [Actions] -> [ActionChange] -> String
+figthToDeath (MkNewKnight khealth kdef) (MkNewMonster mhealth) arrK arrM order
+    | head order == Hero = if (head arrK) == Attack then (if mhealth > 0
+            then figthToDeath (MkNewKnight khealth kdef) (toAttack (MkNewMonster mhealth)) (rotate 1 arrK) (rotate 1 arrM) (rotate 1 order)
+            else "!!Hero wins!! Hero life:" ++ (show khealth) ++ " - Monster life: " ++ (show mhealth) )
+        else figthToDeath (MkNewKnight khealth kdef) (MkNewMonster mhealth) (rotate 1 arrK) (rotate 1 arrM) (rotate 1 order)
+    | otherwise      = if (head arrM) == Attack then (if khealth > 0
+            then figthToDeath (toAttack (MkNewKnight khealth kdef)) (MkNewMonster mhealth) (rotate 1 arrK) (rotate 1 arrM) (rotate 1 order)
+            else "Monster wins!! Hero life:" ++ (show khealth) ++ " - Monster life: " ++ (show mhealth) )
+        else figthToDeath (MkNewKnight khealth kdef) (MkNewMonster mhealth) (rotate 1 arrK) (rotate 1 arrM) (rotate 1 order)
+
+-- to execute
+-- figthToDeath francisco lizzard kaction maction actionOrder
+-- figthToDeath tank stronger kaction maction actionOrder
+
+-- WOW - thas hard!!
 
 
 {-
