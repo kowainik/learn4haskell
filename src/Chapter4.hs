@@ -536,6 +536,27 @@ Implement the 'Applicative' instance for our 'List' type.
   type.
 -}
 
+list4 = Cons (+5) Empty
+list5 = Cons (+5) (Cons (+6) Empty)
+list6 = Cons (+1) (Cons (+2) (Cons (+3) Empty))
+list7 = Cons 1 (Cons 2 (Cons 3 Empty))
+
+combineList :: List a -> List a -> List a
+combineList Empty l1 = l1
+combineList l1 Empty = l1
+combineList (Cons x xs) l2 = Cons x (combineList xs l2)
+
+instance Applicative List where
+    pure :: a -> List a
+    pure a = Cons a Empty
+    (<*>) :: List (a -> b) -> List a -> List b
+    Empty <*> _ = Empty
+    _ <*> Empty = Empty
+    -- (Cons f l) <*> i = fmap f i
+    -- (Cons f (Cons l emp)) <*> i = fmap l i
+    (Cons f emp) <*> i = combineList (fmap f i) (emp <*> i)
+
+-- list6 <*> list7
 
 {- |
 =🛡= Monad
