@@ -500,12 +500,29 @@ Applicatives can be found in many applications:
 
 Implement the Applicative instance for our 'Secret' data type from before.
 -}
--- instance Applicative (Secret e) where
---     pure :: a -> Secret e a
---     pure = error "pure Secret: Not implemented!"
+instance Applicative (Secret e) where
+    pure :: a -> Secret e a
+    pure = Reward
+    (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
+    (Trap a) <*> _ = Trap a
+    _ <*> (Trap a) = Trap a
+    (Reward f) <*> i = fmap f i
 
---     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
---     (<*>) = error "(<*>) Secret: Not implemented!"
+-- tests
+secret1 = Trap "you die"
+secret2 = Reward 10
+secret3 = Reward 20
+
+-- die
+-- fmap (+10) secret1
+
+-- 50
+-- fmap (+40) secret2
+
+-- 20
+-- Reward (+10) <*> Reward 10
+
+-- hell yeah!!
 
 {- |
 =⚔️= Task 5
