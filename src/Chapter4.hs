@@ -311,6 +311,20 @@ instance Functor (Secret e) where
     fmap _ (Trap e) = Trap e
     fmap f (Reward a) = Reward (f a)
 
+-- example
+addOneGold :: (Integral a, Num a) => (Secret e a) -> (Secret e a)
+addOneGold (Trap e) = Trap e
+addOneGold (Reward a) = Reward (a + 1)
+
+addToChest :: (Integral a, Num a, Num e) => a -> (Secret e a)
+addToChest a
+    | a == 0    = (Trap 0)
+    | otherwise = Reward a
+
+-- addOneGold (Reward 1)
+-- addOneGold $ Reward 1
+-- fmap (addToChest) (Reward 1)
+
 {- |
 =⚔️= Task 3
 
@@ -670,6 +684,25 @@ Implement the 'Monad' instance for our 'Secret' type.
 --     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
 --     (>>=) = error "bind Secret: Not implemented!"
 
+instance Monad (Secret e) where
+    (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
+    (Trap c) >>= f = Trap c
+    (Reward c) >>= f = f c
+
+test :: Int -> Secret Int Int
+test n
+    | n == 1 = Trap 1
+    | otherwise = Reward (n + 1)
+
+
+
+-- test
+-- Trap 11 >>= test
+-- Reward 11 >>= test
+
+
+
+
 {- |
 =⚔️= Task 7
 
@@ -678,6 +711,24 @@ Implement the 'Monad' instance for our lists.
 🕯 HINT: You probably will need to implement a helper function (or
   maybe a few) to flatten lists of lists to a single list.
 -}
+
+flattenList :: List (List a) -> List a
+flattenList Empty = Empty
+flattenList (Cons x xs) = combineList x (flattenList xs)
+
+instance Monad List where
+    (>>=) :: List a -> (a -> List b) -> List b
+    list1 >>= func = flattenList (fmap func list1)
+
+addOneOnList :: (Integral a, Num a) => a -> List a
+addOneOnList n = Cons (n + 1) Empty
+
+listC = Cons list2 Empty
+
+-- exemplo de uso
+-- list2 >>= addOneOnList
+-- list3 >>= addOneOnList
+-- list3 >>= addOneOnList >>= addOneOnList
 
 
 {- |
