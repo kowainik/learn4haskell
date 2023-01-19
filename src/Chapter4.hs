@@ -824,6 +824,7 @@ tree1 = BEmpty
 tree2 = MkMyBTree (BEmpty) 10 (BEmpty)
 tree3 = MkMyBTree (MkMyBTree (BEmpty) 20 (BEmpty)) 10 (MkMyBTree (BEmpty) 20 (BEmpty))
 tree4 = MkMyBTree (MkMyBTree ((MkMyBTree (BEmpty) 30 (BEmpty))) 20 ((MkMyBTree (BEmpty) 30 (BEmpty)))) 10 (MkMyBTree ((MkMyBTree (BEmpty) 30 (BEmpty))) 20 ((MkMyBTree (BEmpty) 30 (BEmpty))))
+tree5 = MkMyBTree (MkMyBTree ((MkMyBTree (BEmpty) 4 (BEmpty))) 6 ((MkMyBTree (BEmpty) 3 (BEmpty)))) 7 (MkMyBTree ((MkMyBTree (BEmpty) 2 (BEmpty))) 5 ((MkMyBTree (BEmpty) 1 (BEmpty))))
 treeString = MkMyBTree (MkMyBTree (BEmpty) "Adriano" (BEmpty)) "Joao" (MkMyBTree (BEmpty) "André" (BEmpty))
 
 instance Functor MyBtree where
@@ -832,6 +833,14 @@ instance Functor MyBtree where
     fmap f (MkMyBTree (ltree) a (rtree)) = MkMyBTree (fmap f rtree) (f a) (fmap f rtree)
 
 -- fmap (+10) tree2
+
+convertToArr :: MyBtree a -> [a]
+convertToArr BEmpty = []
+convertToArr  (MkMyBTree (ltree) x (rtree)) = [x] ++ convertToArr ltree ++ convertToArr rtree
+
+makeListFromTree :: MyBtree a -> List a
+makeListFromTree BEmpty = Empty
+makeListFromTree (MkMyBTree (ltree) x (rtree)) = combineList (Cons x (makeListFromTree ltree)) (makeListFromTree rtree)
 
 {-
 You did it! Now it is time to open pull request with your changes
