@@ -748,7 +748,28 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM contextB1 contextB2 = contextB1 >>= \f -> if f then contextB2 else pure False
+
+tJust1 = Just True
+tJust2 = Just False
+tJust3 = Nothing
+tEither1 = Left True
+tEither2 = Left False
+tEither3 = Right True
+
+-- Nothing and _ = False
+-- _ and Nothing = False
+-- Just True and Just True   = True
+-- Just True and Just False  = False
+-- Just False and Just False = False
+-- Just False and Just True  = False
+
+-- andM tJust1 tJust1 = True
+-- andM tJust1 tJust2 = False
+-- andM TJust2 tJust1 = False
+
+half2 :: (Monad m) => m Integer -> m Integer
+half2 monadInt = monadInt >>= \x -> if even x then pure (div x 2) else pure 0
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
