@@ -851,7 +851,7 @@ makeListFromTree (MkMyBTree (ltree) x (rtree)) = combineList (Cons x (makeListFr
 
 -- makeListFromTree tree4
 
-{-- huuuu ulll - it finish!!! }
+{-- huuuu ulll - it finish!!! -}
 
 {-
 You did it! Now it is time to open pull request with your changes
