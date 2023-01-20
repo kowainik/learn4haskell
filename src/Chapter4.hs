@@ -834,13 +834,24 @@ instance Functor MyBtree where
 
 -- fmap (+10) tree2
 
+reverseMyBTree :: MyBtree a -> MyBtree a
+reverseMyBTree BEmpty = BEmpty
+reverseMyBTree (MkMyBTree ltree x rtree)  = MkMyBTree (reverseMyBTree rtree) x (reverseMyBTree ltree)
+
 convertToArr :: MyBtree a -> [a]
 convertToArr BEmpty = []
 convertToArr  (MkMyBTree (ltree) x (rtree)) = [x] ++ convertToArr ltree ++ convertToArr rtree
 
+-- convertToArr tree4
+
 makeListFromTree :: MyBtree a -> List a
 makeListFromTree BEmpty = Empty
 makeListFromTree (MkMyBTree (ltree) x (rtree)) = combineList (Cons x (makeListFromTree ltree)) (makeListFromTree rtree)
+
+
+-- makeListFromTree tree4
+
+{-- huuuu ulll - it finish!!! }
 
 {-
 You did it! Now it is time to open pull request with your changes
