@@ -556,7 +556,7 @@ mid :: Int -> Int -> Int -> Int
 mid x y z
   | x <= y && y <= z = y
   | x >= y && y >= z = y
-  | otherwise = mid y z x  
+  | otherwise = mid y z x
 
 {- |
 =⚔️= Task 8
@@ -571,7 +571,7 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c 
+isVowel c
   | c == 'a' = True
   | c == 'e' = True
   | c == 'i' = True
@@ -646,10 +646,12 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 sumLast2 :: Int -> Int
-sumLast2 n = (lastDigit n) + (secondLastDigit n)
-  where 
-    secondLastDigit last =  (((mod (abs n) 100) - lastDigit n) `div` 10) 
-  
+sumLast2 n = (lastDigit n) + secondLastDigit
+  where
+    lastTwo = (mod (abs n) 100)
+    last = lastDigit n
+    secondLastDigit = (lastTwo - last) `div` 10
+
 {- |
 =💣= Task 10*
 
