@@ -488,9 +488,8 @@ Implement a function that returns the last digit of a given number.
   results. Or you can try to guess the function name, search for it and check
   whether it works for you!
 -}
--- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit n = error "lastDigit: Not implemented!"
-
+lastDigit :: Int -> Int
+lastDigit n = abs n `mod` 10
 
 {- |
 =⚔️= Task 6
