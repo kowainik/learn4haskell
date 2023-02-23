@@ -214,6 +214,7 @@ True :: Bool
 'a' :: Char
 >>> :t 42
 42 :: Num a => a
+
 A pair of boolean and char:
 >>> :t (True, 'x')
 (True, 'x') :: (Bool, Char)
