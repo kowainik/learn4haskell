@@ -671,8 +671,10 @@ aren't ready for this boss yet!
 -}
 firstDigit :: Int -> Int
 firstDigit n 
-  | abs n < 10  = n
-  | otherwise = firstDigit (div n 10)     
+  | absN < 10  = absN
+  | otherwise = firstDigit (div absN 10)
+  where
+    absN = abs n      
 
 {-
 You did it! Now it is time to open a pull request with your changes
