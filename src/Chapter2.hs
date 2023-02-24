@@ -633,7 +633,7 @@ takeEven l = go True l
     go :: Bool -> [a] -> [a]
     go _ [] = []
     go True (x:xs) = x : go False xs
-    go False (x:xs) = go True xs
+    go False (_:xs) = go True xs
 
 {- |
 =🛡= Higher-order functions
@@ -740,7 +740,7 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = error "smartReplicate: Not implemented!"
+smartReplicate l = concat (map (\x -> replicate x x) l)
 
 {- |
 =⚔️= Task 9
