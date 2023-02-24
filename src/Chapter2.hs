@@ -880,8 +880,11 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind = error "rewind: Not Implemented!"
-
+rewind :: [a] -> [a]
+rewind l = go l [] where
+  go :: [a] -> [a] -> [a]
+  go [] acc = acc
+  go (x:xs) acc = go xs (x:acc)
 
 {-
 You did it! Now it is time to open pull request with your changes
