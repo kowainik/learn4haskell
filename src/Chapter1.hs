@@ -669,9 +669,10 @@ Implement a function that returns the first digit of a given number.
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
-
-firstDigit n = error "firstDigit: Not implemented!"
-
+firstDigit :: Int -> Int
+firstDigit n 
+  | abs n < 10  = n
+  | otherwise = firstDigit (div n 10)     
 
 {-
 You did it! Now it is time to open a pull request with your changes
