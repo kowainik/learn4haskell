@@ -336,7 +336,7 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList i j list 
+subList i j list
   | i < 0 = []
   | j < 0 = []
   | i > j = []
@@ -506,7 +506,7 @@ False
 -}
 isThird42 :: [Int] -> Bool
 isThird42 (_:_:42:_) = True
-isThird42 _ = False  
+isThird42 _ = False
 
 
 {- |
