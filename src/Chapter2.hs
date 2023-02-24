@@ -753,7 +753,13 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains = error "contains: Not implemented!"
+contains :: Int -> [[Int]] -> [[Int]]
+contains n l = go n l where
+  go :: Int -> [[Int]] -> [[Int]]
+  go _ [] = []
+  go n (x:xs) = if elem n x 
+    then x : go n xs 
+    else go n xs
 
 
 {- |
