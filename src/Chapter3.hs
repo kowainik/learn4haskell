@@ -399,11 +399,11 @@ fight k _ = knightGold k
 arthur :: Knight
 arthur = Knight {knightName = "Arthur", knightAttack = 10, knightHealth = 10, knightGold = 0}
 
-dragon :: Monster
-dragon = Monster {monsterName = "Dragon", monsterAttack = 10, monsterHealth = 10, monsterGold = 100}
+dragon1 :: Monster
+dragon1 = Monster {monsterName = "Dragon1", monsterAttack = 10, monsterHealth = 10, monsterGold = 100}
 
 win :: Int
-win = fight arthur dragon
+win = fight arthur dragon1
 
 tooStrongMonster :: Monster
 tooStrongMonster = Monster {monsterName = "Gold Dragon", monsterAttack = 20, monsterHealth = 20, monsterGold = 10000}
@@ -674,18 +674,27 @@ introducing extra newtypes.
 -}
 
 newtype Health = Health Int
+
 health :: Health -> Int
 health (Health value) = value
+
 newtype Armor = Armor Int
+
 armor :: Armor -> Int
 armor (Armor value) = value
+
 newtype Attack = Attack Int
+
 attack :: Attack -> Int
 attack (Attack value) = value
+
 newtype Dexterity = Dexterity Int
+
 dexterity :: Dexterity -> Int
 dexterity (Dexterity value) = value
+
 newtype Strenght = Strenght Int
+
 strenght :: Strenght -> Int
 strenght (Strenght value) = value
 
@@ -697,14 +706,16 @@ data Player = Player
     playerStrength :: Strenght
   }
 
-newtype Damage = Damage Int  
+newtype Damage = Damage Int
+
 damage :: Damage -> Int
 damage (Damage value) = value
 
 calculatePlayerDamage :: Attack -> Strenght -> Damage
-calculatePlayerDamage  a s = Damage $ attack a + strenght s
+calculatePlayerDamage a s = Damage $ attack a + strenght s
 
-newtype Defense = Defense Int  
+newtype Defense = Defense Int
+
 defense :: Defense -> Int
 defense (Defense value) = value
 
@@ -890,6 +901,20 @@ hitPlayer player1 player2 =
 --
 -- 🕯 HINT: 'Maybe' that some standard types we mentioned above are useful for
 --   maybe-treasure ;)
+data Treasure treasureLoot = TreasureChest
+  { treasureChestGold :: Int,
+    treasureChestLoot :: treasureLoot
+  } deriving (Show)
+
+data Dragon dM = Dragon
+  { dragonName :: String,
+    magicPower :: Maybe dM
+  } deriving (Show)
+
+data Liar dM treasureLoot = Liar { 
+    dragon :: (Dragon dM),
+    treasure :: Maybe (Treasure treasureLoot)
+  } deriving (Show)
 
 {-
 =🛡= Typeclasses
@@ -1152,9 +1177,17 @@ Extensions: https://kowainik.github.io/posts/extensions
 
 main :: IO ()
 main = do
+  print "---------------------------"
+  print "Task 5"
   print auenland
   print grownAuenland
   print auenlandWithCastle
   print auenlandWithCastleAndWalls
   print auenlandCannotBuildWalls
   print auenlandCannotBuildWallsEvenWithCastle
+  print "---------------------------"
+  print "Task 6"
+  print $ Liar {
+    dragon = Dragon "Fire Dragon Eremil" $ Just "Fire Spell", 
+    treasure = Just $ TreasureChest { treasureChestGold = 100, treasureChestLoot = "Dragon Plate" } 
+    }
