@@ -1149,6 +1149,25 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
+data Weekday
+  = Monday
+  | Tuesday
+  | Wednesday
+  | Thursday
+  | Friday
+  | Saturday
+  | Sunday
+  deriving (Show, Read, Eq, Ord, Enum, Bounded)
+
+isWeekend ::  Weekday -> Bool
+isWeekend day = day == Saturday || day == Sunday
+
+nextDay :: Weekday -> Weekday
+nextDay day = if day == maxBound then minBound else succ day
+
+daysToParty :: Weekday -> Int
+daysToParty day = fromEnum Friday - fromEnum day
+
 {-
 =💣= Task 9*
 
@@ -1195,26 +1214,30 @@ Deriving: https://kowainik.github.io/posts/deriving
 Extensions: https://kowainik.github.io/posts/extensions
 -}
 
+printTaskHeader :: String -> IO ()
+printTaskHeader taskName = do
+  putStrLn ""
+  putStrLn "---------------------------"
+  putStrLn $ "---------- Task-" ++ taskName ++ " ---------"
+  putStrLn "---------------------------"
+
 main :: IO ()
 main = do
-  print "---------------------------"
-  print "Task 5"
+  printTaskHeader "5"
   print auenland
   print grownAuenland
   print auenlandWithCastle
   print auenlandWithCastleAndWalls
   print auenlandCannotBuildWalls
   print auenlandCannotBuildWallsEvenWithCastle
-  print "---------------------------"
-  print "Task 6"
+  printTaskHeader "6"
   print $
     Liar
       { dragon = Dragon "Fire Dragon Eremil" $ Just "Fire Spell",
         treasure = Just $ TreasureChest {treasureChestGold = 100, treasureChestLoot = "Dragon Plate"}
       }
 
-  print "---------------------------"
-  print "Task 7"
+  printTaskHeader "7"
 
   print $ append Gold {goldAmount = 10} Gold {goldAmount = 20}
   print $ append [1, 2] [3, 4, 5]
@@ -1222,3 +1245,20 @@ main = do
   print $ append Nothing (Just "Something")
   print $ append (Just "Someting and ") (Just "Something")
   print $ append (Just [1]) (Just [2, 3, 4, 5])
+
+  printTaskHeader "8"
+
+  print $ "isWeekend Sunday: " ++ show (isWeekend Sunday)
+  print $ "isWeekend Monday: " ++ show (isWeekend Monday)
+
+  print $ "nextDay Sunday: " ++  show (nextDay Sunday)
+  print $ "nextDay Monday: " ++ show (nextDay Monday)
+  print $ "nextDay Friday: " ++ show (nextDay Friday)  
+  print $ "daysToParty Friday: " ++ show (daysToParty Friday)
+  
+  {-variable with name allWeekDays of all enum values from Weekday -}
+  let allWeekDays = [minBound .. maxBound] :: [Weekday]
+  
+  let output = map (\day -> print $ "daysToParty " ++ show day ++ ": " ++ show (daysToParty day)) allWeekDays
+  {- print output -}
+  sequence_ output
