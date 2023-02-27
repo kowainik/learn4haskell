@@ -612,7 +612,7 @@ Implement a function that duplicates each element of the list
 -}
 duplicate :: [a] -> [a]
 duplicate [] = []
-duplicate (x:xs) = x:x:(duplicate xs)
+duplicate (x:xs) = x:x: duplicate xs
 
 
 {- |
@@ -757,7 +757,7 @@ contains :: Int -> [[Int]] -> [[Int]]
 contains n l = go n l where
   go :: Int -> [[Int]] -> [[Int]]
   go _ [] = []
-  go n (x:xs) = if elem n x 
+  go n (x:xs) = if n `elem` x 
     then x : go n xs 
     else go n xs
 
