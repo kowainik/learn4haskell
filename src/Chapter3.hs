@@ -381,6 +381,45 @@ after the fight. The battle has the following possible outcomes:
 ♫ NOTE: In this task, you need to implement only a single round of the fight.
 
 -}
+data Knight = Knight
+  {
+  knightHealth :: Int,
+  knightAttack :: Int,
+  knightGold :: Int
+  } deriving (Show)
+
+data Monster = Monster
+  {
+  monsterHealth :: Int,
+  monsterAttack :: Int,
+  monsterGold :: Int
+  } deriving (Show)
+
+fight :: Knight -> Monster -> Int
+fight k m | (knightAttack k >= monsterHealth m) = knightGold k + monsterGold m
+fight k m | (knightAttack k < monsterHealth m && knightHealth k <= monsterAttack m) = (-1)
+fight k _ = knightGold k
+
+arthur :: Knight
+arthur = Knight { knightAttack = 10, knightHealth = 10, knightGold = 0 }
+
+dragon :: Monster
+dragon = Monster { monsterAttack = 10, monsterHealth = 10, monsterGold = 100 }
+
+win :: Int
+win = fight arthur dragon
+
+tooStrongMonster :: Monster
+tooStrongMonster = Monster { monsterAttack = 20, monsterHealth = 20, monsterGold = 10000 }
+
+dead :: Int
+dead = fight arthur tooStrongMonster
+
+turtleMonster :: Monster
+turtleMonster = Monster { monsterAttack = 1, monsterHealth = 30, monsterGold = 10 }
+
+firstRound :: Int
+firstRound = fight arthur turtleMonster
 
 {- |
 =🛡= Sum types
@@ -467,6 +506,8 @@ and provide more flexibility when working with data types.
 Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
+
+data Meal = Breakfast | SecondBreakfast | Lunch | TeeTime | AfternoonSnack | Dinner | MidnightSnack
 
 {- |
 =⚔️= Task 4
