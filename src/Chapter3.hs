@@ -904,17 +904,20 @@ hitPlayer player1 player2 =
 data Treasure treasureLoot = TreasureChest
   { treasureChestGold :: Int,
     treasureChestLoot :: treasureLoot
-  } deriving (Show)
+  }
+  deriving (Show)
 
 data Dragon dM = Dragon
   { dragonName :: String,
     magicPower :: Maybe dM
-  } deriving (Show)
+  }
+  deriving (Show)
 
-data Liar dM treasureLoot = Liar { 
-    dragon :: (Dragon dM),
+data Liar dM treasureLoot = Liar
+  { dragon :: (Dragon dM),
     treasure :: Maybe (Treasure treasureLoot)
-  } deriving (Show)
+  }
+  deriving (Show)
 
 {-
 =🛡= Typeclasses
@@ -1066,8 +1069,25 @@ instance and apply this typeclass method to it.
 --   ✧ The "Gold" newtype where append is the addition
 --   ✧ "List" where append is list concatenation
 --   ✧ *(Challenge): "Maybe" where append is appending of values inside "Just" constructors
+newtype Gold = Gold {goldAmount :: Int} deriving (Show, Eq)
+
 class Append a where
   append :: a -> a -> a
+
+instance Append Gold where
+  append :: Gold -> Gold -> Gold
+  append (Gold a) (Gold b) = Gold (a + b)
+
+instance Append [a] where
+  append :: [a] -> [a] -> [a]
+  append a b = a ++ b
+
+instance Append a => Append (Maybe a) where
+  append :: Maybe a -> Maybe a -> Maybe a
+  append (Just a) (Just b) = Just $ append a b
+  append (Just a) Nothing = Just a
+  append Nothing (Just b) = Just b
+  append Nothing Nothing = Nothing
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -1187,7 +1207,18 @@ main = do
   print auenlandCannotBuildWallsEvenWithCastle
   print "---------------------------"
   print "Task 6"
-  print $ Liar {
-    dragon = Dragon "Fire Dragon Eremil" $ Just "Fire Spell", 
-    treasure = Just $ TreasureChest { treasureChestGold = 100, treasureChestLoot = "Dragon Plate" } 
-    }
+  print $
+    Liar
+      { dragon = Dragon "Fire Dragon Eremil" $ Just "Fire Spell",
+        treasure = Just $ TreasureChest {treasureChestGold = 100, treasureChestLoot = "Dragon Plate"}
+      }
+
+  print "---------------------------"
+  print "Task 7"
+
+  print $ append Gold {goldAmount = 10} Gold {goldAmount = 20}
+  print $ append [1, 2] [3, 4, 5]
+  print $ append (Just "Something") Nothing
+  print $ append Nothing (Just "Something")
+  print $ append (Just "Someting and ") (Just "Something")
+  print $ append (Just [1]) (Just [2, 3, 4, 5])
