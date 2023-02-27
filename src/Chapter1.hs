@@ -649,8 +649,8 @@ sumLast2 :: Int -> Int
 sumLast2 n = (lastDigit n) + secondLastDigit
   where
     lastTwo = (mod (abs n) 100)
-    last = lastDigit n
-    secondLastDigit = (lastTwo - last) `div` 10
+    lastD = lastDigit n
+    secondLastDigit = (lastTwo - lastD) `div` 10
 
 {- |
 =💣= Task 10*
