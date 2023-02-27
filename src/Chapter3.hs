@@ -672,22 +672,47 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+
+newtype Health = Health Int
+health :: Health -> Int
+health (Health value) = value
+newtype Armor = Armor Int
+armor :: Armor -> Int
+armor (Armor value) = value
+newtype Attack = Attack Int
+attack :: Attack -> Int
+attack (Attack value) = value
+newtype Dexterity = Dexterity Int
+dexterity :: Dexterity -> Int
+dexterity (Dexterity value) = value
+newtype Strenght = Strenght Int
+strenght :: Strenght -> Int
+strenght (Strenght value) = value
+
 data Player = Player
-  { playerHealth :: Int,
-    playerArmor :: Int,
-    playerAttack :: Int,
-    playerDexterity :: Int,
-    playerStrength :: Int
+  { playerHealth :: Health,
+    playerArmor :: Armor,
+    playerAttack :: Attack,
+    playerDexterity :: Dexterity,
+    playerStrength :: Strenght
   }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+newtype Damage = Damage Int  
+damage :: Damage -> Int
+damage (Damage value) = value
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDamage :: Attack -> Strenght -> Damage
+calculatePlayerDamage  a s = Damage $ attack a + strenght s
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+newtype Defense = Defense Int  
+defense :: Defense -> Int
+defense (Defense value) = value
+
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense a d = Defense $ armor a * dexterity d
+
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit dam def h = Health $ health h + defense def - damage dam
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
