@@ -343,6 +343,12 @@ Define the Book product data type. You can take inspiration from our description
 of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
+data Book = Book
+    { bookName :: String
+    , bookAuthor :: String
+    , bookPages :: Int
+    , bookCover :: String
+    } deriving (Show)
 
 {- |
 =⚔️= Task 2
