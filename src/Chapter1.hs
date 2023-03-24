@@ -304,7 +304,7 @@ expressions in GHCi
 3
 
 >>> 10 - 15
-5
+-5
 
 >>> 10 - (-5)  -- negative constants require ()
 15
@@ -492,7 +492,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Integral a => a -> a
-lastDigit n = n `mod` 10
+lastDigit n = abs n `mod` 10
 
 
 {- |
@@ -558,9 +558,9 @@ Casual reminder about adding top-level type signatures for all functions :)
 
 mid :: Ord a => a -> a -> a -> a
 mid x y z
-    | x < y && x > z || x > y && x < z = x
-    | y < x && y > z || y > x && y < z = y
-    | otherwise                        = z
+    | x <= y && x > z || x >= y && x < z = x
+    | y <= x && y > z || y >= x && y < z = y
+    | otherwise                          = z
 
 {- |
 =⚔️= Task 8
@@ -643,8 +643,9 @@ specifying complex expressions.
 
 sumLast2 :: Integral a => a -> a
 sumLast2 n = b + a where
-  a = n `mod` 10
-  b = (n `div` 10) `mod` 10
+  a = an `mod` 10
+  b = (an `div` 10) `mod` 10
+  an = abs n
 
 
 {- |
@@ -666,7 +667,7 @@ aren't ready for this boss yet!
 -}
 
 firstDigit :: Integral t => t -> t
-firstDigit n = if n < 10 then n else firstDigit (n `div` 10)
+firstDigit n = let an = abs n in if an < 10 then an else firstDigit (an `div` 10)
 
 
 {-
