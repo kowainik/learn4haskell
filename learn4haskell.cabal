@@ -17,14 +17,15 @@ extra-doc-files:     README.md
                      CHANGELOG.md
 tested-with:         GHC == 8.10.4
                      GHC == 9.0.2
-                     GHC == 9.2.4
+                     GHC == 9.2.7
+                     GHC == 9.4.4
 
 source-repository head
   type:                git
   location:            https://github.com/kowainik/learn4haskell.git
 
 common common-options
-  build-depends:       base >= 4.14.0.0 && < 4.17
+  build-depends:       base >= 4.14.0.0 && < 4.18
 
   ghc-options:         -Wall
                        -Wcompat
@@ -43,13 +44,16 @@ common common-options
   if impl(ghc >= 9.2)
     ghc-options:       -Woperator-whitespace
                        -Wredundant-bang-patterns
+  if impl(ghc >= 9.4)
+    ghc-options:       -Wredundant-strictness-flags
+                       -Wforall-identifier
 
   default-language:    Haskell2010
 
 common common-doctest
   import:              common-options
   hs-source-dirs:      test
-  build-depends:       doctest >= 0.17 && < 0.21
+  build-depends:       doctest >= 0.17 && < 0.22
   ghc-options:         -threaded
 
 library
