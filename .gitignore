@@ -54,3 +54,4 @@ TAGS
 # other
 .DS_Store
 .env
+Dockerfile
