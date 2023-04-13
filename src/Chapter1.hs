@@ -395,7 +395,7 @@ ghci> :q
 --
 -- >>> squareSum 3 4
 -- 49
-squareSum :: Num a => a -> a -> a
+squareSum :: Int -> Int -> Int
 squareSum x y = (x + y) * (x + y)
 
 -- |
@@ -454,7 +454,7 @@ next x = x + 1
 
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int
-lastDigit n = n `mod` 10
+lastDigit n = abs n `mod` 10
 
 -- |
 -- =⚔️= Task 6
@@ -514,7 +514,7 @@ mid x y z
   | x > z && z > y = z
   | y > x && x > z = x
   | z > y && y > x = y
-  | otherwise = error "invalid input"
+  | otherwise = y
 
 -- Casual reminder about adding top-level type signatures for all functions :)
 
@@ -582,7 +582,7 @@ isVowel c
 --
 -- Implement a function that returns the sum of the last two digits of a number.
 --
--- >>> sumLast2 42
+-- >>> sumLast2 42e question, there is no need to write down the conditions; they will be satisfied if the compiler came all the way down to this cla
 -- 6
 -- >>> sumLast2 134
 -- 7
@@ -592,8 +592,9 @@ isVowel c
 -- Try to introduce variables in this task (either with let-in or where) to avoid
 -- specifying complex expressions.
 sumLast2 :: Int -> Int
-sumLast2 n = takeF n + takeS n
+sumLast2 n = takeF absN + takeS absN
   where
+    absN = abs n
     takeF :: Int -> Int
     takeF m = m `mod` 10
     takeS :: Int -> Int
@@ -616,8 +617,9 @@ sumLast2 n = takeF n + takeS n
 -- You need to use recursion in this task. Feel free to return to it later, if you
 -- aren't ready for this boss yet!
 firstDigit :: Int -> Int
-firstDigit n = if numLength n > 1 then firstDigit (n `div` 10) else n
+firstDigit n = if numLength absN > 1 then firstDigit (absN `div` 10) else absN
   where
+    absN = abs n
     numLength :: Int -> Int
     numLength m = length (show m)
 
