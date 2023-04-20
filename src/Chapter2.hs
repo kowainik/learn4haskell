@@ -39,7 +39,7 @@ Now, if you are ready, bring it on!
 -}
 
 module Chapter2 where
-
+import Data.List
 {-
 =🛡= Imports
 
@@ -136,43 +136,43 @@ functions in GHCi and insert the corresponding resulting output below:
 
 List of booleans:
 >>> :t [True, False]
-
+[True, False] :: [Bool]
 
 String is a list of characters:
 >>> :t "some string"
-
+"some string" :: [Char]
 
 Empty list:
 >>> :t []
-
+[] :: [a]
 
 Append two lists:
 >>> :t (++)
-
+(++) :: [a] -> [a] -> [a]
 
 Prepend an element at the beginning of a list:
 >>> :t (:)
-
+(:) :: a -> [a] -> [a]
 
 Reverse a list:
 >>> :t reverse
-
+reverse :: [a] -> [a]
 
 Take first N elements of a list:
 >>> :t take
-
+take :: Int -> [a] -> [a]
 
 Create a list from N same elements:
 >>> :t replicate
-
+replicate :: Int -> a -> [a]
 
 Split a string by line breaks:
 >>> :t lines
-
+lines :: String -> [String]
 
 Join a list of strings with line breaks:
 >>> :t unlines
-
+unlines :: [String] -> String
 
 -}
 
@@ -186,31 +186,43 @@ Evaluate the following expressions in GHCi and insert the answers. Try
 to guess first, what you will see.
 
 >>> [10, 2] ++ [3, 1, 5]
+[10,2,3,1,5]
 
 >>> [] ++ [1, 4]  -- [] is an empty list
+[1,4]
 
 >>> 3 : [1, 2]
+[3,1,2]
 
 >>> 4 : 2 : [5, 10]  -- prepend multiple elements
+[4,2,5,10]
 
 >>> [1 .. 10]  -- list ranges
+[1,2,3,4,5,6,7,8,9,10]
 
 >>> [10 .. 1]
+[]
 
 >>> [10, 9 .. 1]  -- backwards list with explicit step
+[10,9,8,7,6,5,4,3,2,1]
 
 >>> length [4, 10, 5]  -- list length
+3
 
 >>> replicate 5 True
+[True,True,True,True,True]
 
 >>> take 5 "Hello, World!"
+"Hello"
 
 >>> drop 5 "Hello, World!"
+", World!"
 
 >>> zip "abc" [1, 2, 3]  -- convert two lists to a single list of pairs
+[('a',1),('b',2),('c',3)]
 
 >>> words "Hello   Haskell     World!"  -- split the string into the list of words
-
+["Hello","Haskell","World!"]
 
 
 👩‍🔬 Haskell has a lot of syntax sugar. In the case with lists, any
@@ -336,8 +348,11 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList = error "subList: Not implemented!"
-
+--subList = error "subList: Not implemented!"
+subList a b x
+  | a<0=[]
+  | b<0=[]
+  | otherwise=drop a (take (b+1) x)
 {- |
 =⚔️= Task 4
 
@@ -349,7 +364,9 @@ Implement a function that returns only the first half of a given list.
 "b"
 -}
 -- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
+firstHalf :: [a] -> [a]
+--firstHalf l = error "firstHalf: Not implemented!"
+firstHalf x=take (div (length x) 2) x
 
 
 {- |
@@ -375,8 +392,8 @@ To perform pattern-matching, repeat a function name as many times as
 many patterns you want to cover. The cool thing about Haskell is that
 the compiler warns you if you forget to cover some cases. So you
 always can be sure that your patterns are exhaustive!
-
 Note that you can pattern match on a variable too! Variable is like a
+
 pattern that matches any value and gives it a name. You can think of
 variables in function definitions as special cases of pattern
 matching.
@@ -501,8 +518,11 @@ True
 >>> isThird42 [42, 42, 0, 42]
 False
 -}
-isThird42 = error "isThird42: Not implemented!"
-
+--isThird42 = error "isThird42: Not implemented!"
+isThird42 x
+    | length x<3=False
+    | (x!!2) == 42=True
+    | otherwise=False
 
 {- |
 =🛡= Recursion
@@ -606,8 +626,10 @@ Implement a function that duplicates each element of the list
 
 -}
 duplicate :: [a] -> [a]
-duplicate = error "duplicate: Not implemented!"
-
+--duplicate = error "duplicate: Not implemented!"
+duplicate x
+    | null x=[]
+    | otherwise=(head x):(head x):duplicate (tail x)
 
 {- |
 =⚔️= Task 7
@@ -621,7 +643,11 @@ Write a function that takes elements of a list only in even positions.
 >>> takeEven [2, 1, 3, 5, 4]
 [2,3,4]
 -}
-takeEven = error "takeEven: Not implemented!"
+--takeEven = error "takeEven: Not implemented!"
+takeEven x
+    | ((length x) == 0) = []
+    | ((length x) == 1) = head x:[]
+    | otherwise=(head x):takeEven (tail (tail x))
 
 {- |
 =🛡= Higher-order functions
@@ -728,7 +754,9 @@ value of the element itself
 🕯 HINT: Use combination of 'map' and 'replicate'
 -}
 smartReplicate :: [Int] -> [Int]
-smartReplicate l = error "smartReplicate: Not implemented!"
+smartReplicate []=[]
+smartReplicate (x:xs)=(replicate x x)++smartReplicate xs
+--smartReplicate l = error "smartReplicate: Not implemented!"
 
 {- |
 =⚔️= Task 9
@@ -741,8 +769,8 @@ the list with only those lists that contain a passed element.
 
 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 -}
-contains = error "contains: Not implemented!"
-
+--contains = error "contains: Not implemented!"
+contains a x= filter (elem a) x
 
 {- |
 =🛡= Eta-reduction
@@ -781,13 +809,13 @@ Let's now try to eta-reduce some of the functions and ensure that we
 mastered the skill of eta-reducing.
 -}
 divideTenBy :: Int -> Int
-divideTenBy x = div 10 x
+divideTenBy = div 10 
 
 -- TODO: type ;)
-listElementsLessThan x l = filter (< x) l
+listElementsLessThan x= filter (< x) 
 
 -- Can you eta-reduce this one???
-pairMul xs ys = zipWith (*) xs ys
+pairMul  = zipWith (*) 
 
 {- |
 =🛡= Lazy evaluation
@@ -842,7 +870,9 @@ list.
 
 🕯 HINT: Use the 'cycle' function
 -}
-rotate = error "rotate: Not implemented!"
+--rotate = error "rotate: Not implemented!"
+rotate a []=[]
+rotate a x=drop a(take ((length x)+a) (cycle x))
 
 {- |
 =💣= Task 12*
@@ -858,8 +888,10 @@ and reverses it.
   function, but in this task, you need to implement it manually. No
   cheating!
 -}
-rewind = error "rewind: Not Implemented!"
-
+--rewind = error "rewind: Not Implemented!"
+rewind x
+    | null x=[]
+    | otherwise=(rewind (tail x))++((head x):[])
 
 {-
 You did it! Now it is time to open pull request with your changes
