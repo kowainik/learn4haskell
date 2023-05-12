@@ -1157,9 +1157,9 @@ instance Fighter Knight where
   getAttack = knightAtt
   takeAction knight = case knightActions knight of
     [] -> Nothing
-    (KnightAttack : rest) -> Just knight {knightActions = rest, knightAtt = knightAtt knight + 10}
-    (DrinkPotion : rest) -> Just knight {knightActions = rest, knightHp = knightHp knight + 20}
-    (CastSpell : rest) -> Just knight {knightActions = rest, knightArm = knightArm knight + 15}
+    (KnightAttack : rest) -> Just knight {knightActions = rest ++ [KnightAttack], knightAtt = knightAtt knight + 10}
+    (DrinkPotion : rest) -> Just knight {knightActions = rest ++ [DrinkPotion], knightHp = knightHp knight + 20}
+    (CastSpell : rest) -> Just knight {knightActions = rest ++ [CastSpell], knightArm = knightArm knight + 15}
   recieveDamage knight damage = knight {knightHp = max 0 (knightHp knight - damage + knightArm knight)}
 
 instance Fighter Monster where
@@ -1167,11 +1167,11 @@ instance Fighter Monster where
   getAttack = monsterAtt
   takeAction monster = case monsterActions monster of
     [] -> Nothing
-    (MonsterAttack : rest) -> Just monster {monsterActions = rest, monsterAtt = monsterAtt monster + 5}
-    (RunAway : rest) -> Just monster {monsterActions = rest, monsterHp = 0}
+    (MonsterAttack : rest) -> Just monster {monsterActions = rest ++ [MonsterAttack], monsterAtt = monsterAtt monster + 5}
+    (RunAway : rest) -> Just monster {monsterActions = rest ++ [RunAway], monsterHp = if monsterHp monster <= 15 then 0 else monsterHp monster}
   recieveDamage monster damage = monster {monsterHp = max 0 (monsterHp monster - damage)}
 
-battle :: (Fighter a, Fighter b) => a -> b -> Either a b
+battle :: (Fighter a) => a -> a -> Either a a
 battle attacker defender
   | getHealth attacker <= 0 = Right defender
   | getHealth defender <= 0 = Left attacker
@@ -1180,20 +1180,12 @@ battle attacker defender
         Nothing -> Right defender
         Just updatedAttacker ->
           let updatedDefender = recieveDamage defender (getAttack attacker)
-           in battle updatedAttacker updatedDefender
+           in battle updatedDefender updatedAttacker
 
 {-
 You did it! Now it is time to open pull request with your changes
 and summon @vrom911 for the review!
-fight :: Creature -> Creature -> Either Int Creature
-fight k m
-  | creatureHealth k < 0 = Left (-1)
-  | newMonsterH >= 0 = fight k {creatureHealth = newKnightH} m {creatureHealth = newMonsterH}
-  | 0 >= newKnightH = Right k
-  | otherwise = Right k {creatureGold = creatureGold k + creatureGold m}
-  where
-    newMonsterH = creatureHealth m - creatureAttack k
-    newKnightH = creatureHealth k - creatureAttack m
+
 -}
 
 {-
