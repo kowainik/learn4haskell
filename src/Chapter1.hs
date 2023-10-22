@@ -228,12 +228,15 @@ not :: Bool -> Bool
 Boolean 'and' operator:
 >>> :t (&&)
 (&&) :: Bool -> Bool -> Bool
+
 Addition of two numbers:
 >>> :t (+)
 (+) :: Num a => a -> a -> a
+
 Maximum of two values:
 >>> :t max
 max :: Ord a => a -> a -> a
+
 You might not understand each type at this moment, but don't worry! You've only
 started your Haskell journey. Types will become your friends soon.
 
@@ -301,30 +304,43 @@ expressions in GHCi
 
 >>> 1 + 2
 3
+
 >>> 10 - 15
 -5
+
 >>> 10 - (-5)  -- negative constants require ()
-20
+15
+
 >>> (3 + 5) < 10
 True
+
 >>> True && False
 False
+
 >>> 10 < 20 || 20 < 5
-False
+True
+
 >>> 2 ^ 10  -- power
 1024
+
 >>> not False
 True
+
 >>> div 20 3  -- integral division
 6
+
 >>> mod 20 3  -- integral division remainder
 2
+
 >>> max 4 10
 10
+
 >>> min 5 (max 1 2)
 2
+
 >>> max (min 1 10) (min 5 7)
 5
+
 Because Haskell is a __statically-typed__ language, you see an error each time
 you try to mix values of different types in situations where you are not
 supposed to. Try evaluating the following expressions to see errors:
@@ -478,7 +494,7 @@ Implement a function that returns the last digit of a given number.
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
 lastDigit :: Int -> Int 
-lastDigit n = mod n 10
+lastDigit n = mod (abs n) 10
 
 
 {- |
@@ -544,8 +560,10 @@ Casual reminder about adding top-level type signatures for all functions :)
 
 mid :: Ord a => a -> a -> a -> a
 mid x y z 
-  | x >= y && y >= z = y
-  | y >= x && x >= z = x
+  | y <= z && x >= y && x <= z = x
+  | x <= z && y >= x && y <= z = y
+  | z <= y && x >= z && x <= y = x
+  | z <= x && y >= z && y <= x = y
   | otherwise = z
 
 {- |
@@ -633,7 +651,7 @@ specifying complex expressions.
 
 sumLast2 :: Int -> Int
 sumLast2 n = first + second
-  where (r, first) = divMod n 10
+  where (r, first) = divMod (abs n) 10
         second = mod r 10
 
 
@@ -656,7 +674,7 @@ aren't ready for this boss yet!
 -}
 
 firstDigit :: Int -> Int
-firstDigit n = if n < 10 then n else firstDigit $ div n 10
+firstDigit n = if abs n < 10 then abs n else firstDigit $ div (abs n) 10
 
 
 {-
