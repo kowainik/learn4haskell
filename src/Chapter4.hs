@@ -113,22 +113,30 @@ As always, try to guess the output first! And don't forget to insert
 the output in here:
 
 >>> :k Char
+Char :: *
 
 >>> :k Bool
+Bool :: *
 
 >>> :k [Int]
+[Int] :: *
 
 >>> :k []
+[] :: * -> *
 
 >>> :k (->)
+(->) :: * -> * -> *
 
 >>> :k Either
+Either :: * -> * -> *
 
 >>> data Trinity a b c = MkTrinity a b c
 >>> :k Trinity
+Trinity :: * -> * -> * -> *
 
 >>> data IntBox f = MkIntBox (f Int)
 >>> :k IntBox
+IntBox :: (* -> *) -> *
 
 -}
 
@@ -259,6 +267,9 @@ name.
 > QUESTION: Can you understand why the following implementation of the
   Functor instance for Maybe doesn't compile?
 
+Because we would be saying return the same, which is not what we want,
+we are violating Maybe a -> Maybe b, returning Maybe a
+
 @
 instance Functor Maybe where
     fmap :: (a -> b) -> Maybe a -> Maybe b
@@ -292,7 +303,8 @@ values and apply them to the type level?
 -}
 instance Functor (Secret e) where
     fmap :: (a -> b) -> Secret e a -> Secret e b
-    fmap = error "fmap for Box: not implemented!"
+    fmap f (Reward a) = Reward (f a)
+    fmap _ (Trap e) = Trap e
 
 {- |
 =⚔️= Task 3
@@ -306,6 +318,10 @@ data List a
     = Empty
     | Cons a (List a)
 
+instance Functor List where
+    fmap :: (a -> b) -> List a -> List b
+    fmap _ Empty = Empty
+    fmap f (Cons x xs)  = Cons (f x) (fmap f xs)
 {- |
 =🛡= Applicative
 
@@ -471,10 +487,11 @@ Implement the Applicative instance for our 'Secret' data type from before.
 -}
 instance Applicative (Secret e) where
     pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+    pure = Reward
 
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
+    (<*>) (Trap e) _ = Trap e 
+    (<*>) (Reward f) a = fmap f a
 
 {- |
 =⚔️= Task 5
@@ -488,7 +505,17 @@ Implement the 'Applicative' instance for our 'List' type.
   type.
 -}
 
+instance Applicative List where
+    pure :: a -> List a
+    pure a = Cons a Empty
 
+    -- (<*>) :: List (a -> b) -> List a -> List b
+    -- (Cons f Empty) <*> (Cons x xs) = Cons (fmap f x) ((<*>) (Cons f Empty) xs)
+
+    -- fmap :: (a -> b) -> List a -> List b
+    -- fmap _ Empty = Empty
+    -- fmap f (Cons x xs)  = Cons (f x) (fmap f xs)
+    --
 {- |
 =🛡= Monad
 

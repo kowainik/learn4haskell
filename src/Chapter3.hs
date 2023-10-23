@@ -486,7 +486,7 @@ and provide more flexibility when working with data types.
 Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
-data CatalanMeal = 
+data CatalanMeal =
     Desdejuni
     | Esmortzar
     | Dinar
@@ -515,20 +515,20 @@ After defining the city, implement the following functions:
 data Castle = Castle String deriving Show
 data Wall = Wall Int deriving Show
 data CityBuilding = Church | Library deriving Show
-data City = MakeCity 
+data City = MakeCity
     {
       cityBuilding :: CityBuilding
     , cityHouses   :: Int
     }
-    | MakeCityCastle 
-    { 
+    | MakeCityCastle
+    {
       cityCastle   :: Castle
-    , cityWall     :: Wall 
-    , cityBuilding :: CityBuilding 
+    , cityWall     :: Wall
+    , cityBuilding :: CityBuilding
     , cityHouses   :: Int
-    } deriving Show 
+    } deriving Show
 buildCastle :: City -> String -> City
-buildCastle city name = MakeCityCastle 
+buildCastle city name = MakeCityCastle
     { cityCastle = Castle name
     , cityWall = Wall 10
     , cityBuilding = cityBuilding city
@@ -1100,6 +1100,66 @@ properties using typeclasses, but they are different data types in the end.
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
+{- class Fighter a where
+    isDead :: a -> Bool
+    duel :: a -> Paladin -> Either a Paladin
+    combat :: a -> Demon -> Either a Demon
+
+newtype CharacterHealth = CharacterHealth {characterHealth :: Int} deriving (Eq, Ord, Show)
+newtype CharacterAttack = CharacterAttack {characterAttack :: Int} deriving (Eq, Ord, Show)
+newtype CharacterDefense = CharacterDefense {characterDefense :: Int} deriving (Eq, Ord, Show)
+data FightMoves = PAttack | PDefense | PHealth | DAttack | DRun deriving (Eq, Ord)
+
+data Paladin = MakePaladin
+    { getPaladinHealth   :: CharacterHealth
+    , getPaladinAttack   :: CharacterAttack
+    , getPaladinDefense  :: CharacterDefense
+    } deriving Show
+
+data Demon = MakeDemon
+    { getDemonHealth :: CharacterHealth
+    , getDemonAttack :: CharacterAttack
+    } deriving Show
+
+
+increaseDefense :: Paladin -> Paladin
+increaseDefense paladin = paladin {getPaladinDefense = CharacterDefense $ previousDefense + increment}
+    where increment = div (characterHealth (getPaladinHealth paladin)) 10
+          previousDefense = characterDefense $ getPaladinDefense paladin
+
+drinkPotion :: Paladin -> Paladin
+drinkPotion paladin = paladin {getPaladinHealth = heal (getPaladinHealth paladin) 50}
+    where heal :: CharacterHealth -> Int -> CharacterHealth
+          heal currentHealth amount = CharacterHealth $ characterHealth currentHealth + amount
+
+attackDemon :: CharacterAttack -> CharacterHealth -> CharacterHealth
+attackDemon attack health = CharacterHealth $ characterHealth health - characterAttack attack
+
+attackPaladin :: CharacterAttack -> CharacterHealth -> CharacterDefense -> CharacterHealth
+attackPaladin attack health defense = CharacterHealth $ characterHealth health - hitpoints 
+    where hitpoints = max 0 (characterDefense defense - characterAttack attack)
+
+instance Fighter Paladin where
+    isDead :: Paladin -> Bool
+    isDead = (<= 0) . characterHealth . getPaladinHealth
+
+    duel :: Paladin -> Paladin -> Either Paladin Paladin
+    duel = undefined
+
+    combat :: Paladin -> Demon -> Either Paladin Demon
+    combat = undefined
+
+
+
+instance Fighter Demon where
+    isDead :: Demon -> Bool
+    isDead = (<= 0) . characterHealth . getDemonHealth
+
+    duel :: Demon -> Paladin -> Either Demon Paladin
+    duel = undefined
+
+    combat :: Demon -> Demon -> Either Demon Demon
+    combat = undefined -}
 
 
 {-
