@@ -1,7 +1,9 @@
+{- Chapter 3 task 9 -}
 module Fight where
 
 class Fighter a where
   fight :: a -> a -> a
+  isDead :: a -> Bool
 
 data Character = NewCharacter
   { characterHealth   :: Health
@@ -34,8 +36,12 @@ restoreHealth (Health health) amount
         healthCoefficient = mod incrementedHealth 200
 
 incrementArmor :: Maybe Defense -> Maybe Defense
-incrementArmor (Just (Defense defense)) = Just $ Defense (defense + 10)
-incrementArmor Nothing = Just $ Defense 10
+incrementArmor Nothing = Just $ Defense 4
+incrementArmor (Just (Defense defense)) 
+  | armorCoefficient == incrementedArmor = Just $ Defense incrementedArmor
+  | otherwise = Just $ Defense $ incrementedArmor - armorCoefficient
+  where incrementedArmor = defense + 4
+        armorCoefficient = mod incrementedArmor 30
 
 hit :: Character -> Character -> Character
 hit c1 c2 = c2 {characterHealth = calculateInflictedDamage  targetHealth targetDefense attackerDamage}
@@ -49,13 +55,36 @@ drinkPotion knight = knight {characterHealth = restoreHealth  (characterHealth k
 castBarrier :: Character -> Character
 castBarrier knight = knight {characterDefense = incrementArmor (characterDefense knight)}
 
+updateSkills :: Character -> Character
+updateSkills character = character {characterSkills = discardSkill (characterSkills character)}
+  where discardSkill :: [Skill] -> [Skill]
+        discardSkill [] = []
+        discardSkill (x:xs) = xs ++ [x]
+
 turn :: ([Skill], Character, Character) -> ([Skill], Character, Character)
-turn (Hit:xs, p1, p2) = (xs, p1, hit p1 p2)
-turn (DrinkPotion:xs, p1, p2) = (xs, drinkPotion p1, p2)
-turn (CastBarrier:xs, p1, p2) = (xs, castBarrier p1,  p2)
-turn (RunAway:xs, p1, p2) = (xs, p1, p2)
-turn ([], p1, p2) = (characterSkills p1, p1, p2)
+turn (Hit:xs, p1, p2) = (xs, updateSkills p1, hit p1 p2)
+turn (DrinkPotion:xs, p1, p2) = (xs, updateSkills $ drinkPotion p1, p2)
+turn (CastBarrier:xs, p1, p2) = (xs, updateSkills $ castBarrier p1,  p2)
+turn (RunAway:xs, p1, p2) = (xs, updateSkills p1, p2)
+turn ([], p1, p2) = turn (characterSkills p1, p1, p2)
 
-player1 = NewCharacter (Health 200) (Attack 25) (Strength 10) (Just (Defense 10)) [Hit, DrinkPotion, CastBarrier]
-player2 = NewCharacter (Health 300) (Attack 35) (Strength 20) (Nothing) [Hit, RunAway]
 
+instance Fighter Character where
+
+  isDead :: Character -> Bool
+  isDead = (<= 0) . getHealth . characterHealth
+
+  fight :: Character -> Character -> Character
+  fight fighter1 fighter2 
+    | isDead fighter1 = fighter2
+    | isDead fighter2 = fighter1
+    | otherwise = fight p2After p1
+    where (_, p1, p2After) = turn ([], fighter1, fighter2)
+
+
+-- For testing in the REPL
+player1 = NewCharacter (Health 200) (Attack 25) (Strength 10) (Just (Defense 5)) [Hit, DrinkPotion, CastBarrier]
+player2 = NewCharacter (Health 300) (Attack 35) (Strength 20) Nothing [Hit, RunAway]
+player3 = NewCharacter (Health 350) (Attack 25) (Strength 30) (Just (Defense 5)) [Hit, Hit, Hit, CastBarrier]
+player4 = NewCharacter (Health 500) (Attack 45) (Strength 20) Nothing [Hit, RunAway]
+player5 = NewCharacter (Health 0) (Attack 45) (Strength 20) Nothing [Hit, RunAway]
