@@ -316,7 +316,7 @@ typeclasses for standard data types.
 -}
 data List a
     = Empty
-    | Cons a (List a)
+    | Cons a (List a) deriving Show
 
 instance Functor List where
     fmap :: (a -> b) -> List a -> List b
@@ -505,17 +505,17 @@ Implement the 'Applicative' instance for our 'List' type.
   type.
 -}
 
+
 instance Applicative List where
     pure :: a -> List a
-    pure a = Cons a Empty
+    pure x = Cons x Empty
 
-    -- (<*>) :: List (a -> b) -> List a -> List b
-    -- (Cons f Empty) <*> (Cons x xs) = Cons (fmap f x) ((<*>) (Cons f Empty) xs)
-
-    -- fmap :: (a -> b) -> List a -> List b
-    -- fmap _ Empty = Empty
-    -- fmap f (Cons x xs)  = Cons (f x) (fmap f xs)
-    --
+    (<*>) :: List (a -> b) -> List a -> List b
+    (<*>) Empty _ = Empty
+    (<*>) (Cons f fs) xs = append (f <$> xs) (fs <*> xs)
+        where append :: List a -> List a -> List a
+              append Empty lst = lst
+              append (Cons e es) lst = Cons e (append es lst)
 {- |
 =🛡= Monad
 
