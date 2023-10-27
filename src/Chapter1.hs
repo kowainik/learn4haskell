@@ -572,9 +572,7 @@ True
 False
 -}
 isVowel :: Char -> Bool
-isVowel c
-    | c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'y' = True
-    | otherwise = False
+isVowel c = c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'y'
 
 
 {- |
