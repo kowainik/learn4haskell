@@ -113,22 +113,30 @@ As always, try to guess the output first! And don't forget to insert
 the output in here:
 
 >>> :k Char
+Char :: *
 
 >>> :k Bool
+Bool :: *
 
 >>> :k [Int]
+[Int] :: *
 
 >>> :k []
+[] :: * -> *
 
 >>> :k (->)
+(->) :: * -> * -> *
 
 >>> :k Either
+Either :: * -> * -> *
 
 >>> data Trinity a b c = MkTrinity a b c
 >>> :k Trinity
+Trinity :: * -> * -> * -> *
 
 >>> data IntBox f = MkIntBox (f Int)
 >>> :k IntBox
+IntBox :: (* -> *) -> *
 
 -}
 
@@ -259,6 +267,9 @@ name.
 > QUESTION: Can you understand why the following implementation of the
   Functor instance for Maybe doesn't compile?
 
+Because we would be saying return the same, which is not what we want,
+we are violating Maybe a -> Maybe b, returning Maybe a
+
 @
 instance Functor Maybe where
     fmap :: (a -> b) -> Maybe a -> Maybe b
@@ -292,7 +303,8 @@ values and apply them to the type level?
 -}
 instance Functor (Secret e) where
     fmap :: (a -> b) -> Secret e a -> Secret e b
-    fmap = error "fmap for Box: not implemented!"
+    fmap f (Reward a) = Reward (f a)
+    fmap _ (Trap e) = Trap e
 
 {- |
 =⚔️= Task 3
@@ -304,8 +316,12 @@ typeclasses for standard data types.
 -}
 data List a
     = Empty
-    | Cons a (List a)
+    | Cons a (List a) deriving Show
 
+instance Functor List where
+    fmap :: (a -> b) -> List a -> List b
+    fmap _ Empty = Empty
+    fmap f (Cons x xs)  = Cons (f x) (fmap f xs)
 {- |
 =🛡= Applicative
 
@@ -471,10 +487,11 @@ Implement the Applicative instance for our 'Secret' data type from before.
 -}
 instance Applicative (Secret e) where
     pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
+    pure = Reward
 
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
+    (<*>) (Trap e) _ = Trap e 
+    (<*>) (Reward f) a = fmap f a
 
 {- |
 =⚔️= Task 5
@@ -489,6 +506,16 @@ Implement the 'Applicative' instance for our 'List' type.
 -}
 
 
+instance Applicative List where
+    pure :: a -> List a
+    pure x = Cons x Empty
+
+    (<*>) :: List (a -> b) -> List a -> List b
+    (<*>) Empty _ = Empty
+    (<*>) (Cons f fs) xs = append (f <$> xs) (fs <*> xs)
+        where append :: List a -> List a -> List a
+              append Empty lst = lst
+              append (Cons e es) lst = Cons e (append es lst)
 {- |
 =🛡= Monad
 
@@ -599,7 +626,8 @@ Implement the 'Monad' instance for our 'Secret' type.
 -}
 instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+    (>>=) (Trap e) _ = Trap e
+    (>>=) (Reward a) f = f a
 
 {- |
 =⚔️= Task 7
@@ -610,6 +638,13 @@ Implement the 'Monad' instance for our lists.
   maybe a few) to flatten lists of lists to a single list.
 -}
 
+instance Monad List where
+    (>>=) :: List a -> (a -> List b) -> List b
+    (>>=) Empty _ = Empty
+    (>>=) (Cons x xs) f = append (f x) (xs >>= f)
+        where append :: List a -> List a -> List a
+              append Empty lst = lst
+              append (Cons e es) lst = Cons e (append es lst)
 
 {- |
 =💣= Task 8*: Before the Final Boss
@@ -628,7 +663,8 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM a b = a >>= \x -> (&& x) <$> b
+-- andM a b = (&&) <$> a <*> b
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
@@ -671,7 +707,41 @@ Specifically,
  ❃ Implement the function to convert Tree to list
 -}
 
+data Btree a
+    = Nil
+    | Node (Btree a) a (Btree a) deriving (Eq, Ord, Show)
 
+binsert :: Ord a => a -> Btree a -> Btree a
+binsert element Nil = Node Nil element Nil
+binsert element nodeT@(Node left x right)
+    | element < x = Node (binsert element left) x right
+    | element > x = Node left x (binsert element right)
+    | otherwise = nodeT
+
+binsertReversed :: Ord a => a -> Btree a -> Btree a
+binsertReversed element Nil = Node Nil element Nil
+binsertReversed element nodeT@(Node left x right)
+    | element < x = Node left x $ binsertReversed element right
+    | element > x = Node (binsertReversed element left) x right
+    | otherwise = nodeT
+
+instance Functor Btree where
+    fmap :: (a -> b) -> Btree a -> Btree b
+    fmap _ Nil = Nil
+    fmap f (Node left x right) = Node (fmap f left) (f x) (fmap f right)
+
+instance Foldable Btree where
+    foldr :: (a -> b -> b) -> b -> Btree a -> b
+    foldr _ z Nil =  z
+    foldr f z (Node Nil x Nil) = x `f` z
+    foldr f z (Node left x right) = (x `f`) . foldr f rightR $ left 
+        where rightR = foldr f z right
+
+treeToList :: Btree a -> [a]
+treeToList = foldr (:) []
+
+reverseTree :: Ord a => Btree a -> Btree a
+reverseTree = foldr binsertReversed Nil 
 {-
 You did it! Now it is time to open pull request with your changes
 and summon @vrom911 for the review!
