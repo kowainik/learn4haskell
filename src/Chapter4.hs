@@ -707,7 +707,41 @@ Specifically,
  ❃ Implement the function to convert Tree to list
 -}
 
+data Btree a
+    = Nil
+    | Node (Btree a) a (Btree a) deriving (Eq, Ord, Show)
 
+binsert :: Ord a => a -> Btree a -> Btree a
+binsert element Nil = Node Nil element Nil
+binsert element nodeT@(Node left x right)
+    | element < x = Node (binsert element left) x right
+    | element > x = Node left x (binsert element right)
+    | otherwise = nodeT
+
+binsertReversed :: Ord a => a -> Btree a -> Btree a
+binsertReversed element Nil = Node Nil element Nil
+binsertReversed element nodeT@(Node left x right)
+    | element < x = Node left x $ binsertReversed element right
+    | element > x = Node (binsertReversed element left) x right
+    | otherwise = nodeT
+
+instance Functor Btree where
+    fmap :: (a -> b) -> Btree a -> Btree b
+    fmap _ Nil = Nil
+    fmap f (Node left x right) = Node (fmap f left) (f x) (fmap f right)
+
+instance Foldable Btree where
+    foldr :: (a -> b -> b) -> b -> Btree a -> b
+    foldr _ z Nil =  z
+    foldr f z (Node Nil x Nil) = x `f` z
+    foldr f z (Node left x right) = (x `f`) . foldr f rightR $ left 
+        where rightR = foldr f z right
+
+treeToList :: Btree a -> [a]
+treeToList = foldr (:) []
+
+reverseTree :: Ord a => Btree a -> Btree a
+reverseTree = foldr binsertReversed Nil 
 {-
 You did it! Now it is time to open pull request with your changes
 and summon @vrom911 for the review!
