@@ -645,7 +645,7 @@ specifying complex expressions.
 sumLast2 :: Integral a => a -> a
 sumLast2 n =
   let n1 = lastDigit n
-      n2 = lastDigit (div n 10)
+      n2 = if n < 0 then lastDigit (div (n * (-1)) 10) else lastDigit (div n 10)
   in n1 + n2
 
 
