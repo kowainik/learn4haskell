@@ -431,7 +431,7 @@ task is to specify the type of this function.
 49
 -}
 
-squareSum :: Integer -> Integer -> Integer
+squareSum :: Integral a => a -> a -> a
 squareSum x y = (x + y) * (x + y)
 
 
@@ -451,7 +451,7 @@ Implement the function that takes an integer value and returns the next 'Int'.
   every type ｡.☆.*｡. No need to worry much about "error" here, just replace the
   function body with the proper implementation.
 -}
-next :: Integer -> Integer
+next :: Integral a => a -> a
 next x = x + 0b1
 
 {- |
@@ -493,8 +493,8 @@ Implement a function that returns the last digit of a given number.
   whether it works for you!
 -}
 -- DON'T FORGET TO SPECIFY THE TYPE IN HERE
-lastDigit :: Integer-> Integer
-lastDigit n = mod n 10
+lastDigit :: Integral  a => a -> a
+lastDigit n = if n >= 0 then mod n 10 else mod (n * (-1)) 10
 
 
 {- |
@@ -523,7 +523,7 @@ branches because it is an expression and it must always return some value.
 👩‍🔬 Due to lazy evaluation in Haskell, only the expression from the branch
   satisfying the check will be returned and, therefore, evaluated.
 -}
-closestToZero :: Integer -> Integer -> Integer
+closestToZero :: Integral a => a -> a -> a
 closestToZero x y = if abs x < abs y then x else y
 
 
@@ -557,7 +557,7 @@ value after "=" where the condition is true.
 
 Casual reminder about adding top-level type signatures for all functions :)
 -}
-mid :: Integer -> Integer -> Integer -> Integer
+mid :: Integral a => a -> a -> a -> a
 mid x y z
   | (y <= x && x <= z) || (z <= x && x <= y) = x
   | (x <= y && y <= z) || (z <= y && y <= x) = y
@@ -642,7 +642,7 @@ Implement a function that returns the sum of the last two digits of a number.
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
-sumLast2 :: Integer -> Integer
+sumLast2 :: Integral a => a -> a
 sumLast2 n =
   let n1 = lastDigit n
       n2 = lastDigit (div n 10)
@@ -667,7 +667,7 @@ You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
 
-firstDigit :: Integer -> Integer
+firstDigit :: Integral a => a -> a
 firstDigit n
   | n < 0 = firstDigit (n * (-1))
   | n < 10 = n
