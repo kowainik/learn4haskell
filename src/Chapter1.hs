@@ -667,8 +667,9 @@ aren't ready for this boss yet!
 
 firstDigit :: Int -> Int
 firstDigit x
-  | x `div` 10 == 0 = x
-  | otherwise       = firstDigit (x `div` 10)
+  | absx `div` 10 == 0 = absx
+  | otherwise       = firstDigit (absx `div` 10)
+  where absx = abs x
 
 {-
 You did it! Now it is time to open a pull request with your changes
