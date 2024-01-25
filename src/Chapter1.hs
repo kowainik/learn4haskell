@@ -642,7 +642,7 @@ specifying complex expressions.
 sumLast2 :: Int -> Int
 sumLast2 x =
   let last = x `mod` 10
-    secondlast = x `mod` 100 `div` 10
+      secondlast = x `mod` 100 `div` 10
   in last + secondlast
 
 
