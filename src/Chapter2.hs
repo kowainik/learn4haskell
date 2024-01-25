@@ -338,8 +338,9 @@ ghci> :l src/Chapter2.hs
 subList :: Int -> Int -> [a] -> [a]
 subList x y [] = []
 subList x y xs
-  | x > y     = []
-  | otherwise =  (drop x) . (take (y+1)) $ xs
+  | x < 0 || y < 0 = []
+  | x > y          = []
+  | otherwise      = (drop x) . (take (y+1)) $ xs
 
 {- |
 =⚔️= Task 4
