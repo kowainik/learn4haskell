@@ -70,6 +70,7 @@ Each Haskell module starts with the "module <MODULE_NAME> where" line.
 Modules should have the same name as the corresponding file with
 the `.hs` extension.
 -}
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 module Chapter1 where
 
 {- |
@@ -555,8 +556,14 @@ value after "=" where the condition is true.
 
 Casual reminder about adding top-level type signatures for all functions :)
 -}
-
-mid x y z = error "mid: not implemented!"
+mid::Ord a => a -> a -> a -> a
+mid x y z
+    | max_val /= x && min_val /= x = x
+    | max_val /= y && min_val /= y = y
+    | max_val /= z && min_val /= z = z
+    where 
+      max_val = max (max x y) z
+      min_val = min (min x y) z
 
 {- |
 =⚔️= Task 8
@@ -570,7 +577,12 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel c = error "isVowel: not implemented!"
+isVowel :: Char -> Bool 
+isVowel c 
+    | c `elem` vowelList = True
+    | otherwise = False
+    where 
+      vowelList = ['a','e','i','o','u']
 
 
 {- |
