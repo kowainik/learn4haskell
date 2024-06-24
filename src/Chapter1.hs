@@ -72,6 +72,7 @@ the `.hs` extension.
 -}
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 module Chapter1 where
+import GHC.Base (VecElem(Int16ElemRep))
 
 {- |
 In Haskell, we have __expressions__. Expressions can be represented by some
@@ -646,7 +647,23 @@ Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
 
-sumLast2 n = error "sumLast2: Not implemented!"
+sumLast2 :: Int -> Int
+sumLast2 n 
+    | lengthOfString == 1 = n
+    | lengthOfString > 1 = lastDigitInt + previousLastDigitInt
+    where
+      getNumberByNegativeIndex :: Int -> Int-> Int
+      getNumberByNegativeIndex i stringSize = stringSize - i - 1
+
+      lastDigitString = stringNumber !! getNumberByNegativeIndex 0 lengthOfString   
+      previousLastDigitString = stringNumber !! getNumberByNegativeIndex 1 lengthOfString 
+
+      lastDigitInt = read [lastDigitString] :: Int
+      previousLastDigitInt = read [previousLastDigitString] :: Int
+
+      stringNumber = show n
+      lengthOfString = length stringNumber 
+      
 
 
 {- |
@@ -666,9 +683,11 @@ Implement a function that returns the first digit of a given number.
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
-
-firstDigit n = error "firstDigit: Not implemented!"
-
+firstDigit :: Int -> Int
+firstDigit n = firstValue
+    where
+      firstValueString = head (show n)
+      firstValue = read [firstValueString] :: Int
 
 {-
 You did it! Now it is time to open a pull request with your changes
