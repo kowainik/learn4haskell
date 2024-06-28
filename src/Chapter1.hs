@@ -675,6 +675,9 @@ firstDigit n
   where
     div10 = abs n `div` 10
 
+{-
+YAYYYYYYYYYYYYYYY HASKELL!!!!!!!!!!!!!!!!
+-}
 
 {-
 You did it! Now it is time to open a pull request with your changes
