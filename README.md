@@ -187,9 +187,9 @@ If you're on Linux or macOS, then the process is easy:
    terminal
 
     ```shell
-    ghcup install ghc 9.2.4
-    ghcup set ghc 9.2.4
-    ghcup install cabal 3.2.0.0
+    ghcup install ghc 9.12.2
+    ghcup set ghc 9.12.2
+    ghcup install cabal 3.14.0.0
     ```
 3. Run `cabal update` to fetch the latest info about Haskell packages.
 
