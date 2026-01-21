@@ -311,6 +311,7 @@ setKnightName newName (MkKnight _ victories) =
   record. Like so:
 
 @
+
 data Knight = MkKnight
     { knightName      :: String
     , knightVictories :: Int
@@ -344,6 +345,13 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = Book
+  { bookTitle   :: String
+  , bookAuthor  :: String
+  , bookDate    :: Int
+  , bookPages   :: Int
+  }
+
 {- |
 =⚔️= Task 2
 
@@ -375,6 +383,24 @@ after the fight. The battle has the following possible outcomes:
 ♫ NOTE: In this task, you need to implement only a single round of the fight.
 
 -}
+data Knight = MkKnight
+  { knightHealth    :: Int
+  , knightAttack    :: Int
+  , knightGold      :: Int
+  }
+
+data Monster = MkMonster
+  { monsterHealth    :: Int
+  , monsterAttack    :: Int
+  , monsterGold      :: Int
+  }
+
+fight :: Monster -> Knight -> Int
+fight m k
+ | monsterHealth m <= knightAttack k = knightGold k + monsterGold m
+ | knightHealth k <= monsterAttack m = -1
+ | otherwise = knightGold k
+
 
 {- |
 =🛡= Sum types
@@ -462,6 +488,13 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data Food 
+  = Breakfast String
+  | Lunch String
+  | Dinner String
+
+fact n = product [1..n]
+
 {- |
 =⚔️= Task 4
 
@@ -481,6 +514,16 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
+
+-- what am i to do ? THIS ‽
+data MagicalCity
+  = Castle String
+
+
+data House = House
+  { houseName   :: String
+  , houseNumber :: Int
+  }
 
 {-
 =🛡= Newtypes
