@@ -321,7 +321,7 @@ class Functor f => Applicative f where
 Wow, that's a lot going on again! Where did all these scary creatures
 come? But if we look closer, it all looks a bit familiar already.
 
-We now can spot straightaway, that similar to Functors, only types
+We now can spot straight away, that similar to Functors, only types
 with kind `* -> *` can have an Applicative instance (e.g. Maybe, and
 not 'Int' or 'Char'), as we see the same 'f a' argument in the
 methods' types.
