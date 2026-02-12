@@ -20,7 +20,7 @@ chapter4normal :: Spec
 chapter4normal = describe "Chapter4Normal" $ do
     describe "Task2: Functor for Secret" $ do
         let trap = Trap "it's a trap"
-        it "doen't affect trap" $
+        it "doesn't affect trap" $
             fmap @(Secret String) @Bool not trap `shouldBe` trap
         it "change reward, same type" $
             fmap @(Secret String) @Bool not (Reward False) `shouldBe` Reward True
