@@ -54,3 +54,17 @@ TAGS
 # other
 .DS_Store
 .env
+/out/production/learn4haskell/Chapter1.hs
+/out/production/learn4haskell/Chapter2.hs
+/out/production/learn4haskell/Chapter3.hs
+/out/production/learn4haskell/Chapter4.hs
+/out/test/learn4haskell/Test/Chapter1.hs
+/out/test/learn4haskell/Test/Chapter2.hs
+/out/test/learn4haskell/Test/Chapter3.hs
+/out/test/learn4haskell/Test/Chapter4.hs
+/out/test/learn4haskell/DoctestChapter1.hs
+/out/test/learn4haskell/DoctestChapter2.hs
+/out/test/learn4haskell/DoctestChapter3.hs
+/out/test/learn4haskell/DoctestChapter4.hs
+/out/test/learn4haskell/Spec.hs
+/stack.yaml
