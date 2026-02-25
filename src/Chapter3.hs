@@ -344,6 +344,13 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = Book
+    { bookTitle     :: String
+    , bookAuthor    :: String
+    , bookPageCount :: Int
+    } deriving (Show)
+
+
 {- |
 =⚔️= Task 2
 
@@ -455,12 +462,62 @@ allow you to model your domain precisely, make illegal states unrepresentable
 and provide more flexibility when working with data types.
 -}
 
+data Knight = Knight
+  { knightHealth :: Int
+  , knightAttack :: Int
+  , knightGold   :: Int
+  } deriving (Show)
+
+data Monster = Monster
+  { monsterHealth :: Int
+  , monsterAttack :: Int
+  , monsterGold   :: Int
+  } deriving (Show)
+
+
+fight :: Monster -> Knight -> Int
+fight monster knight = 
+    let monsterHealthAfterHit = monsterHealth monster - knightAttack knight
+    in if monsterHealthAfterHit <= 0
+        then
+            knightGold knight + monsterGold monster
+        else 
+          let knightHealthAfterHit = knightHealth knight - monsterAttack monster
+          in if knightHealthAfterHit <= 0
+                then
+                    -1
+                else 
+                    knightGold knight
+
+testFight :: IO ()
+testFight = do
+    let knight1 = Knight { knightHealth = 100, knightAttack = 30, knightGold = 50 }
+    let monster1 = Monster { monsterHealth = 20, monsterAttack = 10, monsterGold = 100 }
+    print $ fight monster1 knight1 -- Expected output: 150 (knight wins and takes loot)
+
+    let knight2 = Knight { knightHealth = 100, knightAttack = 30, knightGold = 50 }
+    let monster2 = Monster { monsterHealth = 50, monsterAttack = 120, monsterGold = 100 }
+    print $ fight monster2 knight2 -- Expected output: -1 (monster defeats the knight)
+
+    let knight3 = Knight { knightHealth = 100, knightAttack = 30, knightGold = 50 }
+    let monster3 = Monster { monsterHealth = 50, monsterAttack = 20, monsterGold = 100 }
+    print $ fight monster3 knight3 -- Expected output: 50 (no one wins, knight keeps his gold)
+
+
 {- |
 =⚔️= Task 3
 
 Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
+
+data MealType =
+  Breakfast
+  | Brunch
+  | Lunch
+  | Dinner
+  | Snack
+  | Dessert
 
 {- |
 =⚔️= Task 4
@@ -481,6 +538,89 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
+
+data Occupancy =
+  OnePerson
+  | TwoPeople
+  | ThreePeople
+  | FourPeople
+  deriving (Show, Eq)
+
+data House = House
+    { houseOccupancy :: Occupancy 
+    } deriving (Show, Eq)
+
+data Building = Church | Library
+      deriving (Show, Eq)
+data Castle = Castle
+    { castleName    :: String
+    , castleHasWall :: Bool
+    } deriving (Show, Eq)
+
+data City =  City
+    { cityCastle         :: Maybe Castle
+    , cityBuilding       :: Building
+    , cityHouses         :: [House]
+    } deriving (Show, Eq)
+
+buildCastle :: String -> City -> City
+buildCastle name city = city { cityCastle = Just (Castle name False) }
+
+
+buildHouse :: Occupancy -> City -> City
+buildHouse occupancy city = city { cityHouses = House occupancy : cityHouses city }
+
+countPeople :: House -> Int
+countPeople house = case houseOccupancy house of
+    OnePerson   -> 1
+    TwoPeople   -> 2
+    ThreePeople -> 3
+    FourPeople  -> 4
+
+buildWalls :: City -> City
+buildWalls city = 
+    case cityCastle city of 
+        Nothing -> city
+        Just castle ->
+            let allHouses = cityHouses city
+                peopleCounts = map countPeople allHouses
+                totalPeople = sum peopleCounts
+            in if totalPeople >= 10
+              then city {cityCastle = Just (castle {castleHasWall = True})}
+              else city
+
+
+testBuildWalls :: IO ()
+testBuildWalls = do
+    putStrLn "--- Testing buildWalls function ---"
+
+    -- Base cities for our tests
+    let cityWithCastle = City { cityCastle = Just (Castle "Camelot" False), cityBuilding = Church, cityHouses = [] }
+    let cityWithoutCastle = City { cityCastle = Nothing, cityBuilding = Library, cityHouses = [House FourPeople, House FourPeople, House FourPeople] }
+
+    -- Test 1: No castle. Walls should not be built, even with enough people.
+    putStrLn "\n-- Test 1: No Castle (Population: 12) --"
+    putStrLn $ "Before: " ++ show cityWithoutCastle
+    putStrLn $ "After:  " ++ show (buildWalls cityWithoutCastle)
+
+    -- Test 2: Castle exists, but not enough people (9). Walls should not be built.
+    let cityWith9People = buildHouse FourPeople (buildHouse FourPeople (buildHouse OnePerson cityWithCastle))
+    putStrLn "\n-- Test 2: With Castle (Population: 9) --"
+    putStrLn $ "Before: " ++ show cityWith9People
+    putStrLn $ "After:  " ++ show (buildWalls cityWith9People)
+
+    -- Test 3: Castle exists, and exactly enough people (10). Walls SHOULD be built.
+    let cityWith10People = buildHouse FourPeople (buildHouse FourPeople (buildHouse TwoPeople cityWithCastle))
+    putStrLn "\n-- Test 3: With Castle (Population: 10) --"
+    putStrLn $ "Before: " ++ show cityWith10People
+    putStrLn $ "After:  " ++ show (buildWalls cityWith10People)
+
+    -- Test 4: Castle exists, and more than enough people (12). Walls SHOULD be built.
+    let cityWith12People = buildHouse FourPeople (buildHouse FourPeople (buildHouse FourPeople cityWithCastle))
+    putStrLn "\n-- Test 4: With Castle (Population: 12) --"
+    putStrLn $ "Before: " ++ show cityWith12People
+    putStrLn $ "After:  " ++ show (buildWalls cityWith12People)
+
 
 {-
 =🛡= Newtypes
@@ -562,22 +702,30 @@ introducing extra newtypes.
 🕯 HINT: if you complete this task properly, you don't need to change the
     implementation of the "hitPlayer" function at all!
 -}
+
+newtype Health = Health Int
+newtype Armor = Armor Int
+newtype Attack = Attack Int
+newtype Dexterity = Dexterity Int
+newtype Strength = Strength Int
+
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+calculatePlayerDamage :: Attack -> Strength -> Int
+calculatePlayerDamage (Attack attack) (Strength strength) = attack + strength
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDefense :: Armor -> Dexterity -> Int
+calculatePlayerDefense (Armor armor) (Dexterity dexterity) = armor * dexterity
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+
+calculatePlayerHit :: Int -> Int -> Health -> Health
+calculatePlayerHit damage defense (Health health) = Health (health + defense - damage)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -593,6 +741,9 @@ hitPlayer player1 player2 =
             defense
             (playerHealth player1)
     in player1 { playerHealth = newHealth }
+
+
+
 
 {- |
 =🛡= Polymorphic data types
@@ -755,6 +906,23 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
+data TreasureChest x = TreasureChest
+    { treasureChestGold :: Int
+    , treasureChestLoot :: x
+    } deriving (Show)
+
+data DragonLair x = DragonLair
+    { dragon :: Dragon x
+    , treasureChest :: Maybe (TreasureChest x)
+    } deriving (Show)
+
+data Dragon x = Dragon 
+    { dragonName  :: String
+    , dragonPower :: x
+    } deriving (Show)
+    
+
+
 {-
 =🛡= Typeclasses
 
@@ -892,6 +1060,7 @@ type exists. You can see how we reuse the fact that the underlying type has this
 instance and apply this typeclass method to it.
 -}
 
+
 {- |
 =⚔️= Task 7
 
@@ -911,6 +1080,16 @@ Implement instances of "Append" for the following types:
 -}
 class Append a where
     append :: a -> a -> a
+
+
+newtype Gold = Gold Int deriving (Show, Eq)
+
+instance Append Gold where
+    append :: Gold -> Gold -> Gold
+    append (Gold x) (Gold y) = Gold (x + y)
+
+
+data List a = Empty | Cons a (List a) deriving (Show, Eq)
 
 
 {-
@@ -973,6 +1152,86 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
+
+data DayOfWeek
+    = Monday
+    | Tuesday
+    | Wednesday
+    | Thursday
+    | Friday
+    | Saturday
+    | Sunday
+    deriving (Show, Eq, Ord)
+
+
+
+instance Enum DayOfWeek where
+  toEnum :: Int -> DayOfWeek
+  toEnum 0 = Saturday
+  toEnum 1 = Sunday
+  toEnum 2 = Monday
+  toEnum 3 = Tuesday
+  toEnum 4 = Wednesday
+  toEnum 5 = Thursday
+  toEnum _ = Friday
+
+  fromEnum :: DayOfWeek -> Int
+  fromEnum Saturday   = 0
+  fromEnum Sunday     = 1
+  fromEnum Monday     = 2
+  fromEnum Tuesday    = 3
+  fromEnum Wednesday  = 4
+  fromEnum Thursday   = 5
+  fromEnum Friday     = 6
+
+
+isWeekend :: DayOfWeek -> Bool
+isWeekend day = day == Saturday || day == Sunday
+
+
+nextDay :: DayOfWeek -> DayOfWeek
+nextDay day = toEnum $ (fromEnum day + 1) `mod` 7
+
+daysToParty :: DayOfWeek -> Int
+daysToParty day = (6 - fromEnum day + 7) `mod` 7
+
+
+testDays :: IO ()
+testDays = do
+    let days = [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]
+    putStrLn "--- Testing DayOfWeek functions ---"
+    mapM_ printDayInfo days
+
+printDayInfo :: DayOfWeek -> IO ()
+printDayInfo day = do
+    putStrLn $ "Day: " ++ show day
+    putStrLn $ "  Is Weekend? " ++ show (isWeekend day)
+    putStrLn $ "  Next Day: " ++ show (nextDay day)
+    putStrLn $ "  Days until Friday: " ++ show (daysToParty day)
+    putStrLn ""
+
+-- Alternative implementations without Enum instance
+-- nextDay :: DayOfWeek -> DayOfWeek
+-- nextDay day = case day of
+--     Monday    -> Tuesday
+--     Tuesday   -> Wednesday
+--     Wednesday -> Thursday
+--     Thursday  -> Friday
+--     Friday    -> Saturday 
+--     Saturday  -> Sunday
+--     Sunday    -> Monday
+
+-- daysToParty :: DayOfWeek -> Int
+-- daysToParty day = case day of
+--     Monday    -> 4
+--     Tuesday   -> 3
+--     Wednesday -> 2
+--     Thursday  -> 1
+--     Friday    -> 0
+--     Saturday  -> 6
+--     Sunday    -> 5
+
+
 {-
 =💣= Task 9*
 
@@ -1019,3 +1278,5 @@ and summon @vrom911 for the review!
 Deriving: https://kowainik.github.io/posts/deriving
 Extensions: https://kowainik.github.io/posts/extensions
 -}
+
+
