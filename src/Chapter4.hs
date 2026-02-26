@@ -40,6 +40,7 @@ Perfect. Let's crush this!
 {-# LANGUAGE InstanceSigs    #-}
 
 module Chapter4 where
+-- import System.Win32 (xBUTTON1)
 
 {- |
 =🛡= Kinds
@@ -267,6 +268,22 @@ instance Functor Maybe where
 @
 -}
 
+{-
+  -- response:
+  Any function applied to x doesn't make sense as we have to access what's inside x (a) and transform to b (a -> b)
+  And Functor Maybe already exists.
+-}
+
+-- data Maybe2 e
+--     = Just2 e
+--     | Nothing2
+
+-- instance Functor Maybe2 where
+--     fmap :: (a -> b) -> Maybe2 a -> Maybe2 b
+--     fmap f (Just2 a) = Just2 (f a)
+--     fmap _ x = x
+
+
 {- |
 =⚔️= Task 2
 
@@ -281,7 +298,6 @@ data Secret e a
     | Reward a
     deriving (Show, Eq)
 
-
 {- |
 Functor works with types that have kind `* -> *` but our 'Secret' has
 kind `* -> * -> *`. What should we do? Don't worry. We can partially
@@ -292,7 +308,22 @@ values and apply them to the type level?
 -}
 instance Functor (Secret e) where
     fmap :: (a -> b) -> Secret e a -> Secret e b
-    fmap = error "fmap for Box: not implemented!"
+    fmap _ (Trap e) = Trap e
+    fmap f (Reward a) = Reward (f a)
+
+-- example
+addOneGold :: (Integral a, Num a) => (Secret e a) -> (Secret e a)
+addOneGold (Trap e) = Trap e
+addOneGold (Reward a) = Reward (a + 1)
+
+addToChest :: (Integral a, Num a, Num e) => a -> (Secret e a)
+addToChest a
+    | a == 0    = (Trap 0)
+    | otherwise = Reward a
+
+-- addOneGold (Reward 1)
+-- addOneGold $ Reward 1
+-- fmap (addToChest) (Reward 1)
 
 {- |
 =⚔️= Task 3
@@ -305,6 +336,20 @@ typeclasses for standard data types.
 data List a
     = Empty
     | Cons a (List a)
+    deriving (Show)
+
+instance Functor List where
+    fmap :: (a -> b) -> List a -> List b
+    fmap _ Empty = Empty
+    fmap f (Cons a (blist)) = Cons (f a) (fmap f blist)
+
+
+list1 = Empty
+list2 = Cons 10 (Cons 20 Empty)
+list3 = Cons 10 (Cons 20 (Cons 30 Empty))
+
+-- fmap (+10) list3
+-- Cons 20 (Cons 30 (Cons 40 Empty))
 
 {- |
 =🛡= Applicative
@@ -471,10 +516,27 @@ Implement the Applicative instance for our 'Secret' data type from before.
 -}
 instance Applicative (Secret e) where
     pure :: a -> Secret e a
-    pure = error "pure Secret: Not implemented!"
-
+    pure = Reward
     (<*>) :: Secret e (a -> b) -> Secret e a -> Secret e b
-    (<*>) = error "(<*>) Secret: Not implemented!"
+    (Trap a) <*> _ = Trap a
+    _ <*> (Trap a) = Trap a
+    (Reward f) <*> i = fmap f i
+
+-- tests
+secret1 = Trap "you die"
+secret2 = Reward 10
+secret3 = Reward 20
+
+-- die
+-- fmap (+10) secret1
+
+-- 50
+-- fmap (+40) secret2
+
+-- 20
+-- Reward (+10) <*> Reward 10
+
+-- hell yeah!!
 
 {- |
 =⚔️= Task 5
@@ -488,6 +550,27 @@ Implement the 'Applicative' instance for our 'List' type.
   type.
 -}
 
+list4 = Cons (+5) Empty
+list5 = Cons (+5) (Cons (+6) Empty)
+list6 = Cons (+1) (Cons (+2) (Cons (+3) Empty))
+list7 = Cons 1 (Cons 2 (Cons 3 Empty))
+
+combineList :: List a -> List a -> List a
+combineList Empty l1 = l1
+combineList l1 Empty = l1
+combineList (Cons x xs) l2 = Cons x (combineList xs l2)
+
+instance Applicative List where
+    pure :: a -> List a
+    pure a = Cons a Empty
+    (<*>) :: List (a -> b) -> List a -> List b
+    Empty <*> _ = Empty
+    _ <*> Empty = Empty
+    -- (Cons f l) <*> i = fmap f i
+    -- (Cons f (Cons l emp)) <*> i = fmap l i
+    (Cons f emp) <*> i = combineList (fmap f i) (emp <*> i)
+
+-- list6 <*> list7
 
 {- |
 =🛡= Monad
@@ -597,9 +680,28 @@ concepts in the end.
 
 Implement the 'Monad' instance for our 'Secret' type.
 -}
+-- instance Monad (Secret e) where
+--     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
+--     (>>=) = error "bind Secret: Not implemented!"
+
 instance Monad (Secret e) where
     (>>=) :: Secret e a -> (a -> Secret e b) -> Secret e b
-    (>>=) = error "bind Secret: Not implemented!"
+    (Trap c) >>= f = Trap c
+    (Reward c) >>= f = f c
+
+test :: Int -> Secret Int Int
+test n
+    | n == 1 = Trap 1
+    | otherwise = Reward (n + 1)
+
+
+
+-- test
+-- Trap 11 >>= test
+-- Reward 11 >>= test
+
+
+
 
 {- |
 =⚔️= Task 7
@@ -609,6 +711,24 @@ Implement the 'Monad' instance for our lists.
 🕯 HINT: You probably will need to implement a helper function (or
   maybe a few) to flatten lists of lists to a single list.
 -}
+
+flattenList :: List (List a) -> List a
+flattenList Empty = Empty
+flattenList (Cons x xs) = combineList x (flattenList xs)
+
+instance Monad List where
+    (>>=) :: List a -> (a -> List b) -> List b
+    list1 >>= func = flattenList (fmap func list1)
+
+addOneOnList :: (Integral a, Num a) => a -> List a
+addOneOnList n = Cons (n + 1) Empty
+
+listC = Cons list2 Empty
+
+-- exemplo de uso
+-- list2 >>= addOneOnList
+-- list3 >>= addOneOnList
+-- list3 >>= addOneOnList >>= addOneOnList
 
 
 {- |
@@ -628,7 +748,28 @@ Can you implement a monad version of AND, polymorphic over any monad?
 🕯 HINT: Use "(>>=)", "pure" and anonymous function
 -}
 andM :: (Monad m) => m Bool -> m Bool -> m Bool
-andM = error "andM: Not implemented!"
+andM contextB1 contextB2 = contextB1 >>= \f -> if f then contextB2 else pure False
+
+tJust1 = Just True
+tJust2 = Just False
+tJust3 = Nothing
+tEither1 = Left True
+tEither2 = Left False
+tEither3 = Right True
+
+-- Nothing and _ = False
+-- _ and Nothing = False
+-- Just True and Just True   = True
+-- Just True and Just False  = False
+-- Just False and Just False = False
+-- Just False and Just True  = False
+
+-- andM tJust1 tJust1 = True
+-- andM tJust1 tJust2 = False
+-- andM TJust2 tJust1 = False
+
+half2 :: (Monad m) => m Integer -> m Integer
+half2 monadInt = monadInt >>= \x -> if even x then pure (div x 2) else pure 0
 
 {- |
 =🐉= Task 9*: Final Dungeon Boss
@@ -665,12 +806,52 @@ Specifically,
 
  ❃ Implement a polymorphic binary tree type that can store any
    elements inside its nodes
+
  ❃ Implement the Functor instance for Tree
+
  ❃ Implement the reverseTree function that reverses the tree and each
    subtree of a tree
+
  ❃ Implement the function to convert Tree to list
 -}
 
+data MyBtree a
+  = BEmpty
+  | MkMyBTree (MyBtree a) a (MyBtree a)
+  deriving (Show)
+
+tree1 = BEmpty
+tree2 = MkMyBTree (BEmpty) 10 (BEmpty)
+tree3 = MkMyBTree (MkMyBTree (BEmpty) 20 (BEmpty)) 10 (MkMyBTree (BEmpty) 20 (BEmpty))
+tree4 = MkMyBTree (MkMyBTree ((MkMyBTree (BEmpty) 30 (BEmpty))) 20 ((MkMyBTree (BEmpty) 30 (BEmpty)))) 10 (MkMyBTree ((MkMyBTree (BEmpty) 30 (BEmpty))) 20 ((MkMyBTree (BEmpty) 30 (BEmpty))))
+tree5 = MkMyBTree (MkMyBTree ((MkMyBTree (BEmpty) 4 (BEmpty))) 6 ((MkMyBTree (BEmpty) 3 (BEmpty)))) 7 (MkMyBTree ((MkMyBTree (BEmpty) 2 (BEmpty))) 5 ((MkMyBTree (BEmpty) 1 (BEmpty))))
+treeString = MkMyBTree (MkMyBTree (BEmpty) "Adriano" (BEmpty)) "Joao" (MkMyBTree (BEmpty) "André" (BEmpty))
+
+instance Functor MyBtree where
+    fmap :: (a -> b) -> MyBtree a -> MyBtree b
+    fmap _ BEmpty = BEmpty
+    fmap f (MkMyBTree (ltree) a (rtree)) = MkMyBTree (fmap f rtree) (f a) (fmap f rtree)
+
+-- fmap (+10) tree2
+
+reverseMyBTree :: MyBtree a -> MyBtree a
+reverseMyBTree BEmpty = BEmpty
+reverseMyBTree (MkMyBTree ltree x rtree)  = MkMyBTree (reverseMyBTree rtree) x (reverseMyBTree ltree)
+
+convertToArr :: MyBtree a -> [a]
+convertToArr BEmpty = []
+convertToArr  (MkMyBTree (ltree) x (rtree)) = [x] ++ convertToArr ltree ++ convertToArr rtree
+
+-- convertToArr tree4
+
+makeListFromTree :: MyBtree a -> List a
+makeListFromTree BEmpty = Empty
+makeListFromTree (MkMyBTree (ltree) x (rtree)) = combineList (Cons x (makeListFromTree ltree)) (makeListFromTree rtree)
+
+
+-- makeListFromTree tree4
+
+{-- huuuu ulll - it finish!!! -}
 
 {-
 You did it! Now it is time to open pull request with your changes
