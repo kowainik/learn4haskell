@@ -618,9 +618,9 @@ sumLast2 :: Int -> Int
 sumLast2 n = addLast2 (last2 n)
   where
     last2 :: Int -> Int
-    last2 n = if n > 0 then mod n 100 else mod (abs n) 100
+    last2 x = if x > 0 then mod x 100 else mod (abs x) 100
     addLast2 :: Int -> Int
-    addLast2 n = div n 10 + mod n 10
+    addLast2 x = div x 10 + mod x 10
 
 -- |
 -- =💣= Task 10*
@@ -639,7 +639,10 @@ sumLast2 n = addLast2 (last2 n)
 -- You need to use recursion in this task. Feel free to return to it later, if you
 -- aren't ready for this boss yet!
 firstDigit :: Int -> Int
-firstDigit n = if n < 10 then n else firstDigit (div n 10)
+firstDigit n
+  | n < 0 = firstDigit (abs n)
+  | n < 10 = n
+  | otherwise = firstDigit (div n 10)
 
 {-
 You did it! Now it is time to open a pull request with your changes
