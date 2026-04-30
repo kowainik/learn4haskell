@@ -536,8 +536,8 @@ closestToZero x y = if abs x > abs y then y else x
 -- Casual reminder about adding top-level type signatures for all functions :)
 mid :: Int -> Int -> Int -> Int
 mid x y z
-  | (y > x && x > z) || (z > x && x > y) = x
-  | (x > y && y > z) || (z > y && y > x) = y
+  | (y >= x && x >= z) || (z >= x && x >= y) = x
+  | (x >= y && y >= z) || (z >= y && y >= x) = y
   | otherwise = z
 
 -- |
