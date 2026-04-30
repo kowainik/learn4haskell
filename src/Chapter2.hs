@@ -739,7 +739,7 @@ smartReplicate = concatMap (\x -> replicate x x)
 --
 -- 🕯 HINT: Use the 'elem' function to check whether an element belongs to a list
 contains :: Int -> [[Int]] -> [[Int]]
-contains t = map (\x -> if t `elem` x then x else [])
+contains t = filter (\x -> t `elem` x)
 
 -- |
 -- =🛡= Eta-reduction
