@@ -52,6 +52,9 @@ provide more top-level type signatures, especially when learning Haskell.
 {-# LANGUAGE InstanceSigs #-}
 
 module Chapter3 where
+import Data.Either
+-- import LearnHaskell (TreasureChest(TreasureChest))
+-- import Distribution.PackageDescription (Library)
 
 {-
 =🛡= Types in Haskell
@@ -344,6 +347,28 @@ of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
 
+data Book = MkBook
+    { bookName  :: String
+    , bookCover :: String
+    , bookAuthor :: String
+    , bookLanguage :: String
+    , bookPages :: Int
+    , bookRating :: Int
+    } deriving (Show)
+
+{-
+livrinho = MkBook
+    { bookName = "meu livro"
+    , bookCover = "wow"
+    , bookAuthor = "Adriano Waltrick"
+    , bookLanguage = "Portuguese"
+    , bookPages = 100
+    , bookRating = 10
+    }
+
+livrinho = MkBook { bookName = "meu livro", bookCover = "wow", bookAuthor = "Adriano Waltrick", bookLanguage = "Portuguese", bookPages = 100, bookRating = 10}
+-}
+
 {- |
 =⚔️= Task 2
 
@@ -375,6 +400,40 @@ after the fight. The battle has the following possible outcomes:
 ♫ NOTE: In this task, you need to implement only a single round of the fight.
 
 -}
+
+data Knight = MkKnight
+    { health  :: Int
+    , attack :: Int
+    , gold :: Int
+    } deriving (Show)
+
+
+data Monster = MkMonster
+    { mHealth  :: Int
+    , mAttack :: Int
+    , mGold :: Int
+    } deriving (Show)
+
+fighter1 :: Knight
+fighter1 = MkKnight
+    { health = 100
+    , attack = 10
+    , gold = 0
+    }
+
+dragon1 :: Monster
+dragon1 = MkMonster
+    { mHealth = 10
+    , mAttack = 10
+    , mGold = 10
+    }
+
+fight :: Monster -> Knight -> Int
+fight monster knight
+    | mHealth monster <= 0 = gold knight + mGold monster
+    | health knight <= 0 = -1
+    | otherwise = fight (MkMonster (mHealth monster - attack knight) (mAttack monster) (mGold monster)) (MkKnight (health knight - mAttack monster) (attack knight) (gold knight))
+
 
 {- |
 =🛡= Sum types
@@ -462,6 +521,15 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data MealType
+    = Nescau
+    | PaoComLeite
+    | BolachaSalgada
+    | BolachaDoce
+    | BolachaRecheada
+    | Biscoito
+    | Brigadeiro
+
 {- |
 =⚔️= Task 4
 
@@ -481,6 +549,96 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
+
+data Castle = MkCastle
+    { castleName :: String
+    } deriving (Eq, Show)
+
+data Wall = MkWall
+    { size :: Int
+    } deriving (Show)
+
+data ChurchData = MkChurch
+    { churchName :: String
+    } deriving (Show)
+
+data LibraryData = MkLibrary
+    { libraryName :: String
+    } deriving (Show)
+
+data ChurchOrLibrary
+    = Church ChurchData
+    | Library LibraryData
+    deriving (Show)
+
+data PeopleInsideHouse
+    = None
+    | One
+    | Two
+    | Three
+    | Four
+    deriving (Show, Eq, Ord, Enum)
+
+data House = MkHouse
+    { people :: PeopleInsideHouse
+    } deriving (Show)
+
+data City = MkCity
+    { castle :: Maybe Castle
+    , wall :: Maybe Wall
+    , churchOrLibrary :: Maybe ChurchOrLibrary
+    , houses :: [House]
+    } deriving (Show)
+
+igreja1 :: ChurchOrLibrary
+igreja1 = Church (MkChurch "Igreja1")
+
+buildCastle :: City -> String -> City
+buildCastle (MkCity xcastle xwall xchurchOrLibrary xhouses) name =
+    if xcastle == Nothing then MkCity (Just (MkCastle name)) Nothing Nothing []
+    else MkCity (Just (MkCastle name)) xwall xchurchOrLibrary xhouses
+
+brasilCastle :: Castle
+brasilCastle = MkCastle "Brasil Castle"
+
+argentinaCastle :: Castle
+argentinaCastle = MkCastle "Argentina Castle"
+
+saoPaulo :: City
+saoPaulo = (MkCity (Just brasilCastle) (Just (MkWall 3)) (Just igreja1) [(MkHouse One)])
+
+novoCastelo :: City
+novoCastelo = buildCastle saoPaulo "Novo Nome"
+
+buildHouse :: City -> PeopleInsideHouse -> City
+buildHouse (MkCity xcastle xwall xchurchOrLibrary xhouses) p =
+    MkCity xcastle xwall xchurchOrLibrary (xhouses ++ [(MkHouse p)])
+
+{- buildHouse saoPaulo Two -}
+
+{-
+✦ buildWalls — build walls in the city. But since building walls is a
+   complicated task, walls can be built only if the city has a castle
+   and at least 10 living __people__ inside in all houses of the city in total.
+-}
+
+countPeoples :: City -> Int
+countPeoples (MkCity _ _ _ []) = 0
+countPeoples (MkCity xcastle xwall xchurchOrLibrary ((MkHouse p):xs)) =
+    (fromEnum p) + (countPeoples (MkCity xcastle xwall xchurchOrLibrary xs))
+
+countPeoplesArray :: [House] -> Int
+countPeoplesArray [] = 0
+countPeoplesArray ((MkHouse p):xs) = (fromEnum p) + countPeoplesArray xs
+
+buildWalls :: City -> Int -> Maybe City
+buildWalls (MkCity (Just (MkCastle _)) Nothing (Just _) []) _ = Nothing
+buildWalls (MkCity Nothing Nothing Nothing []) _ = Nothing
+buildWalls (MkCity Nothing _ _ []) _ = Nothing
+buildWalls (MkCity (Just _) Nothing Nothing []) _ = Nothing
+buildWalls (MkCity xcastle (Just (MkWall iwall)) xchurchOrLibrary xhouses) nwalls =
+    if countPeoplesArray xhouses < 10 then Nothing
+    else Just (MkCity xcastle (Just (MkWall (nwalls + iwall))) xchurchOrLibrary xhouses)
 
 {-
 =🛡= Newtypes
@@ -570,21 +728,24 @@ data Player = Player
     , playerStrength  :: Int
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+newtype PlayerAttack = MkPlayerAttack Int
+newtype PlayerStrength = MkPlayerStrength Int
+
+calculatePlayerDamage :: PlayerAttack -> PlayerStrength -> Int
+calculatePlayerDamage (MkPlayerAttack a) (MkPlayerStrength s) = a + s
 
 calculatePlayerDefense :: Int -> Int -> Int
 calculatePlayerDefense armor dexterity = armor * dexterity
 
 calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerHit damage defense health1 = health1 + defense - damage
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
 hitPlayer player1 player2 =
     let damage = calculatePlayerDamage
-            (playerAttack player2)
-            (playerStrength player2)
+            (MkPlayerAttack (playerAttack player2))
+            (MkPlayerStrength (playerStrength player2))
         defense = calculatePlayerDefense
             (playerArmor player1)
             (playerDexterity player1)
@@ -755,6 +916,22 @@ parametrise data types in places where values can be of any general type.
   maybe-treasure ;)
 -}
 
+data DragonData = MkDragon
+    { magicPower :: Int
+    } deriving (Show)
+
+data TreasureChestData a = MkTreasureChest
+    { goldOnChest :: a
+    } deriving (Show)
+
+data DragonLairData a = MkDragonLair
+    { dragon :: Maybe DragonData,
+    treasureChest :: Maybe (TreasureChestData a)
+    } deriving (Show)
+
+
+
+
 {-
 =🛡= Typeclasses
 
@@ -912,6 +1089,54 @@ Implement instances of "Append" for the following types:
 class Append a where
     append :: a -> a -> a
 
+data GoldData = MkGold
+    { totalGold :: Int
+    } deriving (Eq, Show)
+
+instance Append GoldData where
+    append :: GoldData -> GoldData -> GoldData
+    append loot1 loot2 = MkGold (totalGold loot1 + totalGold loot2)
+
+newtype Gold = Gold Int
+  deriving (Show)
+
+instance Append Gold where
+  append :: Gold -> Gold -> Gold
+  append (Gold a) (Gold b) = Gold (a + b)
+
+data List a
+    = Empty
+    | Cons a (List a)
+    deriving (Eq, Show)
+
+instance Append (List b) where
+    append :: List a -> List a -> List a
+    append list1 Empty = list1
+    append Empty list1 = list1
+    append (Cons valor1 Empty) (Cons valor2 Empty) = Cons valor1 (Cons valor2 Empty)
+    append (Cons valor1 lista1) (Cons valor2 Empty) = Cons valor1 (Cons valor2 lista1)
+    append (Cons valor1 lista1) (Cons valor2 lista2) = append (Cons valor1 (Cons valor2 lista1)) lista2
+
+instance Append Int where
+  append :: Int -> Int -> Int
+  append a b = a + b
+
+instance (Append a) => Append [a] where
+  append :: [a] -> [a] -> [a]
+  append arr1 arr2 = arr1 ++ arr2
+
+-- instance Append String where
+--   append :: a -> a -> a
+--   append arr1 arr2 = arr1 ++ arr2
+
+instance (Append a) => Append (Maybe a) where
+    append :: Maybe a -> Maybe a -> Maybe a
+    append Nothing Nothing = Nothing
+    append container1 Nothing = container1
+    append Nothing container1 = container1
+    append (Just s1) (Just s2) = Just (append s1 s2)
+
+
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -973,6 +1198,56 @@ implement the following functions:
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
 
+
+data DiasDaSemana
+    = Segunda -- 0
+    | Terca
+    | Quarta
+    | Quinta
+    | Sexta -- 4
+    | Sabado
+    | Domingo
+    deriving (Show, Eq, Ord)
+
+isWeekend :: DiasDaSemana -> Bool
+isWeekend a
+    | a == Sabado = True
+    | a == Domingo = True
+    | otherwise = False
+
+nextDay :: DiasDaSemana -> DiasDaSemana
+nextDay Domingo = Segunda
+nextDay a = toEnum ((fromEnum a) + 1)
+
+daysToParty :: DiasDaSemana -> Int
+daysToParty Sexta = 0
+daysToParty Sabado = 2 + daysToParty Segunda
+daysToParty Domingo = 1 + daysToParty Segunda
+-- o /= Sexta é um lambda infix -- cria a lista de a até sexta, separa num array e conta qntos tem
+daysToParty a = length $ takeWhile ( /= Sexta) [a .. Sexta]
+
+instance Enum DiasDaSemana where
+  toEnum :: Int -> DiasDaSemana
+  toEnum 0 = Segunda
+  toEnum 1 = Terca
+  toEnum 2 = Quarta
+  toEnum 3 = Quinta
+  toEnum 4 = Sexta
+  toEnum 5 = Sabado
+  toEnum 6 = Domingo
+
+  fromEnum :: DiasDaSemana -> Int
+  fromEnum Segunda  = 0
+  fromEnum Terca    = 1
+  fromEnum Quarta   = 2
+  fromEnum Quinta   = 3
+  fromEnum Sexta    = 4
+  fromEnum Sabado   = 5
+  fromEnum Domingo  = 6
+
+daysToPartyInstance :: DiasDaSemana -> Int
+daysToPartyInstance day = fromEnum (Sexta :: DiasDaSemana) - fromEnum day
+
 {-
 =💣= Task 9*
 
@@ -1007,6 +1282,93 @@ properties using typeclasses, but they are different data types in the end.
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
+{-
+
+1) A knight can attack, drink a health potion, cast a spell to increase their defence.
+while knights also have a defence.
+
+2) A monster can only attack or run away. Monsters have only health and attack
+
+3) They do their activities in turns, i.e. one fighter goes first, then
+the other goes second, then the first again, and so on, until one of them wins.
+
+4) Both knight and monster have a sequence of actions they can do
+
+5) each fighter starts with some list of actions they can do
+
+6) The fight ends when the health of one fighter becomes zero or less.
+-}
+
+data Actions = Attack | DrinkToCure | CastDef | RunAway
+    deriving (Show, Eq, Ord)
+
+data ActionChange = Hero | Antagonist
+    deriving (Show, Eq, Ord)
+
+data NewKnight = MkNewKnight
+    { newKHealth  :: Int
+    , newKDefense :: Int
+    } deriving (Show)
+
+data NewMonster = MkNewMonster { newMoHealth :: Int }
+    deriving (Show)
+
+class Luta a where
+    toAttack :: a -> a
+
+instance Luta NewMonster where
+    toAttack :: NewMonster -> NewMonster
+    toAttack (MkNewMonster mhealth) = MkNewMonster (mhealth - 1)
+
+instance Luta NewKnight where
+    toAttack :: NewKnight -> NewKnight
+    toAttack (MkNewKnight khealth kdef) = if kdef > 0
+        then MkNewKnight (khealth) (kdef -1)
+        else MkNewKnight (khealth - 1) kdef
+
+-- todo retornar o either auqi nao ficou legal
+parseActionKnight :: NewKnight -> Actions -> NewKnight
+parseActionKnight (MkNewKnight khealth kdef) action
+    | action == DrinkToCure     = (MkNewKnight (khealth + 1) kdef)
+    | action == CastDef         = (MkNewKnight khealth (kdef + 1))
+    | otherwise                 = (MkNewKnight khealth kdef)
+
+parseActionMonster :: NewMonster -> Actions -> NewMonster
+parseActionMonster (MkNewMonster khealth) action
+    | action == RunAway = (MkNewMonster 0)
+    | otherwise         = (MkNewMonster khealth)
+
+rotate :: Int -> [a] -> [a]
+rotate _ [] = []
+rotate n arr = drop n $ take ((length arr) + n) $ cycle arr
+
+
+francisco = (MkNewKnight 13 2)
+lizzard = (MkNewMonster 5)
+
+tank = (MkNewKnight 100 2)
+stronger = (MkNewMonster 13)
+
+actionOrder = [Hero, Antagonist]
+kaction = [Attack, DrinkToCure, CastDef]
+maction = [Attack, Attack, Attack, Attack, Attack, Attack, Attack, Attack, Attack, Attack, RunAway]
+
+figthToDeath :: NewKnight -> NewMonster -> [Actions] -> [Actions] -> [ActionChange] -> String
+figthToDeath (MkNewKnight khealth kdef) (MkNewMonster mhealth) arrK arrM order
+    | head order == Hero = if (head arrK) == Attack then (if mhealth > 0
+            then figthToDeath (MkNewKnight khealth kdef) (toAttack (MkNewMonster mhealth)) (rotate 1 arrK) (rotate 1 arrM) (rotate 1 order)
+            else "!!Hero wins!! Hero life:" ++ (show khealth) ++ " - Monster life: " ++ (show mhealth) )
+        else figthToDeath (MkNewKnight khealth kdef) (MkNewMonster mhealth) (rotate 1 arrK) (rotate 1 arrM) (rotate 1 order)
+    | otherwise      = if (head arrM) == Attack then (if khealth > 0
+            then figthToDeath (toAttack (MkNewKnight khealth kdef)) (MkNewMonster mhealth) (rotate 1 arrK) (rotate 1 arrM) (rotate 1 order)
+            else "Monster wins!! Hero life:" ++ (show khealth) ++ " - Monster life: " ++ (show mhealth) )
+        else figthToDeath (MkNewKnight khealth kdef) (MkNewMonster mhealth) (rotate 1 arrK) (rotate 1 arrM) (rotate 1 order)
+
+-- to execute
+-- figthToDeath francisco lizzard kaction maction actionOrder
+-- figthToDeath tank stronger kaction maction actionOrder
+
+-- WOW - thas hard!!
 
 
 {-
